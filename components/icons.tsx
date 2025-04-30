@@ -135,7 +135,7 @@ export const SearchIcon = (props: IconSvgProps) => (
     />
   </svg>
 );
-export const DeleteIcon = (props) => {
+export const DeleteIcon = (props: any) => {
   return (
     <svg
       aria-hidden="true"
@@ -185,7 +185,7 @@ export const DeleteIcon = (props) => {
     </svg>
   );
 };
-export const EditIcon = (props) => {
+export const EditIcon = (props: any) => {
   return (
     <svg
       aria-hidden="true"
