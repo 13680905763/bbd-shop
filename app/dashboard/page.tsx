@@ -155,7 +155,7 @@ export default function DashBoard() {
               <div className="p-5 pt-0  flex justify-center">
                 <Form
                   className="w-full max-w-[800px] flex flex-col gap-4"
-                  onReset={() => setAction("reset")}
+                  // onReset={() => setAction("reset")}
                   onSubmit={(e) => {
                     e.preventDefault();
                     let data = Object.fromEntries(
