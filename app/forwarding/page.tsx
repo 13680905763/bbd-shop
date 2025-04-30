@@ -11,7 +11,7 @@ import {
 import React from "react";
 
 export default function ForwardingPage() {
-  const [action, setAction] = React.useState(null);
+  // const [action, setAction] = React.useState(null);
 
   return (
     <div className="bg-[#f5f5f5] h-[100%]">
@@ -30,18 +30,18 @@ export default function ForwardingPage() {
           <p className="font-bold my-5">转运包裹</p>
           <Form
             className="w-full  flex flex-col gap-4"
-            onReset={() => setAction("reset")}
+            // onReset={() => setAction("reset")}
             onSubmit={(e) => {
               e.preventDefault();
               let data = Object.fromEntries(new FormData(e.currentTarget));
 
-              setAction(`submit ${JSON.stringify(data)}`);
+              // setAction(`submit ${JSON.stringify(data)}`);
             }}
           >
             <Input
               isRequired
               errorMessage="Please enter a valid username"
-              label="物流单号"
+              label="物流单号:"
               labelPlacement="outside"
               name="username"
               placeholder="Enter your username"
@@ -51,7 +51,7 @@ export default function ForwardingPage() {
             <Input
               isRequired
               errorMessage="Please enter a valid email"
-              label="包裹名称"
+              label="包裹名称:"
               labelPlacement="outside"
               name="email"
               placeholder="Enter your email"
