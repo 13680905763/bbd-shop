@@ -9,9 +9,7 @@ import {
 } from "@heroui/navbar";
 import { Link } from "@heroui/link";
 import { Input } from "@heroui/input";
-import { link as linkStyles } from "@heroui/theme";
 import NextLink from "next/link";
-import clsx from "clsx";
 import {
   Dropdown,
   DropdownItem,
@@ -59,7 +57,7 @@ export const Navbar = () => {
             <NavbarItem
               key={item.href}
               className="data-[active=true]:text-[#f0700c] "
-              isActive={isActive===index}
+              isActive={isActive === index}
               onClick={() => setIsActive(index)}
             >
               <NextLink
@@ -85,10 +83,8 @@ export const Navbar = () => {
           <ThemeSwitch />
         </NavbarItem>
         <NavbarItem className="hidden lg:flex">
-          {
-            pathname!== '/' ?searchInput:null
-          }
-          </NavbarItem>
+          {pathname !== "/" ? searchInput : null}
+        </NavbarItem>
         <Dropdown>
           <DropdownTrigger>
             <User

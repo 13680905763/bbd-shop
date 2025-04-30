@@ -67,7 +67,7 @@ const columns = [
 ];
 
 export default function DashBoard() {
-  const [action, setAction] = React.useState(null);
+  // const [action, setAction] = React.useState(null);
 
   const renderCell = React.useCallback((rows: any, columnKey: any) => {
     const cellValue = rows[columnKey];
@@ -159,7 +159,7 @@ export default function DashBoard() {
                   onSubmit={(e) => {
                     e.preventDefault();
                     let data = Object.fromEntries(
-                      new FormData(e.currentTarget)
+                      new FormData(e.currentTarget),
                     );
 
                     console.log(data);
