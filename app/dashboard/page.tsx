@@ -69,7 +69,7 @@ const columns = [
 export default function DashBoard() {
   const [action, setAction] = React.useState(null);
 
-  const renderCell = React.useCallback((rows, columnKey) => {
+  const renderCell = React.useCallback((rows: any, columnKey: any) => {
     const cellValue = rows[columnKey];
 
     switch (columnKey) {
