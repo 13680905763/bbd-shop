@@ -19,7 +19,7 @@ export const siteConfig = {
     },
     {
       label: "推广联盟",
-      href: "/blog",
+      href: "/dashboard/promotion",
     },
   ],
   navMenuItems: [
@@ -129,7 +129,7 @@ export const siteConfig = {
       title: "特权",
     },
     {
-      key: "sub13",
+      key: "promotion",
       title: "联盟",
     },
   ],
