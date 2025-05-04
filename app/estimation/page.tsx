@@ -23,7 +23,7 @@ import {
 } from "@heroui/react";
 
 import { describeText, title } from "@/components/primitives";
-export const countrys = [
+const countrys = [
   {
     label: "Argentina",
     key: "Argentina",
@@ -45,7 +45,7 @@ export const countrys = [
     src: "https://flagcdn.com/ch.svg",
   },
 ];
-export const types = [
+const types = [
   { key: "cat", label: "Cat" },
   { key: "dog", label: "Dog" },
   { key: "elephant", label: "Elephant" },
@@ -53,6 +53,7 @@ export const types = [
   { key: "tiger", label: "Tiger" },
   { key: "giraffe", label: "Giraffe" },
 ];
+
 export default function EstimationPage() {
   const [submitted, setSubmitted] = React.useState<any>(null);
   const onSubmit = (e: any) => {
