@@ -15,7 +15,7 @@ export const siteConfig = {
     },
     {
       label: "运费估算",
-      href: "/pricing",
+      href: "/estimation",
     },
     {
       label: "推广联盟",

@@ -17,7 +17,7 @@ import {
   DropdownTrigger,
   User,
 } from "@heroui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 import { siteConfig } from "@/config/site";
@@ -25,8 +25,15 @@ import { ThemeSwitch } from "@/components/theme-switch";
 import { SearchIcon, Logo } from "@/components/icons";
 
 export const Navbar = () => {
-  const [isActive, setIsActive] = useState(0);
   const pathname = usePathname(); // 获取当前路径
+  const [currentNav, setCurrentNav] = useState(pathname);
+
+  console.log("pathname", pathname);
+  console.log("currentNav", currentNav);
+
+  useEffect(() => {
+    setCurrentNav(pathname);
+  }, [pathname]);
   const searchInput = (
     <Input
       aria-label="Search"
@@ -45,7 +52,7 @@ export const Navbar = () => {
   );
 
   return (
-    <HeroUINavbar maxWidth="full" position="sticky">
+    <HeroUINavbar isBordered maxWidth="full" position="sticky">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
@@ -53,12 +60,11 @@ export const Navbar = () => {
           </NextLink>
         </NavbarBrand>
         <ul className="hidden lg:flex gap-4 justify-start ml-2">
-          {siteConfig.navItems.map((item, index) => (
+          {siteConfig.navItems.map((item) => (
             <NavbarItem
               key={item.href}
               className="data-[active=true]:text-[#f0700c] "
-              isActive={isActive === index}
-              onClick={() => setIsActive(index)}
+              isActive={currentNav === item.href}
             >
               <NextLink
                 // className={clsx(
@@ -83,7 +89,7 @@ export const Navbar = () => {
           <ThemeSwitch />
         </NavbarItem>
         <NavbarItem className="hidden lg:flex">
-          {pathname !== "/" ? searchInput : null}
+          {currentNav !== "/" ? searchInput : null}
         </NavbarItem>
         <Dropdown>
           <DropdownTrigger>
