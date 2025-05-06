@@ -88,11 +88,11 @@ export const siteConfig = {
       title: "个人中心",
     },
     {
-      key: "2",
+      key: "wallet",
       title: "我的资产",
     },
     {
-      key: "3",
+      key: "message",
       title: "站内信",
     },
 

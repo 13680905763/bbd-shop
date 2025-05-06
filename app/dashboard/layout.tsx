@@ -34,18 +34,19 @@ export default function DashBoardlayout({
             }
 
             return (
-              <li
+              <NextLink
                 key={item.title}
-                className={`h-10 cursor-pointer  flex  items-center p-2 my-2 ${currentItem == item.key ? "bg-[#f0700c] rounded-lg" : "hover:bg-[#f5f5f5]"}`}
-                title={item.title}
+                className={`${currentItem == item.key ? " !text-[#fff]" : ""} `}
+                href={`/dashboard/${item.key}`}
               >
-                <NextLink
-                  className={`${currentItem == item.key ? " !text-[#fff]" : ""}`}
-                  href={`/dashboard/${item.key}`}
+                <li
+                  key={item.title}
+                  className={`h-10 cursor-pointer  flex  items-center p-2 my-2 ${currentItem == item.key ? "bg-[#f0700c] rounded-lg" : "hover:bg-[#f5f5f5]"}`}
+                  title={item.title}
                 >
                   {item.title}
-                </NextLink>
-              </li>
+                </li>
+              </NextLink>
             );
           })}
         </ul>

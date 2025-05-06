@@ -4,7 +4,7 @@ import { Image } from "@heroui/image";
 import { Button } from "@heroui/button";
 import { Accordion, AccordionItem, Divider, Snippet } from "@heroui/react";
 
-import { describeText, subtitle } from "@/components/primitives";
+import { describeText, price, subtitle } from "@/components/primitives";
 const processItems = [
   {
     title: "1",
@@ -22,7 +22,7 @@ const processItems = [
 const defaultContent =
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
 
-export default function Promotionpage() {
+export default function PromotionPage() {
   return (
     <div>
       <Image
@@ -36,11 +36,8 @@ export default function Promotionpage() {
         <div className=" mt-5 w-full px-40 flex items-center">
           {processItems.map((item, index) => {
             return (
-              <>
-                <div
-                  key={item.title}
-                  className="w-5 h-5 rounded-full bg-[#fcf4f2] text-[#f0700c] text-xs flex items-center justify-center relative"
-                >
+              <React.Fragment key={item.title}>
+                <div className="w-5 h-5 rounded-full bg-[#fcf4f2] text-[#f0700c] text-xs flex items-center justify-center relative">
                   {item.title}
                   <div className="w-max absolute top-[20px] text-[#acacac]">
                     {item.describe}
@@ -49,7 +46,7 @@ export default function Promotionpage() {
                 {index < 2 ? (
                   <div className="w-1/2 border border-dashed border-[#f0700c]" />
                 ) : null}
-              </>
+              </React.Fragment>
             );
           })}
         </div>
@@ -71,7 +68,7 @@ export default function Promotionpage() {
         <div className={subtitle()}>我的联盟</div>
         <div className="flex justify-center items-center bg-[#f5f5f5] rounded-lg p-5 gap-5">
           <div className="flex-1 flex justify-center flex-col items-center gap-2">
-            <div className={describeText({ size: "xl", color: 333 })}>$0</div>
+            <div className={price()}>$0</div>
             <div className={describeText({ weight: "normal" })}>总奖励</div>
             <div className="flex gap-10">
               <Button className="w-32" size="sm">
@@ -105,9 +102,7 @@ export default function Promotionpage() {
             <div className="py-4 text-[#c92910]"> Bronze Affiliate </div>
             <div className="flex flex-col gap-1 p-5 w-full  items-center ">
               <div className={describeText()}>奖金比例</div>
-              <div className={describeText({ size: "xl", color: 333 })}>
-                3.00%
-              </div>
+              <div className={price()}>3.00%</div>
               <div className={describeText()}>0~500积分</div>
             </div>
           </div>
@@ -118,9 +113,7 @@ export default function Promotionpage() {
             </div>
             <div className="flex flex-col gap-1 p-5 w-full bg-[#fff] items-center ">
               <div className={describeText()}>奖金比例</div>
-              <div className={describeText({ size: "xl", color: 333 })}>
-                3.00%
-              </div>
+              <div className={price()}>3.00%</div>
               <div className={describeText()}>0~500积分</div>
             </div>
           </div>
@@ -131,9 +124,7 @@ export default function Promotionpage() {
             </div>
             <div className="flex flex-col gap-1 p-5 w-full bg-[#fff] items-center ">
               <div className={describeText()}>奖金比例</div>
-              <div className={describeText({ size: "xl", color: 333 })}>
-                3.00%
-              </div>
+              <div className={price()}>3.00%</div>
               <div className={describeText()}>0~500积分</div>
             </div>
           </div>
@@ -144,9 +135,7 @@ export default function Promotionpage() {
             </div>
             <div className="flex flex-col gap-1 p-5 w-full bg-[#fff] items-center ">
               <div className={describeText()}>奖金比例</div>
-              <div className={describeText({ size: "xl", color: 333 })}>
-                3.00%
-              </div>
+              <div className={price()}>3.00%</div>
               <div className={describeText()}>0~500积分</div>
             </div>
           </div>
@@ -157,9 +146,7 @@ export default function Promotionpage() {
             </div>
             <div className="flex flex-col gap-1 p-5 w-full bg-[#fff] items-center ">
               <div className={describeText()}>奖金比例</div>
-              <div className={describeText({ size: "xl", color: 333 })}>
-                3.00%
-              </div>
+              <div className={price()}>3.00%</div>
               <div className={describeText()}>0~500积分</div>
             </div>
           </div>

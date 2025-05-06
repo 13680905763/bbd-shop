@@ -84,3 +84,30 @@ export const describeText = tv({
     weight: "bold",
   },
 });
+
+export const price = tv({
+  base: "",
+  variants: {
+    size: {
+      sm: "text-sm ",
+      md: "text-base",
+      lg: "text-lg",
+      xl: "text-xl",
+      xl2: "text-2xl",
+    },
+    color: {
+      base: "text-[#333]",
+      white: "text-[#fff]",
+      red: "text-red",
+    },
+    weight: {
+      normal: "font-normal",
+      bold: "font-bold",
+    },
+  },
+  defaultVariants: {
+    size: "xl",
+    color: "base",
+    weight: "bold",
+  },
+});

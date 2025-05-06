@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardBody, CardFooter } from "@heroui/card";
 import { Image } from "@heroui/image";
-export default function Favoritespage() {
+export default function FavoritesPage() {
   const list = [
     {
       title: "加大款日本硬币夹收纳盒日币零钱包日式日圆神器整理零钱必旅游备",

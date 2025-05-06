@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import NextLink from "next/link";
 import { Avatar } from "@heroui/avatar";
 import {
   Tabs,
@@ -19,6 +20,7 @@ import {
 } from "@heroui/react";
 
 import { EditIcon, DeleteIcon } from "@/components/icons";
+import { describeText, price } from "@/components/primitives";
 
 const rows = [
   {
@@ -109,22 +111,17 @@ export default function DashBoard() {
             <p>ID:CNF3582377174494</p>
           </div>
         </div>
-        <div className="flex-1 px-14 py-5 flex flex-col  bg-[#fff] rounded-lg gap-6">
-          <div className="flex-1 flex justify-between gap-10 items-center">
-            <div>余额</div>
-            <div> ￥999</div>
-            {/* <div className="flex-1 gap-2 flex">
-              <Button className="bg-[#f0700c] text-[#fff] flex-1" radius="lg">
-                充值
-              </Button>
-              <Button className="flex-1" radius="lg">
-                提现
-              </Button>
-            </div> */}
+        <div className="flex-1  flex   bg-[#fff] rounded-lg ">
+          <div className="flex-1 flex flex-col items-center justify-center gap-2 p-5">
+            <div className={price()}>￥999</div>
+            <div className={describeText({ weight: "normal" })}>余额</div>
           </div>
-          <div className="flex-1 flex gap-10">
-            <div>积分</div>
-            <div>88</div>
+          <div className="flex-1 flex flex-col items-center justify-center gap-2 p-5">
+            <div className={price()}>88</div>
+            <div className={describeText({ weight: "normal" })}>积分</div>
+          </div>
+          <div className="flex-1 flex flex-col items-center justify-center gap-2 p-5 ">
+            <NextLink href="/dashboard/wallet">查看更多 </NextLink>
           </div>
         </div>
       </div>

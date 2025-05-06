@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardBody, CardFooter } from "@heroui/card";
 import { Image } from "@heroui/image";
 
-export default function Historypage() {
+export default function HistoryPage() {
   const list = [
     {
       title: "ElectronicNomad水洗大师美式可爱卡通Mega Man休闲210克短袖T恤",
