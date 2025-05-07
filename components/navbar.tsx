@@ -109,7 +109,7 @@ export const Navbar = () => {
               <NextLink href="/dashboard">个人中心</NextLink>
             </DropdownItem>
             <DropdownItem key="copy">
-              <NextLink href={"/dashboard"}>退出账户</NextLink>
+              <NextLink href="/login">退出账户</NextLink>
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>

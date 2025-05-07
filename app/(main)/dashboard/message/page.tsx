@@ -107,7 +107,7 @@ export default function MessagePage() {
               hideHeader
               removeWrapper
               aria-label="Example table with dynamic content"
-              selectionMode="multiple"
+              // selectionMode="multiple"
             >
               <TableHeader columns={columns}>
                 {(column) => (

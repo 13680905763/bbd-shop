@@ -124,10 +124,10 @@ export const siteConfig = {
       key: "sub7",
       title: "包裹",
     },
-    {
-      key: "sub12",
-      title: "特权",
-    },
+    // {
+    //   key: "sub12",
+    //   title: "特权",
+    // },
     {
       key: "promotion",
       title: "联盟",
