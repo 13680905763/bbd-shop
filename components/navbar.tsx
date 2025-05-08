@@ -11,14 +11,16 @@ import { Link } from "@heroui/link";
 import { Input } from "@heroui/input";
 import NextLink from "next/link";
 import {
+  Button,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Form,
   User,
 } from "@heroui/react";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
@@ -26,29 +28,43 @@ import { SearchIcon, Logo } from "@/components/icons";
 
 export const Navbar = () => {
   const pathname = usePathname(); // 获取当前路径
-  const [currentNav, setCurrentNav] = useState(pathname);
+  const router = useRouter();
 
-  console.log("pathname", pathname);
-  console.log("currentNav", currentNav);
+  const [currentNav, setCurrentNav] = useState(pathname);
+  const onSubmit = async (e: any) => {
+    e.preventDefault();
+    console.log(6666);
+    router.push("/goods"); // 跳转到购物车页面
+
+    // setIsLoading(true);
+
+    // const data = Object.fromEntries(new FormData(e.currentTarget));
+    // const result = await callServer(data);
+
+    // setErrors(result.errors);
+    // setIsLoading(false);
+  };
 
   useEffect(() => {
     setCurrentNav(pathname);
   }, [pathname]);
   const searchInput = (
-    <Input
-      aria-label="Search"
-      classNames={{
-        inputWrapper: "bg-default-100",
-        input: "text-sm",
-      }}
-      endContent={"search"}
-      labelPlacement="outside"
-      placeholder="Search..."
-      startContent={
-        <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-      }
-      type="search"
-    />
+    <Form className="w-full max-w-xs" onSubmit={onSubmit}>
+      <Input
+        aria-label="Search"
+        classNames={{
+          inputWrapper: "bg-default-100",
+          input: "text-sm",
+        }}
+        endContent={<Button type="submit">123</Button>}
+        labelPlacement="outside"
+        placeholder="Search..."
+        startContent={
+          <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
+        }
+        type="search"
+      />
+    </Form>
   );
 
   return (

@@ -103,6 +103,19 @@ export const siteConfig = {
       key: "cart",
       title: "购物车",
     },
+
+    {
+      key: "order",
+      title: "订单",
+    },
+    {
+      key: "warehouse",
+      title: "仓库",
+    },
+    {
+      key: "package",
+      title: "包裹",
+    },
     {
       key: "favorites",
       title: "收藏夹",
@@ -110,19 +123,6 @@ export const siteConfig = {
     {
       key: "history",
       title: "浏览记录",
-    },
-
-    {
-      key: "sub5",
-      title: "订单",
-    },
-    {
-      key: "sub6",
-      title: "仓库",
-    },
-    {
-      key: "sub7",
-      title: "包裹",
     },
     // {
     //   key: "sub12",

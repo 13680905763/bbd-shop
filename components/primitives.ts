@@ -89,7 +89,7 @@ export const price = tv({
   base: "",
   variants: {
     size: {
-      sm: "text-sm ",
+      sm: "text-sm",
       md: "text-base",
       lg: "text-lg",
       xl: "text-xl",
@@ -107,6 +107,46 @@ export const price = tv({
   },
   defaultVariants: {
     size: "xl",
+    color: "base",
+    weight: "bold",
+  },
+});
+export const lightFont = tv({
+  base: "text-[#acacac] ",
+  variants: {
+    size: {
+      sm: "text-sm",
+      md: "text-base",
+      lg: "text-lg",
+      xl: "text-xl",
+      xl2: "text-2xl",
+    },
+  },
+  defaultVariants: {
+    size: "md",
+  },
+});
+export const priceFont = tv({
+  base: "text-[#acacac] ",
+  variants: {
+    size: {
+      sm: "text-sm",
+      md: "text-base",
+      lg: "text-lg",
+      xl: "text-xl",
+      xl2: "text-2xl",
+    },
+    color: {
+      base: "text-[#c92910]",
+      black: "text-black",
+    },
+    weight: {
+      normal: "font-normal",
+      bold: "font-bold",
+    },
+  },
+  defaultVariants: {
+    size: "md",
     color: "base",
     weight: "bold",
   },

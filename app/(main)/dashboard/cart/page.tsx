@@ -1,85 +1,70 @@
 "use client";
-import { Checkbox, Divider, Image, NumberInput } from "@heroui/react";
 import React from "react";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { Button, Checkbox } from "@heroui/react";
+
+import CartItem from "@/components/cart-item";
+import Progress from "@/components/progress";
 export default function CartPage() {
   return (
     <div className="flex flex-col h-[100%]">
-      <div className="bg-[#f5f5f5] h-[116px] rounded-2xl p-4 flex items-center justify-around mb-4 w-full">
-        <div className="flex flex-col items-center text-sm font-bold">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center border border-dashed border-gray-300 bg-gray-50">
-            1
-          </div>
-          <div className="mt-4">选择产品</div>
+      <Progress
+        currentStep={0}
+        steps={["选择产品", "订单付款", "质检&仓库", "打包", "签收包裹"]}
+      />
+      <div className="bg-[#f5f5f5]  rounded-2xl p-4 flex  flex-col  mb-4 w-full justify-between max-h-[800px]">
+        <div className="felx-1">全部商品 | 管理</div>
+
+        <div className="overflow-y-auto">
+          <CartItem
+            items={[
+              {
+                imageUrl: "https://heroui.com/images/hero-card-complete.jpeg",
+                title:
+                  "裤子男款夏季男裤灰色薄款直筒裤男士宽松休闲运动裤男生阔腿卫裤裤子男款夏季男裤灰色薄款直筒裤男士宽松休闲运动裤男生",
+                specs: "颜色:【春秋款两件】黑色+白花灰;尺码:L",
+                totalPrice: 266,
+                unitPrice: 26,
+                domesticShipping: 0,
+                quantity: 123,
+              },
+              {
+                imageUrl: "https://heroui.com/images/hero-card-complete.jpeg",
+                title:
+                  "裤子男款夏季男裤灰色薄款直筒21裤男士宽松休闲运动裤男生阔腿卫裤裤子男款夏季男裤灰色薄款直筒裤男士宽松休闲运动裤男生",
+                specs: "颜色:【春秋款两件】黑色+白花灰;尺码:L",
+                totalPrice: 266,
+                unitPrice: 26,
+                domesticShipping: 0,
+                quantity: 123,
+              },
+            ]}
+            shopName="店名"
+          />
+
+          <CartItem
+            items={[
+              {
+                imageUrl: "https://heroui.com/images/hero-card-complete.jpeg",
+                title:
+                  "裤子男款夏季男裤灰色薄款直筒裤男士宽松休闲运动裤男生阔腿卫裤裤子男款夏季男裤灰色薄款直筒裤男士宽松休闲运动裤男生",
+                specs: "颜色:【春秋款两件】黑色+白花灰;尺码:L",
+                totalPrice: 266,
+                unitPrice: 26,
+                domesticShipping: 0,
+                quantity: 123,
+              },
+            ]}
+            shopName="店名"
+          />
         </div>
 
-        <div className="flex-1 -mt-10 mx-4 border-t-2 border-dashed border-gray-300" />
-        <div className="flex flex-col items-center text-sm font-bold">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center border border-dashed border-gray-300 bg-gray-50">
-            1
-          </div>
-          <div className="mt-4">订单付款</div>
-        </div>
-
-        <div className="flex-1 -mt-10 mx-4 border-t-2 border-dashed border-gray-300" />
-        <div className="flex flex-col items-center text-sm font-bold">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center border border-dashed border-gray-300 bg-gray-50">
-            1
-          </div>
-          <div className="mt-4">质检&仓库</div>
-        </div>
-
-        <div className="flex-1 -mt-10 mx-4 border-t-2 border-dashed border-gray-300" />
-        <div className="flex flex-col items-center text-sm font-bold">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center border border-dashed border-gray-300 bg-gray-50">
-            1
-          </div>
-          <div className="mt-4">打包</div>
-        </div>
-
-        <div className="flex-1 -mt-10 mx-4 border-t-2 border-dashed border-gray-300" />
-        <div className="flex flex-col items-center text-sm font-bold">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center border border-dashed border-gray-300 bg-gray-50">
-            1
-          </div>
-          <div className="mt-4">签收包裹</div>
-        </div>
-      </div>
-      <div className="bg-[#f5f5f5]  rounded-2xl p-4 flex  flex-col  mb-4 w-full">
-        <div>全部商品 | 管理</div>
-
-        <div className="bg-[#fff]  rounded-md p-4   my-4 w-full ">
+        <div className="felx-1 rounded-lg bg-white p-4 flex justify-between items-center">
           <div>
-            <Checkbox />
-            店名
+            <Checkbox>全选</Checkbox>
           </div>
-          <Divider className="my-4" />
-          <div>
-            <div className="flex justify-between items-center">
-              <Checkbox />
-              <Image
-                alt="HeroUI hero Image"
-                className="h-[100px]"
-                src="https://heroui.com/images/hero-card-complete.jpeg"
-                width={100}
-              />
-              <div className="w-3/12">
-                <div>
-                  裤子男款夏季男裤灰色薄款直筒裤男士宽松休闲运动裤男生阔腿卫裤
-                </div>
-                <div>颜色:【春秋款两件】黑色+白花灰;尺码:L</div>
-                <div>备注</div>
-              </div>
-              <div>
-                <div>总计 266</div>
-                <div>单价 266</div>
-                <div>国内运费 0.00</div>
-              </div>
-              <div>
-                <NumberInput placeholder="Number" size="sm" />
-              </div>
-              <RiDeleteBin6Line />
-            </div>
+          <div className="flex gap-2 items-center">
+            <div>总计</div>
+            <Button>提交订单</Button>
           </div>
         </div>
       </div>
