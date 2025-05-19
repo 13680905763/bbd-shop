@@ -24,7 +24,7 @@ const defaultContent =
 
 export default function PromotionPage() {
   return (
-    <div>
+    <div className="pt-5">
       <Image
         alt="HeroUI hero Image"
         className=" object-cover h-[160px]"
@@ -66,12 +66,12 @@ export default function PromotionPage() {
       <Divider className="my-4" />
       <div>
         <div className={subtitle()}>我的联盟</div>
-        <div className="flex justify-center items-center bg-[#f5f5f5] rounded-lg p-5 gap-5">
+        <div className="flex justify-center items-center bg-[#ffeee1] rounded-lg p-5 gap-5">
           <div className="flex-1 flex justify-center flex-col items-center gap-2">
             <div className={price()}>$0</div>
             <div className={describeText({ weight: "normal" })}>总奖励</div>
             <div className="flex gap-10">
-              <Button className="w-32" size="sm">
+              <Button className="w-32 button-default" size="sm">
                 记录
               </Button>
               <Button className="w-32" color="primary" size="sm">
@@ -97,9 +97,9 @@ export default function PromotionPage() {
       </div>
       <div>
         <div className={subtitle()}>我的权益</div>
-        <div className="flex justify-center items-center bg-[#f5f5f5] rounded-lg ">
-          <div className="flex-1 flex justify-center items-center flex-col border border-[#eeeeee] border-r-0 bg-[#fcf4f2]">
-            <div className="py-4 text-[#c92910]"> Bronze Affiliate </div>
+        <div className="flex justify-center items-center bg-[#f7f8f9] rounded-lg ">
+          <div className="flex-1 flex justify-center items-center flex-col border border-[#eeeeee] border-r-0 bg-[#ffeee1]">
+            <div className="py-4 text-[#f0700c]"> Bronze Affiliate </div>
             <div className="flex flex-col gap-1 p-5 w-full  items-center ">
               <div className={describeText()}>奖金比例</div>
               <div className={price()}>3.00%</div>
@@ -108,8 +108,7 @@ export default function PromotionPage() {
           </div>
           <div className="flex-1 flex justify-center items-center flex-col border border-[#eeeeee] border-r-0">
             <div className="py-4 border-b border-[#eeeeee]">
-              {" "}
-              Bronze Affiliate{" "}
+              Bronze Affiliate
             </div>
             <div className="flex flex-col gap-1 p-5 w-full bg-[#fff] items-center ">
               <div className={describeText()}>奖金比例</div>
@@ -119,8 +118,7 @@ export default function PromotionPage() {
           </div>
           <div className="flex-1 flex justify-center items-center flex-col border border-[#eeeeee] border-r-0">
             <div className="py-4 border-b border-[#eeeeee]">
-              {" "}
-              Bronze Affiliate{" "}
+              Bronze Affiliate
             </div>
             <div className="flex flex-col gap-1 p-5 w-full bg-[#fff] items-center ">
               <div className={describeText()}>奖金比例</div>
@@ -130,8 +128,7 @@ export default function PromotionPage() {
           </div>
           <div className="flex-1 flex justify-center items-center flex-col border border-[#eeeeee] border-r-0">
             <div className="py-4 border-b border-[#eeeeee]">
-              {" "}
-              Bronze Affiliate{" "}
+              Bronze Affiliate
             </div>
             <div className="flex flex-col gap-1 p-5 w-full bg-[#fff] items-center ">
               <div className={describeText()}>奖金比例</div>
@@ -141,8 +138,7 @@ export default function PromotionPage() {
           </div>
           <div className="flex-1 flex justify-center items-center flex-col border border-[#eeeeee] ">
             <div className="py-4 border-b border-[#eeeeee]">
-              {" "}
-              Bronze Affiliate{" "}
+              Bronze Affiliate
             </div>
             <div className="flex flex-col gap-1 p-5 w-full bg-[#fff] items-center ">
               <div className={describeText()}>奖金比例</div>
@@ -154,7 +150,7 @@ export default function PromotionPage() {
       </div>
       <div>
         <div className={subtitle()}>权益FAQ</div>
-        <Accordion variant="bordered">
+        <Accordion className="!border-1" variant="bordered">
           <AccordionItem
             key="1"
             aria-label="Accordion 1"

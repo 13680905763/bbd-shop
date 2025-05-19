@@ -25,7 +25,7 @@ export default function AuthLayout({
       </div>
       <div className="flex-1 flex justify-center items-center">
         <div className="w-[400px]  ">
-          <Logo width={120} />
+          <Logo width={170} />
 
           <div className="rounded-lg bg-[#ffeee1] p-2 my-4 ">
             <div>公告</div>
@@ -38,7 +38,7 @@ export default function AuthLayout({
             <>
               <Divider className="my-8" />
               <Button
-                className="block w-full bg-[#fff] text-[#000] border-[#000]"
+                className="block w-full button-default"
                 color="primary"
                 size="lg"
                 type="submit"

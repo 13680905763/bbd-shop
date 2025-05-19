@@ -1,0 +1,149 @@
+POST /customer/cart/add HTTP/1.1
+Host: 127.0.0.1: 8080
+Content-Type: application/json
+Content-Length: 2699
+
+请求体
+{
+    "customerId": 1,
+    "source": "1688",
+    "product": {
+        "sourceProductId": "787637530680",
+        "productTitle": "奇丹鞋厂博肯凉拖鞋女夏季居家室内EVA软底外穿防滑情侣凉拖鞋女",
+        "productPrice": 18.8,
+        "productUrl": "",
+        "productPicUrl": "https://cbu01.alicdn.com/img/ibank/O1CN0144Z7Lx1xn6EJ6TxuH_!!2426936487-0-cib.jpg",
+        "shopId": "",
+        "shopName": "",
+        "shopUrl": "",
+        "shopContactInfo": ""
+    },
+    "productSku": {
+        "sourceSkuId": "5547638763847",
+        "specId": "a35e02b581fecdfa99b518d3e255d48f",
+        "skuPicUrl": "https://cbu01.alicdn.com/img/ibank/O1CN01Oy56mK1xn6EJ6fqf0_!!2426936487-0-cib.jpg",
+        "skuPropList": [
+            {
+                "propId": "404",
+                "propName": "颜色",
+                "propTrans": "Color",
+                "propValueList": [
+                    {
+                        "valueID": "1",
+                        "valueName": "米白",
+                        "valueTrans": "rice white",
+                        "imageUrl": "https://cbu01.alicdn.com/img/ibank/O1CN01Oy56mK1xn6EJ6fqf0_!!2426936487-0-cib.jpg"
+                    },
+                    {
+                        "valueID": "7",
+                        "valueName": "藕粉",
+                        "valueTrans": "lotus root starch",
+                        "imageUrl": "https://cbu01.alicdn.com/img/ibank/O1CN01Ugu7P71xn6EILx7lr_!!2426936487-0-cib.jpg"
+                    },
+                    {
+                        "valueID": "8",
+                        "valueName": "黑色",
+                        "valueTrans": "Black",
+                        "imageUrl": "https://cbu01.alicdn.com/img/ibank/O1CN018LjDQt1xn6EILuqPZ_!!2426936487-0-cib.jpg"
+                    },
+                    {
+                        "valueID": "9",
+                        "valueName": "深棕",
+                        "valueTrans": "dark brown",
+                        "imageUrl": "https://cbu01.alicdn.com/img/ibank/O1CN01S48a0e1xn6EK0EJYs_!!2426936487-0-cib.jpg"
+                    }
+                ]
+            },
+            {
+                "propId": "450",
+                "propName": "尺码",
+                "propTrans": "Size",
+                "propValueList": [
+                    {
+                        "valueID": "2",
+                        "valueName": "36-37",
+                        "valueTrans": "36-37",
+                        "imageUrl": null
+                    },
+                    {
+                        "valueID": "3",
+                        "valueName": "38-39",
+                        "valueTrans": "38-39",
+                        "imageUrl": null
+                    },
+                    {
+                        "valueID": "4",
+                        "valueName": "40-41",
+                        "valueTrans": "40-41",
+                        "imageUrl": null
+                    },
+                    {
+                        "valueID": "5",
+                        "valueName": "42-43",
+                        "valueTrans": "42-43",
+                        "imageUrl": null
+                    },
+                    {
+                        "valueID": "6",
+                        "valueName": "44-45",
+                        "valueTrans": "44-45",
+                        "imageUrl": null
+                    }
+                ]
+            }
+        ]
+    },
+    "pavList": [
+        {
+            "propId": "404",
+            "propName": "颜色",
+            "propTrans": "Color",
+            "valueId": "450",
+            "valueName": "米白",
+            "valueTrans": "rice white"
+        },
+        {
+            "propId": "450",
+            "propName": "尺码",
+            "propTrans": "Size",
+            "valueId": "2",
+            "valueName": "36-37",
+            "valueTrans": "36-37"
+        }
+    ],
+    "quantity": 2,
+    "price": 18.8,
+    "postFee": 8.0,
+    "totalPrice": 45.6,
+    "remark": "请放在门口"
+}
+
+响应体
+{
+    "code": 200,
+    "success": true,
+    "data": {
+        "id": "1923661549903364100",
+        "createTime": null,
+        "updateTime": null,
+        "customerId": 1,
+        "shopId": "",
+        "shopName": "",
+        "source": "1688",
+        "sourceProductId": "787637530680",
+        "sourceSkuId": "5547638763847",
+        "productId": 1923661549903364098,
+        "productTitle": "奇丹鞋厂博肯凉拖鞋女夏季居家室内EVA软底外穿防滑情侣凉拖鞋女",
+        "productSkuId": 1923661549903364099,
+        "propAndValue": "[{\"propId\":\"404\",\"propName\":\"颜色\",\"propTrans\":\"Color\",\"valueId\":\"450\",\"valueName\":\"米白\",\"valueTrans\":\"rice white\"},{\"propId\":\"450\",\"propName\":\"尺码\",\"propTrans\":\"Size\",\"valueId\":\"2\",\"valueName\":\"36-37\",\"valueTrans\":\"36-37\"}]",
+        "picUrl": "https://cbu01.alicdn.com/img/ibank/O1CN0144Z7Lx1xn6EJ6TxuH_!!2426936487-0-cib.jpg",
+        "skuPicUrl": "https://cbu01.alicdn.com/img/ibank/O1CN01Oy56mK1xn6EJ6fqf0_!!2426936487-0-cib.jpg",
+        "quantity": 2,
+        "price": 18.8,
+        "postFee": 8.0,
+        "totalPrice": 37.6,
+        "remark": "请放在门口",
+        "status": null
+    },
+    "msg": "操作成功"
+}

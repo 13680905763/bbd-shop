@@ -1,16 +1,23 @@
 import { Button, Checkbox, Divider, Image } from "@heroui/react";
 import React from "react";
 
-import { lightFont, priceFont } from "./primitives";
+import { priceFont } from "./primitives";
+import Stepper from "./stepper";
+
 type product = {
-  imageUrl: string;
-  title: string;
-  specs: string;
+  id?: string;
+  imageUrl?: string;
+  productTitle?: string;
+  specs?: string;
   remark?: string;
-  quantity: number;
-  unitPrice: number;
-  totalPrice: number;
-  domesticShipping: number;
+  quantity?: number;
+  unitPrice?: number;
+  totalPrice?: number;
+  skuPicUrl?: string;
+  pavList?: any;
+  price?: string;
+  domesticShipping?: number;
+  postFee?: number;
 };
 type CartItemCardProps = {
   shopName: string;
@@ -23,84 +30,68 @@ type CartItemCardProps = {
 };
 
 const CartItemCard: React.FC<CartItemCardProps> = ({ shopName, items }) => {
+  console.log("items", items);
+
   return (
-    <div className="bg-[#fff] rounded-md p-4 my-4 w-full">
-      <div>
+    <div className="bg-[#fff] rounded-md  w-full border border-[#ccc] ">
+      <div className="p-4">
         <Checkbox />
         {shopName}
       </div>
 
-      <Divider className="my-4" />
-      {items.map((item, index) => (
-        <div
-          key={item.title}
-          className="flex justify-between items-center gap-8 mb-4"
-        >
-          <div className="flex-1 flex ">
-            <Checkbox />
-            <Image
-              alt="Product"
-              className="h-[100px]"
-              height={100}
-              src={item.imageUrl}
-              width={100}
-            />
-          </div>
-          <div className="flex-[2]">
-            <div className="line-clamp-2 text-base font-bold">{item.title}</div>
-            <div className="text-[#acacac] text-sm line-clamp-1">
-              {item.specs}
+      <Divider />
+      <div className="flex flex-col gap-4 p-4">
+        {items?.map((item) => (
+          <div
+            key={item?.id}
+            className="flex justify-between items-center  gap-4 "
+          >
+            <div className=" flex ">
+              <Checkbox />
+              <Image
+                alt="Product"
+                height={90}
+                src={item?.skuPicUrl}
+                width={90}
+              />
             </div>
-            <div>{item.remark}</div>
-            <div>备注</div>
-          </div>
-
-          <div className="flex-[1]">
-            <div className={priceFont()}>总计: ${item.totalPrice}</div>
-            <div
-              className={priceFont({
-                color: "black",
-                size: "sm",
-                weight: "normal",
-              })}
-            >
-              单价: ${item.unitPrice}
+            <div className="flex-[2] ">
+              <div className="line-clamp-2 text-base font-bold">
+                {item.productTitle}
+              </div>
+              <div className="text-light-gray line-clamp-1">
+                {item?.pavList
+                  ?.map((item: any) => `${item.propName}:${item.valueName}`)
+                  .join(";")}
+              </div>
             </div>
-            <div className={lightFont({ size: "sm" })}>
-              国内运费 {item.domesticShipping.toFixed(2)}
+
+            <div className="flex-1">
+              <div className="text-money-lg">总计: ${item.totalPrice}</div>
+              <div
+                className={priceFont({
+                  color: "black",
+                  size: "sm",
+                  weight: "normal",
+                })}
+              >
+                单价: ${item.price}
+              </div>
+              <div className="text-light-gray">国内运费 {item.postFee}</div>
+            </div>
+
+            <div>
+              <Stepper />
+            </div>
+
+            <div className="flex justify-center gap-2 flex-1">
+              <Button className="button-default " size="sm">
+                删除
+              </Button>
             </div>
           </div>
-
-          <div className="flex flex-1 items-center  border border-gray-200">
-            <Button
-              isIconOnly
-              className="bg-[#f5f7fa] border-r border-gray-200"
-              radius="none"
-              size="sm"
-            >
-              -
-            </Button>
-            <span className="w-8 text-center flex-1">{item.quantity}</span>
-            <Button
-              isIconOnly
-              className="bg-[#f5f7fa] border-l border-gray-200 "
-              radius="none"
-              size="sm"
-            >
-              +
-            </Button>
-          </div>
-
-          <div className="flex justify-center gap-2 flex-[2]">
-            <Button radius="none" size="sm">
-              移入收藏夹
-            </Button>
-            <Button radius="none" size="sm">
-              删除
-            </Button>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };

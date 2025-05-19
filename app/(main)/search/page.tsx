@@ -2,8 +2,6 @@
 import { Card, CardBody, Tab, Tabs, Image, CardFooter } from "@heroui/react";
 import React from "react";
 
-import { priceFont } from "@/components/primitives";
-
 export default function SearchPage() {
   const list = [
     {
@@ -36,67 +34,68 @@ export default function SearchPage() {
   ];
 
   return (
-    <div className="container mx-auto my-10">
-      <div className="flex w-full flex-col">
-        <Tabs
-          aria-label="Options"
-          classNames={{
-            tabList:
-              "gap-6 w-full relative rounded-none p-0 border-b border-divider",
-            cursor: "w-full bg-[#f0700c]",
-            tab: "max-w-fit px-0 h-12 text-2xl",
-            tabContent: "group-data-[selected=true]:text-[#f0700c]",
-          }}
-          color="primary"
-          variant="underlined"
-        >
-          <Tab
-            key="photos"
-            title={
-              <div className="flex items-center space-x-2">
-                <span>taobao</span>
-              </div>
-            }
+    <div className="w-full bg-[#f8f8f8] py-10">
+      <div className="container mx-auto ">
+        <div className="flex w-full flex-col">
+          <Tabs
+            aria-label="Options"
+            classNames={{
+              tabList: "gap-6 w-full relative rounded-none p-0 ",
+              cursor: "w-full bg-[#f0700c]",
+              tab: "max-w-fit px-0 h-12 text-2xl",
+              tabContent: "group-data-[selected=true]:text-[#f0700c]",
+            }}
+            color="primary"
+            variant="underlined"
           >
-            <div className="gap-5 grid grid-cols-2 sm:grid-cols-5">
-              {list.map((item, index) => (
-                <Card
-                  key={index}
-                  isPressable
-                  shadow="sm"
-                  //   onPress={() => console.log('item pressed')}
-                >
-                  <CardBody className="overflow-visible p-0">
-                    <Image
-                      alt={item.title}
-                      className="w-full object-cover h-[300px]"
-                      radius="lg"
-                      shadow="sm"
-                      src={item.img}
-                      width="100%"
-                    />
-                  </CardBody>
-                  <CardFooter className="text-small ">
-                    <div className="text-left">
-                      <b className=" line-clamp-2 ">{item.title}</b>
-                      <p className={priceFont()}>{item.price}</p>
-                    </div>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          </Tab>
-          <Tab
-            key="music"
-            title={
-              <div className="flex items-center space-x-2">
-                <span>1688 </span>
+            <Tab
+              key="photos"
+              title={
+                <div className="flex items-center space-x-2">
+                  <span>taobao</span>
+                </div>
+              }
+            >
+              <div className="gap-5 grid grid-cols-2 sm:grid-cols-5">
+                {list.map((item, index) => (
+                  <Card
+                    key={index}
+                    isPressable
+                    shadow="sm"
+                    //   onPress={() => console.log('item pressed')}
+                  >
+                    <CardBody className="overflow-visible p-0">
+                      <Image
+                        alt={item.title}
+                        className="w-full object-fill h-[300px]"
+                        radius="lg"
+                        shadow="sm"
+                        src={item.img}
+                        width="100%"
+                      />
+                    </CardBody>
+                    <CardFooter className="text-small ">
+                      <div className="text-left">
+                        <b className="line-clamp-2">{item.title}</b>
+                        <p className="text-money-lg">{item.price}</p>
+                      </div>
+                    </CardFooter>
+                  </Card>
+                ))}
               </div>
-            }
-          >
-            312
-          </Tab>
-        </Tabs>
+            </Tab>
+            <Tab
+              key="music"
+              title={
+                <div className="flex items-center space-x-2">
+                  <span>1688 </span>
+                </div>
+              }
+            >
+              312
+            </Tab>
+          </Tabs>
+        </div>
       </div>
     </div>
   );

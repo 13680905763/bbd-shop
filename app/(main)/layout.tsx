@@ -8,7 +8,7 @@ export default function AboutLayout({
   return (
     <section>
       <Navbar />
-      <main className="flex-grow">{children}</main>
+      <main className="flex-grow bg-[#f5f7f9]">{children}</main>
       <Footer />
     </section>
   );

@@ -67,95 +67,97 @@ export default function EstimationPage() {
   return (
     <div>
       <div className="bg-[url('https://hoobuy.com/_nuxt/estimation_bg.BPnQS2i-.webp')] bg-no-repeat bg-cover h-[180px]" />
-      <div className="text-center  container m-auto p-6">
-        <h1 className={title({ size: "xs" })}>运费估算</h1>
-        <Spacer y={8} />
-        <div>
-          <Form className="w-full  " onSubmit={onSubmit}>
-            <div className="flex gap-8 w-full">
-              <Autocomplete
-                isRequired
-                className="flex-1"
-                defaultItems={countrys}
-                label="仓库寄往"
-                name="country"
-              >
-                {(country) => (
-                  <AutocompleteItem
-                    key={country.key}
-                    startContent={
-                      <Avatar
-                        alt="Argentina"
-                        className="w-6 h-6"
-                        src={country.src}
-                      />
-                    }
-                  >
-                    {country.label}
-                  </AutocompleteItem>
-                )}
-              </Autocomplete>
-              <Input
-                isRequired
-                className="flex-1 "
-                errorMessage="Please enter a valid email"
-                label="重量（g）"
-                name="number"
-                type="number"
-              />
-            </div>
-            <Spacer y={2} />
-            <div className="flex gap-8 w-full">
-              <Select className="flex-1" items={types} label="商品类型">
-                {(type) => <SelectItem>{type.label}</SelectItem>}
-              </Select>
-              <div className="flex-1 flex gap-8">
+      <div className=" bg-[#fff]  ">
+        <div className="text-center  container m-auto p-5">
+          <h1 className={title({ size: "xs" })}>运费估算</h1>
+          <Spacer y={8} />
+          <div>
+            <Form className="w-full  " onSubmit={onSubmit}>
+              <div className="flex gap-8 w-full">
+                <Autocomplete
+                  isRequired
+                  className="flex-1"
+                  defaultItems={countrys}
+                  label="仓库寄往"
+                  name="country"
+                >
+                  {(country) => (
+                    <AutocompleteItem
+                      key={country.key}
+                      startContent={
+                        <Avatar
+                          alt="Argentina"
+                          className="w-6 h-6"
+                          src={country.src}
+                        />
+                      }
+                    >
+                      {country.label}
+                    </AutocompleteItem>
+                  )}
+                </Autocomplete>
                 <Input
+                  isRequired
                   className="flex-1 "
                   errorMessage="Please enter a valid email"
-                  label="长（cm）"
-                  name="email3"
-                  type="text"
-                />
-                <Input
-                  className="flex-1 "
-                  errorMessage="Please enter a valid email"
-                  label="宽（cm）"
-                  name="email1"
-                  type="text"
-                />
-                <Input
-                  className="flex-1 "
-                  errorMessage="Please enter a valid email"
-                  label="高（cm）"
-                  name="email2"
+                  label="重量（g）"
+                  name="number"
                   type="number"
                 />
               </div>
-            </div>
-            <Spacer y={2} />
-
-            <div className="flex justify-center w-full">
-              <Button
-                className="min-w-48"
-                size="lg"
-                type="submit"
-                variant="bordered"
-              >
-                立即查询
-              </Button>
-            </div>
-            {submitted && (
-              <div className="text-small text-default-500">
-                You submitted: <code>{JSON.stringify(submitted)}</code>
+              <Spacer y={2} />
+              <div className="flex gap-8 w-full">
+                <Select className="flex-1" items={types} label="商品类型">
+                  {(type) => <SelectItem>{type.label}</SelectItem>}
+                </Select>
+                <div className="flex-1 flex gap-8">
+                  <Input
+                    className="flex-1 "
+                    errorMessage="Please enter a valid email"
+                    label="长（cm）"
+                    name="email3"
+                    type="text"
+                  />
+                  <Input
+                    className="flex-1 "
+                    errorMessage="Please enter a valid email"
+                    label="宽（cm）"
+                    name="email1"
+                    type="text"
+                  />
+                  <Input
+                    className="flex-1 "
+                    errorMessage="Please enter a valid email"
+                    label="高（cm）"
+                    name="email2"
+                    type="number"
+                  />
+                </div>
               </div>
-            )}
-          </Form>
+              <Spacer y={2} />
+
+              <div className="flex justify-center w-full">
+                <Button
+                  className="min-w-48"
+                  size="lg"
+                  type="submit"
+                  variant="bordered"
+                >
+                  立即查询
+                </Button>
+              </div>
+              {submitted && (
+                <div className="text-small text-default-500">
+                  You submitted: <code>{JSON.stringify(submitted)}</code>
+                </div>
+              )}
+            </Form>
+          </div>
         </div>
       </div>
-      <Divider className="my-1" />
-      <div className="container m-auto  ">
-        <Accordion>
+
+      <div className="container m-auto p-5 ">
+        <Accordion className="!border-1" variant="bordered">
           <AccordionItem
             key="1"
             title={
@@ -205,20 +207,21 @@ export default function EstimationPage() {
               </div>
             }
           >
+            <Divider />
             <div className="flex gap-5 pb-8">
-              <div className="flex-1 rounded-sm bg-[#f5f5f5] p-6 ">
+              <div className="flex-1 rounded-sm  p-4 ">
                 <p className="font-semibold mb-2">结算标准</p>
                 <Table aria-label="Example static collection table">
                   <TableHeader>
-                    <TableColumn>NAME</TableColumn>
-                    <TableColumn>ROLE</TableColumn>
-                    <TableColumn>STATUS</TableColumn>
+                    <TableColumn>首重运费</TableColumn>
+                    <TableColumn>续重运费</TableColumn>
+                    <TableColumn>报关费</TableColumn>
                   </TableHeader>
                   <TableBody>
                     <TableRow key="1">
-                      <TableCell>Tony Reichert</TableCell>
-                      <TableCell>CEO</TableCell>
-                      <TableCell>Active</TableCell>
+                      <TableCell>$16.62</TableCell>
+                      <TableCell>$68.63</TableCell>
+                      <TableCell>$0.00</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
@@ -238,8 +241,8 @@ export default function EstimationPage() {
                   </TableBody>
                 </Table>
               </div>
-              <div className="flex-1 rounded-sm bg-[#f5f5f5]">
-                <div className="flex-1 rounded-sm bg-[#f5f5f5] p-6 ">
+              <div className="flex-1 rounded-sm ">
+                <div className="flex-1 rounded-sm  p-4 ">
                   <p className="font-semibold mb-2">邮寄限制</p>
                   <div className="rounded-xl bg-[#fff] p-6 ">
                     重量限制:0g ~ 10000g
@@ -307,20 +310,22 @@ export default function EstimationPage() {
               </div>
             }
           >
+            <Divider />
+
             <div className="flex gap-5 pb-8">
-              <div className="flex-1 rounded-sm bg-[#f5f5f5] p-6 ">
+              <div className="flex-1 rounded-sm  p-4 ">
                 <p className="font-semibold mb-2">结算标准</p>
                 <Table aria-label="Example static collection table">
                   <TableHeader>
-                    <TableColumn>NAME</TableColumn>
-                    <TableColumn>ROLE</TableColumn>
-                    <TableColumn>STATUS</TableColumn>
+                    <TableColumn>首重运费</TableColumn>
+                    <TableColumn>续重运费</TableColumn>
+                    <TableColumn>报关费</TableColumn>
                   </TableHeader>
                   <TableBody>
                     <TableRow key="1">
-                      <TableCell>Tony Reichert</TableCell>
-                      <TableCell>CEO</TableCell>
-                      <TableCell>Active</TableCell>
+                      <TableCell>$16.62</TableCell>
+                      <TableCell>$68.63</TableCell>
+                      <TableCell>$0.00</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
@@ -340,8 +345,8 @@ export default function EstimationPage() {
                   </TableBody>
                 </Table>
               </div>
-              <div className="flex-1 rounded-sm bg-[#f5f5f5]">
-                <div className="flex-1 rounded-sm bg-[#f5f5f5] p-6 ">
+              <div className="flex-1 rounded-sm ">
+                <div className="flex-1 rounded-sm  p-4 ">
                   <p className="font-semibold mb-2">邮寄限制</p>
                   <div className="rounded-xl bg-[#fff] p-6 ">
                     重量限制:0g ~ 10000g
@@ -349,10 +354,12 @@ export default function EstimationPage() {
                   <p className="font-semibold my-2">线路特点</p>
                   <div className="rounded-xl bg-[#fff] p-6 text-sm">
                     <span className={describeText({ weight: "normal" })}>
-                      1. Dedicated channel, EMS customs clearance; 2. The route
-                      is direct transportation, and the package is transported
-                      directly to France; 3. The delivery provider in the
-                      destination country is Lapost.
+                      注意：本运输渠道为限时特惠专供，到期结束不再恢复。
+                      1、尾程将由美国USPS派送，偏远地区需加收偏远附加费，具体费用以实际产生为准。
+                      2、该运输线路为优惠线路，100g进位计算（不足100g按100g计费）。
+                      3、USPS覆盖地区广，运输时效快、运力强大、运输安全可靠，通关能力强。
+                      5、禁止寄送:
+                      带电、液体、粉末、膏体等，及其他触及国家法律法规明确规定的商品。
                     </span>
                   </div>
                 </div>

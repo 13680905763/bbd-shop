@@ -1,3 +1,43 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.text-title-2xl {
+    @apply text-[#000] text-2xl font-bold;
+}
+
+.text-light-gray {
+    @apply text-[#acacac] text-sm;
+}
+
+.text-money-lg {
+    @apply text-[#f0700c] text-lg font-bold;
+}
+
+.text-money-xl {
+    @apply text-[#f0700c] text-xl font-bold;
+}
+
+.text-money-3xl {
+    @apply text-[#f0700c] text-3xl font-bold;
+}
+
+.text-money-3xl-black {
+    @apply text-[#000] text-3xl font-bold;
+}
+
+.button-white {
+    @apply text-[#000] border-[#ccc] border bg-[#fff];
+}
+
+.button-default {
+    @apply text-[#f0700c] border-[#f0700c] border bg-[#fff];
+}
+
+.button-default-2 {
+    @apply text-[#f0700c] border-[#f0700c] border-2 bg-[#fff];
+}
+
+.group[data-focus="true"] .group-data-\[focus\=true\]\:border-default-foreground {
+    @apply  !border-[#f0700c]
+}

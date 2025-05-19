@@ -3,6 +3,7 @@ import { Button, Tab, Tabs, useDisclosure } from "@heroui/react";
 import React from "react";
 
 import CommonGoodsItem from "@/components/common-goods-item";
+import Progress from "@/components/progress";
 
 const rows = [
   {
@@ -68,11 +69,16 @@ export default function PackagePage() {
 
   return (
     <div className="flex w-full flex-col">
+      <div className="mt-5">
+        <Progress
+          currentStep={3}
+          steps={["选择产品", "订单付款", "质检&仓库", "打包", "签收包裹"]}
+        />
+      </div>
       <Tabs
         aria-label="Options"
         classNames={{
-          tabList:
-            "gap-6 w-full relative rounded-none p-0 border-b border-divider",
+          tabList: "gap-6 w-full relative rounded-none p-0 ",
           cursor: "w-full bg-[#f0700c]",
           tab: "max-w-fit px-0 h-12",
           tabContent: "group-data-[selected=true]:text-[#f0700c]",

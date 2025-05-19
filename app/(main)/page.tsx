@@ -20,7 +20,7 @@ export default function Home() {
 
   return (
     <div className="pb-12">
-      <section className="flex bg-cover bg-no-repeat h-[520px] bg-[url('https://bbdbuy.oss-cn-hongkong.aliyuncs.com/uploads/20250220/c4917de822e9f85cec22162733faad64.jpg')]">
+      <section className="flex bg-cover bg-no-repeat h-[620px] bg-[url('https://bbdbuy.oss-cn-hongkong.aliyuncs.com/uploads/20250220/c4917de822e9f85cec22162733faad64.jpg')]">
         <div className="container mx-auto flex-col flex justify-center items-center 	max-w-6xl">
           <div className="text-6xl tracking-tighter font-bold text-white mb-[50px]">
             <p>Simplify Your Shopping With BBD</p>
@@ -70,7 +70,7 @@ export default function Home() {
             return (
               <div
                 key={item.title}
-                className="w-[22%] border border-solid border-[#f5f5f5] p-8"
+                className="w-[22%]  p-8 bg-[#fff] rounded-lg"
               >
                 <Image height={120} src={item.src} width={170} />
                 <h6 className="text-[18px] leading-[60px] font-bold">

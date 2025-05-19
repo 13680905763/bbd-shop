@@ -13,6 +13,7 @@ export const title = tv({
       foreground: "dark:from-[#FFFFFF] dark:to-[#4B4B4B]",
     },
     size: {
+      xxs: "text-xl lg:text-2xl",
       xs: "text-2xl lg:text-3xl",
       sm: "text-3xl lg:text-4xl",
       md: "text-[2.3rem] lg:text-5xl leading-9",
@@ -94,11 +95,12 @@ export const price = tv({
       lg: "text-lg",
       xl: "text-xl",
       xl2: "text-2xl",
+      xl3: "text-3xl",
     },
     color: {
       base: "text-[#333]",
       white: "text-[#fff]",
-      red: "text-red",
+      red: "text-[#f0700c]",
     },
     weight: {
       normal: "font-normal",
@@ -149,5 +151,18 @@ export const priceFont = tv({
     size: "md",
     color: "base",
     weight: "bold",
+  },
+});
+
+export const commonCard = tv({
+  base: "w-full px-4 py-2 rounded-lg ",
+  variants: {
+    type: {
+      base: "bg-[#f0700c]  text-white",
+      grey: "bg-[#f5f5f5] text-black",
+    },
+  },
+  defaultVariants: {
+    type: "base",
   },
 });

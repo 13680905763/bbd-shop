@@ -50,7 +50,9 @@ export default function DashBoardlayout({
             );
           })}
         </ul>
-        <div className="mx-5 flex-1 rounded-lg bg-[#fff] p-5">{children}</div>
+        <div className="mx-5 flex-1 rounded-lg bg-[#fff] p-5 pt-0">
+          {children}
+        </div>
       </section>
     </div>
   );

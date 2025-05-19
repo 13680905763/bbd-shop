@@ -37,12 +37,7 @@ export default function LoginPage() {
           size="lg"
           type="email"
         />
-        <Button
-          className="block w-full bg-[#f0700c]"
-          color="primary"
-          size="lg"
-          type="submit"
-        >
+        <Button className=" w-full " color="primary" size="lg" type="submit">
           登录
         </Button>
       </Form>

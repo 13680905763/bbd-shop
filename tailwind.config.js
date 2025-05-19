@@ -16,7 +16,24 @@ const config = {
     },
   },
   darkMode: "class",
-  plugins: [heroui(), require('@tailwindcss/line-clamp'), require('tailwind-scrollbar-hide')],
+  plugins: [heroui({
+    themes: {
+      light: {
+        colors: {
+          primary: {
+            DEFAULT: "#f0700c",
+            foreground: "#fff",
+          },
+          // default: {
+          //   DEFAULT: "#fff",
+          //   foreground: "#f0700c",
+          // },
+          focus: "#BEF264",
+        },
+
+      },
+    },
+  }), require('@tailwindcss/line-clamp'), require('tailwind-scrollbar-hide')],
 }
 
 module.exports = config;

@@ -14,7 +14,9 @@ export default function ForwardingPage() {
   // const [action, setAction] = React.useState(null);
 
   return (
-    <div className="bg-[#f5f5f5] h-[100%]">
+    <div>
+      <div className="bg-[url('https://hoobuy.com/_nuxt/estimation_bg.BPnQS2i-.webp')] bg-no-repeat bg-cover h-[180px]" />
+
       <div className="container mx-auto flex justify-between gap-5 h-[100%] p-5 ">
         <div className="rounded-lg bg-[#fff] flex-[3] p-8">
           <p className="font-bold mb-5">仓库地址</p>

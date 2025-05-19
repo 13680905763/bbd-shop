@@ -21,27 +21,18 @@ import React from "react";
 const rows = [
   {
     key: "1",
-    name: "Tony Reichert",
-    role: "CEO",
-    status: "Active",
+    name: "Your Product Coupon is About to Expire – Use It Now!",
+    role: "2025-05-03 00:00:02",
   },
   {
     key: "2",
-    name: "Zoey Lang",
-    role: "Technical Lead",
-    status: "Paused",
+    name: "Your Shipping Coupon is About to Expire",
+    role: "2025-05-03 00:00:02",
   },
   {
     key: "3",
-    name: "Jane Fisher",
-    role: "Senior Developer",
-    status: "Active",
-  },
-  {
-    key: "4",
-    name: "William Howard",
-    role: "Community Manager",
-    status: "Vacation",
+    name: "Your Shipping Coupon is About to Expire",
+    role: "2025-05-03 00:00:02",
   },
 ];
 const columns = [
@@ -53,10 +44,7 @@ const columns = [
     key: "role",
     label: "电话",
   },
-  {
-    key: "status",
-    label: "详情地址",
-  },
+
   {
     key: "actions",
     label: "操作",
@@ -72,7 +60,9 @@ export default function MessagePage() {
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
-            <Button onPress={onOpen}>查看详情</Button>
+            <Button className="button-default" size="sm" onPress={onOpen}>
+              查看详情
+            </Button>
           </div>
         );
       default:
@@ -85,8 +75,7 @@ export default function MessagePage() {
       <Tabs
         aria-label="Options"
         classNames={{
-          tabList:
-            "gap-6 w-full relative rounded-none p-0 border-b border-divider",
+          tabList: "gap-6 w-full relative rounded-none p-0 ",
           cursor: "w-full bg-[#f0700c]",
           tab: "max-w-fit px-0 h-12",
           tabContent: "group-data-[selected=true]:text-[#f0700c]",
@@ -98,15 +87,19 @@ export default function MessagePage() {
           key="photos"
           title={
             <div className="flex items-center space-x-2">
-              <span>所有消息</span>
+              <span>全部消息</span>
             </div>
           }
         >
-          <div className="flex flex-col gap-3">
+          <div>
             <Table
               hideHeader
+              isStriped
               removeWrapper
               aria-label="Example table with dynamic content"
+              classNames={{
+                tr: "border-b border-[#ccc] ",
+              }}
               // selectionMode="multiple"
             >
               <TableHeader columns={columns}>
@@ -155,10 +148,15 @@ export default function MessagePage() {
                       </p>
                     </ModalBody>
                     <ModalFooter>
-                      <Button color="danger" variant="light" onPress={onClose}>
+                      <Button
+                        className="button-default"
+                        size="sm"
+                        variant="light"
+                        onPress={onClose}
+                      >
                         Close
                       </Button>
-                      <Button color="primary" onPress={onClose}>
+                      <Button color="primary" size="sm" onPress={onClose}>
                         Action
                       </Button>
                     </ModalFooter>
@@ -172,7 +170,7 @@ export default function MessagePage() {
           key="music"
           title={
             <div className="flex items-center space-x-2">
-              <span>系统消息</span>
+              <span>已读</span>
             </div>
           }
         >
@@ -182,7 +180,7 @@ export default function MessagePage() {
           key="videos"
           title={
             <div className="flex items-center space-x-2">
-              <span>人工消息</span>
+              <span>未读</span>
             </div>
           }
         >

@@ -61,31 +61,31 @@ export const siteConfig = {
       title: "Placing Your Order",
       describe:
         " Experience hassle-free shopping for any product from China, available both online and offline. To place your order, simply paste the link of the product you desire. Enjoy our seamless, end-to-end service that takes you from browsing to buying with ease.",
-      src: "https://hoobuy.com/_nuxt/stop_1.DrvWtniE.png",
+      src: "/page/icon01.png",
     },
     {
       title: "Delivery to Our Warehouse",
       describe:
         "Shop from a variety of sellers through our service, and well efficiently consolidate your purchases. All items will be shipped to the Hoobuy warehouse in China, streamlining the process for your convenience.",
-      src: "	https://hoobuy.com/_nuxt/stop_2.DshLz0Dh.png",
+      src: "/page/icon02.png",
     },
     {
       title: "Quality Assurance Process",
       describe:
         "Once your products arrive at the Hoobuy warehouse, they are subjected to a thorough Quality Check. Our team meticulously examines each item for any defects, ensuring accuracy in size, color, and more. With Hoobuy, you can enjoy peace of mind, knowing that our dedicated after-sales service is committed to your satisfaction.",
-      src: "	https://hoobuy.com/_nuxt/stop_3.DXfgU1Jl.png",
+      src: "/page/icon03.png",
     },
     {
       title: "Global Shipping Made Easy",
       describe:
         "Select products from your warehouse inventory and consolidate them effortlessly into one parcel. With Hoobuy s reliable global shipping services, you can have your purchases delivered straight to your doorstep. Enjoy the convenience of world-class shipping at your fingertips.",
-      src: "https://hoobuy.com/_nuxt/stop_4.v2ilN5a3.png",
+      src: "/page/icon04.png",
     },
   ],
   menuItem: [
     {
       key: "",
-      title: "个人中心",
+      title: "我的账户",
     },
     {
       key: "wallet",

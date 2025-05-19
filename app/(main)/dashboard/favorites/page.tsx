@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardBody, CardFooter } from "@heroui/card";
 import { Image } from "@heroui/image";
+
 export default function FavoritesPage() {
   const list = [
     {
@@ -33,8 +34,8 @@ export default function FavoritesPage() {
   ];
 
   return (
-    <div className="">
-      <div className="mb-5">
+    <div>
+      <div className="my-5">
         <span className="font-bold mr-5">全部商品</span> <span>管理</span>
       </div>
       <div className="gap-5 grid grid-cols-2 sm:grid-cols-5">
@@ -48,7 +49,7 @@ export default function FavoritesPage() {
             <CardBody className="overflow-visible p-0">
               <Image
                 alt={item.title}
-                className="w-full object-contain h-[200px]"
+                className="w-full object-fill h-[200px]"
                 radius="lg"
                 shadow="sm"
                 src={item.img}
@@ -56,10 +57,10 @@ export default function FavoritesPage() {
               />
             </CardBody>
             <CardFooter className="text-small justify-between">
-              <b className="  line-clamp-2 text-left">{item.title}</b>
-              <p className="text-default-500 flex-1 text-nowrap">
-                {item.price}
-              </p>
+              <div className="text-left">
+                <b className="line-clamp-2">{item.title}</b>
+                <p className="text-money-lg">{item.price}</p>
+              </div>
             </CardFooter>
           </Card>
         ))}

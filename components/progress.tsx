@@ -8,7 +8,7 @@ type OrderProgressProps = {
 
 const Progress: React.FC<OrderProgressProps> = ({ steps, currentStep }) => {
   return (
-    <div className="bg-[#f0700c] h-[116px] rounded-2xl p-4 flex items-center justify-around mb-4 w-full">
+    <div className="bg-[#ffeee1] h-[116px] rounded-2xl p-4 flex items-center justify-around mb-4 w-full">
       {steps.map((step, index) => {
         const isActive = index <= currentStep;
 
@@ -19,8 +19,8 @@ const Progress: React.FC<OrderProgressProps> = ({ steps, currentStep }) => {
                 className={clsx(
                   "w-8 h-8 rounded-full flex items-center justify-center",
                   isActive
-                    ? "bg-white text-[#f0700c] font-bold"
-                    : "bg-[#f98e3d] text-white border border-[#ffb98a]",
+                    ? "bg-[#f0700c] text-[#fff] font-bold"
+                    : "bg-[#ccc] text-white  border-[#ffb98a]",
                 )}
               >
                 {index + 1}
@@ -28,7 +28,7 @@ const Progress: React.FC<OrderProgressProps> = ({ steps, currentStep }) => {
               <div
                 className={clsx(
                   "mt-4",
-                  isActive ? "text-white" : "text-[#ffe4d2]",
+                  isActive ? "text-[#f0700c]" : "text-[#ccc]",
                 )}
               >
                 {step}

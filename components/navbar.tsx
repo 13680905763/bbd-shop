@@ -56,7 +56,17 @@ export const Navbar = () => {
           inputWrapper: "bg-default-100",
           input: "text-sm",
         }}
-        endContent={<Button type="submit">123</Button>}
+        endContent={
+          <Button
+            isIconOnly
+            color="primary"
+            size="sm"
+            type="submit"
+            variant="light"
+          >
+            搜索
+          </Button>
+        }
         labelPlacement="outside"
         placeholder="Search..."
         startContent={
@@ -72,14 +82,14 @@ export const Navbar = () => {
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
-            <Logo width={120} />
+            <Logo width={170} />
           </NextLink>
         </NavbarBrand>
-        <ul className="hidden lg:flex gap-4 justify-start ml-2">
+        <ul className="hidden lg:flex gap-6 justify-start ml-2">
           {siteConfig.navItems.map((item) => (
             <NavbarItem
               key={item.href}
-              className="data-[active=true]:text-[#f0700c] "
+              className="data-[active=true]:text-[#f0700c] text-lg"
               isActive={currentNav === item.href}
             >
               <NextLink
@@ -101,9 +111,9 @@ export const Navbar = () => {
         className="hidden sm:flex basis-1/5 sm:basis-full"
         justify="end"
       >
-        <NavbarItem className="hidden sm:flex gap-2">
+        {/* <NavbarItem className="hidden sm:flex gap-2">
           <ThemeSwitch />
-        </NavbarItem>
+        </NavbarItem> */}
         <NavbarItem className="hidden lg:flex">
           {currentNav !== "/" ? searchInput : null}
         </NavbarItem>
@@ -122,8 +132,12 @@ export const Navbar = () => {
           </DropdownTrigger>
           <DropdownMenu aria-label="Static Actions">
             <DropdownItem key="new">
-              <NextLink href="/dashboard">个人中心</NextLink>
+              <NextLink href="/dashboard">我的账户</NextLink>
             </DropdownItem>
+            <DropdownItem key="new1">
+              <NextLink href="/dashboard/order">我的订单</NextLink>
+            </DropdownItem>
+
             <DropdownItem key="copy">
               <NextLink href="/login">退出账户</NextLink>
             </DropdownItem>
