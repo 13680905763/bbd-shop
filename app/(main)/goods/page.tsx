@@ -1,9 +1,10 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 import { Avatar, Button, Checkbox, Image, Textarea } from "@heroui/react";
 import { produce } from "immer";
 
+import { getGoodsInfo } from "@/services/api/goods";
 import {
   commonCard,
   lightFont,
@@ -132,6 +133,14 @@ const postFetcher = async (url: string) => {
 };
 
 export default function GoodsPage() {
+  const [goods, setGoods] = useState(null);
+
+  useEffect(() => {
+    getGoodsInfo().then((res) => {
+      setGoods(res.data); // 根据后端接口返回结构调整
+      console.log(666, res.data);
+    });
+  }, []);
   const { data, error, isLoading, mutate } = useSWR(
     "/api/proxy/product/search/id",
     postFetcher,
