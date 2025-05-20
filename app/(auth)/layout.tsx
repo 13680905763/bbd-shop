@@ -62,7 +62,7 @@ export default function AuthLayout({
                   })
                 }
               >
-                使用Google账号666
+                使用Google账号66688
               </Button>
             </>
           )}
