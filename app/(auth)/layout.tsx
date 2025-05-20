@@ -57,14 +57,12 @@ export default function AuthLayout({
                 onPress={() =>
                   signIn("google", {
                     authorization: {
-                      params: {
-                        prompt: "select_account",
-                      },
+                      params: { prompt: "select_account" },
                     },
                   })
                 }
               >
-                使用Google账号
+                使用Google账号666
               </Button>
             </>
           )}
