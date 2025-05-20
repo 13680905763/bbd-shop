@@ -3,7 +3,7 @@ import { Button, Divider } from "@heroui/react";
 import { usePathname } from "next/navigation";
 import { IoCaretBackCircleOutline } from "react-icons/io5";
 import NextLink from "next/link";
-import { useSession, signIn } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 import { Logo } from "@/components/icons";
 
@@ -63,6 +63,16 @@ export default function AuthLayout({
                 }
               >
                 使用Google账号66688
+              </Button>
+              <Button
+                className="block w-full button-default"
+                color="primary"
+                size="lg"
+                type="submit"
+                variant="bordered"
+                onPress={() => () => signOut()}
+              >
+                退出
               </Button>
             </>
           )}
