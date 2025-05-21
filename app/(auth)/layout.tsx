@@ -17,6 +17,7 @@ export default function AuthLayout({
   const pathname = usePathname();
 
   console.log("status", status);
+  console.log("session", session);
 
   // console.log("pathname", pathname);
   // if (process.env.NODE_ENV === "development") {
@@ -57,7 +58,11 @@ export default function AuthLayout({
                 onPress={() =>
                   signIn("google", {
                     authorization: {
-                      params: { prompt: "select_account" },
+                      params: {
+                        prompt: "select_account",
+                        scope: "openid email profile", // ✅ 告诉 Google 用 OIDC 协议，返回 id_token 和用户信息
+                        access_type: "offline",
+                      },
                     },
                   })
                 }
@@ -70,7 +75,7 @@ export default function AuthLayout({
                 size="lg"
                 type="submit"
                 variant="bordered"
-                onPress={() => () => signOut()}
+                onPress={() => signOut()}
               >
                 退出
               </Button>
