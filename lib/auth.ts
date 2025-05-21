@@ -27,6 +27,7 @@ export const authOptions: NextAuthOptions = {
         console.log("jwt callback:", { token, account });
 
         token.accessToken = account.access_token;
+        token.id_token = account.id_token;
       }
 
       return token;
@@ -37,6 +38,7 @@ export const authOptions: NextAuthOptions = {
       console.log("session callback:", { session, token });
 
       session.accessToken = token.accessToken;
+      session.id_token = token.id_token;
 
       return session;
     },
