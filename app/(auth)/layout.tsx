@@ -77,7 +77,7 @@ export default function AuthLayout({
                 variant="bordered"
                 onPress={() => signOut()}
               >
-                退出
+                退出66
               </Button>
             </>
           )}

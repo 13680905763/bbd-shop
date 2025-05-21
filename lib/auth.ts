@@ -8,6 +8,14 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          scope: "openid email profile", // ✅ 一定要加 openid
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code", // 默认就是 code
+        },
+      },
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
