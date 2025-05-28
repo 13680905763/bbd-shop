@@ -25,6 +25,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { SearchIcon, Logo } from "@/components/icons";
+import { getlogout } from "@/services/api/auth";
 
 export const Navbar = () => {
   const pathname = usePathname(); // 获取当前路径
@@ -43,6 +44,15 @@ export const Navbar = () => {
 
     // setErrors(result.errors);
     // setIsLoading(false);
+  };
+  const logout = async () => {
+    try {
+      const res: any = await getlogout(); // 调用后端接口，带上 cookie
+
+      res.success && router.replace("/login");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -139,7 +149,9 @@ export const Navbar = () => {
             </DropdownItem>
 
             <DropdownItem key="copy">
-              <NextLink href="/login">退出账户</NextLink>
+              <button className="w-full text-left" onClick={logout}>
+                退出账户
+              </button>
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>

@@ -2,33 +2,47 @@
 import { addToast, Button, Form, Input } from "@heroui/react";
 import React from "react";
 import NextLink from "next/link";
+import { useRouter } from "next/navigation";
 
 import { subtitle } from "@/components/primitives";
+import { getlogin } from "@/services/api/auth";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+    let data: any = Object.fromEntries(new FormData(e.currentTarget));
+
+    console.log("data", data);
+    getlogin({ ...data }).then((e: any) => {
+      if (e.success) {
+        addToast({
+          title: e.msg,
+          timeout: 1000,
+          color: "success",
+        });
+        router.push("/");
+      } else {
+        addToast({
+          title: e.msg,
+          timeout: 1000,
+          color: "danger",
+        });
+      }
+    });
+  };
+
   return (
     <>
       <div className={subtitle()}>
         <span className="text-3xl">欢迎回来</span>
       </div>
-      <Form
-        className="w-full  flex flex-col gap-4"
-        onSubmit={(e) => {
-          e.preventDefault();
-          let data = Object.fromEntries(new FormData(e.currentTarget));
-
-          console.log(666);
-
-          addToast({
-            title: "Toast Title",
-          });
-        }}
-      >
+      <Form className="w-full  flex flex-col gap-4" onSubmit={onSubmit}>
         <Input
           isRequired
           errorMessage="Email"
           labelPlacement="outside"
-          name="username"
+          name="email"
           placeholder="Email"
           size="lg"
           type="text"
@@ -38,7 +52,7 @@ export default function LoginPage() {
           isRequired
           errorMessage="Password"
           labelPlacement="outside"
-          name="email"
+          name="password"
           placeholder="Password"
           size="lg"
         />
