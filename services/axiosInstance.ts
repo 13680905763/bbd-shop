@@ -8,18 +8,12 @@ const axiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
 // 请求拦截器 - token注入
 axiosInstance.interceptors.request.use(
   (config) => {
-    // const token = getToken();
-    const token = 666;
-
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-
     return config;
   },
   (error) => Promise.reject(error),
@@ -27,7 +21,7 @@ axiosInstance.interceptors.request.use(
 
 // 响应拦截器 - 错误处理等
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => response.data,
   (error) => {
     // 你可以统一处理401，弹提示等
     if (error.response?.status === 401) {

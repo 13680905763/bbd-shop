@@ -1,5 +1,5 @@
 "use client";
-import { Button, Form, Input } from "@heroui/react";
+import { addToast, Button, Form, Input } from "@heroui/react";
 import React from "react";
 import NextLink from "next/link";
 
@@ -16,6 +16,12 @@ export default function LoginPage() {
         onSubmit={(e) => {
           e.preventDefault();
           let data = Object.fromEntries(new FormData(e.currentTarget));
+
+          console.log(666);
+
+          addToast({
+            title: "Toast Title",
+          });
         }}
       >
         <Input
@@ -35,7 +41,6 @@ export default function LoginPage() {
           name="email"
           placeholder="Password"
           size="lg"
-          type="email"
         />
         <Button className=" w-full " color="primary" size="lg" type="submit">
           登录

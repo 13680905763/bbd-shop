@@ -1,8 +1,5 @@
 import axiosInstance from "../axiosInstance";
 
-export const getGoodsInfo = () => {
-  return axiosInstance.post("/product/search/id", {
-    source: "TAOBAO",
-    productId: "788110260427",
-  });
+export const getGoodsInfo = (data: any) => {
+  return axiosInstance.post("/product/search/id", data);
 };

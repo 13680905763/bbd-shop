@@ -62,8 +62,10 @@ export default function WalletPage() {
       <Tabs
         aria-label="Options"
         classNames={{
+          base: "mt-2 w-full bg-white p-2",
           tabList: "gap-6 w-full relative rounded-none p-0 ",
-          cursor: "w-full bg-[#f0700c]",
+
+          cursor: "w-full bg-[#f0700c] ",
           tab: "max-w-fit px-0 h-12",
           tabContent: "group-data-[selected=true]:text-[#f0700c]",
         }}

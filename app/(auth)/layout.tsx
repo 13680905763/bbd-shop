@@ -3,7 +3,7 @@ import { Button, Divider } from "@heroui/react";
 import { usePathname } from "next/navigation";
 import { IoCaretBackCircleOutline } from "react-icons/io5";
 import NextLink from "next/link";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 
 import { Logo } from "@/components/icons";
 
@@ -30,7 +30,7 @@ export default function AuthLayout({
 
   return (
     <main className=" flex h-[100vh]">
-      <div className="flex-1 bg-[url('/login.webp')] bg-center bg-no-repeat bg-cover ">
+      <div className="flex-1 bg-[url('/images/loginbg.png')] bg-center bg-no-repeat bg-cover ">
         <NextLink href="/">
           <IoCaretBackCircleOutline className="m-20 w-14 h-14 cursor-pointer" />
         </NextLink>
@@ -67,17 +67,7 @@ export default function AuthLayout({
                   })
                 }
               >
-                使用Google账号66688
-              </Button>
-              <Button
-                className="block w-full button-default"
-                color="primary"
-                size="lg"
-                type="submit"
-                variant="bordered"
-                onPress={() => signOut()}
-              >
-                退出66
+                使用Google账号
               </Button>
             </>
           )}

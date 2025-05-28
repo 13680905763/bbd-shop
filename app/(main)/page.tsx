@@ -1,5 +1,5 @@
 "use client";
-import { Button, Input, Image } from "@heroui/react";
+import { Button, Input, Image, Form } from "@heroui/react";
 import { useRouter } from "next/navigation";
 
 import { siteConfig } from "@/config/site";
@@ -14,8 +14,49 @@ import { siteConfig } from "@/config/site";
 
 export default function Home() {
   const router = useRouter();
-  const Search = () => {
-    router.push("/search"); // 跳转到购物车页面
+
+  /**
+   * 从 1688 商品链接中提取 offerId
+   * @param url 商品详情页链接
+   * @returns 提取到的 offerId 或 null
+   */
+  function extractOfferId(parsedUrl: any): string | null {
+    try {
+      const pathname = parsedUrl.pathname;
+
+      // 匹配 /offer/865930740519.html 中的 ID
+      const match = pathname.match(/\/offer\/(\d+)\.html/);
+
+      return match ? match[1] : null;
+    } catch (err) {
+      console.error("无效的 URL:", err);
+
+      return null;
+    }
+  }
+  const Search = (e: any) => {
+    console.log(666);
+
+    e.preventDefault();
+    const data: any = Object.fromEntries(new FormData(e.currentTarget));
+    const url = new URL(data.url);
+
+    console.log(data, url);
+    const source =
+      data.url.includes("item.taobao.com") ||
+      data.url.includes("detail.tmall.com")
+        ? "TAOBAO"
+        : data.url.includes("detail.1688.com/")
+          ? "1688"
+          : "weidian";
+    const sourceproductId = url.searchParams.get("id") || extractOfferId(url);
+
+    console.log(source, sourceproductId);
+    //  source: "TAOBAO",
+    //     sourceproductId: "788110260427",
+    router.push(
+      `/goods/${source}/${sourceproductId}`, // 目标路由
+    );
   };
 
   return (
@@ -25,17 +66,19 @@ export default function Home() {
           <div className="text-6xl tracking-tighter font-bold text-white mb-[50px]">
             <p>Simplify Your Shopping With BBD</p>
           </div>
-          <Input
-            endContent={
-              <Button className="bg-[#f0700c] text-[#fff] " onPress={Search}>
-                Search
-              </Button>
-            }
-            label="Enter product name / link"
-            radius={"full"}
-            size={"lg"}
-            type="email"
-          />
+          <Form className="w-full " onSubmit={Search}>
+            <Input
+              endContent={
+                <Button className="bg-[#f0700c] text-[#fff] " type="submit">
+                  Search
+                </Button>
+              }
+              label="Enter product name / link"
+              name="url"
+              radius={"full"}
+              size={"lg"}
+            />
+          </Form>
         </div>
       </section>
 

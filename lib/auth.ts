@@ -13,7 +13,7 @@ export const authOptions: NextAuthOptions = {
           scope: "openid email profile", // ✅ 一定要加 openid
           prompt: "consent",
           access_type: "offline",
-          response_type: "code", // 默认就是 code
+          response_type: "token", // 默认就是 code
         },
       },
     }),

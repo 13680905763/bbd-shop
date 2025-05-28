@@ -1,8 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import useSWR from "swr";
+import React, { useEffect, useMemo, useState } from "react";
 import { Avatar, Button, Checkbox, Image, Textarea } from "@heroui/react";
-import { produce } from "immer";
+import { useParams, useRouter } from "next/navigation";
 
 import { getGoodsInfo } from "@/services/api/goods";
 import {
@@ -12,6 +11,7 @@ import {
   subtitle,
 } from "@/components/primitives";
 import Stepper from "@/components/stepper";
+import { addCart } from "@/services/api/cart";
 
 interface Sku {
   skuID: string;
@@ -104,78 +104,55 @@ function getAllCombinations(
   return combinations;
 }
 
-const postFetcher = async (url: string) => {
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ source: "TAOBAO", productId: "638204709583" }),
-  });
-  const raw = await res.json();
-
-  // 数据初始化
-  const cloned = structuredClone(raw);
-
-  cloned.pathMap = generateDynamicSkuPathDict(cloned.data.productInfo);
-  cloned.data.productInfo.skuPropList.forEach((spec: any) => {
-    spec.propValueList.forEach((value: any) => {
-      value.selected = false;
-      if (cloned.pathMap[value.valueName]) {
-        value.disabled = false;
-      } else {
-        value.disabled = true;
-      }
-    });
-  });
-
-  return cloned;
-};
-
 export default function GoodsPage() {
-  const [goods, setGoods] = useState(null);
+  const params = useParams();
 
-  useEffect(() => {
-    getGoodsInfo().then((res) => {
-      setGoods(res.data); // 根据后端接口返回结构调整
-      console.log(666, res.data);
+  console.log("params", params);
+
+  const router = useRouter();
+  const [goodsInfo, setGoodsInfo] = useState<any>();
+  const [pathMap, setPathMap] = useState<any>(null);
+  const add = () => {
+    const data = {
+      source: params.source,
+      sourceProductId: params.sourceproductId,
+      sourceSkuId: currentSku.skuID,
+      // specId: "f561c4f7cdb23de81fc2303ebf1e8f55",
+
+      quantity: 1,
+      remark: "demoData",
+    };
+
+    console.log(data);
+
+    addCart(data).then((res: any) => {
+      console.log(res);
     });
-  }, []);
-  const { data, error, isLoading, mutate } = useSWR(
-    "/api/proxy/product/search/id",
-    postFetcher,
-  );
-
-  if (isLoading) return <div>加载中...</div>;
-  if (error) return <div>加载失败</div>;
-  // console.log("data", data.data.productInfo.skuPropList);
-
-  const { productDetail, productInfo } = data?.data;
-  const { skuPropList } = productInfo;
-
+  };
   // 切换选择状态
   const changeSelectedStatus = (index: any, indey: any) => {
-    mutate((prev: any) => {
-      if (!prev) return prev;
+    const cloned: any = structuredClone(goodsInfo);
 
-      return produce(prev, (draft: any) => {
-        draft.data.productInfo.skuPropList.forEach((spec: any, idx: number) => {
-          if (idx === index) {
-            spec.propValueList.forEach((val: any, idy: number) => {
-              if (val.selected && idy === indey) {
-                val.selected = false;
-              } else if (!val.selected && idy === indey) {
-                val.selected = true;
-              } else {
-                val.selected = false;
-              }
-            });
+    console.log("cloned", cloned, pathMap);
+
+    cloned?.productInfo.skuPropList.forEach((spec: any, idx: number) => {
+      if (idx === index) {
+        spec.propValueList.forEach((val: any, idy: number) => {
+          if (val.selected && idy === indey) {
+            val.selected = false;
+          } else if (!val.selected && idy === indey) {
+            val.selected = true;
+          } else {
+            val.selected = false;
           }
         });
-      });
-    }, false);
+      }
+    });
+    console.log("cloned", cloned);
 
-    undateDisabledStatus();
+    // setGoodsInfo(cloned);
+
+    undateDisabledStatus(cloned);
   };
   const getSelectedValues = (specs: any) => {
     const arr: any = [];
@@ -189,40 +166,81 @@ export default function GoodsPage() {
     return arr;
   };
   // 更新选中状态
-  const undateDisabledStatus = () => {
-    mutate((prev: any) => {
-      if (!prev) return prev;
+  const undateDisabledStatus = (cloned: any) => {
+    // const cloned: any = structuredClone(goodsInfo);
 
-      return produce(prev, (draft: any) => {
-        draft.data.productInfo.skuPropList.forEach(
-          (spec: any, index: number) => {
-            const selectedValues = getSelectedValues(
-              draft.data.productInfo.skuPropList,
-            );
+    console.log("goodsInfo666", goodsInfo);
 
-            spec.propValueList.forEach((val: any) => {
-              selectedValues[index] = val.valueName;
-              console.log("selectedValues", selectedValues, val.valueName);
+    cloned?.productInfo.skuPropList.forEach((spec: any, index: number) => {
+      const selectedValues = getSelectedValues(cloned.productInfo.skuPropList);
 
-              const key = selectedValues
-                .filter((value: any) => value)
-                .join("-");
+      spec.propValueList.forEach((val: any) => {
+        selectedValues[index] = val.valueName;
+        console.log("selectedValues", selectedValues, val.valueName);
+        const key = selectedValues.filter((value: any) => value).join("-");
 
-              // console.log("key", key);
-              if (draft.pathMap[key]) {
-                val.disabled = false;
-              } else {
-                val.disabled = true;
-              }
-            });
-          },
-        );
+        console.log("key", key);
+        if (pathMap[key]) {
+          val.disabled = false;
+        } else {
+          val.disabled = true;
+        }
       });
-    }, false);
+    });
+    console.log("cloned", cloned);
+
+    setGoodsInfo(cloned);
   };
+  const currentSku = useMemo(() => {
+    if (!goodsInfo) return;
+    const selectedValues = getSelectedValues(
+      goodsInfo?.productInfo.skuPropList,
+    );
+
+    console.log("sku", selectedValues);
+
+    const currentSku = goodsInfo?.productInfo.skuList.find((item: any) => {
+      console.log("item", item);
+
+      return (
+        selectedValues.filter((i: any) => item?.propName_valueName.includes(i))
+          ?.length == selectedValues.length
+      );
+    });
+
+    if (currentSku) return currentSku;
+    // else return goodsInfo.productInfo.skuList[0];
+  }, [goodsInfo]); // 依赖 cart，当 cart 变化时才重新计算
+
+  useEffect(() => {
+    getGoodsInfo({ ...params }).then((res: any) => {
+      if (res.success) {
+        // 数据初始化
+        const cloned = structuredClone(res.data);
+        let pathMap = generateDynamicSkuPathDict(cloned.productInfo);
+
+        setPathMap(pathMap);
+        cloned.productInfo.skuPropList.forEach((spec: any) => {
+          spec.propValueList.forEach((value: any) => {
+            value.selected = false;
+            console.log("value.valueName", value.valueName, pathMap);
+
+            if (pathMap[value.valueName]) {
+              value.disabled = false;
+            } else {
+              value.disabled = true;
+            }
+          });
+        });
+        console.log("cloned", cloned);
+
+        setGoodsInfo(cloned);
+      }
+    });
+  }, []);
 
   return (
-    <div className="bg-[#fff]">
+    <div className="bg-[#fff] ">
       <div className="flex  container mx-auto  my-[15px] ">
         <div className="flex-[4] p-10 pt-0 overflow-auto scrollbar-hide">
           <div className="w-[100%]">
@@ -230,13 +248,13 @@ export default function GoodsPage() {
               alt="123"
               className=" object-fill "
               radius="sm"
-              src={productInfo?.imgList[0]}
+              src={goodsInfo?.productInfo?.imgList[0]}
               width="100%"
             />
           </div>
 
           <div className="flex mt-5 gap-2">
-            {productInfo?.imgList?.map((src: string) => (
+            {goodsInfo?.productInfo?.imgList?.map((src: string) => (
               <div key={src} className=" flex-1">
                 <Image key={src} alt="123" radius="sm" src={src} />
               </div>
@@ -245,7 +263,7 @@ export default function GoodsPage() {
           <div>
             <h3 className={subtitle()}>商品詳情</h3>
             <div>
-              {productDetail?.productDescImgList?.map(
+              {goodsInfo?.productDetail?.productDescImgList?.map(
                 (src: string, index: number) => {
                   return (
                     <Image
@@ -265,9 +283,9 @@ export default function GoodsPage() {
         <div className="flex-[5] max-w-[55%]">
           <div className="sticky top-20 flex  h-[calc(100vh-80px)] ">
             <div className="overflow-y-auto scrollbar-hide flex flex-col gap-4 pb-7">
-              <h1 className={subtitle()}>{productInfo.title}</h1>
+              <h1 className={subtitle()}>{goodsInfo?.productInfo?.title}</h1>
               <div className={priceFont({ size: "xl2" })}>
-                {productInfo.price}
+                {goodsInfo?.productInfo.price}
               </div>
               <div className={lightFont({ size: "sm" })}>
                 支付后，我们会在09:00-18:00（UTC+8）为您进行代购服务
@@ -278,34 +296,41 @@ export default function GoodsPage() {
                   <div>2、BBD 仓库 到 您的地址,估算国际运费</div>
                 </div>
               </div>
-              {skuPropList.map((specs: any, index: number) => {
-                return (
-                  <div key={specs.propName}>
-                    <div className={subtitle()}>{specs.propName}</div>
-                    <div className="flex gap-2 flex-wrap">
-                      {specs.propValueList.map((spec: any, indey: number) => {
-                        return (
-                          <div key={spec.valueName} data-index={spec.selected}>
-                            <Button
-                              className={`pl-2 bg-white ${spec.selected ? "border-[#f0700c] text-[#f0700c]" : "border-[#ccc]"} `}
-                              isDisabled={spec.disabled}
-                              radius="lg"
-                              size={spec.imageUrl ? "lg" : "md"}
-                              variant="bordered"
-                              onPress={() => changeSelectedStatus(index, indey)}
+              {goodsInfo?.productInfo?.skuPropList.map(
+                (specs: any, index: number) => {
+                  return (
+                    <div key={specs.propName}>
+                      <div className={subtitle()}>{specs.propName}</div>
+                      <div className="flex gap-2 flex-wrap">
+                        {specs.propValueList.map((spec: any, indey: number) => {
+                          return (
+                            <div
+                              key={spec.valueName}
+                              data-index={spec.selected}
                             >
-                              {spec.imageUrl ? (
-                                <Avatar radius="none" src={spec.imageUrl} />
-                              ) : null}
-                              {spec.valueName}
-                            </Button>
-                          </div>
-                        );
-                      })}
+                              <Button
+                                className={`pl-2 bg-white ${spec.selected ? "border-[#f0700c] text-[#f0700c]" : "border-[#ccc]"} `}
+                                isDisabled={spec.disabled}
+                                radius="lg"
+                                size={spec.imageUrl ? "lg" : "md"}
+                                variant="bordered"
+                                onPress={() =>
+                                  changeSelectedStatus(index, indey)
+                                }
+                              >
+                                {spec.imageUrl ? (
+                                  <Avatar radius="none" src={spec.imageUrl} />
+                                ) : null}
+                                {spec.valueName}
+                              </Button>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                },
+              )}
               <div>
                 <div className={subtitle()}>数量</div>
                 <div className="w-[20%]">
@@ -330,7 +355,9 @@ export default function GoodsPage() {
                 </div>
               </div>
               <div className="flex-1 flex gap-2  mt-4 ">
-                <Button className="flex-1 h-16">加入购物车</Button>
+                <Button className="flex-1 h-16" onPress={add}>
+                  加入购物车
+                </Button>
                 <Button className=" h-16 flex-1" color="primary">
                   立即购买
                 </Button>

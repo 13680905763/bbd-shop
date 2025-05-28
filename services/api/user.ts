@@ -1,7 +1,10 @@
 import axiosInstance from "../axiosInstance";
 
-export const getUserInfo = () => {
-  return axiosInstance.get("/user/info");
+export const getSimpleUserInfo = () => {
+  return axiosInstance.get("/customer/simple");
+};
+export const getDetailUserInfo = () => {
+  return axiosInstance.get("/customer/detail");
 };
 
 export const updateUserInfo = (data: any) => {
