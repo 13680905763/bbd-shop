@@ -1,6 +1,13 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
-import { Avatar, Button, Checkbox, Image, Textarea } from "@heroui/react";
+import {
+  addToast,
+  Avatar,
+  Button,
+  Checkbox,
+  Image,
+  Textarea,
+} from "@heroui/react";
 import { useParams, useRouter } from "next/navigation";
 
 import { getGoodsInfo } from "@/services/api/goods";
@@ -69,7 +76,7 @@ function generateDynamicSkuPathDict(productInfo: ProductInfo): SkuPathDict {
       if (!dict[combination]) {
         dict[combination] = [];
       }
-      dict[combination].push(sku.skuID);
+      dict[combination].push(sku?.skuID);
     });
   });
 
@@ -112,11 +119,13 @@ export default function GoodsPage() {
   const router = useRouter();
   const [goodsInfo, setGoodsInfo] = useState<any>();
   const [pathMap, setPathMap] = useState<any>(null);
+  const [isLoading, setisLoading] = useState<any>(false);
   const add = () => {
+    setisLoading(true);
     const data = {
       source: params.source,
       sourceProductId: params.sourceproductId,
-      sourceSkuId: currentSku.skuID,
+      sourceSkuId: currentSku?.skuID,
       // specId: "f561c4f7cdb23de81fc2303ebf1e8f55",
 
       quantity: 1,
@@ -127,6 +136,12 @@ export default function GoodsPage() {
 
     addCart(data).then((res: any) => {
       console.log(res);
+      addToast({
+        title: res.msg,
+        timeout: 1000,
+        color: "success",
+      });
+      setisLoading(false);
     });
   };
   // 切换选择状态
@@ -355,10 +370,18 @@ export default function GoodsPage() {
                 </div>
               </div>
               <div className="flex-1 flex gap-2  mt-4 ">
-                <Button className="flex-1 h-16" onPress={add}>
+                <Button
+                  className="flex-1 h-16"
+                  isLoading={isLoading}
+                  onPress={add}
+                >
                   加入购物车
                 </Button>
-                <Button className=" h-16 flex-1" color="primary">
+                <Button
+                  className=" h-16 flex-1"
+                  color="primary"
+                  isLoading={isLoading}
+                >
                   立即购买
                 </Button>
               </div>

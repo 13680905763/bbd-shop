@@ -30,7 +30,7 @@ export default function AuthLayout({
 
   return (
     <main className=" flex h-[100vh]">
-      <div className="flex-1 bg-[url('/images/loginbg.png')] bg-center bg-no-repeat bg-cover ">
+      <div className="flex-1 bg-[url('/images/authbg.png')] bg-center bg-no-repeat bg-cover ">
         <NextLink href="/">
           <IoCaretBackCircleOutline className="m-20 w-14 h-14 cursor-pointer" />
         </NextLink>
