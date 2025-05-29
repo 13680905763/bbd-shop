@@ -6,7 +6,7 @@ WORKDIR /app
 
 # 3. 拷贝依赖文件并安装生产依赖
 COPY package*.json ./
-RUN npm install --production
+RUN npm install
 
 # 4. 拷贝其余源码
 COPY . .
