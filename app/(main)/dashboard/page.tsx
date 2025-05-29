@@ -25,6 +25,7 @@ import {
 
 import DynamicFormModal from "@/components/dynamic-form-modal";
 import UserBalanceCard from "@/components/wallet-card";
+import { useUser } from "@/services/hooks/useUser";
 const rows = [
   {
     key: "1",
@@ -201,6 +202,10 @@ const fieldspwd: FieldConfig[] = [
 
 export default function DashBoard() {
   // const [action, setAction] = React.useState(null);
+  const { user, isLoading, isError } = useUser();
+
+  console.log("user", user);
+
   const [isOpen, setIsOpen] = useState(false);
   const [isOpen1, setIsOpen1] = useState(false);
   // 表单数据状态
@@ -254,16 +259,16 @@ export default function DashBoard() {
     }
   }, []);
 
+  if (isLoading) return <div>加载中...</div>;
+  if (isError) return <div>加载失败</div>;
+
   return (
     <div className=" flex flex-col gap-6 bg-[#f8f8f8] -mx-5">
       <UserBalanceCard balanceCNY="52,999.68" balanceUSD="66.55">
-        <Avatar
-          className="w-20 h-20 text-large"
-          src="https://ww2.sinaimg.cn/mw690/006faMndly1htwlunnhn5j30zj0zjjv8.jpg"
-        />
+        <Avatar className="w-20 h-20 text-large" src={user.avatarUrl} />
         <div className="flex-1">
-          <p className="text-title-2xl">Bryant</p>
-          <p>ID:CNF3582377174494</p>
+          <p className="text-title-2xl">{user.name}</p>
+          <p>{user.email}</p>
           <Chip color="primary" size="sm">
             VIP1
           </Chip>
@@ -307,29 +312,31 @@ export default function DashBoard() {
                 >
                   <Input
                     isRequired
+                    defaultValue={user.name}
                     errorMessage="Please enter a valid username"
                     label="用户名"
                     name="username"
                     placeholder="Enter your username"
                     type="text"
-                    value="Bryant"
+                    // value="Bryant"
                     variant="bordered"
                   />
                   <Input
                     classNames={{
                       inputWrapper: "data-[focus=true]:!border-[#f0700c]",
                     }}
+                    defaultValue={user.mobile}
                     label="电话"
-                    name="email"
+                    name="number"
                     placeholder="Enter your phone"
                     type="number"
-                    value="123456789"
                     variant="bordered"
                   />
                   <DatePicker
                     classNames={{
                       inputWrapper: "focus-within:!border-[#f0700c]",
                     }}
+                    // defaultValue={user.birthday}
                     label="生日"
                     variant="bordered"
                   />

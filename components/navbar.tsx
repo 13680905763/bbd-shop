@@ -26,8 +26,11 @@ import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { SearchIcon, Logo } from "@/components/icons";
 import { getlogout } from "@/services/api/auth";
+import { useUser } from "@/services/hooks/useUser";
 
 export const Navbar = () => {
+  const { user, isLoading, isError } = useUser();
+
   const pathname = usePathname(); // 获取当前路径
   const router = useRouter();
 
@@ -87,6 +90,9 @@ export const Navbar = () => {
     </Form>
   );
 
+  if (isLoading) return <div>加载中...</div>;
+  if (isError) return <div>加载失败</div>;
+
   return (
     <HeroUINavbar isBordered maxWidth="full" position="sticky">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
@@ -133,11 +139,11 @@ export const Navbar = () => {
               as="button"
               avatarProps={{
                 isBordered: true,
-                src: "https://ww2.sinaimg.cn/mw690/006faMndly1htwlunnhn5j30zj0zjjv8.jpg",
+                src: user.avatarUrl,
               }}
               className="transition-transform"
-              description="1777487490@qq.com"
-              name="Bryant"
+              description={user.email}
+              name={user.name}
             />
           </DropdownTrigger>
           <DropdownMenu aria-label="Static Actions">
