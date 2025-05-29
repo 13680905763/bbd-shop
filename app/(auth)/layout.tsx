@@ -4,10 +4,11 @@ import { usePathname } from "next/navigation";
 import { IoCaretBackCircleOutline } from "react-icons/io5";
 import NextLink from "next/link";
 import { useSession, signIn } from "next-auth/react";
+import { useEffect } from "react";
 
 import { Logo } from "@/components/icons";
+import { getgoogle } from "@/services/api/auth";
 
-// app/(auth)/layout.tsx
 export default function AuthLayout({
   children,
 }: {
@@ -18,15 +19,9 @@ export default function AuthLayout({
 
   console.log("status", status);
   console.log("session", session);
-
-  // console.log("pathname", pathname);
-  // if (process.env.NODE_ENV === "development") {
-  //   console.log("开发环境");
-  // } else if (process.env.NODE_ENV === "production") {
-  //   console.log("生产环境");
-  // } else if (process.env.NODE_ENV === "test") {
-  //   console.log("测试环境");
-  // }
+  useEffect(() => {
+    getgoogle({ ...session });
+  }, [session]);
 
   return (
     <main className=" flex h-[100vh]">

@@ -29,7 +29,7 @@ export default function PromotionPage() {
         alt="HeroUI hero Image"
         className=" object-cover h-[160px]"
         radius="md"
-        src="/promotion.png"
+        src="/images/promotion.png"
         width={"100%"}
       />
       <div className="container mx-auto ">
