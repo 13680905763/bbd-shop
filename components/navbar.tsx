@@ -92,9 +92,6 @@ export const Navbar = () => {
 
   console.log(user);
 
-  if (isLoading) return <div>加载中...</div>;
-  if (isError) return <div>加载失败</div>;
-
   return (
     <HeroUINavbar isBordered maxWidth="full" position="sticky">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
