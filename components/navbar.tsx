@@ -90,6 +90,8 @@ export const Navbar = () => {
     </Form>
   );
 
+  console.log(user);
+
   if (isLoading) return <div>加载中...</div>;
   if (isError) return <div>加载失败</div>;
 
@@ -133,34 +135,48 @@ export const Navbar = () => {
         <NavbarItem className="hidden lg:flex">
           {currentNav !== "/" ? searchInput : null}
         </NavbarItem>
-        <Dropdown>
-          <DropdownTrigger>
-            <User
-              as="button"
-              avatarProps={{
-                isBordered: true,
-                src: user.avatarUrl,
-              }}
-              className="transition-transform"
-              description={user.email}
-              name={user.name}
-            />
-          </DropdownTrigger>
-          <DropdownMenu aria-label="Static Actions">
-            <DropdownItem key="new">
-              <NextLink href="/dashboard">我的账户</NextLink>
-            </DropdownItem>
-            <DropdownItem key="new1">
-              <NextLink href="/dashboard/order">我的订单</NextLink>
-            </DropdownItem>
+        {user ? (
+          <Dropdown>
+            <DropdownTrigger>
+              <User
+                as="button"
+                avatarProps={{
+                  isBordered: true,
+                  src: user?.avatarUrl,
+                }}
+                className="transition-transform"
+                description={user?.email}
+                name={user?.name}
+              />
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Static Actions">
+              <DropdownItem key="new">
+                <NextLink href="/dashboard">我的账户</NextLink>
+              </DropdownItem>
+              <DropdownItem key="new1">
+                <NextLink href="/dashboard/order">我的订单</NextLink>
+              </DropdownItem>
 
-            <DropdownItem key="copy">
-              <button className="w-full text-left" onClick={logout}>
-                退出账户
-              </button>
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
+              <DropdownItem key="copy">
+                <button className="w-full text-left" onClick={logout}>
+                  退出账户
+                </button>
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        ) : (
+          <div className="flex gap-2">
+            <Button
+              className="button-default"
+              onPress={() => router.push("/register")}
+            >
+              注册
+            </Button>
+            <Button color="primary" onPress={() => router.push("/login")}>
+              登录
+            </Button>
+          </div>
+        )}
       </NavbarContent>
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
