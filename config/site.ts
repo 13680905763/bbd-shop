@@ -66,19 +66,19 @@ export const siteConfig = {
     {
       title: "Delivery to Our Warehouse",
       describe:
-        "Shop from a variety of sellers through our service, and well efficiently consolidate your purchases. All items will be shipped to the Hoobuy warehouse in China, streamlining the process for your convenience.",
+        "Shop from a variety of sellers through our service, and well efficiently consolidate your purchases. All items will be shipped to the BBDbuy warehouse in China, streamlining the process for your convenience.",
       src: "/images/page/icon02.png",
     },
     {
       title: "Quality Assurance Process",
       describe:
-        "Once your products arrive at the Hoobuy warehouse, they are subjected to a thorough Quality Check. Our team meticulously examines each item for any defects, ensuring accuracy in size, color, and more. With Hoobuy, you can enjoy peace of mind, knowing that our dedicated after-sales service is committed to your satisfaction.",
+        "Once your products arrive at the BBDbuy warehouse, they are subjected to a thorough Quality Check. Our team meticulously examines each item for any defects, ensuring accuracy in size, color, and more. With BBDbuy, you can enjoy peace of mind, knowing that our dedicated after-sales service is committed to your satisfaction.",
       src: "/images/page/icon03.png",
     },
     {
       title: "Global Shipping Made Easy",
       describe:
-        "Select products from your warehouse inventory and consolidate them effortlessly into one parcel. With Hoobuy s reliable global shipping services, you can have your purchases delivered straight to your doorstep. Enjoy the convenience of world-class shipping at your fingertips.",
+        "Select products from your warehouse inventory and consolidate them effortlessly into one parcel. With BBDbuy s reliable global shipping services, you can have your purchases delivered straight to your doorstep. Enjoy the convenience of world-class shipping at your fingertips.",
       src: "/images/page/icon04.png",
     },
   ],

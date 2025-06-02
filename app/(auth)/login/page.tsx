@@ -1,6 +1,6 @@
 "use client";
 import { addToast, Button, Form, Input } from "@heroui/react";
-import React from "react";
+import React, { useState } from "react";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -9,27 +9,34 @@ import { getlogin } from "@/services/api/auth";
 
 export default function LoginPage() {
   const router = useRouter();
+  const [isLoading, setisLoading] = useState<any>(false);
+
   const onSubmit = (e: any) => {
+    setisLoading(true);
     e.preventDefault();
     let data: any = Object.fromEntries(new FormData(e.currentTarget));
 
     console.log("data", data);
-    getlogin({ ...data }).then((e: any) => {
-      if (e.success) {
-        addToast({
-          title: e.msg,
-          timeout: 1000,
-          color: "success",
-        });
-        router.push("/");
-      } else {
-        addToast({
-          title: e.msg,
-          timeout: 1000,
-          color: "danger",
-        });
-      }
-    });
+    getlogin({ ...data })
+      .then((e: any) => {
+        if (e.success) {
+          addToast({
+            title: e.msg,
+            timeout: 1000,
+            color: "success",
+          });
+          router.push("/");
+        } else {
+          addToast({
+            title: e.msg,
+            timeout: 1000,
+            color: "danger",
+          });
+        }
+      })
+      .finally(() => {
+        setisLoading(false);
+      });
   };
 
   return (
@@ -56,7 +63,13 @@ export default function LoginPage() {
           placeholder="Password"
           size="lg"
         />
-        <Button className=" w-full " color="primary" size="lg" type="submit">
+        <Button
+          className=" w-full "
+          color="primary"
+          isLoading={isLoading}
+          size="lg"
+          type="submit"
+        >
           登录
         </Button>
       </Form>

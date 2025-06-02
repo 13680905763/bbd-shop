@@ -12,6 +12,11 @@ export const useCart = () => {
   const { data, error, isLoading, mutate } = useSWR(
     "/customer/cart/list/shop/group",
     fetchCart,
+    // {
+    //   revalidateOnFocus: false,
+    //   revalidateOnReconnect: false,
+    //   refreshInterval: 0,
+    // },
   );
 
   console.log(666, data);

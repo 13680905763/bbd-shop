@@ -35,18 +35,49 @@ export const Navbar = () => {
   const router = useRouter();
 
   const [currentNav, setCurrentNav] = useState(pathname);
-  const onSubmit = async (e: any) => {
+
+  /**
+   * 从 1688 商品链接中提取 offerId
+   * @param url 商品详情页链接
+   * @returns 提取到的 offerId 或 null
+   */
+  function extractOfferId(parsedUrl: any): string | null {
+    try {
+      const pathname = parsedUrl.pathname;
+
+      // 匹配 /offer/865930740519.html 中的 ID
+      const match = pathname.match(/\/offer\/(\d+)\.html/);
+
+      return match ? match[1] : null;
+    } catch (err) {
+      console.error("无效的 URL:", err);
+
+      return null;
+    }
+  }
+  const Search = (e: any) => {
+    console.log(666);
+
     e.preventDefault();
-    console.log(6666);
-    router.push("/goods"); // 跳转到购物车页面
+    const data: any = Object.fromEntries(new FormData(e.currentTarget));
+    const url = new URL(data.url);
 
-    // setIsLoading(true);
+    console.log(data, url);
+    const source =
+      data.url.includes("item.taobao.com") ||
+      data.url.includes("detail.tmall.com")
+        ? "TAOBAO"
+        : data.url.includes("detail.1688.com/")
+          ? "1688"
+          : "weidian";
+    const sourceproductId = url.searchParams.get("id") || extractOfferId(url);
 
-    // const data = Object.fromEntries(new FormData(e.currentTarget));
-    // const result = await callServer(data);
-
-    // setErrors(result.errors);
-    // setIsLoading(false);
+    console.log(source, sourceproductId);
+    //  source: "TAOBAO",
+    //     sourceproductId: "788110260427",
+    router.push(
+      `/goods/${source}/${sourceproductId}`, // 目标路由
+    );
   };
   const logout = async () => {
     try {
@@ -62,7 +93,7 @@ export const Navbar = () => {
     setCurrentNav(pathname);
   }, [pathname]);
   const searchInput = (
-    <Form className="w-full max-w-xs" onSubmit={onSubmit}>
+    <Form className="w-full max-w-xs" onSubmit={Search}>
       <Input
         aria-label="Search"
         classNames={{
@@ -81,6 +112,7 @@ export const Navbar = () => {
           </Button>
         }
         labelPlacement="outside"
+        name="url"
         placeholder="Search..."
         startContent={
           <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />

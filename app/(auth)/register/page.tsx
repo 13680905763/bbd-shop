@@ -19,6 +19,8 @@ export default function RegisterPage() {
   const [isActive, setIsActive] = useState(false);
   const [isCheck, setIsCheck] = useState(false);
   const [fomeData, setFomeData] = useState<any>();
+  const [isLoading, setisLoading] = useState<any>(false);
+
   const router = useRouter();
   const callback = (e: any) => {
     // console.log(e.length);
@@ -39,22 +41,27 @@ export default function RegisterPage() {
   const signUp = (e: any) => {
     e.preventDefault();
     if (isCheck) {
+      setisLoading(true);
       let data: any = Object.fromEntries(new FormData(e.currentTarget));
 
       console.log(666);
 
       setFomeData(data);
       console.log("data", data);
-      getsignUp({ ...data }).then((e: any) => {
-        if (e.success) {
-          setIsActive(true);
-        } else {
-          addToast({
-            title: e.msg,
-            timeout: 1000,
-          });
-        }
-      });
+      getsignUp({ ...data })
+        .then((e: any) => {
+          if (e.success) {
+            setIsActive(true);
+          } else {
+            addToast({
+              title: e.msg,
+              timeout: 1000,
+            });
+          }
+        })
+        .finally(() => {
+          setisLoading(false);
+        });
     } else {
       addToast({
         title: "请勾选统一协议",
@@ -100,7 +107,12 @@ export default function RegisterPage() {
             >
               I have read and agree to the website terms and conditions
             </Checkbox>
-            <Button className="w-full" color="primary" type="submit">
+            <Button
+              className="w-full"
+              color="primary"
+              isLoading={isLoading}
+              type="submit"
+            >
               注册
             </Button>
           </Form>

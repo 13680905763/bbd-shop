@@ -104,7 +104,7 @@ export default function SubmitOrder() {
             </p>
             <Checkbox className="mt-2 " color="primary">
               <span className="text-[#676969]">
-                我已阅读并同意Hoobuy的免责声明
+                我已阅读并同意BBDbuy的免责声明
               </span>
             </Checkbox>
           </div>

@@ -1,27 +1,37 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  addToast,
-  Button,
-  Checkbox,
-  Divider,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
-  Image,
-} from "@heroui/react";
+import { addToast, Button, Checkbox, useDisclosure } from "@heroui/react";
 import NextLink from "next/link";
+
+import ShopCard from "./shop-card";
 
 import Progress from "@/components/progress";
 import { useCart } from "@/services/hooks/useCart";
 import { deleteCart } from "@/services/api/cart";
-import Stepper from "@/components/stepper";
-import { priceFont } from "@/components/primitives";
+import ConfirmModal from "@/components/confirm-modal";
+export type Product = {
+  id: string;
+  productTitle: string;
+  sku: {
+    propName_valueName: string;
+  };
+  skuPicUrl: string;
+  remark?: string;
+  totalPrice: number;
+  price: number;
+  postFee: number;
+  quantity: number;
+};
+
+export type Shop = {
+  shopId: string;
+  shopName: string;
+  cartList: Product[];
+};
 
 export default function CartPage() {
+  console.log("cart render");
+
   const { cartData, isLoading, isError, mutate } = useCart();
   const [isEdit, setIsEdit] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -83,6 +93,7 @@ export default function CartPage() {
       });
     }
   };
+
   // 商品勾选
   const toggleItem = (shopId: string, productId: string, checked: boolean) => {
     console.log(shopId, productId, checked);
@@ -166,87 +177,16 @@ export default function CartPage() {
 
         <div className="overflow-y-auto flex flex-col gap-4">
           {cartData.map((shop: any) => (
-            <div
+            <ShopCard
               key={shop.shopId}
-              className="bg-[#fff] rounded-md  w-full border border-[#ccc] "
-            >
-              <div className="p-4">
-                <Checkbox
-                  isSelected={shop.cartList.every(
-                    (p: any) => selected[shop.shopId]?.[p.id],
-                  )}
-                  onChange={(checked) =>
-                    toggleShop(shop, checked.target.checked)
-                  }
-                />
-                {shop.shopName}
-              </div>
-
-              <Divider />
-              <div className="flex flex-col gap-4 p-4">
-                {shop?.cartList?.map((product: any) => (
-                  <div
-                    key={product?.id}
-                    className="flex justify-between items-center  gap-4 "
-                  >
-                    <div className=" flex ">
-                      <Checkbox
-                        isSelected={selected[shop.shopId]?.[product.id]}
-                        onChange={(checked) =>
-                          toggleItem(
-                            shop.shopId,
-                            product.id,
-                            checked.target.checked,
-                          )
-                        }
-                      />
-                      <Image
-                        alt="Product"
-                        height={90}
-                        src={product?.skuPicUrl}
-                        width={90}
-                      />
-                    </div>
-                    <div className="flex-[2] ">
-                      <div className="line-clamp-2 text-base font-bold">
-                        {product.productTitle}
-                      </div>
-                      <div className="text-light-gray line-clamp-1">
-                        {product.sku.propName_valueName}
-                      </div>
-                    </div>
-
-                    <div className="flex-1">
-                      <div className="text-money-lg">
-                        总计: ${product.totalPrice}
-                      </div>
-                      <div
-                        className={priceFont({
-                          color: "black",
-                          size: "sm",
-                          weight: "normal",
-                        })}
-                      >
-                        单价: ${product.price}
-                      </div>
-                      <div className="text-light-gray">
-                        国内运费 {product.postFee}
-                      </div>
-                    </div>
-
-                    <div>
-                      <Stepper />
-                    </div>
-
-                    <div className="flex justify-center gap-2 flex-1">
-                      <Button className="button-default " size="sm">
-                        删除
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+              mutate={mutate}
+              selectedMap={selected[shop.shopId] || {}}
+              shop={shop}
+              onToggleItem={(productId, checked) =>
+                toggleItem(shop.shopId, productId, checked)
+              }
+              onToggleShop={(checked) => toggleShop(shop, checked)}
+            />
           ))}
         </div>
 
@@ -281,36 +221,14 @@ export default function CartPage() {
             )}
           </div>
         </div>
-        <Modal isOpen={isOpen} placement="center" onOpenChange={onOpenChange}>
-          <ModalContent>
-            {(onClose) => (
-              <>
-                <ModalHeader className="flex flex-col gap-1">
-                  删除购物车
-                </ModalHeader>
-                <ModalBody>
-                  <p>确定要删除购物车的内容嘛？</p>
-                </ModalBody>
-                <ModalFooter className="flex gap-2">
-                  <Button
-                    className="flex-1 button-default"
-                    variant="light"
-                    onPress={onClose}
-                  >
-                    取消
-                  </Button>
-                  <Button
-                    className="flex-1"
-                    color="primary"
-                    onPress={() => handleDeleteCart(onClose)}
-                  >
-                    删除
-                  </Button>
-                </ModalFooter>
-              </>
-            )}
-          </ModalContent>
-        </Modal>
+
+        <ConfirmModal
+          content="确定要删除当前商品吗？"
+          isOpen={isOpen}
+          title="删除购物车"
+          onConfirm={handleDeleteCart}
+          onOpenChange={onOpenChange}
+        />
       </div>
     </div>
   );
