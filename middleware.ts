@@ -2,7 +2,17 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // 设置不需要登录的路径白名单
-const PUBLIC_PATHS = ["/", "/login", "/register", "/product", "/products"];
+const PUBLIC_PATHS = [
+  "/",
+  "/login",
+  "/register",
+  "/product",
+  "/products",
+  "/api/auth/signin",
+  "/api/auth/callback/github",
+  "/api/auth/session",
+  "/api/auth/signout",
+];
 const AUTH_PAGES = ["/login", "/register"]; // 仅登录注册页
 
 function isPublicPath(pathname: string) {

@@ -18,8 +18,8 @@ export default function AuthLayout({
   const pathname = usePathname();
 
   console.log("status", status);
-  console.log("session", session);
   useEffect(() => {
+    console.log("session", session);
     getgoogle({ ...session });
   }, [session]);
 
@@ -64,6 +64,16 @@ export default function AuthLayout({
               >
                 使用Google账号
               </Button>
+              {/* <Button
+                className="block w-full button-default"
+                color="primary"
+                size="lg"
+                type="submit"
+                variant="bordered"
+                onPress={() => signIn("github")}
+              >
+                使用GitHub账号
+              </Button> */}
             </>
           )}
         </div>
