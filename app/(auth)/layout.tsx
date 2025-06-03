@@ -50,17 +50,7 @@ export default function AuthLayout({
                 size="lg"
                 type="submit"
                 variant="bordered"
-                onPress={() =>
-                  signIn("google", {
-                    authorization: {
-                      params: {
-                        prompt: "select_account",
-                        scope: "openid email profile", // ✅ 告诉 Google 用 OIDC 协议，返回 id_token 和用户信息
-                        access_type: "offline",
-                      },
-                    },
-                  })
-                }
+                onPress={() => signIn("google")}
               >
                 使用Google账号
               </Button>

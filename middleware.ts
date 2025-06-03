@@ -68,7 +68,6 @@ export function middleware(request: NextRequest) {
 // ✅ 匹配所有页面
 export const config = {
   matcher: [
-    // 匹配所有页面
-    "/((?!_next|api|static|favicon.ico|robots.txt|api/auth).*)",
+    "/((?!api/auth|_next|.*\\..*).*)", // 不拦截 API 路由、静态资源、favicon
   ],
 };
