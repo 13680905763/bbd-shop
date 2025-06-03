@@ -69,6 +69,6 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     // 匹配所有页面
-    "/((?!_next|api|static|favicon.ico|robots.txt).*)",
+    "/((?!_next|api|static|favicon.ico|robots.txt|api/auth).*)",
   ],
 };
