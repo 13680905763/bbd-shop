@@ -5,10 +5,14 @@ import {
   Avatar,
   Button,
   Checkbox,
+  Divider,
   Image,
   Textarea,
 } from "@heroui/react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { GrPowerReset } from "react-icons/gr";
+import { IoIosLink } from "react-icons/io";
+import { AiFillTaobaoSquare } from "react-icons/ai";
 
 import { getGoodsInfo } from "@/services/api/goods";
 import {
@@ -19,6 +23,7 @@ import {
 } from "@/components/primitives";
 import Stepper from "@/components/stepper";
 import { addCart } from "@/services/api/cart";
+import { Icon1688 } from "@/components/icons";
 
 interface Sku {
   skuID: string;
@@ -120,6 +125,7 @@ export default function GoodsPage() {
   const [pathMap, setPathMap] = useState<any>(null);
   const [isLoading, setisLoading] = useState<any>(false);
   const [currentImg, setCurrentImg] = useState<string>();
+  const router = useRouter();
   const add = () => {
     setisLoading(true);
     const data = {
@@ -180,6 +186,24 @@ export default function GoodsPage() {
 
     return arr;
   };
+  const getSelectedImg = (specs: any) => {
+    let url: string = "";
+
+    specs.forEach((spec: any) => {
+      const selectedVal = spec.propValueList.find((item: any) => item.selected);
+
+      console.log("selectedVal", selectedVal?.valueID);
+      if (
+        selectedVal?.valueID &&
+        goodsInfo?.productInfo.skuPropImageMap[selectedVal.valueID]
+      ) {
+        url = goodsInfo?.productInfo.skuPropImageMap[selectedVal.valueID];
+      }
+    });
+    console.log(666, url);
+
+    return url;
+  };
   // 更新选中状态
   const undateDisabledStatus = (cloned: any) => {
     // const cloned: any = structuredClone(goodsInfo);
@@ -211,8 +235,12 @@ export default function GoodsPage() {
     const selectedValues = getSelectedValues(
       goodsInfo?.productInfo.skuPropList,
     );
+    const selectedUrl = getSelectedImg(goodsInfo?.productInfo.skuPropList);
 
-    // console.log("sku", selectedValues);
+    console.log("sku", selectedValues);
+    console.log("url", selectedUrl);
+
+    if (selectedUrl) setCurrentImg(selectedUrl);
 
     const currentSku = goodsInfo?.productInfo.skuList.find((item: any) => {
       // console.log("item", item);
@@ -224,7 +252,7 @@ export default function GoodsPage() {
     });
 
     if (currentSku) {
-      setCurrentImg(currentSku.imgUrl);
+      // setCurrentImg(currentSku.imgUrl);
 
       return currentSku;
     }
@@ -260,7 +288,7 @@ export default function GoodsPage() {
 
   return (
     <div className="bg-[#fff] ">
-      <div className="flex  container mx-auto  my-[15px] ">
+      <div className="flex  container mx-auto  my-[15px] mt-16">
         <div className="flex-[4] p-10 pt-0 overflow-auto scrollbar-hide">
           <div className="w-[100%] flex gap-2">
             <Image
@@ -323,7 +351,37 @@ export default function GoodsPage() {
         <div className="flex-[5] max-w-[55%]">
           <div className="sticky top-20 flex  h-[calc(100vh-80px)] ">
             <div className="overflow-y-auto scrollbar-hide flex flex-col gap-4 pb-7">
+              <div className="flex gap-2 items-center">
+                {goodsInfo?.productInfo?.source === "TAOBAO" ? (
+                  <AiFillTaobaoSquare className="text-[#ff5000] w-[22px] h-[22px]" />
+                ) : goodsInfo?.productInfo?.source === "1688" ? (
+                  <Icon1688 className="text-orange-500" size={22} />
+                ) : null}
+                {/* <AiFillTaobaoSquare className="text-[#ff5000] w-[22px] h-[22px]" /> */}
+                <p className="font-bold text-lg">
+                  {goodsInfo?.productInfo?.sellerInfo?.shopName}
+                </p>
+              </div>
+              <Divider className="border-1" />
               <h1 className={subtitle()}>{goodsInfo?.productInfo?.title}</h1>
+              <div className="flex -m-2 ml-0 gap-2 text-sm text-[#f0700c]">
+                <a
+                  className="flex items-center gap-1"
+                  href={goodsInfo?.productInfo?.productUrl}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  <IoIosLink />
+                  原链接
+                </a>
+                <button
+                  className="flex items-center gap-1"
+                  onClick={() => window.location.reload()}
+                >
+                  <GrPowerReset />
+                  刷新
+                </button>
+              </div>
               <div className={priceFont({ size: "xl2" })}>
                 {goodsInfo?.productInfo.price}
               </div>

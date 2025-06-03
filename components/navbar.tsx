@@ -30,7 +30,7 @@ import { useUser } from "@/services/hooks/useUser";
 
 export const Navbar = () => {
   const { user, isLoading, isError } = useUser();
-
+  const [inputValue, setInputValue] = useState("");
   const pathname = usePathname(); // 获取当前路径
   const router = useRouter();
 
@@ -78,6 +78,7 @@ export const Navbar = () => {
     router.push(
       `/goods/${source}/${sourceproductId}`, // 目标路由
     );
+    setInputValue("");
   };
   const logout = async () => {
     try {
@@ -118,11 +119,11 @@ export const Navbar = () => {
           <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
         }
         type="search"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
       />
     </Form>
   );
-
-  console.log(user);
 
   return (
     <HeroUINavbar isBordered maxWidth="full" position="sticky">
@@ -179,11 +180,21 @@ export const Navbar = () => {
               />
             </DropdownTrigger>
             <DropdownMenu aria-label="Static Actions">
-              <DropdownItem key="new">
-                <NextLink href="/dashboard">我的账户</NextLink>
+              <DropdownItem
+                key="new"
+                onPress={() => {
+                  router.push("/dashboard");
+                }}
+              >
+                我的账户
               </DropdownItem>
-              <DropdownItem key="new1">
-                <NextLink href="/dashboard/order">我的订单</NextLink>
+              <DropdownItem
+                key="new1"
+                onPress={() => {
+                  router.push("/dashboard/order");
+                }}
+              >
+                我的订单
               </DropdownItem>
 
               <DropdownItem key="copy">

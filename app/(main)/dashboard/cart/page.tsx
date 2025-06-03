@@ -21,6 +21,7 @@ export type Product = {
   price: number;
   postFee: number;
   quantity: number;
+  source: string;
 };
 
 export type Shop = {

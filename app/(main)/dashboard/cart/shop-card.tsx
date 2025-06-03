@@ -4,6 +4,8 @@ import { AiFillTaobaoSquare } from "react-icons/ai";
 import ProductItem from "./product-item";
 import { Product, Shop } from "./page";
 
+import { Icon1688 } from "@/components/icons";
+
 type ShopCardProps = {
   shop: Shop;
   selectedMap: { [productId: string]: boolean };
@@ -29,8 +31,12 @@ export default function ShopCard({
           size="sm"
           onChange={(e) => onToggleShop(e.target.checked)}
         />
-        <AiFillTaobaoSquare className="text-[#ff5000] w-[22px] h-[22px]" />
-        <div>{shop.shopName}</div>
+        {shop.cartList[0]?.source === "TAOBAO" ? (
+          <AiFillTaobaoSquare className="text-[#ff5000] w-[22px] h-[22px]" />
+        ) : shop.cartList[0]?.source === "1688" ? (
+          <Icon1688 className="text-orange-500" size={22} />
+        ) : null}
+        <div>{shop?.shopName}</div>
       </div>
 
       <Divider />

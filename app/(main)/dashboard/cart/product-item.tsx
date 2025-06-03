@@ -9,16 +9,17 @@ import {
   ModalFooter,
   ModalHeader,
   Textarea,
+  Tooltip,
   useDisclosure,
 } from "@heroui/react";
 import { useState } from "react";
+import { FaEdit } from "react-icons/fa";
 
 import { Product } from "./page";
 
 import Stepper from "@/components/stepper";
 import { deleteCart, updateCart } from "@/services/api/cart";
 import ConfirmModal from "@/components/confirm-modal";
-
 type ProductItemProps = {
   product: Product;
   isSelected: boolean;
@@ -157,10 +158,15 @@ export default function ProductItem({
         <div className="line-clamp-2 font-bold">{product.productTitle}</div>
         <div className="text-gray-500">{product.sku.propName_valueName}</div>
       </div>
-      <div className="flex-1">
-        <span>{product.remark}</span>
+      <div className="flex-1  flex gap-2">
+        <Tooltip
+          className="bg-[#262626] text-white p-2 max-w-screen-sm"
+          content={product.remark}
+        >
+          <p className=" max-w-24  truncate">备注：{product.remark}</p>
+        </Tooltip>
         <button className="text-blue-500 underline" onClick={onOpenRemark}>
-          添加备注
+          <FaEdit className="w-6 h-6 text-[#f0700c]" />
         </button>
       </div>
       <div className="flex-1">
