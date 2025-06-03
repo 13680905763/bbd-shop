@@ -1,24 +1,21 @@
-# 1. 使用轻量 Node.js 官方镜像
-FROM node:20-alpine AS base
+# 1. 使用轻量级 Node.js 20 Alpine 版本镜像
+FROM node:20-alpine
 
-# 2. 设置工作目录
+# 2. 创建并设置工作目录
 WORKDIR /app
 
-# 3. 安装依赖（使用缓存优化）
+# 3. 拷贝依赖文件并安装生产依赖
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm install
 
-# 4. 拷贝源码
+# 4. 拷贝其余源码
 COPY . .
 
-# 5. 设置生产环境变量
-ENV NODE_ENV=production
-
-# 6. 构建项目（如果已构建可跳过）
+# 5. 如果你还没 build，就添加构建命令（如果已经构建好可以跳过这行）
 RUN npm run build
 
-# 7. 设置暴露端口
+# 6. 暴露 Next.js 默认端口
 EXPOSE 3000
 
-# 8. 启动服务（使用 node 直接运行比 npm 更推荐）
-CMD ["node", "server.js"]
+# 7. 使用 Node 启动服务
+CMD ["npm", "start"]
