@@ -14,6 +14,7 @@ export const authOptions: NextAuthOptions = {
           prompt: "consent",
           access_type: "offline",
           response_type: "token", // 默认就是 code
+          codeChallengeMethod: "",
         },
       },
     }),
