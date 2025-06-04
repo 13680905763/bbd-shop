@@ -43,12 +43,8 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
 
-    async session({ session, token }: any) {
-      // 把token里的accessToken传给session
-      console.log("session callback:", { session, token });
-
-      session.accessToken = token.accessToken;
-      session.id_token = token.id_token;
+    async session({ session, token }) {
+      (session as any).accessToken = token.accessToken;
 
       return session;
     },

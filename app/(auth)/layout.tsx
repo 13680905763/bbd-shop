@@ -19,8 +19,9 @@ export default function AuthLayout({
 
   console.log("status", status);
   useEffect(() => {
-    console.log("session", session);
-    if (session) getgoogle({ ...session });
+    if ((session as any).accessToken) {
+      getgoogle((session as any).accessToken);
+    }
   }, [session]);
 
   return (
