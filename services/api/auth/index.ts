@@ -5,9 +5,9 @@ export const getlogin = (data: { email: string; password: string }) => {
     ...data,
   });
 };
-export const getgoogle = (accessToken: any) => {
+export const getgoogle = (data: any) => {
   return axiosInstance.post("/customer/google/login", {
-    accessToken,
+    ...data,
   });
 };
 
