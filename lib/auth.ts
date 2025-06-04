@@ -1,7 +1,11 @@
 // lib/auth.ts
+// import https from "https";
 
+// import { HttpsProxyAgent } from "https-proxy-agent";
+// https.globalAgent = new HttpsProxyAgent("http://127.0.0.1:7890");
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+
 // import GitHubProvider from "next-auth/providers/github";
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -13,8 +17,6 @@ export const authOptions: NextAuthOptions = {
           scope: "openid email profile", // ✅ 一定要加 openid
           prompt: "consent",
           access_type: "offline",
-          response_type: "token", // 默认就是 code
-          codeChallengeMethod: "",
         },
       },
     }),
