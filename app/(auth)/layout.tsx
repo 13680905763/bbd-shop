@@ -1,6 +1,6 @@
 "use client";
-import { Button, Divider } from "@heroui/react";
-import { usePathname } from "next/navigation";
+import { addToast, Button, Divider } from "@heroui/react";
+import { usePathname, useRouter } from "next/navigation";
 import { IoCaretBackCircleOutline } from "react-icons/io5";
 import NextLink from "next/link";
 import { useSession, signIn } from "next-auth/react";
@@ -16,11 +16,28 @@ export default function AuthLayout({
 }) {
   const { data: session, status } = useSession();
   const pathname = usePathname();
+  const router = useRouter();
 
   console.log("status", status);
   useEffect(() => {
     if ((session as any)?.accessToken) {
-      getgoogle((session as any)?.accessToken);
+      getgoogle((session as any)?.accessToken).then((e: any) => {
+        console.log("谷歌登录成功", e);
+        if (e.success) {
+          addToast({
+            title: e.msg,
+            timeout: 1000,
+            color: "success",
+          });
+          router.push("/");
+        } else {
+          addToast({
+            title: e.msg,
+            timeout: 1000,
+            color: "danger",
+          });
+        }
+      });
     }
   }, [session]);
 
