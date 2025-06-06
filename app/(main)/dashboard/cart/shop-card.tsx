@@ -24,8 +24,8 @@ export default function ShopCard({
   const isAllSelected = shop.cartList.every((p) => selectedMap[p.id]);
 
   return (
-    <div className="bg-white rounded-md w-full border border-gray-300">
-      <div className="p-4 flex items-center gap-1">
+    <div className="card-cart">
+      <div className="p-4 flex items-center gap-1 bg-[#f8f8f8]">
         <Checkbox
           isSelected={isAllSelected}
           size="sm"

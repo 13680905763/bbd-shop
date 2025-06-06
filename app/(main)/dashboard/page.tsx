@@ -295,7 +295,7 @@ export default function DashBoard() {
                 </div>
               }
             >
-              <div className="font-bold mb-4">修改用户信息</div>
+              <div className="text-title">修改用户信息</div>
 
               <div className=" flex justify-center">
                 <Form
@@ -435,7 +435,7 @@ export default function DashBoard() {
             >
               <div className="flex justify-between  items-center">
                 <div>
-                  <p className="font-bold text-base">登录密码</p>
+                  <p className="text-title">登录密码</p>
                   <p className="text-sm my-1">
                     安全性高的密码可以使账号更安全。建议您定期更换密码，且设置一个包含数字和字母，并长度超过6位以上的密码。
                   </p>

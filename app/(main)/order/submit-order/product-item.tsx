@@ -1,7 +1,6 @@
 import {
   addToast,
   Button,
-  Checkbox,
   Image,
   Modal,
   ModalBody,
@@ -18,14 +17,9 @@ import { useRouter } from "next/navigation";
 
 import { Product } from "./page";
 
-import Stepper from "@/components/stepper";
-import { deleteCart, updateCart } from "@/services/api/cart";
-import ConfirmModal from "@/components/confirm-modal";
+import { updateCart } from "@/services/api/cart";
 type ProductItemProps = {
   product: Product;
-  isSelected: boolean;
-  onToggle: (checked: boolean) => void;
-  mutate: any;
 };
 
 const RemarkModal = ({ isOpen, onOpenChange, handleRemark, value }: any) => {
@@ -67,12 +61,7 @@ const RemarkModal = ({ isOpen, onOpenChange, handleRemark, value }: any) => {
   );
 };
 
-export default function ProductItem({
-  product,
-  isSelected,
-  onToggle,
-  mutate,
-}: ProductItemProps) {
+export default function ProductItem({ product }: ProductItemProps) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const {
@@ -81,47 +70,6 @@ export default function ProductItem({
     onOpenChange: onOpenChangeRemark,
   } = useDisclosure();
   const router = useRouter();
-  const handleDelete = (onClose: any) => {
-    deleteCart({ idList: [product.id] }).then((e: any) => {
-      if (e.success) {
-        addToast({
-          title: e.msg,
-          timeout: 1000,
-        });
-        onClose();
-        mutate();
-      } else {
-        addToast({
-          title: e.msg,
-          timeout: 1000,
-        });
-      }
-    });
-  };
-  const handleRemark = (remark: string, onClose: () => void) => {
-    console.log("remark", remark);
-    updateCart([
-      {
-        id: product.id,
-        quantity: product.quantity,
-        remark,
-      },
-    ]).then((e: any) => {
-      if (e.success) {
-        addToast({
-          title: e.msg,
-          timeout: 1000,
-        });
-        onClose();
-        mutate();
-      } else {
-        addToast({
-          title: e.msg,
-          timeout: 1000,
-        });
-      }
-    });
-  };
 
   const handleQuantity = (quantity: number) => {
     updateCart([
@@ -136,7 +84,6 @@ export default function ProductItem({
           title: e.msg,
           timeout: 1000,
         });
-        mutate();
       } else {
         addToast({
           title: e.msg,
@@ -149,18 +96,7 @@ export default function ProductItem({
   return (
     <div className="flex justify-between items-center gap-4">
       <div className="flex">
-        <Checkbox
-          isSelected={isSelected}
-          size="sm"
-          onChange={(e) => onToggle(e.target.checked)}
-        />
-        <button
-          onClick={() =>
-            router.push(`/goods/${product.source}/${product?.sourceProductId}`)
-          }
-        >
-          <Image alt="Product" height={90} src={product.skuPicUrl} width={90} />
-        </button>
+        <Image alt="Product" height={90} src={product.skuPicUrl} width={90} />
       </div>
       <div className="flex-[2]">
         <div className="line-clamp-2 font-bold">{product.productTitle}</div>
@@ -168,7 +104,7 @@ export default function ProductItem({
       </div>
       <div className="flex-1  flex gap-2">
         <Tooltip
-          className="bg-[#262626] text-white p-2 max-w-screen-sm"
+          className="bg-[#262626] text-white p-2 "
           content={product.remark}
         >
           <p className=" max-w-24  truncate">备注：{product.remark}</p>
@@ -177,32 +113,66 @@ export default function ProductItem({
           <FaEdit className="w-6 h-6 text-[#f0700c]" />
         </button>
       </div>
-      <div className="flex-1">
+      <div>
+        <p>${product.price}</p>
+        <p>X{product.quantity}</p>
+      </div>
+      <div className="flex-1 place-items-end">
         <div className="text-lg font-semibold text-red-500">
           总计: ${product.totalPrice}
         </div>
-        <div className="text-sm">单价: ${product.price}</div>
         <div className="text-gray-500">国内运费: {product.postFee}</div>
       </div>
-      <Stepper value={product.quantity} onChange={handleQuantity} />
-      <div className="flex justify-center gap-2 flex-1">
-        <Button className="button-default" size="sm" onPress={onOpen}>
-          删除
-        </Button>
-      </div>
-      <ConfirmModal
-        content="确定要删除当前商品吗？"
-        isOpen={isOpen}
-        title="删除购物车"
-        onConfirm={handleDelete}
-        onOpenChange={onOpenChange}
-      />
       <RemarkModal
-        handleRemark={handleRemark}
+        // handleRemark={handleRemark}
         isOpen={isOpenRemark}
         value={product.remark}
         onOpenChange={onOpenChangeRemark}
       />
     </div>
   );
+}
+
+{
+  /* <div className="p-4">
+  {items?.map((item) => (
+    <div
+      key={item?.id}
+      className="flex justify-between items-center gap-8 mb-4"
+    >
+      <div className=" flex ">
+        <Image
+          alt="Product"
+          className="h-[100px]"
+          height={100}
+          src={item?.skuPicUrl}
+          width={100}
+        />
+      </div>
+      <div className="flex-[2]">
+        <div className="line-clamp-2 text-base font-bold">
+          {item.productTitle}
+        </div>
+        <div className="text-[#acacac] text-sm line-clamp-1">
+          {item?.pavList}
+        </div>
+      </div>
+      <div className=" flex-1">x 1</div>
+
+      <div className="flex-[1]">
+        <div className={priceFont()}>总计: ${item.totalPrice}</div>
+        <div
+          className={priceFont({
+            color: "black",
+            size: "sm",
+            weight: "normal",
+          })}
+        >
+          单价: ${item.price}
+        </div>
+        <div className={lightFont({ size: "sm" })}>国内运费 {item.postFee}</div>
+      </div>
+    </div>
+  ))}
+</div>; */
 }

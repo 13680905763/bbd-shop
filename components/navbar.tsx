@@ -172,7 +172,9 @@ export const Navbar = () => {
 
         <Popover placement="bottom" showArrow={true}>
           <PopoverTrigger>
-            <Button className="bg-transparent">中文简体/CNY</Button>
+            <Button className="bg-transparent " size="lg">
+              中文简体/CNY
+            </Button>
           </PopoverTrigger>
           <PopoverContent>
             <div className="p-2">
@@ -220,7 +222,9 @@ export const Navbar = () => {
         {user ? (
           <>
             <Button
-              className="bg-transparent"
+              isIconOnly
+              className="bg-transparent px-0"
+              size="sm"
               onPress={() => router.push("/dashboard/cart")}
             >
               <IoCart className="w-full  h-full" />

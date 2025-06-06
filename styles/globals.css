@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+.text-title {
+  @apply text-[#000] text-base font-bold mb-4;
+}
 .text-title-2xl {
   @apply text-[#000] text-2xl font-bold;
 }
@@ -13,7 +16,12 @@
 .text-gray-base {
   @apply text-[#acacac] text-base;
 }
-
+.text-price-lg {
+  @apply text-lg font-bold text-[#f0700c] md:text-xl lg:text-2xl;
+}
+.text-price-xl {
+  @apply text-xl font-bold text-[#f0700c] md:text-2xl lg:text-3xl;
+}
 .text-money-lg {
   @apply text-[#f0700c] text-lg font-bold;
 }
@@ -49,4 +57,11 @@
 
 .card-grey {
   @apply w-full px-4 py-2 rounded-lg bg-[#f5f5f5] text-black;
+}
+
+.card-cart {
+  @apply border border-gray-200 rounded-lg;
+}
+.card-tip {
+  @apply bg-[#ffeee1] my-4 p-4  rounded-lg text-sm;
 }

@@ -1,7 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { addToast, Button, Checkbox, useDisclosure } from "@heroui/react";
-import NextLink from "next/link";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  addToast,
+  Button,
+  Checkbox,
+  Divider,
+  useDisclosure,
+} from "@heroui/react";
+import { useRouter } from "next/navigation";
 
 import ShopCard from "./shop-card";
 
@@ -22,6 +28,7 @@ export type Product = {
   postFee: number;
   quantity: number;
   source: string;
+  sourceProductId: string;
 };
 
 export type Shop = {
@@ -31,35 +38,14 @@ export type Shop = {
 };
 
 export default function CartPage() {
-  console.log("cart render");
-
   const { cartData, isLoading, isError, mutate } = useCart();
-  const [isEdit, setIsEdit] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selected, setSelected] = useState<{
     [shopId: string]: { [productId: string]: boolean };
   }>({});
+  const router = useRouter();
 
-  function getSelectedProductIds(
-    selected: Record<string, Record<string, boolean>>,
-  ): string[] {
-    const selectedIds: string[] = [];
-
-    for (const shopId in selected) {
-      const productMap = selected[shopId];
-
-      for (const productId in productMap) {
-        if (productMap[productId]) {
-          selectedIds.push(productId);
-        }
-      }
-    }
-
-    return selectedIds;
-  }
   const handleDeleteCart = (onClose: any) => {
-    const selectedIdArr = getSelectedProductIds(selected);
-
     deleteCart({ idList: selectedIdArr }).then((e: any) => {
       if (e.success) {
         addToast({
@@ -76,16 +62,10 @@ export default function CartPage() {
       }
     });
   };
-  const handleCart = () => {
-    const selectedIdArr = getSelectedProductIds(selected);
-
+  const handleDelCart = () => {
     if (selectedIdArr.length > 0) {
-      if (isEdit) {
-        onOpen();
-        console.log("删除", { idList: selectedIdArr });
-      } else {
-        console.log("结算");
-      }
+      onOpen();
+      console.log("删除", { idList: selectedIdArr });
     } else {
       addToast({
         title: "请先选择商品",
@@ -98,7 +78,6 @@ export default function CartPage() {
   // 商品勾选
   const toggleItem = (shopId: string, productId: string, checked: boolean) => {
     console.log(shopId, productId, checked);
-
     setSelected((prev) => ({
       ...prev,
       [shopId]: {
@@ -141,6 +120,27 @@ export default function CartPage() {
     });
     setSelected(newSelected);
   };
+  const selectedIdArr = useMemo(() => {
+    const selectedIds: string[] = [];
+
+    for (const shopId in selected) {
+      const productMap = selected[shopId];
+
+      for (const productId in productMap) {
+        if (productMap[productId]) {
+          selectedIds.push(productId);
+        }
+      }
+    }
+
+    return selectedIds;
+  }, [selected]);
+  const togglePrice = useMemo(() => {
+    return cartData
+      ?.flatMap((shop) => shop.cartList) // 拍平所有商品
+      ?.filter((item) => selectedIdArr.includes(item.id)) // 过滤选中项
+      ?.reduce((sum, item) => sum + item.totalPrice, 0); // 累加价格
+  }, [selected]);
 
   useEffect(() => {
     if (cartData) {
@@ -161,22 +161,19 @@ export default function CartPage() {
   if (isError) return <div>出错了</div>;
 
   return (
-    <div className="flex flex-col h-[100%]">
+    <div className="h-full">
       <div className="mt-5">
         <Progress
           currentStep={0}
           steps={["选择产品", "订单付款", "质检&仓库", "打包", "签收包裹"]}
         />
       </div>
-      <div className="  rounded-2xl  flex  flex-col  w-full justify-between max-h-[800px]">
-        <div className="felx-1 mb-4">
-          全部商品 |
-          <button onClick={() => setIsEdit(!isEdit)}>
-            {isEdit ? "取消" : "管理"}
-          </button>
+      <div className="">
+        <div className="text-title">
+          全部商品 ({cartData?.flatMap((shop) => shop.cartList).length})
         </div>
 
-        <div className="overflow-y-auto flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
           {cartData.map((shop: any) => (
             <ShopCard
               key={shop.shopId}
@@ -191,35 +188,35 @@ export default function CartPage() {
           ))}
         </div>
 
-        <div className="felx-1 rounded-lg bg-white pt-4  flex justify-between items-center ">
-          <div>
+        <div className="mt-10  sticky bottom-0 border-t-[1px] bg-white z-10 card-cart">
+          <div className="p-2 flex gap-2">
             <Checkbox
               isSelected={isAllSelected()}
               onChange={(e) => toggleAll(e.target.checked)}
             >
               全选
             </Checkbox>
+            <Button className="bg-transparent" onPress={handleDelCart}>
+              删除商品
+            </Button>
           </div>
-          <div className="flex gap-2 items-center">
-            {isEdit ? (
+          <Divider />
+          <div className="flex justify-between items-center p-4 gap-4 ">
+            <div className="flex gap-4">
+              <span>已选</span>
+              <span>{selectedIdArr.length}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <p className="text-price-lg">PLN {togglePrice}</p>
               <Button
-                className="min-w-[120px]"
+                className="w-[200px]"
                 color="primary"
                 size="lg"
-                onPress={handleCart}
+                onPress={() => router.push("/order/submit-order")}
               >
-                删除
+                下单结算
               </Button>
-            ) : (
-              <>
-                <div>总计</div>
-                <NextLink href="/order/submit-order">
-                  <Button className="min-w-[120px]" color="primary" size="lg">
-                    提交订单
-                  </Button>
-                </NextLink>
-              </>
-            )}
+            </div>
           </div>
         </div>
 

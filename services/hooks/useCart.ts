@@ -2,6 +2,8 @@
 import useSWR from "swr";
 
 import axiosInstance from "../axiosInstance";
+
+import { Shop } from "@/app/(main)/dashboard/cart/page";
 const fetchCart = async (url: string) => {
   const response = await axiosInstance.post(url, {}); // 根据你后端的接口改路径
 
@@ -22,7 +24,7 @@ export const useCart = () => {
   console.log(666, data);
 
   return {
-    cartData: data,
+    cartData: data as Shop[],
     isLoading,
     isError: error,
     mutate, // 用于刷新
