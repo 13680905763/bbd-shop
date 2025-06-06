@@ -17,10 +17,14 @@ import {
   DropdownMenu,
   DropdownTrigger,
   Form,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   User,
 } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { IoCart } from "react-icons/io5";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
@@ -156,7 +160,7 @@ export const Navbar = () => {
       </NavbarContent>
 
       <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
+        className="hidden sm:flex basis-1/4 sm:basis-full"
         justify="end"
       >
         {/* <NavbarItem className="hidden sm:flex gap-2">
@@ -165,54 +169,114 @@ export const Navbar = () => {
         <NavbarItem className="hidden lg:flex">
           {currentNav !== "/" ? searchInput : null}
         </NavbarItem>
-        {user ? (
-          <Dropdown>
-            <DropdownTrigger>
-              <User
-                as="button"
-                avatarProps={{
-                  isBordered: true,
-                  src: user?.avatarUrl,
-                }}
-                className="transition-transform"
-                description={user?.email}
-                name={user?.name}
-              />
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Static Actions">
-              <DropdownItem
-                key="new"
-                onPress={() => {
-                  router.push("/dashboard");
-                }}
-              >
-                我的账户
-              </DropdownItem>
-              <DropdownItem
-                key="new1"
-                onPress={() => {
-                  router.push("/dashboard/order");
-                }}
-              >
-                我的订单
-              </DropdownItem>
 
-              <DropdownItem key="copy">
-                <button className="w-full text-left" onClick={logout}>
-                  退出账户
-                </button>
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
+        <Popover placement="bottom" showArrow={true}>
+          <PopoverTrigger>
+            <Button className="bg-transparent">中文简体/CNY</Button>
+          </PopoverTrigger>
+          <PopoverContent>
+            <div className="p-2">
+              <div className="my-4 mt-2">
+                <p>语言</p>
+                <div className="grid grid-cols-2 gap-5 my-4">
+                  <Button className="button-default" radius="sm">
+                    English
+                  </Button>
+                  <Button className="button-white" radius="sm">
+                    Español
+                  </Button>
+                  <Button className="button-white" radius="sm">
+                    Polski
+                  </Button>
+                  <Button className="button-white" radius="sm">
+                    中文(简体)
+                  </Button>
+                </div>
+              </div>
+              <div className="my-4">
+                <p>货币</p>
+                <div className="grid grid-cols-2 gap-4 my-4">
+                  <Button className="button-white" radius="sm">
+                    USD
+                  </Button>
+                  <Button className="button-white" radius="sm">
+                    EUR
+                  </Button>
+                  <Button className="button-white" radius="sm">
+                    PLN
+                  </Button>
+                  <Button className="button-default" radius="sm">
+                    CNY
+                  </Button>
+                </div>
+              </div>
+              <Button className="w-full" color="primary" radius="sm">
+                提交
+              </Button>
+            </div>
+          </PopoverContent>
+        </Popover>
+
+        {user ? (
+          <>
+            <Button
+              className="bg-transparent"
+              onPress={() => router.push("/dashboard/cart")}
+            >
+              <IoCart className="w-full  h-full" />
+            </Button>
+            <Dropdown>
+              <DropdownTrigger>
+                <User
+                  as="button"
+                  avatarProps={{
+                    isBordered: true,
+                    src: user?.avatarUrl,
+                  }}
+                  className="transition-transform"
+                  description={user?.email}
+                  name={user?.name}
+                />
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Static Actions">
+                <DropdownItem
+                  key="new"
+                  onPress={() => {
+                    router.push("/dashboard");
+                  }}
+                >
+                  我的账户
+                </DropdownItem>
+                <DropdownItem
+                  key="new1"
+                  onPress={() => {
+                    router.push("/dashboard/order");
+                  }}
+                >
+                  我的订单
+                </DropdownItem>
+
+                <DropdownItem key="copy">
+                  <button className="w-full text-left" onClick={logout}>
+                    退出账户
+                  </button>
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </>
         ) : (
           <div className="flex gap-2">
             <Button
-              className="button-default"
+              className="bg-transparent"
               onPress={() => router.push("/register")}
             >
               注册
             </Button>
-            <Button color="primary" onPress={() => router.push("/login")}>
+            <Button
+              color="primary"
+              radius="lg"
+              onPress={() => router.push("/login")}
+            >
               登录
             </Button>
           </div>
