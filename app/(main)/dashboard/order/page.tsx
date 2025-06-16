@@ -3,7 +3,7 @@ import { Button, Tab, Tabs, useDisclosure } from "@heroui/react";
 import React from "react";
 
 import CommonGoodsItem from "@/components/common-goods-item";
-import Progress from "@/components/progress";
+import Progress from "@/components/common/progress";
 
 const rows = [
   {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import NextLink from "next/link";
 import { Divider } from "@heroui/react";
@@ -53,7 +53,7 @@ export default function DashBoardlayout({
           </ul>
         </div>
         <div className="mx-5 flex-1 rounded-lg bg-[#fff] p-5 pt-0">
-          {children}
+          <Suspense fallback={<div>加载中...</div>}>{children}</Suspense>
         </div>
       </section>
     </div>

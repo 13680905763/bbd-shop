@@ -88,7 +88,7 @@ export const siteConfig = {
       title: "我的账户",
     },
     {
-      key: "wallet",
+      key: "wallet?tab=balance",
       title: "我的资产",
     },
     {
@@ -135,92 +135,63 @@ export const siteConfig = {
   ],
   footerItems: [
     {
-      title: "Customer Service",
+      title: "Quick  Links",
+      itemLabel: [
+        {
+          label: "Home",
+          href: "",
+        },
+        {
+          label: "Fill & Buy",
+          href: "",
+        },
+        {
+          label: "Forwarding",
+          href: "",
+        },
+        {
+          label: "Estimation",
+          href: "",
+        },
+      ],
+    },
+    {
+      title: "Help",
       itemLabel: [
         {
           label: "Help Center",
           href: "",
         },
         {
-          label: "Contact Us",
+          label: "Trust And Safety",
+          href: "",
+        },
+        {
+          label: "Privacy Settings",
           href: "",
         },
       ],
     },
+
     {
-      title: "Shopping Agent Guide",
+      title: "Working Hours",
       itemLabel: [
         {
-          label: "Beginner's Guide",
+          label: "Monday - Friday : 9:00AM - 4:00PM",
+          describe: "9:00AM - 4:00PM",
           href: "",
         },
         {
-          label: "Service & Fees",
+          label: "Saturday : 10:00AM - 2:00PM",
+          describe: "10:00AM - 2:00PM",
           href: "",
         },
         {
-          label: "Returns and Refunds",
-          href: "",
-        },
-      ],
-    },
-    {
-      title: "Payment",
-      itemLabel: [
-        {
-          label: "Top up",
-          href: "",
-        },
-        {
-          label: "International Credit Card",
-          href: "",
-        },
-      ],
-    },
-    {
-      title: "Delivery",
-      itemLabel: [
-        {
-          label: "Charges",
-          href: "",
-        },
-        {
-          label: "Packaging",
-          href: "",
-        },
-        {
-          label: "Customs and Taxation",
-          href: "",
-        },
-        {
-          label: "Receipt Information",
-          href: "",
-        },
-      ],
-    },
-    {
-      title: "Warehouse & After-sale",
-      itemLabel: [
-        {
-          label: "Storage",
-          href: "",
-        },
-        {
-          label: "Inspection Information",
-          href: "",
-        },
-        {
-          label: "Insurance and Compensation",
+          label: "Sunday : Closed",
+          describe: "Closed",
           href: "",
         },
       ],
     },
   ],
-  links: {
-    github: "https://github.com/heroui-inc/heroui",
-    twitter: "https://twitter.com/hero_ui",
-    docs: "https://heroui.com",
-    discord: "https://discord.gg/9b6yyZKmH4",
-    sponsor: "https://patreon.com/jrgarciadev",
-  },
 };

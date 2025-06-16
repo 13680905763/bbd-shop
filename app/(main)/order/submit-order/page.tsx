@@ -5,7 +5,7 @@ import NextLink from "next/link";
 
 import OrderCard from "./order-card";
 
-import Progress from "@/components/progress";
+import Progress from "@/components/common/progress";
 export type Product = {
   id: string;
   productTitle: string;

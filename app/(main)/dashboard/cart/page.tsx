@@ -11,10 +11,10 @@ import { useRouter } from "next/navigation";
 
 import ShopCard from "./shop-card";
 
-import Progress from "@/components/progress";
+import Progress from "@/components/common/progress";
 import { useCart } from "@/services/hooks/useCart";
 import { deleteCart } from "@/services/api/cart";
-import ConfirmModal from "@/components/confirm-modal";
+import ConfirmModal from "@/components/modal/confirm-modal";
 export type Product = {
   id: string;
   productTitle: string;

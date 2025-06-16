@@ -4,7 +4,7 @@ import { Button, cn, Radio, RadioGroup, Image, Tooltip } from "@heroui/react";
 import { HiQuestionMarkCircle } from "react-icons/hi";
 
 import { price } from "@/components/primitives";
-import Progress from "@/components/progress";
+import Progress from "@/components/common/progress";
 import { usePay } from "@/services/hooks/usePay";
 export default function SubmitOrder() {
   const { payList, isLoading, isError } = usePay();

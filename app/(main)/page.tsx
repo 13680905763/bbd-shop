@@ -1,6 +1,8 @@
 "use client";
 import { Button, Input, Image, Form } from "@heroui/react";
 import { useRouter } from "next/navigation";
+import { AiOutlineAlibaba } from "react-icons/ai";
+import { FaCircle, FaRegImage } from "react-icons/fa";
 
 import { siteConfig } from "@/config/site";
 // import { Link } from "@heroui/link";
@@ -61,24 +63,47 @@ export default function Home() {
 
   return (
     <div className="pb-12">
-      <section className="flex bg-cover bg-no-repeat h-[620px] bg-[url('https://bbdbuy.oss-cn-hongkong.aliyuncs.com/uploads/20250220/c4917de822e9f85cec22162733faad64.jpg')]">
-        <div className="container mx-auto flex-col flex justify-center items-center 	max-w-6xl">
-          <div className="text-6xl tracking-tighter font-bold text-white mb-[50px]">
-            <p>Simplify Your Shopping With BBD</p>
+      <section className="flex bg-cover bg-no-repeat h-[630px] bg-[url('https://bbdbuy.oss-cn-hongkong.aliyuncs.com/uploads/20250220/c4917de822e9f85cec22162733faad64.jpg')]">
+        <div className="container mx-auto flex-col flex justify-center  ">
+          <div className="max-w-3xl">
+            <div className="text-7xl tracking-tighter font-bold text-white flex flex-col  mb-10">
+              <p>Simplify Your </p>
+              <p>Shopping With BBD</p>
+            </div>
+            <Form className="w-full " onSubmit={Search}>
+              <Input
+                endContent={
+                  <div className="flex gap-4 items-center">
+                    <FaRegImage className="w-[30px] h-[30px] text-gray-400" />
+                    <Button className="bg-[#f0700c] text-[#fff] " type="submit">
+                      Search
+                    </Button>
+                  </div>
+                }
+                label={
+                  <div className="flex gap-2">
+                    Enter product name / link
+                    <div className="relative w-[30px] h-[30px]">
+                      <FaCircle className="text-gray-400 w-full h-full" />
+                      <span className="text-white absolute inset-0 flex items-center justify-center  font-bold ">
+                        淘
+                      </span>
+                    </div>
+                    <AiOutlineAlibaba className=" w-[30px] h-[30px] rounded-full bg-gray-400 text-white" />
+                    <div className="relative w-[30px] h-[30px]">
+                      <FaCircle className="text-gray-400 w-full h-full" />
+                      <span className="text-white absolute inset-0 flex items-center justify-center  font-bold ">
+                        店
+                      </span>
+                    </div>
+                  </div>
+                }
+                name="url"
+                radius={"full"}
+                size={"lg"}
+              />
+            </Form>
           </div>
-          <Form className="w-full " onSubmit={Search}>
-            <Input
-              endContent={
-                <Button className="bg-[#f0700c] text-[#fff] " type="submit">
-                  Search
-                </Button>
-              }
-              label="Enter product name / link"
-              name="url"
-              radius={"full"}
-              size={"lg"}
-            />
-          </Form>
         </div>
       </section>
 

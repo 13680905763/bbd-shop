@@ -20,7 +20,7 @@ import { Product } from "./page";
 
 import Stepper from "@/components/stepper";
 import { deleteCart, updateCart } from "@/services/api/cart";
-import ConfirmModal from "@/components/confirm-modal";
+import ConfirmModal from "@/components/modal/confirm-modal";
 type ProductItemProps = {
   product: Product;
   isSelected: boolean;

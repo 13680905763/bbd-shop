@@ -1,21 +1,24 @@
-# 1. 使用轻量级 Node.js 20 Alpine 版本镜像
+# 使用官方 Node.js 运行时镜像，14 或 16 都可以
 FROM node:20-alpine
 
-# 2. 创建并设置工作目录
+# 设置工作目录
 WORKDIR /app
 
-# 3. 拷贝依赖文件并安装生产依赖
-COPY package*.json  ./
-RUN npm install
+# 先复制 package.json 和 lock 文件
+COPY package.json package-lock.json* ./
 
-# 4. 拷贝其余源码
-COPY . .
+# 安装生产依赖
+RUN npm install --production
 
-# 5. 如果你还没 build，就添加构建命令（如果已经构建好可以跳过这行）
-RUN npm run build
+# 复制构建产物和静态资源
+COPY .next .next
+COPY public public
 
-# 6. 暴露 Next.js 默认端口
+# 如果你需要其他文件，也一起 COPY
+# COPY next.config.js .
+
+# 运行应用端口
 EXPOSE 3000
 
-# 7. 使用 Node 启动服务
+# 启动命令
 CMD ["npm", "start"]
