@@ -14,7 +14,7 @@ import React from "react";
 
 import { FieldConfig } from "@/components/form/formItem-renderer";
 import { useAddressList } from "@/hook/addresses/useAddressList";
-import { deleteAddress, updateAddress } from "@/services/address";
+import { addAddress, deleteAddress, updateAddress } from "@/services/address";
 import FormModal from "@/components/modal/form-modal";
 import ConfirmModal from "@/components/modal/confirm-modal";
 const addressColumns = [
@@ -67,11 +67,7 @@ const fieldsaddress: FieldConfig[] = [
     label: "邮编",
     placeholder: "请输入邮编",
   },
-  {
-    type: "checkbox",
-    name: "defaultAddress",
-    label: "设为默认地址",
-  },
+
   {
     type: "checkbox",
     name: "defaultAddress",
@@ -81,7 +77,6 @@ const fieldsaddress: FieldConfig[] = [
 
 type ModalType = "add" | "edit" | "delete" | null;
 const initAddress = {
-  id: "",
   recipient: "",
   phone: "",
   countryId: "",
@@ -89,7 +84,7 @@ const initAddress = {
   city: "",
   addressType: "",
   postcode: "",
-  defaultAddress: 1,
+  defaultAddress: 0,
 };
 
 export default function AddressTab() {
@@ -117,20 +112,9 @@ export default function AddressTab() {
     if (modalType === "add") {
       console.log("currentRowData", { ...currentRowData, addressType: 1 });
 
-      // await addAddress({
-      //   recipient: `"jack"${Math.random().toFixed(2)}`,
-      //   phone: "1355495214",
-      //   email: "jack56798@google.com",
-      //   country: "USA",
-      //   city: "NEW YORK",
-      //   address: "TRUMP ROAD NO.123",
-      //   postcode: "1458523",
-      //   addressType: 1,
-      //   defaultAddress: 1,
-      // }); // 新增接口
+      await addAddress({ ...currentRowData, addressType: 1 }); // 新增接口
     } else if (modalType === "edit") {
       await updateAddress(currentRowData); // 编辑接口
-      console.log(666);
     } else if (modalType === "delete") {
       await deleteAddress(currentRowData.id);
     }
@@ -189,7 +173,7 @@ export default function AddressTab() {
 
   return (
     <>
-      <Button color="primary" radius="none" onPress={handleAdd}>
+      <Button color="primary" radius="none" size="sm" onPress={handleAdd}>
         + 添加地址
       </Button>
       <Spacer y={2} />

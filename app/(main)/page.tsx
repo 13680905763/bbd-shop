@@ -3,6 +3,8 @@ import { Button, Input, Image, Form } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { AiOutlineAlibaba } from "react-icons/ai";
 import { FaCircle, FaRegImage } from "react-icons/fa";
+import React from "react";
+import clsx from "clsx";
 
 import { siteConfig } from "@/config/site";
 // import { Link } from "@heroui/link";
@@ -64,7 +66,7 @@ export default function Home() {
   return (
     <div className="pb-12">
       <section className="flex bg-cover bg-no-repeat h-[630px] bg-[url('https://bbdbuy.oss-cn-hongkong.aliyuncs.com/uploads/20250220/c4917de822e9f85cec22162733faad64.jpg')]">
-        <div className="container mx-auto flex-col flex justify-center  ">
+        <div className="container mx-auto flex-col flex justify-end  gap-16">
           <div className="max-w-3xl">
             <div className="text-7xl tracking-tighter font-bold text-white flex flex-col  mb-10">
               <p>Simplify Your </p>
@@ -103,6 +105,39 @@ export default function Home() {
                 size={"lg"}
               />
             </Form>
+          </div>
+          <div className=" h-[116px] rounded-2xl p-4 flex items-center justify-around mb-4 w-[70%]">
+            {[
+              { title: "下单", desc: "粘贴商品链接以提交订单" },
+              { title: "质检&存储", desc: "提供3-5张QC图和90天免费存储" },
+              { title: "提包", desc: "组合打包&检查包裹" },
+              { title: "国际物流", desc: "超过150家便宜的物流线路" },
+            ].map((step, index) => {
+              return (
+                <React.Fragment key={step.title}>
+                  <div className="flex flex-col items-center text-sm font-bold">
+                    <div
+                      className={clsx(
+                        "w-12 h-12 rounded-full flex items-center justify-center",
+                        "bg-[#ffffff4d] text-white font-bold opacity-90",
+                      )}
+                    >
+                      {index + 1}
+                    </div>
+                    <div className={clsx("mt-4", "text-white")}>
+                      {step.title}
+                    </div>
+                    <div className={clsx("mt-2", "text-white", "font-medium")}>
+                      {step.desc}
+                    </div>
+                  </div>
+
+                  {index < 4 - 1 && (
+                    <div className="flex-1 -mt-10 mx-4 border-t-2 border-dashed border-white" />
+                  )}
+                </React.Fragment>
+              );
+            })}
           </div>
         </div>
       </section>

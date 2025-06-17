@@ -3,7 +3,6 @@ import {
   Divider,
   getKeyValue,
   Input,
-  Pagination,
   Table,
   TableBody,
   TableCell,
@@ -11,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IoAddCircleOutline, IoWallet } from "react-icons/io5";
 
 import WalletCard from "./wallet-card";
@@ -19,8 +18,7 @@ import WalletCard from "./wallet-card";
 import CustomModal from "@/components/modal/common-modal";
 import FormModal from "@/components/modal/form-modal";
 import { FieldConfig } from "@/components/form/formItem-renderer";
-import { useWalletInfo } from "@/hook/wallet/useWalletInfo";
-import { getWalletDetail } from "@/services/wallet";
+import { useWalletDetail, useWalletInfo } from "@/hook/wallet/useWalletInfo";
 const columns = [
   {
     key: "bizReference",
@@ -91,29 +89,21 @@ const WithdrawalFields: FieldConfig[] = [
 export default function BalanceTab() {
   const [page, setPage] = React.useState(1);
   const { data, isLoading } = useWalletInfo();
-  // const { data: WalletDetail } = useWalletDetail(page, 10);
+  const { data: WalletDetail, isLoading: isLoadingD } = useWalletDetail(
+    page,
+    10,
+  );
 
   console.log("useWalletInfo", data);
+  console.log("WalletDetail", WalletDetail);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenWithdrawal, setIsOpenWithdrawal] = useState(false);
   const [formData, setFormData] = useState({});
-  const [tableData, setTableData] = useState([]);
   const handleSave = async () => {
     console.log("修改密码");
   };
 
-  console.log("tableData", tableData);
-
-  useEffect(() => {
-    getWalletDetail({
-      current: page,
-      size: 1,
-    }).then((res) => {
-      console.log(res);
-      setTableData(res.data.records);
-    });
-  }, []);
-  if (isLoading) return <div>加载中...</div>;
+  if (isLoading || isLoadingD) return <div>加载中...</div>;
 
   return (
     <div>
@@ -140,19 +130,19 @@ export default function BalanceTab() {
       <div className="font-bold my-4">余额流水</div>
       <Table
         isHeaderSticky
-        bottomContent={
-          <div className="flex w-full justify-center">
-            <Pagination
-              isCompact
-              showControls
-              showShadow
-              page={page}
-              // total={WalletDetail.total}
-              total={1}
-              onChange={(page) => setPage(page)}
-            />
-          </div>
-        }
+        // bottomContent={
+        //   <div className="flex w-full justify-center">
+        //     <Pagination
+        //       isCompact
+        //       showControls
+        //       showShadow
+        //       page={page}
+        //       // total={WalletDetail.total}
+        //       total={1}
+        //       onChange={(page) => setPage(page)}
+        //     />
+        //   </div>
+        // }
         bottomContentPlacement="outside"
         classNames={{
           wrapper: "p-0 rounded-none  border-1",
@@ -168,9 +158,9 @@ export default function BalanceTab() {
           )}
         </TableHeader>
         {/* <TableBody items={WalletDetail.records}> */}
-        <TableBody items={tableData}>
-          {(item) => (
-            <TableRow key={item}>
+        <TableBody items={WalletDetail.records}>
+          {(item: any) => (
+            <TableRow key={item?.id}>
               {(columnKey) => (
                 <TableCell>{getKeyValue(item, columnKey)}</TableCell>
               )}
