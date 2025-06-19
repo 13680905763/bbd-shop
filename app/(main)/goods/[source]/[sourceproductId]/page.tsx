@@ -14,7 +14,6 @@ import { GrPowerReset } from "react-icons/gr";
 import { IoIosLink } from "react-icons/io";
 import { AiFillTaobaoSquare } from "react-icons/ai";
 
-import { getGoodsInfo } from "@/services/api/goods";
 import {
   commonCard,
   lightFont,
@@ -22,8 +21,9 @@ import {
   subtitle,
 } from "@/components/primitives";
 import Stepper from "@/components/stepper";
-import { addCart } from "@/services/api/cart";
 import { Icon1688 } from "@/components/icons";
+import { getGoodsInfo } from "@/services/goods";
+import { addCart } from "@/services/cart";
 
 interface Sku {
   skuID: string;

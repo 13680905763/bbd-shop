@@ -7,11 +7,10 @@ import ProfileTab from "./components/profile-tab";
 import { SecurityTab } from "./components/security-tab";
 
 import UserBalanceCard from "@/components/wallet-card";
-import { useUser } from "@/services/hooks/useUser";
-import { useWalletInfo } from "@/hook/wallet/useWalletInfo";
+import { useUser, useWalletInfo } from "@/hook";
 
 export default function DashBoard() {
-  const { user, isLoading, isError } = useUser();
+  const { data: user, isLoading, isError } = useUser();
   const { data } = useWalletInfo();
 
   console.log("useWalletInfo", data);

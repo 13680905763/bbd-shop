@@ -12,9 +12,9 @@ import { useRouter } from "next/navigation";
 import ShopCard from "./shop-card";
 
 import Progress from "@/components/common/progress";
-import { useCart } from "@/services/hooks/useCart";
-import { deleteCart } from "@/services/api/cart";
 import ConfirmModal from "@/components/modal/confirm-modal";
+import { deleteCart } from "@/services/cart";
+import { useCart } from "@/hook";
 export type Product = {
   id: string;
   productTitle: string;
@@ -38,7 +38,7 @@ export type Shop = {
 };
 
 export default function CartPage() {
-  const { cartData, isLoading, isError, mutate } = useCart();
+  const { data: cartData, isLoading, isError, mutate } = useCart();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selected, setSelected] = useState<{
     [shopId: string]: { [productId: string]: boolean };
@@ -88,19 +88,19 @@ export default function CartPage() {
   };
   // 是否所有商品都选中
   const isAllSelected = () =>
-    cartData.every((shop: any) => {
+    cartData?.every((shop) => {
       return shop.cartList.every(
-        (product: any) => selected[shop.shopId]?.[product.id],
+        (product) => selected[shop.shopId]?.[product.id],
       );
     });
   // 店铺全选
-  const toggleShop = (shop: any, checked: boolean) => {
+  const toggleShop = (shop: Shop, checked: boolean) => {
     setSelected((prev) => {
       const next = { ...prev };
 
       next[shop.shopId] = {};
 
-      shop.cartList.forEach((product: any) => {
+      shop.cartList.forEach((product) => {
         next[shop.shopId][product.id] = checked;
       });
 
@@ -112,9 +112,9 @@ export default function CartPage() {
   const toggleAll = (checked: boolean) => {
     const newSelected: typeof selected = {};
 
-    cartData.forEach((shop: any) => {
+    cartData?.forEach((shop) => {
       newSelected[shop.shopId] = {};
-      shop.cartList.forEach((product: any) => {
+      shop.cartList.forEach((product) => {
         newSelected[shop.shopId][product.id] = checked;
       });
     });
@@ -174,7 +174,7 @@ export default function CartPage() {
         </div>
 
         <div className="flex flex-col gap-4">
-          {cartData.map((shop: any) => (
+          {cartData?.map((shop) => (
             <ShopCard
               key={shop.shopId}
               mutate={mutate}

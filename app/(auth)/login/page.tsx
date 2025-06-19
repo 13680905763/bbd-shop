@@ -5,7 +5,7 @@ import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 
 import { subtitle } from "@/components/primitives";
-import { getlogin } from "@/services/api/auth";
+import { loginCustomer } from "@/services";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -17,7 +17,7 @@ export default function LoginPage() {
     let data: any = Object.fromEntries(new FormData(e.currentTarget));
 
     console.log("data", data);
-    getlogin({ ...data })
+    loginCustomer({ ...data })
       .then((e: any) => {
         if (e.success) {
           addToast({

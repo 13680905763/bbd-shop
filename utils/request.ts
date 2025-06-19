@@ -27,6 +27,8 @@ export const request = axios.create({
 request.interceptors.request.use(
   (config) => {
     // const token = getToken();
+    config.headers["Language"] = "ZH";
+    config.headers["Currency"] = "CNY";
     const lang = getLang();
 
     // if (token) {

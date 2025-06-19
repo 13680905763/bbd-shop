@@ -29,11 +29,11 @@ import { IoCart } from "react-icons/io5";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { SearchIcon, Logo } from "@/components/icons";
-import { getlogout } from "@/services/api/auth";
-import { useUser } from "@/services/hooks/useUser";
+import { logoutCustomer } from "@/services";
+import { useUser } from "@/hook";
 
 export const Navbar = () => {
-  const { user, isLoading, isError } = useUser();
+  const { data, isLoading, isError } = useUser();
   const [inputValue, setInputValue] = useState("");
   const pathname = usePathname(); // 获取当前路径
   const router = useRouter();
@@ -86,7 +86,7 @@ export const Navbar = () => {
   };
   const logout = async () => {
     try {
-      const res: any = await getlogout(); // 调用后端接口，带上 cookie
+      const res: any = await logoutCustomer(); // 调用后端接口，带上 cookie
 
       res.success && router.replace("/login");
     } catch (error) {
@@ -219,7 +219,7 @@ export const Navbar = () => {
           </PopoverContent>
         </Popover>
 
-        {user ? (
+        {data ? (
           <>
             <Button
               isIconOnly
@@ -235,11 +235,11 @@ export const Navbar = () => {
                   as="button"
                   avatarProps={{
                     isBordered: true,
-                    src: user?.avatarUrl,
+                    src: data?.avatarUrl,
                   }}
                   className="transition-transform"
-                  description={user?.email}
-                  name={user?.name}
+                  description={data?.email}
+                  name={data?.name}
                 />
               </DropdownTrigger>
               <DropdownMenu aria-label="Static Actions">

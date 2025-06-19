@@ -1,5 +1,4 @@
 import {
-  addToast,
   Button,
   Image,
   Modal,
@@ -13,11 +12,9 @@ import {
 } from "@heroui/react";
 import { useState } from "react";
 import { FaEdit } from "react-icons/fa";
-import { useRouter } from "next/navigation";
 
 import { Product } from "./page";
 
-import { updateCart } from "@/services/api/cart";
 type ProductItemProps = {
   product: Product;
 };
@@ -69,29 +66,6 @@ export default function ProductItem({ product }: ProductItemProps) {
     onOpen: onOpenRemark,
     onOpenChange: onOpenChangeRemark,
   } = useDisclosure();
-  const router = useRouter();
-
-  const handleQuantity = (quantity: number) => {
-    updateCart([
-      {
-        id: product.id,
-        quantity,
-        remark: product.remark,
-      },
-    ]).then((e: any) => {
-      if (e.success) {
-        addToast({
-          title: e.msg,
-          timeout: 1000,
-        });
-      } else {
-        addToast({
-          title: e.msg,
-          timeout: 1000,
-        });
-      }
-    });
-  };
 
   return (
     <div className="flex justify-between items-center gap-4">
