@@ -38,7 +38,7 @@ export default function FormItemRenderer({
     onChange({ ...formData, [key]: value });
   };
 
-  console.log("formData", formData);
+  // console.log("formData", formData);
 
   return (
     <>

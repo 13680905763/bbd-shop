@@ -1,7 +1,9 @@
 import "@/styles/globals.css";
+import { NextIntlClientProvider } from "next-intl";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
 import Script from "next/script";
+import { getLocale, getMessages } from "next-intl/server";
 
 import { Providers } from "./providers";
 
@@ -25,13 +27,16 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html suppressHydrationWarning lang="en">
+    <html suppressHydrationWarning lang={locale}>
       <head>
         <Script
           src="https://accounts.google.com/gsi/client"
@@ -44,9 +49,11 @@ export default function RootLayout({
           // fontSans.variable,
         )}
       >
-        <Providers themeProps={{ attribute: "class", defaultTheme: "light" }}>
-          {children}
-        </Providers>
+        <NextIntlClientProvider messages={messages}>
+          <Providers themeProps={{ attribute: "class", defaultTheme: "light" }}>
+            {children}
+          </Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

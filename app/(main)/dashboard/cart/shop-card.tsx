@@ -1,10 +1,9 @@
 import { Divider, Checkbox } from "@heroui/react";
-import { AiFillTaobaoSquare } from "react-icons/ai";
 
 import ProductItem from "./product-item";
 import { Product, Shop } from "./page";
 
-import { Icon1688 } from "@/components/icons";
+import SourceIcon from "@/components/common/source-icon";
 
 type ShopCardProps = {
   shop: Shop;
@@ -31,11 +30,7 @@ export default function ShopCard({
           size="sm"
           onChange={(e) => onToggleShop(e.target.checked)}
         />
-        {shop.cartList[0]?.source === "TAOBAO" ? (
-          <AiFillTaobaoSquare className="text-[#ff5000] w-[22px] h-[22px]" />
-        ) : shop.cartList[0]?.source === "1688" ? (
-          <Icon1688 className="text-orange-500" size={22} />
-        ) : null}
+        <SourceIcon source={shop.cartList[0]?.source} />
         <div>{shop?.shopName}</div>
       </div>
 

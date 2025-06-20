@@ -13,7 +13,7 @@ export default function DashBoard() {
   const { data: user, isLoading, isError } = useUser();
   const { data } = useWalletInfo();
 
-  console.log("useWalletInfo", data);
+  // console.log("useWalletInfo", data);
 
   if (isLoading) return <div>加载中...</div>;
   if (isError) return <div>加载失败</div>;

@@ -5,19 +5,17 @@ import { AiOutlineAlibaba } from "react-icons/ai";
 import { FaCircle, FaRegImage } from "react-icons/fa";
 import React from "react";
 import clsx from "clsx";
+import { useTranslations } from "next-intl";
 
 import { siteConfig } from "@/config/site";
-// import { Link } from "@heroui/link";
-// import { Snippet } from "@heroui/snippet";
-// import { Code } from "@heroui/code";
-// import { button as buttonStyles } from "@heroui/theme";
 
 // import { siteConfig } from "@/config/site";
-// import { title, subtitle } from "@/components/primitives";
-// import { GithubIcon } from "@/components/icons";
 
 export default function Home() {
   const router = useRouter();
+  const t = useTranslations("Home");
+
+  console.log("tttt", t("title"));
 
   /**
    * 从 1688 商品链接中提取 offerId

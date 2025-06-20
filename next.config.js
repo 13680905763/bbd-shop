@@ -1,14 +1,8 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-    output: 'standalone',
-    // async rewrites() {
-    //     return [
-    //         {
-    //             source: '/api/:path*', // 当你请求 /api/xxx
-    //             destination: 'http://192.168.1.191:8080/:path*', // 实际代理到后端 API
-    //         },
-    //     ];
-    // },
-};
+import createNextIntlPlugin from 'next-intl/plugin';
 
-module.exports = nextConfig;
+const withNextIntl = createNextIntlPlugin();
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {};
+
+export default withNextIntl(nextConfig);

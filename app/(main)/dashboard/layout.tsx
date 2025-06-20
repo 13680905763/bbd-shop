@@ -18,6 +18,8 @@ export default function DashBoardlayout({
     const pathParts = pathname.split("/").filter(Boolean);
 
     if (pathParts[0] === "dashboard" && pathParts[1]) {
+      console.log("pathParts[1]", pathname, pathParts, pathParts[1]);
+
       setCurrentItem(pathParts[1]);
     } else {
       setCurrentItem("");

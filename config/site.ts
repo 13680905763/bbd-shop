@@ -88,7 +88,7 @@ export const siteConfig = {
       title: "我的账户",
     },
     {
-      key: "wallet?tab=balance",
+      key: "wallet",
       title: "我的资产",
     },
     {
