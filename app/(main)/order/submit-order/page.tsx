@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { Button, Checkbox, Divider } from "@heroui/react";
-import NextLink from "next/link";
 
 import OrderCard from "./order-card";
 
@@ -185,11 +184,9 @@ export default function SubmitOrder() {
             应付金额:
           </div>
           <p className="text-price-xl">PLN 714.84</p>
-          <NextLink href="/order/pay-order">
-            <Button className="w-[300px]" color="primary" size="lg">
-              提交
-            </Button>
-          </NextLink>
+          <Button className="w-[300px]" color="primary" size="lg">
+            提交
+          </Button>
         </div>
       </div>
     </div>

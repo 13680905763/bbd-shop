@@ -1,6 +1,5 @@
 import React from "react";
-import { Card, CardBody, CardFooter } from "@heroui/card";
-import { Image } from "@heroui/image";
+import { Card, CardBody, CardFooter, Image } from "@heroui/react";
 
 export default function FavoritesPage() {
   const list = [

@@ -14,7 +14,7 @@ import { IoRepeat } from "react-icons/io5";
 
 import WalletCard from "./wallet-card";
 
-import CustomModal from "@/components/modal/common-modal";
+import CommonModal from "@/components/modal/common-modal";
 
 const columns = [
   {
@@ -93,7 +93,7 @@ export default function ScoreTab() {
           )}
         </TableBody>
       </Table>
-      <CustomModal
+      <CommonModal
         isOpen={isOpen}
         showFooter={false}
         title="积分兑换"
@@ -121,7 +121,7 @@ export default function ScoreTab() {
             </div>
           </div>
         </div>
-      </CustomModal>
+      </CommonModal>
     </div>
   );
 }

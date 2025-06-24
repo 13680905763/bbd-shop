@@ -15,6 +15,7 @@ import Progress from "@/components/common/progress";
 import ConfirmModal from "@/components/modal/confirm-modal";
 import { deleteCart } from "@/services/cart";
 import { useCart } from "@/hook";
+import { createOrderByCart } from "@/services";
 export type Product = {
   id: string;
   productTitle: string;
@@ -44,7 +45,15 @@ export default function CartPage() {
     [shopId: string]: { [productId: string]: boolean };
   }>({});
   const router = useRouter();
+  const handleCartSubmitOrder = async () => {
+    const res: any = await createOrderByCart({
+      idList: selectedIdArr,
+    });
 
+    if (res.code === 200) {
+      router.push(`/order/pay-order/${res.data}/?recharge=false`);
+    }
+  };
   const handleDeleteCart = (onClose: any) => {
     deleteCart({ idList: selectedIdArr }).then((e: any) => {
       if (e.success) {
@@ -87,12 +96,17 @@ export default function CartPage() {
     }));
   };
   // 是否所有商品都选中
-  const isAllSelected = () =>
-    cartData?.every((shop) => {
-      return shop.cartList.every(
-        (product) => selected[shop.shopId]?.[product.id],
-      );
-    });
+  // const isAllSelected = () =>
+  //   cartData?.every((shop) => {
+  //     return shop.cartList.every(
+  //       (product) => selected[shop.shopId]?.[product.id],
+  //     );
+  //   });
+  const allSelected = useMemo(() => {
+    return cartData?.every((shop) =>
+      shop.cartList.every((product) => selected[shop.shopId]?.[product.id]),
+    );
+  }, [cartData, selected]);
   // 店铺全选
   const toggleShop = (shop: Shop, checked: boolean) => {
     setSelected((prev) => {
@@ -191,7 +205,7 @@ export default function CartPage() {
         <div className="mt-10  sticky bottom-0 border-t-[1px] bg-white z-10 card-cart">
           <div className="p-2 flex gap-2">
             <Checkbox
-              isSelected={isAllSelected()}
+              isSelected={allSelected}
               onChange={(e) => toggleAll(e.target.checked)}
             >
               全选

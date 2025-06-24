@@ -35,7 +35,12 @@ const FormModal = ({
   loading = false,
 }: FormModalProps) => {
   return (
-    <Modal isOpen={isOpen} placement="top-center" onOpenChange={onOpenChange}>
+    <Modal
+      isDismissable={false}
+      isOpen={isOpen}
+      placement="top-center"
+      onOpenChange={onOpenChange}
+    >
       <ModalContent>
         {(onClose) => (
           <>

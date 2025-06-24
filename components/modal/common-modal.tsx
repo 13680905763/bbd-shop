@@ -1,4 +1,4 @@
-// components/common/CustomModal.tsx
+// components/common/CommonModal.tsx
 import {
   Modal,
   ModalContent,
@@ -9,7 +9,7 @@ import {
 } from "@heroui/react";
 import React from "react";
 
-interface CustomModalProps {
+interface CommonModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   title?: string;
@@ -21,9 +21,20 @@ interface CustomModalProps {
   onConfirm?: () => void;
   confirmText?: string;
   cancelText?: string;
+  size?:
+    | "xs"
+    | "sm"
+    | "md"
+    | "lg"
+    | "xl"
+    | "2xl"
+    | "3xl"
+    | "4xl"
+    | "5xl"
+    | "full";
 }
 
-export default function CustomModal({
+export default function CommonModal({
   isOpen,
   onOpenChange,
   title,
@@ -35,9 +46,15 @@ export default function CustomModal({
   onConfirm,
   confirmText = "确认",
   cancelText = "取消",
-}: CustomModalProps) {
+  size = "md",
+}: CommonModalProps) {
   return (
-    <Modal isOpen={isOpen} placement="top-center" onOpenChange={onOpenChange}>
+    <Modal
+      isOpen={isOpen}
+      placement="top-center"
+      size={size}
+      onOpenChange={onOpenChange}
+    >
       <ModalContent>
         {(onClose) => (
           <>

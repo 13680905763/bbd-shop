@@ -1,8 +1,13 @@
 "use client";
 import React from "react";
-import { Image } from "@heroui/image";
-import { Button } from "@heroui/button";
-import { Accordion, AccordionItem, Divider, Snippet } from "@heroui/react";
+import {
+  Accordion,
+  AccordionItem,
+  Divider,
+  Snippet,
+  Image,
+  Button,
+} from "@heroui/react";
 
 import { describeText, price, subtitle } from "@/components/primitives";
 const processItems = [

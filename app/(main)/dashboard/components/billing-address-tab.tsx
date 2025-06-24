@@ -1,14 +1,5 @@
 "use client";
-import {
-  Button,
-  Spacer,
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-} from "@heroui/react";
+import { Button } from "@heroui/react";
 import { useCallback, useState } from "react";
 import React from "react";
 
@@ -173,36 +164,23 @@ export default function AddressTab() {
 
   return (
     <>
-      <Button color="primary" radius="none" size="sm" onPress={handleAdd}>
-        + 添加地址
-      </Button>
-      <Spacer y={2} />
-      <Table
-        aria-label="address-table"
-        classNames={{
-          wrapper: "p-0 rounded-none border-1",
-          tr: "border-b-1 last:border-b-0",
-          th: "text-default-500 !rounded-none",
-        }}
-        radius="none"
-        shadow="none"
-      >
-        <TableHeader columns={addressColumns}>
-          {(column) => (
-            <TableColumn key={column.key}>{column.label}</TableColumn>
-          )}
-        </TableHeader>
-        <TableBody items={data}>
-          {(item) => (
-            <TableRow key={item.id}>
-              {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
-              )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-
+      <div className="p-4 border-2 border-dashed border-[#5e5e5e]">
+        <div>123</div>
+        <div>312</div>
+      </div>
+      <div className="mt-4 flex gap-4">
+        <Button
+          className="button-default"
+          radius="none"
+          size="sm"
+          // onPress={handleAdd}
+        >
+          删除账单地址
+        </Button>
+        <Button color="primary" radius="none" size="sm" onPress={handleAdd}>
+          修改账单地址
+        </Button>
+      </div>
       <FormModal
         fields={fieldsaddress}
         formData={currentRowData}

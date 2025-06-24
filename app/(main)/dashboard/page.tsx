@@ -5,6 +5,7 @@ import { Tabs, Tab } from "@heroui/react";
 import AddressTab from "./components/address-tab";
 import ProfileTab from "./components/profile-tab";
 import { SecurityTab } from "./components/security-tab";
+import BillingAddressTab from "./components/billing-address-tab";
 
 import UserBalanceCard from "@/components/wallet-card";
 import { useUser, useWalletInfo } from "@/hook";
@@ -40,7 +41,7 @@ export default function DashBoard() {
             variant="underlined"
           >
             <Tab
-              key="photos"
+              key="profile"
               title={
                 <div className="flex items-center space-x-2">
                   <span>个人信息</span>
@@ -50,7 +51,7 @@ export default function DashBoard() {
               <ProfileTab defaultformData={user} />
             </Tab>
             <Tab
-              key="music"
+              key="address"
               title={
                 <div className="flex items-center space-x-2">
                   <span>收货地址</span>
@@ -60,7 +61,7 @@ export default function DashBoard() {
               <AddressTab />
             </Tab>
             <Tab
-              key="videos"
+              key="security"
               title={
                 <div className="flex items-center space-x-2">
                   <span>账号安全</span>
@@ -68,6 +69,16 @@ export default function DashBoard() {
               }
             >
               <SecurityTab />
+            </Tab>
+            <Tab
+              key="billingAddress"
+              title={
+                <div className="flex items-center space-x-2">
+                  <span>信用卡账单地址</span>
+                </div>
+              }
+            >
+              <BillingAddressTab />
             </Tab>
           </Tabs>
         </div>

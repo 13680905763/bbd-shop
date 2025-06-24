@@ -1,8 +1,6 @@
 import {
   Button,
-  Divider,
   getKeyValue,
-  Input,
   Table,
   TableBody,
   TableCell,
@@ -12,13 +10,14 @@ import {
 } from "@heroui/react";
 import React, { useState } from "react";
 import { IoAddCircleOutline, IoWallet } from "react-icons/io5";
+import { useRouter } from "next/navigation";
 
 import WalletCard from "./wallet-card";
 
-import CustomModal from "@/components/modal/common-modal";
 import FormModal from "@/components/modal/form-modal";
 import { FieldConfig } from "@/components/form/formItem-renderer";
 import { useWalletDetail, useWalletInfo } from "@/hook/wallet/useWalletInfo";
+import RechargeModal from "@/components/modal/recharge.modal";
 const columns = [
   {
     key: "bizReference",
@@ -94,11 +93,12 @@ export default function BalanceTab() {
     10,
   );
 
-  console.log("useWalletInfo", data);
-  console.log("WalletDetail", WalletDetail);
+  // console.log("useWalletInfo", data);
+  // console.log("WalletDetail", WalletDetail);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenWithdrawal, setIsOpenWithdrawal] = useState(false);
   const [formData, setFormData] = useState({});
+  const router = useRouter();
   const handleSave = async () => {
     console.log("修改密码");
   };
@@ -168,21 +168,9 @@ export default function BalanceTab() {
           )}
         </TableBody>
       </Table>
-      <CustomModal isOpen={isOpen} title="积分兑换" onOpenChange={setIsOpen}>
-        <Input
-          label="金额"
-          placeholder="Enter your password"
-          variant="bordered"
-        />
-        <Divider className="my-2" />
-        <div className="grid grid-cols-3 gap-4">
-          {[50, 100, 200, 500, 1000, 5000].map((item) => (
-            <Button key={item} className="border-1 border-[#ccc] bg-[#fff] ">
-              {item}
-            </Button>
-          ))}
-        </div>
-      </CustomModal>
+
+      <RechargeModal isOpen={isOpen} onOpenChange={setIsOpen} />
+
       <FormModal
         fields={WithdrawalFields}
         formData={formData}

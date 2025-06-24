@@ -24,6 +24,7 @@ import Stepper from "@/components/stepper";
 import { Icon1688 } from "@/components/icons";
 import { getGoodsInfo } from "@/services/goods";
 import { addCart } from "@/services/cart";
+import { createOrderByProduct } from "@/services";
 
 interface Sku {
   skuID: string;
@@ -126,6 +127,25 @@ export default function GoodsPage() {
   const [isLoading, setisLoading] = useState<any>(false);
   const [currentImg, setCurrentImg] = useState<string>();
   const router = useRouter();
+  const handleBuy = async () => {
+    console.log("currentSku", currentSku);
+    if (!currentSku) return;
+    setisLoading(true);
+
+    const res: any = await createOrderByProduct({
+      source: params.source,
+      sourceProductId: params.sourceproductId,
+      sourceSkuId: currentSku.skuID,
+      quantity,
+      remark,
+    });
+
+    setisLoading(false);
+
+    if (res.code === 200) {
+      router.push(`/order/pay-order/${res.data}/?recharge=false`);
+    }
+  };
   const add = () => {
     setisLoading(true);
     const data = {
@@ -471,6 +491,7 @@ export default function GoodsPage() {
                   className=" h-16 flex-1"
                   color="primary"
                   isLoading={isLoading}
+                  onPress={handleBuy}
                 >
                   立即购买
                 </Button>

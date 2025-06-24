@@ -19,7 +19,7 @@ const UserBalanceCard = ({
   const router = useRouter();
 
   return (
-    <div className="flex justify-between bg-[#fff] rounded-lg  p-8">
+    <div className="flex justify-between bg-[#ffeee1] rounded-lg  p-8">
       <div className="flex  flex-1 items-center gap-6">
         <Avatar className="w-20 h-20 text-large" src={userInfo.avatarUrl} />
         <div className="flex-1">
