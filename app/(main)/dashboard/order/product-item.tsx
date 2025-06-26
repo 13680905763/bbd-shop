@@ -7,16 +7,14 @@ import {
   ModalFooter,
   ModalHeader,
   Textarea,
-  Tooltip,
   useDisclosure,
 } from "@heroui/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FaEdit } from "react-icons/fa";
-
-import { Product } from "./page";
 
 type ProductItemProps = {
-  product: Product;
+  product: any;
+  isLastProduct: boolean;
 };
 
 const RemarkModal = ({ isOpen, onOpenChange, handleRemark, value }: any) => {
@@ -58,9 +56,12 @@ const RemarkModal = ({ isOpen, onOpenChange, handleRemark, value }: any) => {
   );
 };
 
-export default function ProductItem({ product }: ProductItemProps) {
+export default function ProductItem({
+  product,
+  isLastProduct,
+}: ProductItemProps) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
+  const router = useRouter();
   const {
     isOpen: isOpenRemark,
     onOpen: onOpenRemark,
@@ -68,41 +69,75 @@ export default function ProductItem({ product }: ProductItemProps) {
   } = useDisclosure();
 
   return (
-    <div className="flex justify-between items-center gap-4">
-      <div className="flex">
-        <Image alt="Product" height={90} src={product.skuPicUrl} width={90} />
-      </div>
-      <div className="flex-[2]">
-        <div className="line-clamp-2 font-bold">{product.productTitle}</div>
-        <div className="text-gray-500">{product.sku.propName_valueName}</div>
-      </div>
-      <div className="flex-1  flex gap-2">
-        <Tooltip
-          className="bg-[#262626] text-white p-2 "
-          content={product.remark}
-        >
-          <p className=" max-w-24  truncate">备注：{product.remark}</p>
-        </Tooltip>
-        <button className="text-blue-500 underline" onClick={onOpenRemark}>
-          <FaEdit className="w-6 h-6 text-[#f0700c]" />
-        </button>
-      </div>
-      <div>
-        <p>${product.price}</p>
-        <p>X{product.quantity}</p>
-      </div>
-      <div className="flex-1 place-items-end">
-        <div className="text-lg font-semibold text-red-500">
-          总计: ${product.totalPrice}
+    <>
+      <div className="flex justify-between items-center gap-4 border-b-1 p-2 px-4">
+        <div className="flex ">
+          <div className="flex grow-0 shrink-0 basis-[400px] gap-2">
+            <div className=" grow-0 shrink-0 basis-[90px]">
+              <button
+                onClick={() =>
+                  router.push(
+                    `/goods/${product.source}/${product?.sourceProductId}`,
+                  )
+                }
+              >
+                <Image
+                  alt="Product"
+                  height={90}
+                  src={product.skuPicUrl || product?.picUrl}
+                  width={90}
+                />
+              </button>
+            </div>
+            <div>
+              <div className="line-clamp-2 font-bold">
+                {product?.productTitle}
+              </div>
+              <div className="text-gray-500 text-sm">
+                {product?.sku?.propName_valueName}
+              </div>
+              <div className="text-gray-500">{product?.remark}</div>
+            </div>
+          </div>
         </div>
-        <div className="text-gray-500">国内运费: {product.postFee}</div>
+
+        <div className="">
+          <p>${product.price}</p>
+        </div>
+        <div className="">
+          <p>x{product.quantity}</p>
+        </div>
+        <div className="flex  gap-2  justify-center flex-col">
+          <Button className="button-white" radius="none" size="sm">
+            精细拍照
+          </Button>
+          <Button className="button-white" radius="none" size="sm">
+            留言
+          </Button>
+        </div>
+        <RemarkModal
+          // handleRemark={handleRemark}
+          isOpen={isOpenRemark}
+          value={product.remark}
+          onOpenChange={onOpenChangeRemark}
+        />
       </div>
-      <RemarkModal
-        // handleRemark={handleRemark}
-        isOpen={isOpenRemark}
-        value={product.remark}
-        onOpenChange={onOpenChangeRemark}
-      />
-    </div>
+      {/* <div
+        className={`${isLastProduct ? "" : "border-b-1"} p-3 flex  justify-between items-center`}
+      >
+        <div>精细拍照</div>
+        <div>0.47</div>
+        <div>x1</div>
+        <div>pending</div>
+        <div className="flex gap-2">
+          <Button color="primary" radius="none" size="sm">
+            支付
+          </Button>
+          <Button className="button-default" radius="none" size="sm">
+            取消
+          </Button>
+        </div>
+      </div> */}
+    </>
   );
 }

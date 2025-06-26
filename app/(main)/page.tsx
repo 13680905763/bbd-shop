@@ -15,7 +15,7 @@ export default function Home() {
   const router = useRouter();
   const t = useTranslations("Home");
 
-  console.log("tttt", t("title"));
+  console.log("tttt", t("slogan.line1"));
 
   /**
    * 从 1688 商品链接中提取 offerId
@@ -67,8 +67,8 @@ export default function Home() {
         <div className="container mx-auto flex-col flex justify-end  gap-16">
           <div className="max-w-3xl">
             <div className="text-7xl tracking-tighter font-bold text-white flex flex-col  mb-10">
-              <p>Simplify Your </p>
-              <p>Shopping With BBD</p>
+              <p>{t("slogan.line1")}</p>
+              <p>{t("slogan.line2")}</p>
             </div>
             <Form className="w-full " onSubmit={Search}>
               <Input
@@ -117,15 +117,21 @@ export default function Home() {
                     <div
                       className={clsx(
                         "w-12 h-12 rounded-full flex items-center justify-center",
-                        "bg-[#ffffff4d] text-white font-bold opacity-90",
+                        "bg-[#9ca3af8a] text-white font-bold opacity-90 text-xl",
                       )}
                     >
                       {index + 1}
                     </div>
-                    <div className={clsx("mt-4", "text-white")}>
+                    <div className={clsx("mt-4", "text-[#000000d5]")}>
                       {step.title}
                     </div>
-                    <div className={clsx("mt-2", "text-white", "font-medium")}>
+                    <div
+                      className={clsx(
+                        "mt-2",
+                        "text-[#000000c0]",
+                        "font-medium",
+                      )}
+                    >
                       {step.desc}
                     </div>
                   </div>
@@ -144,26 +150,26 @@ export default function Home() {
         <div className="mt-[20px] flex justify-evenly">
           <Image
             alt="HeroUI hero Image"
-            src="	https://bbdbuy.com/uploads/20241029/61049479ab798a2c55ec58757d45f56c.png"
+            src="/images/page/tab1.png"
             width={350}
           />
           <Image
             alt="HeroUI hero Image"
-            src="https://bbdbuy.com/uploads/20241029/baa067483290d2ca1f91c845d4e255f6.png"
+            src="/images/page/tab2.png"
             width={350}
           />
           <Image
             alt="HeroUI hero Image"
-            src="https://bbdbuy.com/uploads/20241029/baa067483290d2ca1f91c845d4e255f6.png"
+            src="/images/page/tab3.png"
             width={350}
           />
           <Image
             alt="HeroUI hero Image"
-            src="	https://bbdbuy.com/uploads/20241029/4e05c63f6f2a87850e803ea0c907c705.png"
+            src="/images/page/tab4.png"
             width={350}
           />
         </div>
-        <h2 className="text-4xl  font-bold text-center my-14">
+        <h2 className="text-4xl  font-bold text-center my-10">
           One-Stop Shopping Service
         </h2>
         <div className="flex justify-evenly">

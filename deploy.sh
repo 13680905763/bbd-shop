@@ -8,26 +8,26 @@ PROJECT_NAME="bbdbuy-pc"
 ARCHIVE_NAME="bbdbuy-pc.zip"
 REMOTE_ARCHIVE_PATH="/usr/frontend/$ARCHIVE_NAME"
 
-# echo "==> Step 1: Building project locally..."
-# rm -rf .next
-# pnpm install
-# pnpm build
+echo "==> Step 1: Building project locally..."
+rm -rf .next
+pnpm install
+pnpm build
 
-# if [ $? -ne 0 ]; then
-#   echo "❌ Build failed"
-#   exit 1
-# fi
+if [ $? -ne 0 ]; then
+  echo "❌ Build failed"
+  exit 1
+fi
 
-# echo "==> Step 2: Packaging build artifacts..."
-# rm -f $ARCHIVE_NAME
-# "/c/Program Files/7-Zip/7z.exe" a -tzip $ARCHIVE_NAME .next public package.json pnpm-lock.yaml next.config.js
+echo "==> Step 2: Packaging build artifacts..."
+rm -f $ARCHIVE_NAME
+"/c/Program Files/7-Zip/7z.exe" a -tzip $ARCHIVE_NAME .next public package.json pnpm-lock.yaml next.config.js
 
-# echo "==> Step 3: Uploading archive to server..."
-# scp $ARCHIVE_NAME "${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_ARCHIVE_PATH}"
-# if [ $? -ne 0 ]; then
-#   echo "❌ Upload failed"
-#   exit 1
-# fi
+echo "==> Step 3: Uploading archive to server..."
+scp $ARCHIVE_NAME "${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_ARCHIVE_PATH}"
+if [ $? -ne 0 ]; then
+  echo "❌ Upload failed"
+  exit 1
+fi
 
 echo "==> Step 4: Running remote deployment..."
 ssh ${REMOTE_USER}@${REMOTE_HOST} bash <<EOF

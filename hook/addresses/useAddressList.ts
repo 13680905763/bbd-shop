@@ -8,5 +8,5 @@ export interface Address {
   detail: string;
 }
 
-export const useAddressList = () =>
-  useQuery<Address[]>("/customer/address/list?addressType=1");
+export const useAddressList = (addressType: number) =>
+  useQuery<any[]>(`/customer/address/list?addressType=${addressType}`);

@@ -1,8 +1,38 @@
 {
     "Home": {
-        "title": "Welcome back!"
-    },
-    "Cart": {
-        "empty": "Your cart is empty"
+        "slogan": {
+            "line1": "Simplify Your",
+            "line2": "Shopping With BBD"
+        },
+        "searchLabel": "Enter product name / link",
+        "steps": [
+            {
+                "title": "Place Order",
+                "desc": "Paste the product link to submit an order"
+            },
+            {
+                "title": "QC & Storage",
+                "desc": "Provide 3–5 QC photos and 90 days of free storage"
+            },
+            {
+                "title": "Packaging",
+                "desc": "Combine packages & inspect parcels"
+            },
+            {
+                "title": "International Shipping",
+                "desc": "Over 150 affordable logistics routes"
+            }
+        ],
+        "serviceTitle": "One-Stop Shopping Service",
+        "describeItems": {
+            "title1": "Product Sourcing",
+            "desc1": "We help you source reliable suppliers on 1688, Taobao, and Tmall.",
+            "title2": "Quality Inspection",
+            "desc2": "Each item is inspected and photographed before shipment.",
+            "title3": "Warehousing",
+            "desc3": "Free storage for up to 90 days for all your purchases.",
+            "title4": "Global Shipping",
+            "desc4": "Ship worldwide via trusted and cost-effective logistics providers."
+        }
     }
 }

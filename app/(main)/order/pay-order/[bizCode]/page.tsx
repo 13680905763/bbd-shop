@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Button,
   cn,
@@ -9,19 +9,26 @@ import {
   Tooltip,
   useRadio,
   VisuallyHidden,
+  RadioProps,
+  addToast,
 } from "@heroui/react";
 import { HiQuestionMarkCircle } from "react-icons/hi";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { IoWallet } from "react-icons/io5";
 
 import { price } from "@/components/primitives";
 import Progress from "@/components/common/progress";
-import { usePayMethod, useWalletInfo } from "@/hook";
+import {
+  useAddressList,
+  usePayMethod,
+  usePayOrderStatus,
+  useWalletInfo,
+} from "@/hook";
 import RechargeModal from "@/components/modal/recharge.modal";
 import CommonModal from "@/components/modal/common-modal";
-import { createPayOrder } from "@/services";
+import { createPayOrder, getPayOrderStatus } from "@/services";
 
-export const CustomRadio = (props: any) => {
+const CustomRadio = (props: RadioProps) => {
   const {
     Component,
     children,
@@ -57,28 +64,56 @@ export const CustomRadio = (props: any) => {
 };
 
 export default function SubmitOrder() {
-  const searchParams = useSearchParams();
-  const params = useParams();
+  const params = useParams<{ bizCode: string }>();
 
-  const recharge = searchParams.get("recharge") === "true";
   const [isOpen, setIsOpen] = useState(false);
   const [isOpen1, setIsOpen1] = useState(false);
+  const [paymentId, setPaymentId] = useState("");
 
-  const { data, isLoading, isError } = usePayMethod(recharge);
+  const { data, isLoading, isError } = usePayMethod(params.bizCode);
   const { data: WalletInfo } = useWalletInfo();
+  const { data: PayOrderStatus, mutate: PayOrderStatusMutate } =
+    usePayOrderStatus(params.bizCode);
+  const { data: billingAddressData } = useAddressList(2);
 
   const hanldeCreatePayOrder = async () => {
-    console.log("handleCreatePayOrder");
-    const res = await createPayOrder({
+    console.log("handleCreatePayOrder", paymentId);
+    const res: any = await createPayOrder({
       bizCode: params.bizCode,
-      paymentId: 14,
-      addressId: 13,
+      paymentId,
+      addressId: billingAddressData![0]?.id,
     });
 
     console.log("res", res.data);
-    window.open(res.data, "_blank");
-    setIsOpen1(true);
+    if (res.code === 200) {
+      window.open(res.data, "_blank");
+      setIsOpen1(true);
+    } else {
+      addToast({
+        title: res?.msg,
+        timeout: 1000,
+        color: "danger",
+      });
+    }
   };
+
+  useEffect(() => {
+    if (data) {
+      console.log(6666, data[0]?.paymentList[0]?.id);
+
+      setPaymentId(data[0]?.paymentList[0]?.id);
+    }
+  }, [data]);
+
+  const currentPayMethod = useMemo(() => {
+    return (
+      data
+        ?.flatMap((item: any) => item.paymentList)
+        .find((item: any) => item.id === paymentId) ?? {}
+    );
+  }, [paymentId]);
+
+  // console.log("currentPayMethod", currentPayMethod);
 
   if (isLoading) return <div>加载中...</div>;
   if (isError) return <div>加载失败</div>;
@@ -95,9 +130,20 @@ export default function SubmitOrder() {
       <div>
         <div className="my-4">
           <p className="text-title">账单地址</p>
-          <div className="p-4 border-2 border-dashed border-[#5e5e5e] gap-2 flex flex-col">
-            <div>123</div>
-            <div>312</div>
+          <div className="p-4 border-2 border-dashed border-[#5e5e5e]">
+            <div className="flex justify-between ">
+              <div className="flex gap-8">
+                <div className="text-title">
+                  {billingAddressData![0].recipient}123
+                </div>
+                <div>{billingAddressData![0].phone}</div>
+              </div>
+              <div>{billingAddressData![0].postcode}</div>
+            </div>
+            <div className="text-gray-base">
+              {billingAddressData![0].address},{billingAddressData![0].city},
+              {billingAddressData![0].state},{billingAddressData![0].country}
+            </div>
           </div>
         </div>
         <div className="flex flex-col gap-1 w-full">
@@ -105,7 +151,10 @@ export default function SubmitOrder() {
             classNames={{
               base: "w-full",
             }}
-            defaultValue={"1"}
+            value={paymentId}
+            onValueChange={(value) => {
+              setPaymentId(value);
+            }}
           >
             {data.map((item: any) => {
               if (item.methodName !== "BALANCE") return null;
@@ -119,7 +168,7 @@ export default function SubmitOrder() {
                   {item.paymentList.map((payment: any) => {
                     if (payment.id == 1)
                       return (
-                        <CustomRadio key={payment.id}>
+                        <CustomRadio key={payment.id} value={payment.id}>
                           <div>
                             <div className="flex justify-between text-sm py-2 px-1 items-center">
                               <div className="flex items-center gap-4">
@@ -131,11 +180,7 @@ export default function SubmitOrder() {
                               </div>
                               <Button
                                 color="primary"
-                                onPress={(e) => {
-                                  // e.continuePropagation();
-                                  // e?.target.stopPropagation();
-                                  console.log(6666666);
-
+                                onPress={() => {
                                   setIsOpen(true);
                                 }}
                               >
@@ -144,54 +189,6 @@ export default function SubmitOrder() {
                             </div>
                           </div>
                         </CustomRadio>
-                        // <Radio
-                        //   key={payment.id}
-                        //   classNames={{
-                        //     base: cn(
-                        //       "inline-flex min-w-[100%] w-full bg-content1 m-0",
-                        //       "hover:bg-content2 items-center justify-start",
-                        //       "cursor-pointer rounded-lg gap-2 p-3 border-1",
-                        //       "data-[selected=true]:border-primary",
-                        //     ),
-                        //     labelWrapper: "w-full",
-                        //     label: "w-full ",
-                        //   }}
-                        //   value={payment.id}
-                        // >
-                        //   <div>
-                        //     <div className="flex justify-between text-sm py-2 px-1">
-                        //       <div className="flex items-center gap-4">
-                        //         <div>余额123</div>
-                        //         <div className={price({ size: "xl2" })}>
-                        //           $ {WalletInfo?.availabalBalance}
-                        //         </div>
-                        //       </div>
-                        //       <button
-                        //         type="button"
-                        //         onClick={(e) => {
-                        //           console.log(e);
-                        //           e.stopPropagation();
-                        //           e.preventDefault();
-                        //           console.log(666544);
-                        //         }}
-                        //       >
-                        //         123
-                        //       </button>
-                        //       <Button
-                        //         color="primary"
-                        //         onPress={(e) => {
-                        //           // e.continuePropagation();
-                        //           // e?.target.stopPropagation();
-                        //           console.log(6666666);
-
-                        //           setIsOpen(true);
-                        //         }}
-                        //       >
-                        //         充值123
-                        //       </Button>
-                        //     </div>
-                        //   </div>
-                        // </Radio>
                       );
 
                     return null;
@@ -249,9 +246,10 @@ export default function SubmitOrder() {
             >
               <HiQuestionMarkCircle />
             </Tooltip>
-            ：PLN 685.03 手续费：PLN 29.81
+            ：{currentPayMethod?.payAmount} 手续费：
+            {currentPayMethod?.handlingFee}
           </div>
-          <p className="text-price-xl">PLN 714.84</p>
+          <p className="text-price-xl">{currentPayMethod?.payAmount}</p>
           <Button
             className="w-[300px]"
             color="primary"
@@ -269,6 +267,20 @@ export default function SubmitOrder() {
         isOpen={isOpen1}
         size="xl"
         title="遇到问题？"
+        onConfirm={async (onClose) => {
+          const res = await getPayOrderStatus(params?.bizCode);
+
+          console.log(123, res);
+          if (res?.data === "203") {
+            onClose();
+          } else {
+            addToast({
+              title: "未完成支付",
+              timeout: 1000,
+              color: "danger",
+            });
+          }
+        }}
         onOpenChange={setIsOpen1}
       >
         <div>

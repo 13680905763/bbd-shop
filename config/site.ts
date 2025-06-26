@@ -1,9 +1,14 @@
 export type SiteConfig = typeof siteConfig;
-
 export const siteConfig = {
   name: "BBD-Shop",
   description:
     "BBD is the best shopping agent in China.We provide a low-cost international freight for purchasing on chinese shopping site including Taobao.com,360buy.com.",
+  Home: {
+    slogan: {
+      line1: "Simplify Your",
+      line2: "Shopping With BBD",
+    },
+  },
   navItems: [
     {
       label: "首页",

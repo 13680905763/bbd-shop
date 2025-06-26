@@ -134,8 +134,11 @@ export default function GoodsPage() {
 
     const res: any = await createOrderByProduct({
       source: params.source,
-      sourceProductId: params.sourceproductId,
+      sourceProductId: params.sourceProductId,
       sourceSkuId: currentSku.skuID,
+      sourceMpId: goodsInfo?.productInfo?.sourceMpId,
+      sourceMpSkuId: currentSku.sourceMpSkuId,
+      specId: currentSku?.specId,
       quantity,
       remark,
     });
@@ -143,14 +146,14 @@ export default function GoodsPage() {
     setisLoading(false);
 
     if (res.code === 200) {
-      router.push(`/order/pay-order/${res.data}/?recharge=false`);
+      router.push(`/order/pay-order/${res.data}`);
     }
   };
   const add = () => {
     setisLoading(true);
     const data = {
       source: params.source,
-      sourceProductId: params.sourceproductId,
+      sourceProductId: params.sourceProductId,
       sourceSkuId: currentSku?.skuID,
       // specId: "f561c4f7cdb23de81fc2303ebf1e8f55",
 

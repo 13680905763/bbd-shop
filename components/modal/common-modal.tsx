@@ -18,7 +18,7 @@ interface CommonModalProps {
   footer?: React.ReactNode;
   showCancel?: boolean;
   onCancel?: () => void;
-  onConfirm?: () => void;
+  onConfirm?: (onClose: () => void) => void;
   confirmText?: string;
   cancelText?: string;
   size?:
@@ -81,8 +81,7 @@ export default function CommonModal({
                     <Button
                       color="primary"
                       onPress={() => {
-                        onConfirm?.();
-                        onClose();
+                        onConfirm?.(onClose);
                       }}
                     >
                       {confirmText}

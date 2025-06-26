@@ -88,7 +88,7 @@ const initAddress = {
 };
 
 export default function AddressTab() {
-  const { data, isLoading, mutate } = useAddressList();
+  const { data, isLoading, mutate } = useAddressList(1);
   const [modalType, setModalType] = useState<ModalType>(null);
   const [currentRowData, setCurrentRowData] = useState<any>(initAddress);
 

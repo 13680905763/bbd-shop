@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@heroui/react";
-import { useCallback, useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 
 import { FieldConfig } from "@/components/form/formItem-renderer";
@@ -8,24 +8,7 @@ import { useAddressList } from "@/hook/addresses/useAddressList";
 import { addAddress, deleteAddress, updateAddress } from "@/services/address";
 import FormModal from "@/components/modal/form-modal";
 import ConfirmModal from "@/components/modal/confirm-modal";
-const addressColumns = [
-  {
-    key: "recipient",
-    label: "收货人",
-  },
-  {
-    key: "phone",
-    label: "电话",
-  },
-  {
-    key: "address",
-    label: "详情地址",
-  },
-  {
-    key: "actions",
-    label: "操作",
-  },
-];
+
 const fieldsaddress: FieldConfig[] = [
   {
     type: "input",
@@ -58,12 +41,6 @@ const fieldsaddress: FieldConfig[] = [
     label: "邮编",
     placeholder: "请输入邮编",
   },
-
-  {
-    type: "checkbox",
-    name: "defaultAddress",
-    label: "设为默认地址",
-  },
 ];
 
 type ModalType = "add" | "edit" | "delete" | null;
@@ -79,7 +56,7 @@ const initAddress = {
 };
 
 export default function AddressTab() {
-  const { data, isLoading, mutate } = useAddressList();
+  const { data, isLoading, isError, mutate } = useAddressList(2);
   const [modalType, setModalType] = useState<ModalType>(null);
   const [currentRowData, setCurrentRowData] = useState<any>(initAddress);
 
@@ -88,22 +65,18 @@ export default function AddressTab() {
     setModalType("add");
   };
 
-  const handleEdit = (row: any) => {
-    setCurrentRowData(row);
+  const handleEdit = () => {
     setModalType("edit");
   };
 
-  const handleDelete = (row: any) => {
-    setCurrentRowData(row);
+  const handleDelete = () => {
     setModalType("delete");
   };
   // 地址保存时处理
   const handleSave = async () => {
     console.log("当前行数据:", currentRowData);
     if (modalType === "add") {
-      console.log("currentRowData", { ...currentRowData, addressType: 1 });
-
-      await addAddress({ ...currentRowData, addressType: 1 }); // 新增接口
+      await addAddress({ ...currentRowData, addressType: 2 }); // 新增接口
     } else if (modalType === "edit") {
       await updateAddress(currentRowData); // 编辑接口
     } else if (modalType === "delete") {
@@ -112,75 +85,57 @@ export default function AddressTab() {
     mutate();
     setModalType(null);
   };
-  const renderCell = useCallback((rows: any, columnKey: any) => {
-    const cellValue = rows[columnKey];
 
-    switch (columnKey) {
-      case "actions":
-        return (
-          <div className="relative flex items-center gap-2">
-            <Button
-              color="primary"
-              radius="none"
-              size="sm"
-              onPress={() => handleEdit(rows)}
-            >
-              编辑
-            </Button>
-            <Button
-              className="button-default"
-              radius="none"
-              size="sm"
-              onPress={() => handleDelete(rows)}
-            >
-              删除
-            </Button>
-          </div>
-        );
-      default:
-        return cellValue;
-    }
-  }, []);
+  useEffect(() => {
+    console.log(data);
+    setCurrentRowData(data?.[0]);
+    console.log("currentRowData", currentRowData);
+  }, [data]);
 
-  if (isLoading) {
-    return (
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        123
-        {/* {Array.from({ length: 6 }).map((_, idx) => (
-          <SkeletonCard key={idx} />
-        ))} */}
-      </div>
-    );
-  }
-
-  //   if (!data.length) {
-  //     return (
-  //       <Empty
-  //         description={t("address.emptyDescription")}
-  //         title={t("address.emptyTitle")}
-  //       />
-  //     );
-  //   }
+  if (isLoading) return <div>加载中...</div>;
+  if (isError) return <div>加载失败</div>;
 
   return (
     <>
-      <div className="p-4 border-2 border-dashed border-[#5e5e5e]">
-        <div>123</div>
-        <div>312</div>
-      </div>
-      <div className="mt-4 flex gap-4">
-        <Button
-          className="button-default"
-          radius="none"
-          size="sm"
-          // onPress={handleAdd}
+      {data?.length ? (
+        <div>
+          <div className="p-4 border-2 border-dashed border-[#5e5e5e]">
+            <div className="flex justify-between ">
+              <div className="flex gap-8">
+                <div className="text-title">{data[0].recipient}123</div>
+                <div>{data[0].phone}</div>
+              </div>
+              <div>{data[0].postcode}</div>
+            </div>
+            <div className="text-gray-base">
+              {data[0].address},{data[0].city},{data[0].state},{data[0].country}
+            </div>
+          </div>
+          <div className="mt-4 flex gap-4">
+            <Button
+              className="button-default"
+              radius="sm"
+              onPress={handleDelete}
+            >
+              删除账单地址
+            </Button>
+            <Button color="primary" radius="sm" onPress={handleEdit}>
+              修改账单地址
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <button
+          className="p-6 border-2 border-dashed border-[#5e5e5e] w-full"
+          onClick={handleAdd}
         >
-          删除账单地址
-        </Button>
-        <Button color="primary" radius="none" size="sm" onPress={handleAdd}>
-          修改账单地址
-        </Button>
-      </div>
+          <p className="flex items-center gap-2 justify-center">
+            <span>+</span>
+            <span>添加账单地址</span>
+          </p>
+        </button>
+      )}
+
       <FormModal
         fields={fieldsaddress}
         formData={currentRowData}

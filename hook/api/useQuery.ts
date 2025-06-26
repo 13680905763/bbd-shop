@@ -8,5 +8,7 @@ export function useQuery<T = any>(key: string | null, enabled = true) {
   return {
     ...swr,
     isError: !!swr.error,
+    mutate: () =>
+      key ? fetcher(key).then((res) => swr.mutate(res, false)) : null,
   };
 }

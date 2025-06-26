@@ -51,7 +51,7 @@ export default function CartPage() {
     });
 
     if (res.code === 200) {
-      router.push(`/order/pay-order/${res.data}/?recharge=false`);
+      router.push(`/order/pay-order/${res.data}`);
     }
   };
   const handleDeleteCart = (onClose: any) => {
