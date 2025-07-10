@@ -30,10 +30,11 @@ import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { SearchIcon, Logo } from "@/components/icons";
 import { logoutCustomer } from "@/services";
-import { useUser } from "@/hook";
+import { useUserStore } from "@/store";
 
 export const Navbar = () => {
-  const { data, isLoading, isError } = useUser();
+  const user = useUserStore((state) => state.user);
+
   const [inputValue, setInputValue] = useState("");
   const pathname = usePathname(); // 获取当前路径
   const router = useRouter();
@@ -86,12 +87,12 @@ export const Navbar = () => {
   };
   const logout = async () => {
     try {
-      const res: any = await logoutCustomer(); // 调用后端接口，带上 cookie
-
-      res.success && router.replace("/login");
-    } catch (error) {
-      console.log(error);
-    }
+      await logoutCustomer(); // 调用后端接口，带上 cookie
+      localStorage.removeItem("user-storage");
+      localStorage.removeItem("wallet-storage");
+      localStorage.removeItem("wallet-storage");
+      window.location.reload();
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -219,7 +220,7 @@ export const Navbar = () => {
           </PopoverContent>
         </Popover>
 
-        {data ? (
+        {user ? (
           <>
             <Button
               isIconOnly
@@ -235,11 +236,11 @@ export const Navbar = () => {
                   as="button"
                   avatarProps={{
                     isBordered: true,
-                    src: data?.avatarUrl,
+                    src: user?.avatarUrl,
                   }}
                   className="transition-transform"
-                  description={data?.email}
-                  name={data?.name}
+                  description={user?.email}
+                  name={user?.name}
                 />
               </DropdownTrigger>
               <DropdownMenu aria-label="Static Actions">

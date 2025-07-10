@@ -2,7 +2,7 @@ import { IoWallet } from "react-icons/io5";
 import React from "react";
 
 interface WalletCardProps {
-  number: string;
+  number: number;
   title: string;
   actions?: React.ReactNode;
 }

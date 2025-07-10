@@ -1,16 +1,17 @@
-import { Divider, Checkbox } from "@heroui/react";
+import { Checkbox, Divider } from "@heroui/react";
 
 import ProductItem from "./product-item";
-import { Product, Shop } from "./page";
 
 import SourceIcon from "@/components/common/source-icon";
 
 type ShopCardProps = {
-  shop: Shop;
+  shop: any;
   selectedMap: { [productId: string]: boolean };
   onToggleItem: (productId: string, checked: boolean) => void;
   onToggleShop: (checked: boolean) => void;
-  mutate: any;
+  handleProductDelete: (productId: string) => void;
+  handleProductQuantity: (productId: string, quantity: number) => void;
+  handleProductRemark: (productId: string, remark: string) => void;
 };
 
 export default function ShopCard({
@@ -18,13 +19,15 @@ export default function ShopCard({
   selectedMap,
   onToggleItem,
   onToggleShop,
-  mutate,
+  handleProductDelete,
+  handleProductQuantity,
+  handleProductRemark,
 }: ShopCardProps) {
-  const isAllSelected = shop.cartList.every((p) => selectedMap[p.id]);
+  const isAllSelected = shop.cartList.every((p: any) => selectedMap[p.id]);
 
   return (
-    <div className="card-cart">
-      <div className="p-4 flex items-center gap-1 bg-[#f8f8f8]">
+    <div className=" card-cart overflow-auto">
+      <div className="p-4 flex items-center gap-1 bg-[#f8f8f8] ">
         <Checkbox
           isSelected={isAllSelected}
           size="sm"
@@ -33,15 +36,15 @@ export default function ShopCard({
         <SourceIcon source={shop.cartList[0]?.source} />
         <div>{shop?.shopName}</div>
       </div>
-
       <Divider />
-
       <div className="flex flex-col gap-4 p-4">
-        {shop.cartList.map((product: Product) => (
+        {shop.cartList.map((product: any) => (
           <ProductItem
             key={product.id}
+            handleProductDelete={handleProductDelete}
+            handleProductQuantity={handleProductQuantity}
+            handleProductRemark={handleProductRemark}
             isSelected={selectedMap[product.id]}
-            mutate={mutate}
             product={product}
             onToggle={(checked) => onToggleItem(product.id, checked)}
           />

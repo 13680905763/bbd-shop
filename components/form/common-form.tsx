@@ -1,43 +1,43 @@
 import { Button, Form } from "@heroui/react";
-import React from "react";
+import React, { ReactNode } from "react";
 
 import FormItemRenderer, { FieldConfig } from "./formItem-renderer";
 
-interface CommonFormProps {
+interface CommonFormProps<T extends Record<string, any> = Record<string, any>> {
   fields: FieldConfig[];
-  formData: Record<string, any>;
-  onChange: (data: Record<string, any>) => void;
-  onSubmit?: (data: Record<string, any>) => void;
+  formData: T;
+  onChange: (data: T) => void;
+  onSubmit?: (data: T) => void;
+  confirmText?: string;
+  children?: ReactNode; // ✅ 新增 children
 }
 
-export default function CommonForm({
+export default function CommonForm<T extends Record<string, any>>({
   fields,
   formData,
   onChange,
   onSubmit,
-}: CommonFormProps) {
+  confirmText = "保存",
+  children,
+}: CommonFormProps<T>) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.currentTarget));
-
-    onSubmit?.(data);
+    onSubmit?.(formData); // ✅ 直接用状态
   };
 
   return (
-    <Form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
+    <Form className="flex w-full flex-col gap-2" onSubmit={handleSubmit}>
       <FormItemRenderer
         fields={fields}
         formData={formData}
         onChange={onChange}
       />
 
-      <div className="flex gap-2">
-        <Button className="flex-1" color="primary" type="submit">
-          保存
+      <div className="my-2 flex w-full flex-col gap-2">
+        <Button color="primary" type="submit">
+          {confirmText}
         </Button>
-        <Button className="flex-1 button-default" type="reset" variant="flat">
-          重置
-        </Button>
+        {children}
       </div>
     </Form>
   );

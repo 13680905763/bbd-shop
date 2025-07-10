@@ -69,7 +69,7 @@ export default function ScoreTab() {
             积分兑换优惠券
           </Button>
         }
-        number="5268"
+        number={5268}
         title="积分"
       />
       <div className="font-bold my-4">积分流水</div>

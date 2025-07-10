@@ -24,7 +24,8 @@ import Stepper from "@/components/stepper";
 import { Icon1688 } from "@/components/icons";
 import { getGoodsInfo } from "@/services/goods";
 import { addCart } from "@/services/cart";
-import { createOrderByProduct } from "@/services";
+import { createOrderPreviewKeyByProduct } from "@/services";
+import { queryClient } from "@/lib/react-query";
 
 interface Sku {
   skuID: string;
@@ -127,12 +128,50 @@ export default function GoodsPage() {
   const [isLoading, setisLoading] = useState<any>(false);
   const [currentImg, setCurrentImg] = useState<string>();
   const router = useRouter();
-  const handleBuy = async () => {
-    console.log("currentSku", currentSku);
-    if (!currentSku) return;
+  const handleBuyNow = async () => {
+    if (isLoading) return;
+    // console.log("currentSku", currentSku);
+    if (!currentSku) {
+      addToast({
+        title: "请选择商品规格",
+        color: "danger",
+      });
+
+      return;
+    }
     setisLoading(true);
 
-    const res: any = await createOrderByProduct({
+    try {
+      const key = await createOrderPreviewKeyByProduct({
+        source: params.source as any,
+        sourceProductId: params.sourceProductId as string,
+        sourceSkuId: currentSku.skuID,
+        sourceMpId: goodsInfo?.productInfo?.sourceMpId,
+        sourceMpSkuId: currentSku.sourceMpSkuId,
+        specId: currentSku?.specId,
+        quantity,
+        remark,
+      });
+
+      router.push("/order/submit-order?type=product&key=" + key);
+    } catch (err: any) {
+    } finally {
+      setisLoading(false);
+    }
+  };
+  const add = async () => {
+    if (isLoading) return;
+    if (!currentSku) {
+      addToast({
+        title: "请选择商品规格",
+        color: "danger",
+      });
+
+      return;
+    }
+    setisLoading(true);
+
+    const data = {
       source: params.source,
       sourceProductId: params.sourceProductId,
       sourceSkuId: currentSku.skuID,
@@ -141,37 +180,21 @@ export default function GoodsPage() {
       specId: currentSku?.specId,
       quantity,
       remark,
-    });
-
-    setisLoading(false);
-
-    if (res.code === 200) {
-      router.push(`/order/pay-order/${res.data}`);
-    }
-  };
-  const add = () => {
-    setisLoading(true);
-    const data = {
-      source: params.source,
-      sourceProductId: params.sourceProductId,
-      sourceSkuId: currentSku?.skuID,
-      // specId: "f561c4f7cdb23de81fc2303ebf1e8f55",
-
-      quantity,
-      remark,
     };
 
-    // console.log(data);
+    try {
+      const tip = await addCart(data);
 
-    addCart(data).then((res: any) => {
-      // console.log(res);
       addToast({
-        title: res.msg,
+        title: tip,
         timeout: 1000,
         color: "success",
       });
+      queryClient.invalidateQueries({ queryKey: ["cartList"] }); // 手动刷新
+    } catch (e) {
+    } finally {
       setisLoading(false);
-    });
+    }
   };
   // 切换选择状态
   const changeSelectedStatus = (index: any, indey: any) => {
@@ -283,29 +306,28 @@ export default function GoodsPage() {
   }, [goodsInfo]); // 依赖 cart，当 cart 变化时才重新计算
 
   useEffect(() => {
-    getGoodsInfo({ ...params }).then((res: any) => {
-      if (res.success) {
-        // 数据初始化
-        const cloned = structuredClone(res.data);
-        let pathMap = generateDynamicSkuPathDict(cloned.productInfo);
+    getGoodsInfo({ ...params }).then((data: any) => {
+      // 数据初始化
+      const cloned = structuredClone(data);
+      let pathMap = generateDynamicSkuPathDict(cloned.productInfo);
 
-        setPathMap(pathMap);
-        cloned.productInfo.skuPropList.forEach((spec: any) => {
-          spec.propValueList.forEach((value: any) => {
-            value.selected = false;
-            // console.log("value.valueName", value.valueName, pathMap);
+      setPathMap(pathMap);
+      cloned.productInfo.skuPropList.forEach((spec: any) => {
+        spec.propValueList.forEach((value: any) => {
+          value.selected = false;
+          console.log("value.valueName", value.valueName, pathMap);
 
-            if (pathMap[value.valueName]) {
-              value.disabled = false;
-            } else {
-              value.disabled = true;
-            }
-          });
+          if (pathMap[value.valueName]) {
+            value.disabled = false;
+          } else {
+            value.disabled = true;
+          }
         });
-        // console.log("cloned", cloned, cloned?.productInfo?.imgList[0]);
-        setCurrentImg(cloned?.productInfo?.imgList[0] ?? "");
-        setGoodsInfo(cloned);
-      }
+      });
+      console.log("cloned", cloned);
+
+      setCurrentImg(cloned?.productInfo?.imgList[0] ?? "");
+      setGoodsInfo(cloned);
     });
   }, []);
 
@@ -494,7 +516,7 @@ export default function GoodsPage() {
                   className=" h-16 flex-1"
                   color="primary"
                   isLoading={isLoading}
-                  onPress={handleBuy}
+                  onPress={handleBuyNow}
                 >
                   立即购买
                 </Button>

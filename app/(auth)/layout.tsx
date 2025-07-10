@@ -1,28 +1,38 @@
 "use client";
-import { addToast, Divider } from "@heroui/react";
-import { usePathname, useRouter } from "next/navigation";
+import { Divider } from "@heroui/react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { IoCaretBackCircleOutline } from "react-icons/io5";
 import NextLink from "next/link";
-import { GoogleLogin } from "@react-oauth/google";
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 
 import { Logo } from "@/components/icons";
 import { loginWithGoogle } from "@/services";
+import { handleAuthSuccess } from "@/lib/auth-handler";
 
 export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // const { data: session, status } = useSession();
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // console.log("status", status);
-  // useEffect(() => {
-  //   if ((session as any)?.accessToken) {
+  const redirect = searchParams.get("redirect") || "/"; // 默认为首页
 
-  //   }
-  // }, [session]);
+  const handleLoginWithGoogle = async (
+    credentialResponse: CredentialResponse,
+  ) => {
+    const credential = credentialResponse.credential;
+
+    try {
+      const res = await loginWithGoogle(credential as string);
+
+      await handleAuthSuccess(redirect, res, router);
+    } catch (err) {
+      // 同样的错误处理
+    }
+  };
 
   return (
     <main className=" flex h-[100vh]">
@@ -44,40 +54,9 @@ export default function AuthLayout({
 
           {pathname !== "/forgetPsd" && (
             <>
-              <Divider className="my-8" />
+              <Divider className="my-4" />
 
-              <GoogleLogin
-                onError={() => {
-                  console.error("Google 登录失败");
-                }}
-                onSuccess={(credentialResponse) => {
-                  const credential = credentialResponse.credential;
-
-                  loginWithGoogle(credential as string).then((e: any) => {
-                    console.log("谷歌登录成功", e);
-                    if (e.success) {
-                      addToast({
-                        title: e.msg,
-                        timeout: 1000,
-                        color: "success",
-                      });
-                      router.push("/");
-                    } else {
-                      addToast({
-                        title: e.msg,
-                        timeout: 1000,
-                        color: "danger",
-                      });
-                    }
-                  });
-                  // const payload: any = jwtDecode(credential!);
-
-                  console.log("Google 用户信息:", credential);
-
-                  // 👇 可以发送给后端登录/注册
-                  // fetch('/api/auth/google', { method: 'POST', body: JSON.stringify(payload) })
-                }}
-              />
+              <GoogleLogin onSuccess={handleLoginWithGoogle} />
             </>
           )}
         </div>

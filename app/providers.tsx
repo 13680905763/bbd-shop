@@ -8,6 +8,9 @@ import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ToastProvider } from "@heroui/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { QueryClientProvider } from "@tanstack/react-query";
+
+import { queryClient } from "@/lib/react-query";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -28,10 +31,12 @@ export function Providers({ children, themeProps }: ProvidersProps) {
   return (
     // <SessionProvider>
     <GoogleOAuthProvider clientId="545953191162-n0elu4ilreo1hdlptkgublu7bjegpp0u.apps.googleusercontent.com">
-      <HeroUIProvider navigate={router.push}>
-        <ToastProvider placement="top-center" />
-        <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
-      </HeroUIProvider>
+      <QueryClientProvider client={queryClient}>
+        <HeroUIProvider navigate={router.push}>
+          <ToastProvider placement="top-center" />
+          <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
+        </HeroUIProvider>
+      </QueryClientProvider>
     </GoogleOAuthProvider>
     // </SessionProvider>
   );

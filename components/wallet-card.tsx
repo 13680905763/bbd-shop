@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 interface UserBalanceCardProps {
   type?: string;
-  availabalBalance: string;
+  availabalBalance: number;
   balanceUSD: string;
   bgColor?: string;
   children?: React.ReactNode; // 左侧内容插槽
@@ -21,10 +21,10 @@ const UserBalanceCard = ({
   return (
     <div className="flex justify-between bg-[#ffeee1] rounded-lg  p-8">
       <div className="flex  flex-1 items-center gap-6">
-        <Avatar className="w-20 h-20 text-large" src={userInfo.avatarUrl} />
+        <Avatar className="w-20 h-20 text-large" src={userInfo?.avatarUrl} />
         <div className="flex-1">
-          <p className="text-title-2xl">{userInfo.name}</p>
-          <p>{userInfo.email}</p>
+          <p className="text-title-2xl">{userInfo?.name}</p>
+          <p>{userInfo?.email}</p>
           <Chip color="primary" size="sm">
             VIP1
           </Chip>

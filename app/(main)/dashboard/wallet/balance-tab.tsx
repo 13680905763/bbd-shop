@@ -10,14 +10,14 @@ import {
 } from "@heroui/react";
 import React, { useState } from "react";
 import { IoAddCircleOutline, IoWallet } from "react-icons/io5";
-import { useRouter } from "next/navigation";
 
 import WalletCard from "./wallet-card";
 
 import FormModal from "@/components/modal/form-modal";
 import { FieldConfig } from "@/components/form/formItem-renderer";
-import { useWalletDetail, useWalletInfo } from "@/hook/wallet/useWalletInfo";
 import RechargeModal from "@/components/modal/recharge.modal";
+import { useWalletStore } from "@/store";
+import { useWalletDetailList } from "@/hook";
 const columns = [
   {
     key: "bizReference",
@@ -86,24 +86,18 @@ const WithdrawalFields: FieldConfig[] = [
 ];
 
 export default function BalanceTab() {
-  const [page, setPage] = React.useState(1);
-  const { data, isLoading } = useWalletInfo();
-  const { data: WalletDetail, isLoading: isLoadingD } = useWalletDetail(
-    page,
-    10,
-  );
+  const wallet = useWalletStore((state) => state.wallet);
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, error } =
+    useWalletDetailList();
+  const walletDetailList =
+    data?.pages?.flatMap((page: any) => page?.records) ?? [];
 
-  // console.log("useWalletInfo", data);
-  // console.log("WalletDetail", WalletDetail);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenWithdrawal, setIsOpenWithdrawal] = useState(false);
   const [formData, setFormData] = useState({});
-  const router = useRouter();
   const handleSave = async () => {
     console.log("修改密码");
   };
-
-  if (isLoading || isLoadingD) return <div>加载中...</div>;
 
   return (
     <div>
@@ -124,7 +118,7 @@ export default function BalanceTab() {
             </Button>
           </>
         }
-        number={data?.availabalBalance}
+        number={wallet?.availabalBalance as number}
         title="余额"
       />
       <div className="font-bold my-4">余额流水</div>
@@ -136,10 +130,10 @@ export default function BalanceTab() {
         //       isCompact
         //       showControls
         //       showShadow
-        //       page={page}
+        //       page={10}
         //       // total={WalletDetail.total}
         //       total={1}
-        //       onChange={(page) => setPage(page)}
+        //       onChange={(page) => fetchNextPage()}
         //     />
         //   </div>
         // }
@@ -157,8 +151,7 @@ export default function BalanceTab() {
             <TableColumn key={column.key}>{column.label}</TableColumn>
           )}
         </TableHeader>
-        {/* <TableBody items={WalletDetail.records}> */}
-        <TableBody items={WalletDetail.records}>
+        <TableBody items={walletDetailList}>
           {(item: any) => (
             <TableRow key={item?.id}>
               {(columnKey) => (

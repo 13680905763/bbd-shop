@@ -8,15 +8,17 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  addToast,
 } from "@heroui/react";
 import { useCallback, useState } from "react";
 import React from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { FieldConfig } from "@/components/form/formItem-renderer";
-import { useAddressList } from "@/hook/addresses/useAddressList";
 import { addAddress, deleteAddress, updateAddress } from "@/services/address";
 import FormModal from "@/components/modal/form-modal";
 import ConfirmModal from "@/components/modal/confirm-modal";
+import { useAddressList } from "@/hook";
 const addressColumns = [
   {
     key: "recipient",
@@ -88,9 +90,12 @@ const initAddress = {
 };
 
 export default function AddressTab() {
-  const { data, isLoading, mutate } = useAddressList(1);
   const [modalType, setModalType] = useState<ModalType>(null);
+  const { data, isLoading } = useAddressList();
   const [currentRowData, setCurrentRowData] = useState<any>(initAddress);
+  const queryClient = useQueryClient();
+
+  console.log("data", data);
 
   const handleAdd = () => {
     setCurrentRowData(initAddress);
@@ -108,18 +113,41 @@ export default function AddressTab() {
   };
   // 地址保存时处理
   const handleSave = async () => {
-    console.log("当前行数据:", currentRowData);
-    if (modalType === "add") {
-      console.log("currentRowData", { ...currentRowData, addressType: 1 });
+    const { createTime, updateTime, customerId, ...filteredData } =
+      currentRowData;
 
-      await addAddress({ ...currentRowData, addressType: 1 }); // 新增接口
-    } else if (modalType === "edit") {
-      await updateAddress(currentRowData); // 编辑接口
-    } else if (modalType === "delete") {
-      await deleteAddress(currentRowData.id);
+    try {
+      if (modalType === "add") {
+        const tip = await addAddress({ ...currentRowData, addressType: 1 }); // 新增接口
+
+        addToast({
+          title: tip,
+          timeout: 1000,
+          color: "success",
+        });
+      } else if (modalType === "edit") {
+        const tip = await updateAddress(filteredData); // 编辑接口
+
+        addToast({
+          title: tip,
+          timeout: 1000,
+          color: "success",
+        });
+      } else if (modalType === "delete") {
+        const tip = await deleteAddress(currentRowData.id);
+
+        addToast({
+          title: tip,
+          timeout: 1000,
+          color: "success",
+        });
+      }
+      setModalType(null);
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      queryClient.invalidateQueries({ queryKey: ["addressList"] }); // 手动刷新
     }
-    mutate();
-    setModalType(null);
   };
   const renderCell = useCallback((rows: any, columnKey: any) => {
     const cellValue = rows[columnKey];
@@ -151,25 +179,7 @@ export default function AddressTab() {
     }
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        123
-        {/* {Array.from({ length: 6 }).map((_, idx) => (
-          <SkeletonCard key={idx} />
-        ))} */}
-      </div>
-    );
-  }
-
-  //   if (!data.length) {
-  //     return (
-  //       <Empty
-  //         description={t("address.emptyDescription")}
-  //         title={t("address.emptyTitle")}
-  //       />
-  //     );
-  //   }
+  if (isLoading) return <div>加载中...</div>;
 
   return (
     <>
@@ -193,8 +203,8 @@ export default function AddressTab() {
           )}
         </TableHeader>
         <TableBody items={data}>
-          {(item) => (
-            <TableRow key={item.id}>
+          {(item: any) => (
+            <TableRow key={item?.id}>
               {(columnKey) => (
                 <TableCell>{renderCell(item, columnKey)}</TableCell>
               )}

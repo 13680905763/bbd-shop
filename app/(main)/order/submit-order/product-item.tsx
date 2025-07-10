@@ -7,17 +7,9 @@ import {
   ModalFooter,
   ModalHeader,
   Textarea,
-  Tooltip,
   useDisclosure,
 } from "@heroui/react";
 import { useState } from "react";
-import { FaEdit } from "react-icons/fa";
-
-import { Product } from "./page";
-
-type ProductItemProps = {
-  product: Product;
-};
 
 const RemarkModal = ({ isOpen, onOpenChange, handleRemark, value }: any) => {
   const [remark, setRemark] = useState(value);
@@ -58,7 +50,7 @@ const RemarkModal = ({ isOpen, onOpenChange, handleRemark, value }: any) => {
   );
 };
 
-export default function ProductItem({ product }: ProductItemProps) {
+export default function ProductItem({ product }: any) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const {
@@ -68,35 +60,60 @@ export default function ProductItem({ product }: ProductItemProps) {
   } = useDisclosure();
 
   return (
-    <div className="flex justify-between items-center gap-4">
-      <div className="flex">
-        <Image alt="Product" height={90} src={product.skuPicUrl} width={90} />
+    <div className="flex justify-between  gap-4">
+      <div className="flex ">
+        <div className="flex grow-0 shrink-0 basis-[400px] gap-2">
+          <div className=" grow-0 shrink-0 basis-[90px]">
+            <div>
+              <Image
+                alt="Product"
+                height={90}
+                src={product?.picUrl}
+                width={90}
+              />
+            </div>
+          </div>
+          <div>
+            <div className="line-clamp-2 font-bold">
+              {product?.productTitle}
+            </div>
+            <div className="text-gray-500 text-sm">
+              {product?.sku?.propName_valueName}
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="flex-[2]">
-        <div className="line-clamp-2 font-bold">{product.productTitle}</div>
-        <div className="text-gray-500">{product.sku.propName_valueName}</div>
+
+      <div className="flex grow-0 shrink-0 basis-[200px] ">
+        <p className="   truncate ">
+          备注：
+          <span className="text-gray-500">{product?.remark ?? "暂无备注"}</span>
+        </p>
       </div>
-      <div className="flex-1  flex gap-2">
-        <Tooltip
-          className="bg-[#262626] text-white p-2 "
-          content={product.remark}
-        >
-          <p className=" max-w-24  truncate">备注：{product.remark}</p>
-        </Tooltip>
-        <button className="text-blue-500 underline" onClick={onOpenRemark}>
-          <FaEdit className="w-6 h-6 text-[#f0700c]" />
-        </button>
+      <div className="flex  gap-2   flex-col  grow-0 shrink-0 basis-[200px]">
+        <Button className="button-white" radius="none" size="sm">
+          精细拍照
+        </Button>
+        <Button className="button-white" radius="none" size="sm">
+          留言
+        </Button>
       </div>
-      <div>
-        <p>${product.price}</p>
-        <p>X{product.quantity}</p>
+      <div className="flex grow-0 shrink-0 basis-[100px]">
+        <p>{product.price}</p>
       </div>
-      <div className="flex-1 place-items-end">
+      <div className="flex grow-0 shrink-0 basis-[100px]">
+        <p>x{product.quantity}</p>
+      </div>
+      {/* <div className="flex grow-0 shrink-0 basis-[100px]">
+        <p>${product.price * product.quantity}</p>
+      </div> */}
+
+      {/* <div className="flex-1 place-items-end">
         <div className="text-lg font-semibold text-red-500">
           总计: ${product.totalPrice}
         </div>
         <div className="text-gray-500">国内运费: {product.postFee}</div>
-      </div>
+      </div> */}
       <RemarkModal
         // handleRemark={handleRemark}
         isOpen={isOpenRemark}

@@ -8,21 +8,19 @@ import { SecurityTab } from "./components/security-tab";
 import BillingAddressTab from "./components/billing-address-tab";
 
 import UserBalanceCard from "@/components/wallet-card";
-import { useUser, useWalletInfo } from "@/hook";
+import { useUserStore, useWalletStore } from "@/store";
+import { useBillingAddress } from "@/hook";
 
 export default function DashBoard() {
-  const { data: user, isLoading, isError } = useUser();
-  const { data } = useWalletInfo();
+  const user = useUserStore((state) => state.user);
+  const wallet = useWalletStore((state) => state.wallet);
 
-  // console.log("useWalletInfo", data);
-
-  if (isLoading) return <div>加载中...</div>;
-  if (isError) return <div>加载失败</div>;
+  useBillingAddress();
 
   return (
     <div className=" flex flex-col gap-6 bg-[#f8f8f8] -mx-5">
       <UserBalanceCard
-        availabalBalance={data?.availabalBalance}
+        availabalBalance={wallet?.availabalBalance as number}
         balanceUSD="66.55"
         userInfo={user}
       />

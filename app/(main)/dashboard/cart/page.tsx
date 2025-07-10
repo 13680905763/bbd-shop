@@ -5,76 +5,53 @@ import {
   Button,
   Checkbox,
   Divider,
+  Textarea,
   useDisclosure,
 } from "@heroui/react";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 import ShopCard from "./shop-card";
 
 import Progress from "@/components/common/progress";
 import ConfirmModal from "@/components/modal/confirm-modal";
-import { deleteCart } from "@/services/cart";
-import { useCart } from "@/hook";
-import { createOrderByCart } from "@/services";
-export type Product = {
-  id: string;
-  productTitle: string;
-  sku: {
-    propName_valueName: string;
-  };
-  skuPicUrl: string;
-  remark?: string;
-  totalPrice: number;
-  price: number;
-  postFee: number;
-  quantity: number;
-  source: string;
-  sourceProductId: string;
-};
-
-export type Shop = {
-  shopId: string;
-  shopName: string;
-  cartList: Product[];
-};
+import {
+  createOrderPreviewKeyByCart,
+  deleteCart,
+  updateCart,
+} from "@/services";
+import { useCartList } from "@/hook";
+import CommonModal from "@/components/modal/common-modal";
 
 export default function CartPage() {
-  const { data: cartData, isLoading, isError, mutate } = useCart();
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { data, isLoading, isError } = useCartList();
+  const queryClient = useQueryClient();
+
   const [selected, setSelected] = useState<{
     [shopId: string]: { [productId: string]: boolean };
   }>({});
-  const router = useRouter();
-  const handleCartSubmitOrder = async () => {
-    const res: any = await createOrderByCart({
-      idList: selectedIdArr,
-    });
 
-    if (res.code === 200) {
-      router.push(`/order/pay-order/${res.data}`);
-    }
-  };
-  const handleDeleteCart = (onClose: any) => {
-    deleteCart({ idList: selectedIdArr }).then((e: any) => {
-      if (e.success) {
-        addToast({
-          title: e.msg,
-          timeout: 1000,
-        });
-        onClose();
-        mutate();
-      } else {
-        addToast({
-          title: e.msg,
-          timeout: 1000,
-        });
-      }
-    });
-  };
-  const handleDelCart = () => {
+  // 当前要删除的商品 id（单个为 string，批量为 string[]，默认 null）
+  const [pendingDeleteIds, setPendingDeleteIds] = useState<string[] | null>(
+    null,
+  );
+  const [pendingRemarkProductId, setPendingRemarkProductId] = useState<
+    string | null
+  >(null);
+  const [remarkText, setRemarkText] = useState("");
+  const {
+    isOpen: isOpenRemark,
+    onOpen: onOpenRemark,
+    onOpenChange: onOpenChangeRemark,
+  } = useDisclosure();
+  const router = useRouter();
+  const handleCartSubmit = async () => {
     if (selectedIdArr.length > 0) {
-      onOpen();
-      console.log("删除", { idList: selectedIdArr });
+      const key: any = await createOrderPreviewKeyByCart({
+        idList: selectedIdArr,
+      });
+
+      router.push("/order/submit-order?type=cart&key=" + key);
     } else {
       addToast({
         title: "请先选择商品",
@@ -83,7 +60,69 @@ export default function CartPage() {
       });
     }
   };
+  const handleDeleteCart = async (idList: string[], onClose: () => void) => {
+    try {
+      const tip = await deleteCart({ idList });
 
+      addToast({ title: tip, timeout: 1000, color: "success" });
+      onClose();
+      queryClient.invalidateQueries({ queryKey: ["cartList"] }); // 手动刷新
+    } catch (e) {}
+  };
+  const handleDelCart = () => {
+    if (selectedIdArr.length > 0) {
+      console.log("删除", { idList: selectedIdArr });
+      setPendingDeleteIds(selectedIdArr);
+    } else {
+      addToast({
+        title: "请先选择商品",
+        timeout: 1000,
+      });
+    }
+  };
+  const handleProductDelete = (productId: string) => {
+    setPendingDeleteIds([productId]);
+  };
+  const handleProductQuantity = async (productId: string, quantity: number) => {
+    try {
+      const tip = await updateCart([
+        {
+          id: productId,
+          quantity,
+        },
+      ]);
+
+      addToast({ title: tip, timeout: 1000, color: "success" });
+    } catch (e) {
+    } finally {
+      queryClient.invalidateQueries({ queryKey: ["cartList"] }); // 手动刷新
+    }
+  };
+  const handleProductRemark = (productId: string, remark: string) => {
+    setPendingRemarkProductId(productId);
+    setRemarkText(remark);
+    onOpenRemark();
+  };
+
+  const submitRemark = async () => {
+    if (!pendingRemarkProductId) return;
+    try {
+      const res = await updateCart([
+        {
+          id: pendingRemarkProductId,
+          remark: remarkText,
+        },
+      ]);
+
+      addToast({ title: res, timeout: 1000, color: "success" });
+      queryClient.invalidateQueries({ queryKey: ["cartList"] }); // 刷新
+    } catch (e) {
+    } finally {
+      onOpenChangeRemark();
+      setPendingRemarkProductId(null);
+      setRemarkText("");
+    }
+  };
   // 商品勾选
   const toggleItem = (shopId: string, productId: string, checked: boolean) => {
     console.log(shopId, productId, checked);
@@ -95,26 +134,20 @@ export default function CartPage() {
       },
     }));
   };
-  // 是否所有商品都选中
-  // const isAllSelected = () =>
-  //   cartData?.every((shop) => {
-  //     return shop.cartList.every(
-  //       (product) => selected[shop.shopId]?.[product.id],
-  //     );
-  //   });
+
   const allSelected = useMemo(() => {
-    return cartData?.every((shop) =>
+    return data?.every((shop) =>
       shop.cartList.every((product) => selected[shop.shopId]?.[product.id]),
     );
-  }, [cartData, selected]);
+  }, [data, selected]);
   // 店铺全选
-  const toggleShop = (shop: Shop, checked: boolean) => {
+  const toggleShop = (shop: any, checked: boolean) => {
     setSelected((prev) => {
       const next = { ...prev };
 
       next[shop.shopId] = {};
 
-      shop.cartList.forEach((product) => {
+      shop.cartList.forEach((product: any) => {
         next[shop.shopId][product.id] = checked;
       });
 
@@ -126,7 +159,7 @@ export default function CartPage() {
   const toggleAll = (checked: boolean) => {
     const newSelected: typeof selected = {};
 
-    cartData?.forEach((shop) => {
+    data?.forEach((shop) => {
       newSelected[shop.shopId] = {};
       shop.cartList.forEach((product) => {
         newSelected[shop.shopId][product.id] = checked;
@@ -150,17 +183,17 @@ export default function CartPage() {
     return selectedIds;
   }, [selected]);
   const togglePrice = useMemo(() => {
-    return cartData
+    return data
       ?.flatMap((shop) => shop.cartList) // 拍平所有商品
       ?.filter((item) => selectedIdArr.includes(item.id)) // 过滤选中项
-      ?.reduce((sum, item) => sum + item.totalPrice, 0); // 累加价格
+      ?.reduce((sum, item) => sum + item?.unitPrice * item.quantity, 0); // 累加价格
   }, [selected]);
 
   useEffect(() => {
-    if (cartData) {
+    if (data) {
       const init: typeof selected = {};
 
-      cartData.forEach((shop: any) => {
+      data.forEach((shop: any) => {
         init[shop.shopId] = {};
         shop.cartList.forEach((product: any) => {
           init[shop.shopId][product.id] = false; // 初始不选中
@@ -170,7 +203,7 @@ export default function CartPage() {
 
       setSelected(init);
     }
-  }, [cartData]);
+  }, [data]);
   if (isLoading) return <div>加载中...</div>;
   if (isError) return <div>出错了</div>;
 
@@ -184,14 +217,16 @@ export default function CartPage() {
       </div>
       <div className="">
         <div className="text-title">
-          全部商品 ({cartData?.flatMap((shop) => shop.cartList).length})
+          全部商品 ({data?.flatMap((shop) => shop.cartList).length})
         </div>
 
         <div className="flex flex-col gap-4">
-          {cartData?.map((shop) => (
+          {data?.map((shop) => (
             <ShopCard
               key={shop.shopId}
-              mutate={mutate}
+              handleProductDelete={handleProductDelete}
+              handleProductQuantity={handleProductQuantity}
+              handleProductRemark={handleProductRemark}
               selectedMap={selected[shop.shopId] || {}}
               shop={shop}
               onToggleItem={(productId, checked) =>
@@ -221,12 +256,12 @@ export default function CartPage() {
               <span>{selectedIdArr.length}</span>
             </div>
             <div className="flex items-center gap-2">
-              <p className="text-price-lg">PLN {togglePrice}</p>
+              <p className="text-price-lg"> {togglePrice}</p>
               <Button
                 className="w-[200px]"
                 color="primary"
                 size="lg"
-                onPress={() => router.push("/order/submit-order")}
+                onPress={handleCartSubmit}
               >
                 下单结算
               </Button>
@@ -236,11 +271,27 @@ export default function CartPage() {
 
         <ConfirmModal
           content="确定要删除当前商品吗？"
-          isOpen={isOpen}
+          isOpen={!!pendingDeleteIds}
           title="删除购物车"
-          onConfirm={handleDeleteCart}
-          onOpenChange={onOpenChange}
+          onConfirm={(onClose) => {
+            if (pendingDeleteIds) {
+              handleDeleteCart(pendingDeleteIds, onClose);
+            }
+          }}
+          onOpenChange={() => setPendingDeleteIds(null)}
         />
+        <CommonModal
+          isOpen={isOpenRemark}
+          title="备注"
+          onConfirm={submitRemark}
+          onOpenChange={onOpenChangeRemark}
+        >
+          <Textarea
+            placeholder="请输入备注"
+            value={remarkText}
+            onChange={(e) => setRemarkText(e.target.value)}
+          />
+        </CommonModal>
       </div>
     </div>
   );

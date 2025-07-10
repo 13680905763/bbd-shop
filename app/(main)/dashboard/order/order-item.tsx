@@ -27,19 +27,25 @@ export default function OrderItem({ order, onPayOrderRedirect }: any) {
           {/* <p>国内运费 $ {order?.totalFee}</p> */}
         </div>
         <div className="grow-0 shrink-0 basis-[180px] flex flex-col pt-4 gap-2 px-10">
-          <Button
-            color="primary"
-            radius="none"
-            size="sm"
-            onPress={() => {
-              onPayOrderRedirect(order?.orderCode);
-            }}
-          >
-            支付
-          </Button>
-          <Button className="button-default" radius="none" size="sm">
-            取消
-          </Button>
+          {order?.customerPayStatus === "待付款" ? (
+            <>
+              <Button
+                color="primary"
+                radius="none"
+                size="sm"
+                onPress={() => {
+                  onPayOrderRedirect(order?.orderCode);
+                }}
+              >
+                支付
+              </Button>
+              <Button className="button-default" radius="none" size="sm">
+                取消
+              </Button>
+            </>
+          ) : (
+            <div>已支付</div>
+          )}
         </div>
       </div>
     </div>

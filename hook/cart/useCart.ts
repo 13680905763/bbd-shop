@@ -1,7 +1,11 @@
-// hooks/useCart.ts
+import { useQuery } from "@tanstack/react-query";
 
-import { useQuery } from "../api/useQuery";
+import { getCartList } from "@/services";
 
-import { Shop } from "@/app/(main)/dashboard/cart/page";
-
-export const useCart = () => useQuery<Shop[]>("/customer/cart/shop");
+export const useCartList = () => {
+  return useQuery({
+    queryKey: ["cartList"],
+    queryFn: () => getCartList(),
+    staleTime: 5 * 60 * 1000, // 缓存 5 分钟
+  });
+};

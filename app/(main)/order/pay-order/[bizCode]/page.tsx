@@ -18,15 +18,11 @@ import { IoWallet } from "react-icons/io5";
 
 import { price } from "@/components/primitives";
 import Progress from "@/components/common/progress";
-import {
-  useAddressList,
-  usePayMethod,
-  usePayOrderStatus,
-  useWalletInfo,
-} from "@/hook";
+import { usePaymentMethodList } from "@/hook";
 import RechargeModal from "@/components/modal/recharge.modal";
 import CommonModal from "@/components/modal/common-modal";
 import { createPayOrder, getPayOrderStatus } from "@/services";
+import { useBillingAddressStore, useWalletStore } from "@/store";
 
 const CustomRadio = (props: RadioProps) => {
   const {
@@ -65,23 +61,24 @@ const CustomRadio = (props: RadioProps) => {
 
 export default function SubmitOrder() {
   const params = useParams<{ bizCode: string }>();
+  const wallet = useWalletStore((state) => state.wallet);
 
   const [isOpen, setIsOpen] = useState(false);
   const [isOpen1, setIsOpen1] = useState(false);
   const [paymentId, setPaymentId] = useState("");
 
-  const { data, isLoading, isError } = usePayMethod(params.bizCode);
-  const { data: WalletInfo } = useWalletInfo();
-  const { data: PayOrderStatus, mutate: PayOrderStatusMutate } =
-    usePayOrderStatus(params.bizCode);
-  const { data: billingAddressData } = useAddressList(2);
+  const { data, isLoading, isError } = usePaymentMethodList(params.bizCode);
+
+  const billingAddress = useBillingAddressStore(
+    (state) => state.billingAddress,
+  );
 
   const hanldeCreatePayOrder = async () => {
     console.log("handleCreatePayOrder", paymentId);
     const res: any = await createPayOrder({
       bizCode: params.bizCode,
       paymentId,
-      addressId: billingAddressData![0]?.id,
+      addressId: billingAddress?.id as string,
     });
 
     console.log("res", res.data);
@@ -117,7 +114,6 @@ export default function SubmitOrder() {
 
   if (isLoading) return <div>加载中...</div>;
   if (isError) return <div>加载失败</div>;
-  // console.log("data", data, WalletInfo);
 
   return (
     <div className="container mx-auto bg-[#fff]  p-4 ">
@@ -133,16 +129,14 @@ export default function SubmitOrder() {
           <div className="p-4 border-2 border-dashed border-[#5e5e5e]">
             <div className="flex justify-between ">
               <div className="flex gap-8">
-                <div className="text-title">
-                  {billingAddressData![0].recipient}123
-                </div>
-                <div>{billingAddressData![0].phone}</div>
+                <div className="text-title">{billingAddress?.recipient}123</div>
+                <div>{billingAddress?.phone}</div>
               </div>
-              <div>{billingAddressData![0].postcode}</div>
+              <div>{billingAddress?.postcode}</div>
             </div>
             <div className="text-gray-base">
-              {billingAddressData![0].address},{billingAddressData![0].city},
-              {billingAddressData![0].state},{billingAddressData![0].country}
+              {billingAddress?.address},{billingAddress?.city},
+              {billingAddress?.state},{billingAddress?.country}
             </div>
           </div>
         </div>
@@ -156,7 +150,7 @@ export default function SubmitOrder() {
               setPaymentId(value);
             }}
           >
-            {data.map((item: any) => {
+            {data?.map((item: any) => {
               if (item.methodName !== "BALANCE") return null;
 
               return (
@@ -175,7 +169,7 @@ export default function SubmitOrder() {
                                 <IoWallet className="w-14 h-14 text-[#f0700c]" />
                                 <div>余额 </div>
                                 <div className={price({ size: "xl2" })}>
-                                  $ {WalletInfo?.availabalBalance}
+                                  $ {wallet?.availabalBalance}
                                 </div>
                               </div>
                               <Button
@@ -196,7 +190,7 @@ export default function SubmitOrder() {
                 </div>
               );
             })}
-            {data.map((item: any) => {
+            {data?.map((item: any) => {
               if (item.methodName === "BALANCE") return null;
 
               return (
@@ -268,10 +262,9 @@ export default function SubmitOrder() {
         size="xl"
         title="遇到问题？"
         onConfirm={async (onClose) => {
-          const res = await getPayOrderStatus(params?.bizCode);
+          const status = await getPayOrderStatus(params?.bizCode);
 
-          console.log(123, res);
-          if (res?.data === "203") {
+          if (status === 203) {
             onClose();
           } else {
             addToast({

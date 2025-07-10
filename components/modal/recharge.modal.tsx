@@ -34,7 +34,7 @@ export default function RechargeModal({
     if (!isNaN(num) && num > 0) {
       console.log("充值ZHONG");
       const res: any = await createOrderByRecharge({
-        currencyAmount: amount,
+        currencyAmount: Number(amount),
         currencyCode: "CNY",
       });
 

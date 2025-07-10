@@ -18,22 +18,24 @@ export interface FieldOption {
 export interface FieldConfig {
   type: "input" | "select" | "checkbox" | "date" | "area";
   name: string;
-  label: string;
+  label?: string;
   placeholder?: string;
+  size?: "sm" | "md" | "lg"; // ✅ 新增 size 支持
   options?: FieldOption[];
+  startContent?: React.ReactNode;
 }
 
-interface DynamicFormProps {
+interface DynamicFormProps<T extends Record<string, any>> {
   fields: FieldConfig[];
-  formData: Record<string, any>;
-  onChange: (data: Record<string, any>) => void;
+  formData: T;
+  onChange: (data: T) => void;
 }
 
-export default function FormItemRenderer({
+export default function FormItemRenderer<T extends Record<string, any>>({
   fields,
   formData,
   onChange,
-}: DynamicFormProps) {
+}: DynamicFormProps<T>) {
   const handleChange = (key: string, value: any) => {
     onChange({ ...formData, [key]: value });
   };
@@ -43,7 +45,15 @@ export default function FormItemRenderer({
   return (
     <>
       {fields.map((field) => {
-        const { type, name, label, placeholder, options = [] } = field;
+        const {
+          type,
+          name,
+          label,
+          placeholder,
+          options = [],
+          startContent = "",
+          size = "md",
+        } = field;
         const value = formData[name] ?? "";
 
         switch (type) {
@@ -53,6 +63,8 @@ export default function FormItemRenderer({
                 key={name}
                 label={label}
                 placeholder={placeholder}
+                size={size}
+                startContent={startContent}
                 value={value}
                 variant="bordered"
                 onValueChange={(val) => handleChange(name, val)}

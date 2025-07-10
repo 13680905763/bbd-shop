@@ -1,13 +1,15 @@
 "use client";
-import { Button } from "@heroui/react";
+import { addToast, Button } from "@heroui/react";
 import { useEffect, useState } from "react";
 import React from "react";
 
 import { FieldConfig } from "@/components/form/formItem-renderer";
-import { useAddressList } from "@/hook/addresses/useAddressList";
-import { addAddress, deleteAddress, updateAddress } from "@/services/address";
 import FormModal from "@/components/modal/form-modal";
 import ConfirmModal from "@/components/modal/confirm-modal";
+import { addAddress, deleteAddress, updateAddress } from "@/services";
+import { useBillingAddressStore } from "@/store";
+import { AddressItem } from "@/types";
+import { queryClient } from "@/lib/react-query";
 
 const fieldsaddress: FieldConfig[] = [
   {
@@ -56,7 +58,10 @@ const initAddress = {
 };
 
 export default function AddressTab() {
-  const { data, isLoading, isError, mutate } = useAddressList(2);
+  const billingAddress = useBillingAddressStore(
+    (state) => state.billingAddress,
+  );
+
   const [modalType, setModalType] = useState<ModalType>(null);
   const [currentRowData, setCurrentRowData] = useState<any>(initAddress);
 
@@ -72,43 +77,68 @@ export default function AddressTab() {
   const handleDelete = () => {
     setModalType("delete");
   };
+
   // 地址保存时处理
   const handleSave = async () => {
-    console.log("当前行数据:", currentRowData);
-    if (modalType === "add") {
-      await addAddress({ ...currentRowData, addressType: 2 }); // 新增接口
-    } else if (modalType === "edit") {
-      await updateAddress(currentRowData); // 编辑接口
-    } else if (modalType === "delete") {
-      await deleteAddress(currentRowData.id);
+    const { createTime, updateTime, customerId, ...filteredData } =
+      currentRowData;
+
+    try {
+      if (modalType === "add") {
+        const tip = await addAddress({ ...currentRowData, addressType: 2 }); // 新增接口
+
+        addToast({
+          title: tip,
+          timeout: 1000,
+          color: "success",
+        });
+      } else if (modalType === "edit") {
+        const tip = await updateAddress(filteredData); // 编辑接口
+
+        addToast({
+          title: tip,
+          timeout: 1000,
+          color: "success",
+        });
+      } else if (modalType === "delete") {
+        const tip = await deleteAddress(currentRowData.id);
+
+        addToast({
+          title: tip,
+          timeout: 1000,
+          color: "success",
+        });
+      }
+      setModalType(null);
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      console.log(123);
+
+      queryClient.invalidateQueries({ queryKey: ["billingAddress"] }); // 手动刷新
     }
-    mutate();
-    setModalType(null);
   };
 
   useEffect(() => {
-    console.log(data);
-    setCurrentRowData(data?.[0]);
+    setCurrentRowData(billingAddress);
     console.log("currentRowData", currentRowData);
-  }, [data]);
-
-  if (isLoading) return <div>加载中...</div>;
-  if (isError) return <div>加载失败</div>;
+  }, [billingAddress]);
 
   return (
     <>
-      {data?.length ? (
+      {Object.keys(billingAddress as AddressItem).length ? (
         <div>
           <div className="p-4 border-2 border-dashed border-[#5e5e5e]">
             <div className="flex justify-between ">
               <div className="flex gap-8">
-                <div className="text-title">{data[0].recipient}123</div>
-                <div>{data[0].phone}</div>
+                <div className="text-title">{billingAddress?.recipient}</div>
+                <div>{billingAddress?.phone}</div>
               </div>
-              <div>{data[0].postcode}</div>
+              <div>{billingAddress?.postcode}</div>
             </div>
             <div className="text-gray-base">
-              {data[0].address},{data[0].city},{data[0].state},{data[0].country}
+              {billingAddress?.address},{billingAddress?.city},
+              {billingAddress?.state},{billingAddress?.country}
             </div>
           </div>
           <div className="mt-4 flex gap-4">
