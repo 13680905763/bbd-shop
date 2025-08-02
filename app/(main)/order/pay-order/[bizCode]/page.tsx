@@ -72,26 +72,19 @@ export default function SubmitOrder() {
   const billingAddress = useBillingAddressStore(
     (state) => state.billingAddress,
   );
-
   const hanldeCreatePayOrder = async () => {
     console.log("handleCreatePayOrder", paymentId);
-    const res: any = await createPayOrder({
-      bizCode: params.bizCode,
-      paymentId,
-      addressId: billingAddress?.id as string,
-    });
 
-    console.log("res", res.data);
-    if (res.code === 200) {
-      window.open(res.data, "_blank");
-      setIsOpen1(true);
-    } else {
-      addToast({
-        title: res?.msg,
-        timeout: 1000,
-        color: "danger",
+    try {
+      const url = await createPayOrder({
+        bizCode: params.bizCode,
+        paymentId,
+        addressId: billingAddress?.id as string,
       });
-    }
+
+      window.open(url, "_blank");
+      setIsOpen1(true);
+    } catch (error) {}
   };
 
   useEffect(() => {

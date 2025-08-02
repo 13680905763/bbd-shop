@@ -6,6 +6,7 @@ import NextLink from "next/link";
 import { Divider } from "@heroui/react";
 
 import { siteConfig } from "@/config/site";
+import { useServices } from "@/hook";
 export default function DashBoardlayout({
   children,
 }: {
@@ -13,6 +14,8 @@ export default function DashBoardlayout({
 }) {
   const [currentItem, setCurrentItem] = useState("");
   const pathname = usePathname(); // 获取当前路径
+
+  useServices();
 
   useEffect(() => {
     const pathParts = pathname.split("/").filter(Boolean);

@@ -47,8 +47,12 @@ export default function CartPage() {
   const router = useRouter();
   const handleCartSubmit = async () => {
     if (selectedIdArr.length > 0) {
+      const previewList = selectedIdArr.map((cartId: string) => ({
+        cartId,
+        serviceList: [],
+      }));
       const key: any = await createOrderPreviewKeyByCart({
-        idList: selectedIdArr,
+        previewList,
       });
 
       router.push("/order/submit-order?type=cart&key=" + key);

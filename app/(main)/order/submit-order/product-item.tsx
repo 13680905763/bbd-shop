@@ -1,63 +1,17 @@
-import {
-  Button,
-  Image,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  Textarea,
-  useDisclosure,
-} from "@heroui/react";
-import { useState } from "react";
+"use client";
+import { Checkbox, CheckboxGroup, Image, Tooltip } from "@heroui/react";
 
-const RemarkModal = ({ isOpen, onOpenChange, handleRemark, value }: any) => {
-  const [remark, setRemark] = useState(value);
+import { useServicesStore } from "@/store";
 
-  return (
-    <Modal isOpen={isOpen} placement="center" onOpenChange={onOpenChange}>
-      <ModalContent>
-        {(onClose) => (
-          <>
-            <ModalHeader className="flex flex-col gap-1">备注</ModalHeader>
-            <ModalBody>
-              <Textarea
-                placeholder="请输入备注"
-                value={remark}
-                onChange={(e) => setRemark(e.target.value)}
-              />
-            </ModalBody>
-            <ModalFooter className="flex gap-2">
-              <Button
-                className="flex-1 button-default"
-                variant="light"
-                onPress={onClose}
-              >
-                取消
-              </Button>
-              <Button
-                className="flex-1"
-                color="primary"
-                onPress={() => handleRemark(remark, onClose)}
-              >
-                确定
-              </Button>
-            </ModalFooter>
-          </>
-        )}
-      </ModalContent>
-    </Modal>
-  );
-};
+export default function ProductItem({
+  product,
+  updateServiceList,
+  checkboxGroupData,
+  setCheckboxGroupData,
+}: any) {
+  const services = useServicesStore((state) => state.services);
 
-export default function ProductItem({ product }: any) {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
-  const {
-    isOpen: isOpenRemark,
-    onOpen: onOpenRemark,
-    onOpenChange: onOpenChangeRemark,
-  } = useDisclosure();
+  console.log("services", services);
 
   return (
     <div className="flex justify-between  gap-4">
@@ -90,13 +44,34 @@ export default function ProductItem({ product }: any) {
           <span className="text-gray-500">{product?.remark ?? "暂无备注"}</span>
         </p>
       </div>
-      <div className="flex  gap-2   flex-col  grow-0 shrink-0 basis-[200px]">
-        <Button className="button-white" radius="none" size="sm">
-          精细拍照
-        </Button>
-        <Button className="button-white" radius="none" size="sm">
-          留言
-        </Button>
+      <div className="flex  gap-2   flex-col  grow-0 shrink-0 basis-[150px]">
+        <CheckboxGroup
+          defaultValue={checkboxGroupData}
+          onChange={(v) => {
+            setCheckboxGroupData(v);
+            updateServiceList(
+              product.cartId,
+              v.map((id) => {
+                return {
+                  serviceId: id,
+                  remark: "",
+                };
+              }),
+            );
+          }}
+        >
+          {services?.map((service: any) => (
+            <Tooltip
+              key={service?.id}
+              className="bg-[#262626] text-white p-2 max-w-screen-sm"
+              content={service?.introduction}
+            >
+              <Checkbox isDisabled={service?.id == 1} value={service?.id}>
+                {service?.serviceName}￥{service?.price}
+              </Checkbox>
+            </Tooltip>
+          ))}
+        </CheckboxGroup>
       </div>
       <div className="flex grow-0 shrink-0 basis-[100px]">
         <p>{product.price}</p>
@@ -114,12 +89,6 @@ export default function ProductItem({ product }: any) {
         </div>
         <div className="text-gray-500">国内运费: {product.postFee}</div>
       </div> */}
-      <RemarkModal
-        // handleRemark={handleRemark}
-        isOpen={isOpenRemark}
-        value={product.remark}
-        onOpenChange={onOpenChangeRemark}
-      />
     </div>
   );
 }

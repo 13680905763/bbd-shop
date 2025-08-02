@@ -7,4 +7,5 @@ export * from "./addresses/useAreaSelector";
 export * from "./addresses/useBillingAddress";
 export * from "./order/useOrderList";
 export * from "./order/useOrderPreview";
+export * from "./order/useServices";
 export * from "./pay/usePaymentMethodList";

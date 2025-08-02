@@ -2,7 +2,7 @@ import { request } from "./request";
 
 import {
   createOrderByRechargeParams,
-  createOrderPreviewKeyByCartParams,
+  CreateOrderPreviewKeyByCartParams,
   createOrderPreviewKeyByProductParams,
   createPayOrderParams,
   GetOrderListParams,
@@ -14,12 +14,12 @@ import {
 /** 创建立即购买订单预览key */
 export const createOrderPreviewKeyByProduct = (
   data: createOrderPreviewKeyByProductParams,
-): Promise<string> => request.post("/orders/preview/key", data);
+): Promise<string> => request.post("/orders/preview/init", data);
 /** 创建购物车结算订单预览key */
 export const createOrderPreviewKeyByCart = (
-  data: createOrderPreviewKeyByCartParams,
+  data: CreateOrderPreviewKeyByCartParams,
 ): Promise<string> => {
-  return request.post("/customer/cart/order/preview/key", data);
+  return request.post("/customer/cart/order/init", data);
 };
 /** 创建充值订单 */
 export const createOrderByRecharge = (
@@ -31,18 +31,27 @@ export const createOrderByProduct = (
 ): Promise<string> => request.post("/orders/create", data);
 
 /** 创建购物车结算订单 */
-export const createOrderByCart = (
-  data: createOrderPreviewKeyByCartParams,
-): Promise<string> => request.post("/customer/cart/order/submit", data);
+export const createOrderByCart = (data: any): Promise<string> =>
+  request.post("/customer/cart/order/submit", data);
 
 /** 购物车结算订单预览 */
 export const getOrderPreviewCart = (key: string): Promise<OrderPreviewByCart> =>
-  request.get("/customer/cart/order/preview?key=" + key);
+  request.get("/customer/cart/order/preview/key?key=" + key);
+/** 更新购物车结算订单预览 */
+export const updateOrderPreviewCart = (
+  data: OrderPreviewByCart,
+): Promise<OrderPreviewByCart> =>
+  request.post("/customer/cart/order/preview", data);
 
 /** 商品立即购买订单预览 */
 export const getOrderPreviewProduct = (
   key: string,
-): Promise<OrderPreviewByProduct> => request.get("/orders/preview?key=" + key);
+): Promise<OrderPreviewByProduct> =>
+  request.get("/orders/preview/key?key=" + key);
+/** 更新商品立即购买订单预览 */
+export const updateOrderPreviewProduct = (
+  data: any,
+): Promise<OrderPreviewByCart> => request.post("/orders/preview", data);
 /** 付款 */
 export const createPayOrder = (data: createPayOrderParams): Promise<string> =>
   request.post("/customer/pay-order/create", data);
@@ -54,3 +63,6 @@ export const getPayOrderStatus = (bizCode: string): Promise<number> =>
 export const getOrderList = (
   data: GetOrderListParams,
 ): Promise<OrderListResponse> => request.post("/orders/page", data);
+/** 获取增值服务列表 */
+export const getServicesList = (): Promise<any> =>
+  request.get("/services/list");

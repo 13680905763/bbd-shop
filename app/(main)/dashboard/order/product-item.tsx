@@ -1,5 +1,6 @@
 import {
   Button,
+  Checkbox,
   Image,
   Modal,
   ModalBody,
@@ -7,10 +8,13 @@ import {
   ModalFooter,
   ModalHeader,
   Textarea,
+  Tooltip,
   useDisclosure,
 } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+
+import { useServicesStore } from "@/store";
 
 type ProductItemProps = {
   product: any;
@@ -60,6 +64,7 @@ export default function ProductItem({
   product,
   isLastProduct,
 }: ProductItemProps) {
+  const services = useServicesStore((state) => state.services);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const router = useRouter();
   const {
@@ -108,12 +113,23 @@ export default function ProductItem({
           <p>x{product.quantity}</p>
         </div>
         <div className="flex  gap-2  justify-center flex-col">
-          <Button className="button-white" radius="none" size="sm">
+          {product?.orderServiceList?.map((service: any, index: any) => (
+            <Tooltip
+              key={index}
+              className="bg-[#262626] text-white p-2 max-w-screen-sm"
+              content={service?.introduction}
+            >
+              <Checkbox isDisabled={true} isSelected={true}>
+                {service?.serviceName}￥{service?.price}
+              </Checkbox>
+            </Tooltip>
+          ))}
+          {/* <Button className="button-white" radius="none" size="sm">
             精细拍照
           </Button>
           <Button className="button-white" radius="none" size="sm">
             留言
-          </Button>
+          </Button> */}
         </div>
         <RemarkModal
           // handleRemark={handleRemark}

@@ -29,7 +29,7 @@ import { IoCart } from "react-icons/io5";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { SearchIcon, Logo } from "@/components/icons";
-import { logoutCustomer } from "@/services";
+import { getUserInfo, logoutCustomer } from "@/services";
 import { useUserStore } from "@/store";
 
 export const Navbar = () => {
@@ -90,7 +90,8 @@ export const Navbar = () => {
       await logoutCustomer(); // 调用后端接口，带上 cookie
       localStorage.removeItem("user-storage");
       localStorage.removeItem("wallet-storage");
-      localStorage.removeItem("wallet-storage");
+      localStorage.removeItem("services-storage");
+      localStorage.removeItem("billingAddress-storage");
       window.location.reload();
     } catch (error) {}
   };
@@ -98,6 +99,11 @@ export const Navbar = () => {
   useEffect(() => {
     setCurrentNav(pathname);
   }, [pathname]);
+
+  useEffect(() => {
+    // 获取一次用户信息
+    getUserInfo();
+  }, []);
   const searchInput = (
     <Form className="w-full max-w-xs" onSubmit={Search}>
       <Input

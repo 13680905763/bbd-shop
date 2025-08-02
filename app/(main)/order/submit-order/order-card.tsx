@@ -4,7 +4,12 @@ import ProductItem from "./product-item";
 
 import SourceIcon from "@/components/common/source-icon";
 
-export default function OrderCard({ order }: any) {
+export default function OrderCard({
+  order,
+  updateServiceList,
+  checkboxGroupData,
+  setCheckboxGroupData,
+}: any) {
   console.log(order);
 
   return (
@@ -20,7 +25,10 @@ export default function OrderCard({ order }: any) {
         {order.products.map((product: any) => (
           <ProductItem
             key={product?.sku?.propName_valueName}
+            checkboxGroupData={checkboxGroupData}
             product={product}
+            setCheckboxGroupData={setCheckboxGroupData}
+            updateServiceList={updateServiceList}
           />
         ))}
       </div>

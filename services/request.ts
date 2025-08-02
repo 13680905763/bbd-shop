@@ -46,7 +46,18 @@ request.interceptors.response.use(
 
     if (status === 401) {
       console.warn("未登录，请重新登录");
+      localStorage.removeItem("user-storage");
+      localStorage.removeItem("wallet-storage");
+      localStorage.removeItem("services-storage");
+      localStorage.removeItem("billingAddress-storage");
+      addToast({
+        title: "未登录",
+        timeout: 1000,
+        color: "danger",
+      });
+
       // 可以跳转登录页或清除本地状态
+      return null;
     }
 
     return Promise.reject(error);

@@ -1,77 +1,26 @@
 "use client";
-import { Button, Tab, Tabs, useDisclosure } from "@heroui/react";
-import React from "react";
+import { Tab, Tabs } from "@heroui/react";
+import React, { useState } from "react";
 
-import CommonGoodsItem from "@/components/common-goods-item";
+import WarehouseItem from "./warehouse-item";
+
 import Progress from "@/components/common/progress";
-
-const rows = [
-  {
-    key: "1",
-    name: "Tony Reichert",
-    role: "CEO",
-    status: "Active",
-  },
-  {
-    key: "2",
-    name: "Zoey Lang",
-    role: "Technical Lead",
-    status: "Paused",
-  },
-  {
-    key: "3",
-    name: "Jane Fisher",
-    role: "Senior Developer",
-    status: "Active",
-  },
-  {
-    key: "4",
-    name: "William Howard",
-    role: "Community Manager",
-    status: "Vacation",
-  },
-];
-const columns = [
-  {
-    key: "name",
-    label: "收货人",
-  },
-  {
-    key: "role",
-    label: "电话",
-  },
-  {
-    key: "status",
-    label: "详情地址",
-  },
-  {
-    key: "actions",
-    label: "操作",
-  },
-];
+import PaginationBar from "@/components/common/pagination-bar";
+import { useWarehouseList } from "@/hook/warehouse/useWarehouseList";
 
 export default function WarehousePage() {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const renderCell = React.useCallback((rows: any, columnKey: any) => {
-    const cellValue = rows[columnKey];
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-    switch (columnKey) {
-      case "actions":
-        return (
-          <div className="relative flex items-center gap-2">
-            <Button onPress={onOpen}>查看详情</Button>
-          </div>
-        );
-      default:
-        return cellValue;
-    }
-  }, []);
+  const { data, isLoading } = useWarehouseList(page, pageSize);
+
+  if (isLoading) return <div>加载中...</div>;
 
   return (
     <div className="flex w-full flex-col">
       <div className="mt-5">
         <Progress
-          currentStep={2}
+          currentStep={1}
           steps={["选择产品", "订单付款", "质检&仓库", "打包", "签收包裹"]}
         />
       </div>
@@ -87,7 +36,7 @@ export default function WarehousePage() {
         variant="underlined"
       >
         <Tab
-          key="photos"
+          key="all"
           title={
             <div className="flex items-center space-x-2">
               <span>全部</span>
@@ -95,45 +44,31 @@ export default function WarehousePage() {
           }
         >
           <div className="flex flex-col gap-3">
-            <CommonGoodsItem
-              createdAt="2025-04-26 03:21:07"
-              items={[
-                {
-                  imageUrl: "https://heroui.com/images/hero-card-complete.jpeg",
-                  title:
-                    "裤子男款夏季男裤灰色薄款直筒裤男士宽松休闲运动裤男生阔腿卫裤",
-                  specs: "颜色: 黑色+白花灰; 尺码: L",
-                  remark: "",
-                  quantity: 123,
-                  unitPrice: 266,
-                  totalPrice: 266,
-                  domesticShipping: 0,
-                },
-              ]}
-              orderId="CNF48892882637667"
-              status="未支付"
-            />
+            {data?.records?.map((warehouse: any) => (
+              <WarehouseItem key={warehouse.id} warehouse={warehouse} />
+            ))}
+          </div>
+          <div className="mt-10 sticky bottom-0 border-t-[1px] bg-white z-10 card-cart p-4 py-6  ">
+            {(data?.total as number) > 0 && (
+              <PaginationBar
+                page={page}
+                pageSize={pageSize}
+                total={data?.total as number}
+                onPageChange={setPage}
+                onPageSizeChange={setPageSize}
+              />
+            )}
           </div>
         </Tab>
         <Tab
-          key="music"
+          key="waitPay"
           title={
             <div className="flex items-center space-x-2">
-              <span>处理中</span>
+              <span>可提交包裹</span>
             </div>
           }
         >
-          312
-        </Tab>
-        <Tab
-          key="videos"
-          title={
-            <div className="flex items-center space-x-2">
-              <span>可提交运单</span>
-            </div>
-          }
-        >
-          31231
+          213
         </Tab>
       </Tabs>
     </div>

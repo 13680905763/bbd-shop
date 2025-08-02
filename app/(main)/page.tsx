@@ -1,5 +1,5 @@
 "use client";
-import { Button, Input, Image, Form } from "@heroui/react";
+import { Button, Input, Image, Form, addToast } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { AiOutlineAlibaba } from "react-icons/ai";
 import { FaCircle, FaRegImage } from "react-icons/fa";
@@ -8,6 +8,7 @@ import clsx from "clsx";
 import { useTranslations } from "next-intl";
 
 import { siteConfig } from "@/config/site";
+import { getGoodsId } from "@/services";
 
 // import { siteConfig } from "@/config/site";
 
@@ -17,47 +18,29 @@ export default function Home() {
 
   console.log("tttt", t("slogan.line1"));
 
-  /**
-   * 从 1688 商品链接中提取 offerId
-   * @param url 商品详情页链接
-   * @returns 提取到的 offerId 或 null
-   */
-  function extractOfferId(parsedUrl: any): string | null {
-    try {
-      const pathname = parsedUrl.pathname;
-
-      // 匹配 /offer/865930740519.html 中的 ID
-      const match = pathname.match(/\/offer\/(\d+)\.html/);
-
-      return match ? match[1] : null;
-    } catch (err) {
-      console.error("无效的 URL:", err);
-
-      return null;
-    }
-  }
-  const Search = (e: any) => {
+  const Search = async (e: any) => {
     console.log(666);
 
     e.preventDefault();
     const data: any = Object.fromEntries(new FormData(e.currentTarget));
-    const url = new URL(data.url);
+    let url: URL;
 
-    console.log(data, url);
-    const source =
-      data.url.includes("item.taobao.com") ||
-      data.url.includes("detail.tmall.com")
-        ? "TAOBAO"
-        : data.url.includes("detail.1688.com/")
-          ? "1688"
-          : "weidian";
-    const sourceproductId = url.searchParams.get("id") || extractOfferId(url);
+    try {
+      url = new URL(data.url);
+    } catch (err) {
+      // 可选：展示错误提示
+      addToast({
+        title: "请输入有效的 URL",
+        timeout: 1000,
+        color: "danger",
+      });
 
-    console.log(source, sourceproductId);
-    //  source: "TAOBAO",
-    //     sourceproductId: "788110260427",
+      return; // 终止后续逻辑
+    }
+    const res: any = await getGoodsId({ url });
+
     router.push(
-      `/goods/${source}/${sourceproductId}`, // 目标路由
+      `/goods/${res.source}/${res.sourceProductId}`, // 目标路由
     );
   };
 

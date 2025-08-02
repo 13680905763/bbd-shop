@@ -1,17 +1,19 @@
 "use client";
-import React, { useMemo, useState } from "react";
-import { Button, Checkbox, Divider } from "@heroui/react";
+import React, { useEffect, useMemo, useState } from "react";
+import { addToast, Button, Checkbox, Divider } from "@heroui/react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import OrderCard from "./order-card";
 
 import Progress from "@/components/common/progress";
-import { createOrderByCart, createOrderByProduct } from "@/services";
-import { useOrderPreview } from "@/hook";
 import {
-  createOrderPreviewKeyByCartParams,
-  createOrderPreviewKeyByProductParams,
-} from "@/types";
+  createOrderByCart,
+  createOrderByProduct,
+  updateOrderPreviewCart,
+  updateOrderPreviewProduct,
+} from "@/services";
+import { useOrderPreview } from "@/hook";
+import { createOrderPreviewKeyByProductParams } from "@/types";
 export type Product = {
   id: string;
   productTitle: string;
@@ -40,24 +42,54 @@ export default function SubmitOrder() {
   const type = searchParam.get("type") as "cart" | "product";
   const key = searchParam.get("key") as string;
   const [submitting, setSubmitting] = useState<boolean>(false);
-
+  const [ischeck, setIscheck] = useState<boolean>(false);
+  const [orderData, setOrderData] = useState<any>(null);
+  const [checkboxGroupData, setCheckboxGroupData] = useState<string[]>(["1"]);
   const { data, isLoading, isError } = useOrderPreview(type, key);
 
-  console.log("data", data, isLoading);
+  // console.log("data", data, isLoading);
+  useEffect(() => {
+    console.log("data", data);
+    setOrderData(data);
+  }, [data]);
 
+  useEffect(() => {
+    console.log("orderData变化", orderData, { ...orderData?.param });
+    if (!orderData) return;
+
+    if (type === "cart") {
+      updateOrderPreviewCart({ ...orderData?.param }).then((res) => {
+        setOrderData(res);
+        console.log("res", res);
+      });
+    } else if (type === "product") {
+      console.log(4564654, { ...orderData });
+      updateOrderPreviewProduct({ ...orderData?.param }).then((res) => {
+        setOrderData(res);
+        console.log("res", res);
+      });
+    }
+  }, [checkboxGroupData]);
   const handleCartSubmit = async () => {
+    if (!ischeck) {
+      addToast({
+        title: "请勾选免责声明",
+        timeout: 1000,
+        color: "warning",
+      });
+
+      return;
+    }
     if (submitting) return;
     setSubmitting(true);
 
     if (type === "cart") {
-      const bizCode = await createOrderByCart(
-        data?.param as createOrderPreviewKeyByCartParams,
-      );
+      const bizCode = await createOrderByCart(orderData?.param);
 
       router.push("/order/pay-order/" + bizCode);
     } else if (type === "product") {
       const bizCode = await createOrderByProduct(
-        data?.param as createOrderPreviewKeyByProductParams,
+        orderData?.param as createOrderPreviewKeyByProductParams,
       );
 
       router.push("/order/pay-order/" + bizCode);
@@ -69,6 +101,49 @@ export default function SubmitOrder() {
       ?.flatMap((order: any) => order.products) // 拍平所有商品
       ?.reduce((sum: any, item: any) => sum + item?.price * item.quantity, 0); // 累加价格
   }, [data]);
+
+  const updateServiceList = (cartId: string, newServiceList: any) => {
+    console.log("newServiceList", newServiceList);
+
+    setOrderData((prev: any) => {
+      if (type === "cart") {
+        const newPreviewList = prev.param.previewList.map((item: any) => {
+          if (item.cartId === cartId) {
+            return {
+              ...item,
+              serviceList: newServiceList,
+            };
+          }
+
+          return item;
+        });
+
+        return {
+          ...prev,
+          param: {
+            ...prev.param,
+            previewList: newPreviewList,
+          },
+        };
+      } else if (type === "product") {
+        console.log("123", {
+          ...prev,
+          param: {
+            ...prev.param,
+            serviceList: newServiceList,
+          },
+        });
+
+        return {
+          ...prev,
+          param: {
+            ...prev.param,
+            serviceList: newServiceList,
+          },
+        };
+      }
+    });
+  };
 
   if (isLoading) return <div>加载中...</div>;
   if (isError) return <div>出错了</div>;
@@ -84,8 +159,14 @@ export default function SubmitOrder() {
       <div className="text-title">确认产品信息</div>
       <div>
         <div className="flex flex-col gap-4">
-          {data?.orderList?.map((order: any) => (
-            <OrderCard key={order?.shopName} order={order} />
+          {orderData?.orderList?.map((order: any) => (
+            <OrderCard
+              key={order?.shopName}
+              checkboxGroupData={checkboxGroupData}
+              order={order}
+              setCheckboxGroupData={setCheckboxGroupData}
+              updateServiceList={updateServiceList}
+            />
           ))}
         </div>
 
@@ -104,7 +185,12 @@ export default function SubmitOrder() {
               《免责声明》
             </span>
           </p>
-          <Checkbox color="primary" size="sm">
+          <Checkbox
+            color="primary"
+            isSelected={ischeck}
+            size="sm"
+            onValueChange={setIscheck}
+          >
             <span className="text-[#676969]">
               我已阅读并同意BBDbuy的免责声明
             </span>

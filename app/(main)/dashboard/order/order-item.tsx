@@ -2,10 +2,13 @@ import { Button, Divider } from "@heroui/react";
 
 import ProductItem from "./product-item";
 
+import SourceIcon from "@/components/common/source-icon";
+
 export default function OrderItem({ order, onPayOrderRedirect }: any) {
   return (
     <div className="card-cart ">
       <div className="p-4 flex items-center gap-1 ">
+        <SourceIcon source={order?.source} />
         <div>创建时间：{order?.createTime}</div>
         <div>订单号：{order?.orderCode}</div>
       </div>

@@ -12,7 +12,6 @@ import {
 import { useParams, useRouter } from "next/navigation";
 import { GrPowerReset } from "react-icons/gr";
 import { IoIosLink } from "react-icons/io";
-import { AiFillTaobaoSquare } from "react-icons/ai";
 
 import {
   commonCard,
@@ -21,11 +20,11 @@ import {
   subtitle,
 } from "@/components/primitives";
 import Stepper from "@/components/stepper";
-import { Icon1688 } from "@/components/icons";
 import { getGoodsInfo } from "@/services/goods";
 import { addCart } from "@/services/cart";
 import { createOrderPreviewKeyByProduct } from "@/services";
 import { queryClient } from "@/lib/react-query";
+import SourceIcon from "@/components/common/source-icon";
 
 interface Sku {
   skuID: string;
@@ -334,7 +333,7 @@ export default function GoodsPage() {
   return (
     <div className="bg-[#fff] ">
       <div className="flex  container mx-auto  my-[15px] mt-16">
-        <div className="flex-[4] p-10 pt-0 overflow-auto scrollbar-hide">
+        <div className="flex-[2] p-10 pt-0 overflow-auto scrollbar-hide">
           <div className="w-[100%] flex gap-2">
             <Image
               alt="123"
@@ -345,7 +344,7 @@ export default function GoodsPage() {
             />
           </div>
 
-          <div className="flex mt-2 gap-2">
+          <div className="flex mt-2 gap-2 flex-wrap justify-start">
             {goodsInfo?.productInfo?.imgList?.map((src: string) => (
               <button
                 key={src}
@@ -397,12 +396,7 @@ export default function GoodsPage() {
           <div className="sticky top-20 flex  h-[calc(100vh-80px)] ">
             <div className="overflow-y-auto scrollbar-hide flex flex-col gap-4 pb-7">
               <div className="flex gap-2 items-center">
-                {goodsInfo?.productInfo?.source === "TAOBAO" ? (
-                  <AiFillTaobaoSquare className="text-[#ff5000] w-[22px] h-[22px]" />
-                ) : goodsInfo?.productInfo?.source === "1688" ? (
-                  <Icon1688 className="text-orange-500" size={22} />
-                ) : null}
-                {/* <AiFillTaobaoSquare className="text-[#ff5000] w-[22px] h-[22px]" /> */}
+                <SourceIcon source={goodsInfo?.productInfo?.source} />
                 <p className="font-bold text-lg">
                   {goodsInfo?.productInfo?.sellerInfo?.shopName}
                 </p>

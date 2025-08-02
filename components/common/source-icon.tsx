@@ -36,6 +36,15 @@ const SourceIcon: React.FC<SourceIconProps> = ({
           size={size}
         />
       );
+    case "WEIDIAN":
+      return (
+        <div className="relative w-[22px] h-[22px]">
+          <FaCircle className="bg-[#cf011a] text-[#cf011a] w-full h-full" />
+          <span className="text-white absolute inset-0 flex items-center justify-center font-bold ">
+            店
+          </span>
+        </div>
+      );
     default:
       return null;
   }
