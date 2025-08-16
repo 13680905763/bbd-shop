@@ -11,6 +11,7 @@ import { Link } from "@heroui/link";
 import { Input } from "@heroui/input";
 import NextLink from "next/link";
 import {
+  addToast,
   Button,
   Dropdown,
   DropdownItem,
@@ -29,7 +30,7 @@ import { IoCart } from "react-icons/io5";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { SearchIcon, Logo } from "@/components/icons";
-import { getUserInfo, logoutCustomer } from "@/services";
+import { getGoodsId, getUserInfo, logoutCustomer } from "@/services";
 import { useUserStore } from "@/store";
 
 export const Navbar = () => {
@@ -41,47 +42,27 @@ export const Navbar = () => {
 
   const [currentNav, setCurrentNav] = useState(pathname);
 
-  /**
-   * 从 1688 商品链接中提取 offerId
-   * @param url 商品详情页链接
-   * @returns 提取到的 offerId 或 null
-   */
-  function extractOfferId(parsedUrl: any): string | null {
-    try {
-      const pathname = parsedUrl.pathname;
-
-      // 匹配 /offer/865930740519.html 中的 ID
-      const match = pathname.match(/\/offer\/(\d+)\.html/);
-
-      return match ? match[1] : null;
-    } catch (err) {
-      console.error("无效的 URL:", err);
-
-      return null;
-    }
-  }
-  const Search = (e: any) => {
-    console.log(666);
-
+  const Search = async (e: any) => {
     e.preventDefault();
     const data: any = Object.fromEntries(new FormData(e.currentTarget));
-    const url = new URL(data.url);
+    let url: URL;
 
-    console.log(data, url);
-    const source =
-      data.url.includes("item.taobao.com") ||
-      data.url.includes("detail.tmall.com")
-        ? "TAOBAO"
-        : data.url.includes("detail.1688.com/")
-          ? "1688"
-          : "weidian";
-    const sourceproductId = url.searchParams.get("id") || extractOfferId(url);
+    try {
+      url = new URL(data.url);
+    } catch (err) {
+      // 可选：展示错误提示
+      addToast({
+        title: "请输入有效的 URL",
+        timeout: 1000,
+        color: "danger",
+      });
 
-    console.log(source, sourceproductId);
-    //  source: "TAOBAO",
-    //     sourceproductId: "788110260427",
+      return; // 终止后续逻辑
+    }
+    const res: any = await getGoodsId({ url });
+
     router.push(
-      `/goods/${source}/${sourceproductId}`, // 目标路由
+      `/goods/${res.source}/${res.sourceProductId}`, // 目标路由
     );
     setInputValue("");
   };
@@ -102,7 +83,9 @@ export const Navbar = () => {
 
   useEffect(() => {
     // 获取一次用户信息
-    getUserInfo();
+    getUserInfo().catch(() => {
+      router.refresh();
+    });
   }, []);
   const searchInput = (
     <Form className="w-full max-w-xs" onSubmit={Search}>

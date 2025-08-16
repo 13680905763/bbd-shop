@@ -112,7 +112,7 @@ export default function ProductItem({
         <div className="">
           <p>x{product.quantity}</p>
         </div>
-        <div className="flex  gap-2  justify-center flex-col">
+        <div className="flex  gap-2  justify-center flex-col grow-0 shrink-0 basis-[150px]">
           {product?.orderServiceList?.map((service: any, index: any) => (
             <Tooltip
               key={index}

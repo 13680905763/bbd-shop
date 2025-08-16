@@ -25,12 +25,12 @@ export default function OrderItem({ order, onPayOrderRedirect }: any) {
             />
           ))}
         </div>
-        <div className="flex grow-0 shrink-0 basis-[120px] justify-center pt-4 border-r-1 border-l-1">
+        <div className="flex grow-0 shrink-0 basis-[120px] justify-center items-center">
           <p>$ {order?.totalFee}</p>
           {/* <p>国内运费 $ {order?.totalFee}</p> */}
         </div>
-        <div className="grow-0 shrink-0 basis-[180px] flex flex-col pt-4 gap-2 px-10">
-          {order?.customerPayStatus === "待付款" ? (
+        <div className="grow-0 shrink-0 basis-[180px] flex flex-col  gap-2  justify-center items-center">
+          {order?.customerPayStatusCode === 201 ? (
             <>
               <Button
                 color="primary"
@@ -47,7 +47,7 @@ export default function OrderItem({ order, onPayOrderRedirect }: any) {
               </Button>
             </>
           ) : (
-            <div>已支付</div>
+            <div className="text-[#f0700c]">{order?.status}</div>
           )}
         </div>
       </div>

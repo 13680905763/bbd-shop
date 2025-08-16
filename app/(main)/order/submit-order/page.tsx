@@ -97,9 +97,10 @@ export default function SubmitOrder() {
     setSubmitting(false);
   };
   const togglePrice = useMemo(() => {
-    return data?.orderList
-      ?.flatMap((order: any) => order.products) // 拍平所有商品
-      ?.reduce((sum: any, item: any) => sum + item?.price * item.quantity, 0); // 累加价格
+    return data?.orderList?.reduce(
+      (sum: any, item: any) => sum + item?.totalFee,
+      0,
+    ); // 累加价格
   }, [data]);
 
   const updateServiceList = (cartId: string, newServiceList: any) => {

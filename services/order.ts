@@ -1,4 +1,4 @@
-import { request } from "./request";
+import { request, requestWithOption } from "./request";
 
 import {
   createOrderByRechargeParams,
@@ -46,8 +46,18 @@ export const updateOrderPreviewCart = (
 /** 商品立即购买订单预览 */
 export const getOrderPreviewProduct = (
   key: string,
-): Promise<OrderPreviewByProduct> =>
-  request.get("/orders/preview/key?key=" + key);
+  options?: { showToast?: boolean },
+): Promise<OrderPreviewByProduct> => {
+  return requestWithOption(
+    {
+      url: `/orders/preview/key?key=${key}`,
+      method: "GET",
+    },
+    {
+      showToast: options?.showToast ?? false, // 默认显示提示
+    },
+  );
+};
 /** 更新商品立即购买订单预览 */
 export const updateOrderPreviewProduct = (
   data: any,
@@ -64,5 +74,9 @@ export const getOrderList = (
   data: GetOrderListParams,
 ): Promise<OrderListResponse> => request.post("/orders/page", data);
 /** 获取增值服务列表 */
-export const getServicesList = (): Promise<any> =>
-  request.get("/services/list");
+export const getServicesList = (): Promise<any> => {
+  return requestWithOption(
+    { url: "/services/query?serviceLevel=1", method: "GET" },
+    { showToast: false },
+  );
+};

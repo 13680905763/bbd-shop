@@ -10,6 +10,7 @@ interface CommonFormProps<T extends Record<string, any> = Record<string, any>> {
   onSubmit?: (data: T) => void;
   confirmText?: string;
   children?: ReactNode; // ✅ 新增 children
+  isLoading?: boolean;
 }
 
 export default function CommonForm<T extends Record<string, any>>({
@@ -19,6 +20,7 @@ export default function CommonForm<T extends Record<string, any>>({
   onSubmit,
   confirmText = "保存",
   children,
+  isLoading,
 }: CommonFormProps<T>) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -34,7 +36,7 @@ export default function CommonForm<T extends Record<string, any>>({
       />
 
       <div className="my-2 flex w-full flex-col gap-2">
-        <Button color="primary" type="submit">
+        <Button color="primary" isLoading={isLoading} type="submit">
           {confirmText}
         </Button>
         {children}

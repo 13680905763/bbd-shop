@@ -32,18 +32,13 @@ export default function RechargeModal({
     const num = parseFloat(amount);
 
     if (!isNaN(num) && num > 0) {
-      console.log("充值ZHONG");
-      const res: any = await createOrderByRecharge({
+      const bizCode: any = await createOrderByRecharge({
         currencyAmount: Number(amount),
         currencyCode: "CNY",
       });
 
-      console.log("res", res);
-
-      if (res.code === 200) {
-        router.push(`/order/pay-order/${res.data}`);
-        onClose();
-      }
+      router.push(`/order/pay-order/${bizCode}`);
+      onClose();
       //   onOpenChange(false);
       setAmount(""); // reset after confirm
     } else {

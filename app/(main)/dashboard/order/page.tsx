@@ -32,6 +32,11 @@ export default function OrderPage() {
   const onPayOrderRedirect = (bizCode: string) => {
     router.push(`/order/pay-order/${bizCode}`);
   };
+  const EmptyOrder = () => (
+    <div className="flex flex-col items-center justify-center h-[60vh] text-gray-500">
+      <p className="text-lg mb-2">暂无订单</p>
+    </div>
+  );
 
   if (isLoading) return <div>加载中...</div>;
 
@@ -66,26 +71,32 @@ export default function OrderPage() {
             </div>
           }
         >
-          <div className="flex flex-col gap-3">
-            {data?.records?.map((order: any) => (
-              <OrderItem
-                key={order.id}
-                order={order}
-                onPayOrderRedirect={onPayOrderRedirect}
-              />
-            ))}
-          </div>
-          <div className="mt-10 sticky bottom-0 border-t-[1px] bg-white z-10 card-cart p-4 py-6  ">
-            {(data?.total as number) > 0 && (
-              <PaginationBar
-                page={page}
-                pageSize={pageSize}
-                total={data?.total as number}
-                onPageChange={setPage}
-                onPageSizeChange={setPageSize}
-              />
-            )}
-          </div>
+          {data?.records?.length ? (
+            <>
+              <div className="flex flex-col gap-3">
+                {data?.records?.map((order: any) => (
+                  <OrderItem
+                    key={order.id}
+                    order={order}
+                    onPayOrderRedirect={onPayOrderRedirect}
+                  />
+                ))}
+              </div>
+              <div className="mt-10 sticky bottom-0 border-t-[1px] bg-white z-10 card-cart p-4 py-6  ">
+                {(data?.total as number) > 0 && (
+                  <PaginationBar
+                    page={page}
+                    pageSize={pageSize}
+                    total={data?.total as number}
+                    onPageChange={setPage}
+                    onPageSizeChange={setPageSize}
+                  />
+                )}
+              </div>
+            </>
+          ) : (
+            <EmptyOrder />
+          )}
         </Tab>
         <Tab
           key="waitPay"
@@ -95,26 +106,32 @@ export default function OrderPage() {
             </div>
           }
         >
-          <div className="flex flex-col gap-3">
-            {data?.records?.map((order: any) => (
-              <OrderItem
-                key={order.id}
-                order={order}
-                onPayOrderRedirect={onPayOrderRedirect}
-              />
-            ))}
-          </div>
-          <div className="mt-10 sticky bottom-0 border-t-[1px] bg-white z-10 card-cart p-4 py-6  ">
-            {(data?.total as number) > 0 && (
-              <PaginationBar
-                page={page}
-                pageSize={pageSize}
-                total={data?.total as number}
-                onPageChange={setPage}
-                onPageSizeChange={setPageSize}
-              />
-            )}
-          </div>
+          {data?.records?.length ? (
+            <>
+              <div className="flex flex-col gap-3">
+                {data?.records?.map((order: any) => (
+                  <OrderItem
+                    key={order.id}
+                    order={order}
+                    onPayOrderRedirect={onPayOrderRedirect}
+                  />
+                ))}
+              </div>
+              <div className="mt-10 sticky bottom-0 border-t-[1px] bg-white z-10 card-cart p-4 py-6  ">
+                {(data?.total as number) > 0 && (
+                  <PaginationBar
+                    page={page}
+                    pageSize={pageSize}
+                    total={data?.total as number}
+                    onPageChange={setPage}
+                    onPageSizeChange={setPageSize}
+                  />
+                )}
+              </div>
+            </>
+          ) : (
+            <EmptyOrder />
+          )}
         </Tab>
         <Tab
           key="paid"
@@ -124,26 +141,32 @@ export default function OrderPage() {
             </div>
           }
         >
-          <div className="flex flex-col gap-3">
-            {data?.records?.map((order: any) => (
-              <OrderItem
-                key={order.id}
-                order={order}
-                onPayOrderRedirect={onPayOrderRedirect}
-              />
-            ))}
-          </div>
-          <div className="mt-10 sticky bottom-0 border-t-[1px] bg-white z-10 card-cart p-4 py-6  ">
-            {(data?.total as number) > 0 && (
-              <PaginationBar
-                page={page}
-                pageSize={pageSize}
-                total={data?.total as number}
-                onPageChange={setPage}
-                onPageSizeChange={setPageSize}
-              />
-            )}
-          </div>
+          {data?.records?.length ? (
+            <>
+              <div className="flex flex-col gap-3">
+                {data?.records?.map((order: any) => (
+                  <OrderItem
+                    key={order.id}
+                    order={order}
+                    onPayOrderRedirect={onPayOrderRedirect}
+                  />
+                ))}
+              </div>
+              <div className="mt-10 sticky bottom-0 border-t-[1px] bg-white z-10 card-cart p-4 py-6  ">
+                {(data?.total as number) > 0 && (
+                  <PaginationBar
+                    page={page}
+                    pageSize={pageSize}
+                    total={data?.total as number}
+                    onPageChange={setPage}
+                    onPageSizeChange={setPageSize}
+                  />
+                )}
+              </div>
+            </>
+          ) : (
+            <EmptyOrder />
+          )}
         </Tab>
       </Tabs>
     </div>

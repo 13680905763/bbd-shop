@@ -4,6 +4,8 @@ import { useState } from "react";
 
 import { FieldConfig } from "@/components/form/formItem-renderer";
 import CommonForm from "@/components/form/common-form";
+import { getUserInfo, updateUserInfo } from "@/services";
+import { useUserStore } from "@/store";
 const profileFields: FieldConfig[] = [
   {
     type: "input",
@@ -12,47 +14,51 @@ const profileFields: FieldConfig[] = [
   },
   {
     type: "input",
+    name: "familyName",
+    label: "姓",
+  },
+  {
+    type: "input",
+    name: "givenName",
+    label: "名",
+  },
+
+  {
+    type: "input",
     name: "mobile",
     label: "手机号码",
   },
-  { type: "date", name: "birthday", label: "生日" },
-  {
-    type: "input",
-    name: "email",
-    label: "电子邮件",
-  },
+  // { type: "date", name: "birthday", label: "生日" },
   // {
-  //   type: "select",
-  //   name: "country",
-  //   label: "国家",
-  //   placeholder: "选择国家",
-  //   options: [
-  //     {
-  //       label: "Argentina",
-  //       value: "Argentina",
-  //       icon: "https://flagcdn.com/ar.svg",
-  //     },
-  //     {
-  //       label: "Venezuela",
-  //       value: "Venezuela",
-  //       icon: "https://flagcdn.com/ve.svg",
-  //     },
-  //     {
-  //       label: "Brazil",
-  //       value: "Brazil",
-  //       icon: "https://flagcdn.com/ve.svg",
-  //     },
-  //     {
-  //       label: "Switzerland",
-  //       value: "Switzerland",
-  //       icon: "https://flagcdn.com/ch.svg",
-  //     },
-  //   ],
+  //   type: "input",
+  //   name: "email",
+  //   label: "电子邮件",
   // },
 ];
 
 export default function ProfileTab({ defaultformData }: any) {
-  const [formData, setFormData] = useState(defaultformData);
+  console.log("defaultformData", defaultformData);
+
+  const [formData, setFormData] = useState({
+    id: defaultformData.id,
+    name: defaultformData.name || "",
+    familyName: defaultformData.familyName || "",
+    givenName: defaultformData.givenName || "",
+    mobile: defaultformData.mobile || "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const handleSubmit = async (data: any) => {
+    setIsLoading(true);
+    try {
+      await updateUserInfo(data);
+    } catch {
+    } finally {
+      setIsLoading(false);
+      const user = await getUserInfo();
+
+      useUserStore.getState().setUser(user);
+    }
+  };
 
   return (
     <>
@@ -61,7 +67,9 @@ export default function ProfileTab({ defaultformData }: any) {
         <CommonForm
           fields={profileFields}
           formData={formData}
+          isLoading={isLoading}
           onChange={setFormData}
+          onSubmit={handleSubmit}
         />
       </div>
     </>

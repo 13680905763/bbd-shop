@@ -1,4 +1,4 @@
-import { request } from "./request";
+import { request, requestWithOption } from "./request";
 // 商品 SKU 信息
 export interface CartItemSku {
   propId_valueId: string;
@@ -45,8 +45,20 @@ export type CartListResponse = CartShopGroup[];
 export const deleteCart = (data: any): Promise<string> => {
   return request.post("/customer/cart/delete", data);
 };
-export const addCart = (data: any): Promise<string> => {
-  return request.post("/customer/cart/add", data);
+export const addCart = (
+  data: any,
+  options?: { showToast?: boolean },
+): Promise<string> => {
+  return requestWithOption(
+    {
+      url: "/customer/cart/add",
+      method: "POST",
+      data,
+    },
+    {
+      showToast: options?.showToast ?? true, // 默认显示 toast
+    },
+  );
 };
 export const updateCart = (data: any): Promise<string> => {
   return request.post("/customer/cart/update", data);

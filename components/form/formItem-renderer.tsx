@@ -103,6 +103,7 @@ export default function FormItemRenderer<T extends Record<string, any>>({
               <Checkbox
                 key={name}
                 isSelected={!!value}
+                size={size}
                 onValueChange={(val) => handleChange(name, val)}
               >
                 {label}

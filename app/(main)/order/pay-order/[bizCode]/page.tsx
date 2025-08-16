@@ -13,7 +13,7 @@ import {
   addToast,
 } from "@heroui/react";
 import { HiQuestionMarkCircle } from "react-icons/hi";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { IoWallet } from "react-icons/io5";
 
 import { price } from "@/components/primitives";
@@ -62,11 +62,12 @@ const CustomRadio = (props: RadioProps) => {
 export default function SubmitOrder() {
   const params = useParams<{ bizCode: string }>();
   const wallet = useWalletStore((state) => state.wallet);
+  const router = useRouter();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isOpen1, setIsOpen1] = useState(false);
   const [paymentId, setPaymentId] = useState("");
-
+  const [paymentCompleted, setPaymentCompleted] = useState(false);
   const { data, isLoading, isError } = usePaymentMethodList(params.bizCode);
 
   const billingAddress = useBillingAddressStore(
@@ -84,7 +85,7 @@ export default function SubmitOrder() {
 
       window.open(url, "_blank");
       setIsOpen1(true);
-    } catch (error) {}
+    } catch {}
   };
 
   useEffect(() => {
@@ -103,8 +104,16 @@ export default function SubmitOrder() {
     );
   }, [paymentId]);
 
-  // console.log("currentPayMethod", currentPayMethod);
-
+  useEffect(() => {
+    if (!paymentCompleted) return;
+    addToast({
+      title: "支付完成",
+      timeout: 1000,
+      color: "success",
+    });
+    // 跳转到 dashboard
+    router.push("/dashboard");
+  }, [paymentCompleted]);
   if (isLoading) return <div>加载中...</div>;
   if (isError) return <div>加载失败</div>;
 
@@ -258,7 +267,8 @@ export default function SubmitOrder() {
           const status = await getPayOrderStatus(params?.bizCode);
 
           if (status === 203) {
-            onClose();
+            await onClose(); // 等弹窗动画结束
+            setPaymentCompleted(true);
           } else {
             addToast({
               title: "未完成支付",

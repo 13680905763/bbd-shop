@@ -32,7 +32,6 @@ export default function OrderCard({
           />
         ))}
       </div>
-      <Divider />
 
       <div className="p-4 text-right">
         <div>运费到仓库: {order?.postFee}</div>

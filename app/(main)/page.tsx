@@ -46,7 +46,7 @@ export default function Home() {
 
   return (
     <div className="pb-12">
-      <section className="flex bg-cover bg-no-repeat h-[630px] bg-[url('https://bbdbuy.oss-cn-hongkong.aliyuncs.com/uploads/20250220/c4917de822e9f85cec22162733faad64.jpg')]">
+      <section className="flex bg-cover bg-no-repeat h-[630px] bg-[url('/images/indexbg.webp')]">
         <div className="container mx-auto flex-col flex justify-end  gap-16">
           <div className="max-w-3xl">
             <div className="text-7xl tracking-tighter font-bold text-white flex flex-col  mb-10">

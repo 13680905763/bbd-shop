@@ -33,7 +33,17 @@ export function Providers({ children, themeProps }: ProvidersProps) {
     <GoogleOAuthProvider clientId="545953191162-n0elu4ilreo1hdlptkgublu7bjegpp0u.apps.googleusercontent.com">
       <QueryClientProvider client={queryClient}>
         <HeroUIProvider navigate={router.push}>
-          <ToastProvider placement="top-center" />
+          <ToastProvider
+            placement="top-center"
+            toastOffset={400}
+            toastProps={{
+              classNames: {
+                title: "!text-xl",
+                content: " justify-center",
+              },
+              timeout: 100000,
+            }}
+          />
           <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
         </HeroUIProvider>
       </QueryClientProvider>

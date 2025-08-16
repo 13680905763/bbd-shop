@@ -210,6 +210,9 @@ export default function CartPage() {
   }, [data]);
   if (isLoading) return <div>加载中...</div>;
   if (isError) return <div>出错了</div>;
+  // 判断购物车是否为空
+  const isCartEmpty =
+    !data || data.flatMap((shop) => shop.cartList).length === 0;
 
   return (
     <div className="h-full">
@@ -224,54 +227,71 @@ export default function CartPage() {
           全部商品 ({data?.flatMap((shop) => shop.cartList).length})
         </div>
 
-        <div className="flex flex-col gap-4">
-          {data?.map((shop) => (
-            <ShopCard
-              key={shop.shopId}
-              handleProductDelete={handleProductDelete}
-              handleProductQuantity={handleProductQuantity}
-              handleProductRemark={handleProductRemark}
-              selectedMap={selected[shop.shopId] || {}}
-              shop={shop}
-              onToggleItem={(productId, checked) =>
-                toggleItem(shop.shopId, productId, checked)
-              }
-              onToggleShop={(checked) => toggleShop(shop, checked)}
-            />
-          ))}
-        </div>
+        {isCartEmpty ? (
+          <div className="flex flex-col items-center justify-center h-[60vh] text-gray-500">
+            <p className="text-lg mb-2">购物车为空</p>
+            <p className="text-sm">快去挑选心仪的商品吧！</p>
+          </div>
+        ) : (
+          <>
+            <div className="flex flex-col gap-4">
+              {data?.map((shop) => (
+                <ShopCard
+                  key={shop.shopId}
+                  handleProductDelete={handleProductDelete}
+                  handleProductQuantity={handleProductQuantity}
+                  handleProductRemark={handleProductRemark}
+                  selectedMap={selected[shop.shopId] || {}}
+                  shop={shop}
+                  onToggleItem={(productId, checked) =>
+                    toggleItem(shop.shopId, productId, checked)
+                  }
+                  onToggleShop={(checked) => toggleShop(shop, checked)}
+                />
+              ))}
+            </div>
 
-        <div className="mt-10  sticky bottom-0 border-t-[1px] bg-white z-10 card-cart">
-          <div className="p-2 flex gap-2">
-            <Checkbox
-              isSelected={allSelected}
-              onChange={(e) => toggleAll(e.target.checked)}
-            >
-              全选
-            </Checkbox>
-            <Button className="bg-transparent" onPress={handleDelCart}>
-              删除商品
-            </Button>
-          </div>
-          <Divider />
-          <div className="flex justify-between items-center p-4 gap-4 ">
-            <div className="flex gap-4">
-              <span>已选</span>
-              <span>{selectedIdArr.length}</span>
+            <div className="mt-10  sticky bottom-0 border-t-[1px] bg-white z-10 card-cart">
+              <div className="p-2 flex gap-2">
+                <Checkbox
+                  isSelected={allSelected}
+                  onChange={(e) => toggleAll(e.target.checked)}
+                >
+                  全选
+                </Checkbox>
+                <Button
+                  className="bg-transparent text-[#f0700c]"
+                  onPress={handleDelCart}
+                >
+                  删除商品
+                </Button>
+              </div>
+              <Divider />
+              <div className="flex justify-between items-center p-4 gap-4 ">
+                <div className="flex gap-4">
+                  <span>已选择</span>
+                  <span className="text-[#f0700c]">{selectedIdArr.length}</span>
+                </div>
+                <div className="flex items-center gap-8">
+                  <p>
+                    <span className="font-semibold ">应付金额：</span>
+                    <span className=" font-semibold  text-[#f0700c]">
+                      {togglePrice}
+                    </span>
+                  </p>
+                  <Button
+                    className="w-[150px]"
+                    color="primary"
+                    size="lg"
+                    onPress={handleCartSubmit}
+                  >
+                    下单结算
+                  </Button>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <p className="text-price-lg"> {togglePrice}</p>
-              <Button
-                className="w-[200px]"
-                color="primary"
-                size="lg"
-                onPress={handleCartSubmit}
-              >
-                下单结算
-              </Button>
-            </div>
-          </div>
-        </div>
+          </>
+        )}
 
         <ConfirmModal
           content="确定要删除当前商品吗？"

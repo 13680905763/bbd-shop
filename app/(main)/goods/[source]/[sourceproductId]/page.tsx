@@ -22,7 +22,10 @@ import {
 import Stepper from "@/components/stepper";
 import { getGoodsInfo } from "@/services/goods";
 import { addCart } from "@/services/cart";
-import { createOrderPreviewKeyByProduct } from "@/services";
+import {
+  createOrderPreviewKeyByProduct,
+  getOrderPreviewProduct,
+} from "@/services";
 import { queryClient } from "@/lib/react-query";
 import SourceIcon from "@/components/common/source-icon";
 
@@ -125,15 +128,25 @@ export default function GoodsPage() {
   const [goodsInfo, setGoodsInfo] = useState<any>();
   const [pathMap, setPathMap] = useState<any>(null);
   const [isLoading, setisLoading] = useState<any>(false);
+  const [isCheck, setIsCheck] = useState<any>(false);
   const [currentImg, setCurrentImg] = useState<string>();
   const router = useRouter();
   const handleBuyNow = async () => {
     if (isLoading) return;
-    // console.log("currentSku", currentSku);
+    if (!isCheck) {
+      addToast({
+        title: "请勾选同意协议",
+        color: "danger",
+        timeout: 1000,
+      });
+
+      return;
+    }
     if (!currentSku) {
       addToast({
         title: "请选择商品规格",
         color: "danger",
+        timeout: 1000,
       });
 
       return;
@@ -151,6 +164,9 @@ export default function GoodsPage() {
         quantity,
         remark,
       });
+      const res = await getOrderPreviewProduct(key, { showToast: true });
+
+      console.log(res);
 
       router.push("/order/submit-order?type=product&key=" + key);
     } catch (err: any) {
@@ -160,10 +176,20 @@ export default function GoodsPage() {
   };
   const add = async () => {
     if (isLoading) return;
+    if (!isCheck) {
+      addToast({
+        title: "请勾选同意协议",
+        color: "danger",
+        timeout: 1000,
+      });
+
+      return;
+    }
     if (!currentSku) {
       addToast({
         title: "请选择商品规格",
         color: "danger",
+        timeout: 1000,
       });
 
       return;
@@ -182,15 +208,9 @@ export default function GoodsPage() {
     };
 
     try {
-      const tip = await addCart(data);
-
-      addToast({
-        title: tip,
-        timeout: 1000,
-        color: "success",
-      });
+      await addCart(data);
       queryClient.invalidateQueries({ queryKey: ["cartList"] }); // 手动刷新
-    } catch (e) {
+    } catch {
     } finally {
       setisLoading(false);
     }
@@ -198,8 +218,6 @@ export default function GoodsPage() {
   // 切换选择状态
   const changeSelectedStatus = (index: any, indey: any) => {
     const cloned: any = structuredClone(goodsInfo);
-
-    // console.log("cloned", cloned, pathMap);
 
     cloned?.productInfo.skuPropList.forEach((spec: any, idx: number) => {
       if (idx === index) {
@@ -214,7 +232,6 @@ export default function GoodsPage() {
         });
       }
     });
-    // console.log("cloned", cloned);
 
     // setGoodsInfo(cloned);
 
@@ -298,6 +315,7 @@ export default function GoodsPage() {
 
     if (currentSku) {
       // setCurrentImg(currentSku.imgUrl);
+      console.log("currentSku", currentSku);
 
       return currentSku;
     }
@@ -422,7 +440,7 @@ export default function GoodsPage() {
                 </button>
               </div>
               <div className={priceFont({ size: "xl2" })}>
-                {goodsInfo?.productInfo.price}
+                {currentSku?.price || goodsInfo?.productInfo.price}
               </div>
               <div className={lightFont({ size: "sm" })}>
                 支付后，我们会在09:00-18:00（UTC+8）为您进行代购服务
@@ -491,7 +509,14 @@ export default function GoodsPage() {
                   <div>
                     BBDbuy上展示的所有代购商品均来自第三方代购平台，非BBDbuy直接销售。因此，BBDbuy对侵犯知识产权和侵犯商品著作权所引起的问题不承担任何责任和法律责任。使用BBDbuy代购服务即表示您默认接受上述风险。
                   </div>
-                  <Checkbox className="mt-2 " color="primary">
+                  <Checkbox
+                    className="mt-2 "
+                    color="primary"
+                    isSelected={isCheck}
+                    onValueChange={(e) => {
+                      setIsCheck(e);
+                    }}
+                  >
                     <span className="text-[#676969]">
                       我已阅读并同意BBDbuy的免责声明
                     </span>

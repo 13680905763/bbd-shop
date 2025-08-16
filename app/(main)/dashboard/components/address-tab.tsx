@@ -8,7 +8,6 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  addToast,
 } from "@heroui/react";
 import { useCallback, useState } from "react";
 import React from "react";
@@ -65,6 +64,12 @@ const fieldsaddress: FieldConfig[] = [
   },
   {
     type: "input",
+    name: "doorNo",
+    label: "门牌号",
+    placeholder: "请输入您的门牌号",
+  },
+  {
+    type: "input",
     name: "postcode",
     label: "邮编",
     placeholder: "请输入邮编",
@@ -87,6 +92,7 @@ const initAddress = {
   addressType: "",
   postcode: "",
   defaultAddress: 0,
+  doorNo: "",
 };
 
 export default function AddressTab() {
@@ -118,33 +124,14 @@ export default function AddressTab() {
 
     try {
       if (modalType === "add") {
-        const tip = await addAddress({ ...currentRowData, addressType: 1 }); // 新增接口
-
-        addToast({
-          title: tip,
-          timeout: 1000,
-          color: "success",
-        });
+        await addAddress({ ...currentRowData, addressType: 1 }); // 新增接口
       } else if (modalType === "edit") {
-        const tip = await updateAddress(filteredData); // 编辑接口
-
-        addToast({
-          title: tip,
-          timeout: 1000,
-          color: "success",
-        });
+        await updateAddress(filteredData); // 编辑接口
       } else if (modalType === "delete") {
-        const tip = await deleteAddress(currentRowData.id);
-
-        addToast({
-          title: tip,
-          timeout: 1000,
-          color: "success",
-        });
+        await deleteAddress({ id: currentRowData.id });
       }
       setModalType(null);
-    } catch (error) {
-      console.error("Error:", error);
+    } catch {
     } finally {
       queryClient.invalidateQueries({ queryKey: ["addressList"] }); // 手动刷新
     }
@@ -187,6 +174,7 @@ export default function AddressTab() {
         + 添加地址
       </Button>
       <Spacer y={2} />
+
       <Table
         aria-label="address-table"
         classNames={{
@@ -202,7 +190,10 @@ export default function AddressTab() {
             <TableColumn key={column.key}>{column.label}</TableColumn>
           )}
         </TableHeader>
-        <TableBody items={data}>
+        <TableBody
+          emptyContent={"No address information available at the moment."}
+          items={data}
+        >
           {(item: any) => (
             <TableRow key={item?.id}>
               {(columnKey) => (

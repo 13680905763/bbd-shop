@@ -151,7 +151,7 @@ export default function BalanceTab() {
             <TableColumn key={column.key}>{column.label}</TableColumn>
           )}
         </TableHeader>
-        <TableBody items={walletDetailList}>
+        <TableBody emptyContent={"No current flow"} items={walletDetailList}>
           {(item: any) => (
             <TableRow key={item?.id}>
               {(columnKey) => (

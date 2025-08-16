@@ -22,7 +22,7 @@ export default function ProductItem({
               <Image
                 alt="Product"
                 height={90}
-                src={product?.picUrl}
+                src={product?.skuPicUrl || product?.picUrl}
                 width={90}
               />
             </div>
@@ -39,9 +39,11 @@ export default function ProductItem({
       </div>
 
       <div className="flex grow-0 shrink-0 basis-[200px] ">
-        <p className="   truncate ">
+        <p className=" max-w-44   truncate ">
           备注：
-          <span className="text-gray-500">{product?.remark ?? "暂无备注"}</span>
+          <span className="text-gray-500 ">
+            {product?.remark ?? "暂无备注"}
+          </span>
         </p>
       </div>
       <div className="flex  gap-2   flex-col  grow-0 shrink-0 basis-[150px]">
@@ -65,6 +67,7 @@ export default function ProductItem({
               key={service?.id}
               className="bg-[#262626] text-white p-2 max-w-screen-sm"
               content={service?.introduction}
+              placement="right"
             >
               <Checkbox isDisabled={service?.id == 1} value={service?.id}>
                 {service?.serviceName}￥{service?.price}
@@ -79,16 +82,6 @@ export default function ProductItem({
       <div className="flex grow-0 shrink-0 basis-[100px]">
         <p>x{product.quantity}</p>
       </div>
-      {/* <div className="flex grow-0 shrink-0 basis-[100px]">
-        <p>${product.price * product.quantity}</p>
-      </div> */}
-
-      {/* <div className="flex-1 place-items-end">
-        <div className="text-lg font-semibold text-red-500">
-          总计: ${product.totalPrice}
-        </div>
-        <div className="text-gray-500">国内运费: {product.postFee}</div>
-      </div> */}
     </div>
   );
 }

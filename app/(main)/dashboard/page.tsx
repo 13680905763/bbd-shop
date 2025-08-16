@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Tabs, Tab } from "@heroui/react";
 
 import AddressTab from "./components/address-tab";
@@ -10,12 +10,25 @@ import BillingAddressTab from "./components/billing-address-tab";
 import UserBalanceCard from "@/components/wallet-card";
 import { useUserStore, useWalletStore } from "@/store";
 import { useBillingAddress } from "@/hook";
+import { getWalletInfo } from "@/services/wallet";
 
 export default function DashBoard() {
   const user = useUserStore((state) => state.user);
   const wallet = useWalletStore((state) => state.wallet);
 
   useBillingAddress();
+
+  useEffect(() => {
+    const fetchWallet = async () => {
+      try {
+        const wallet = await getWalletInfo();
+
+        useWalletStore.getState().setWallet(wallet);
+      } catch {}
+    };
+
+    fetchWallet();
+  }, []);
 
   return (
     <div className=" flex flex-col gap-6 bg-[#f8f8f8] -mx-5">

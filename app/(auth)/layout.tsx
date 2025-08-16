@@ -18,25 +18,22 @@ export default function AuthLayout({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const redirect = searchParams.get("redirect") || "/"; // 默认为首页
-
   const handleLoginWithGoogle = async (
     credentialResponse: CredentialResponse,
   ) => {
     const credential = credentialResponse.credential;
 
     try {
-      const res = await loginWithGoogle(credential as string);
+      await loginWithGoogle(credential as string);
 
-      await handleAuthSuccess(redirect, res, router);
-    } catch (err) {
-      // 同样的错误处理
-    }
+      await handleAuthSuccess();
+      router.push("/");
+    } catch {}
   };
 
   return (
     <main className=" flex h-[100vh]">
-      <div className="flex-1 bg-[url('/images/authbg.png')] bg-center bg-no-repeat bg-cover ">
+      <div className="flex-1 bg-[url('/images/authbg.webp')] bg-center bg-no-repeat bg-cover ">
         <NextLink href="/">
           <IoCaretBackCircleOutline className="m-20 w-14 h-14 cursor-pointer" />
         </NextLink>

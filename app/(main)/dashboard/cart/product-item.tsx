@@ -43,17 +43,15 @@ export default function ProductItem({
           />
         </button>
       </div>
-      <div className="flex-[2]">
+      <div className="flex-[2] grow-0 shrink-0 basis-[350px]">
         <div className="line-clamp-2 font-bold">{product.productTitle}</div>
         <div className="text-gray-500">{product.sku.propName_valueName}</div>
-      </div>
-      <div className="flex-1  flex gap-2">
-        <div>
+        <div className="flex">
           <Tooltip
             className="bg-[#262626] text-white p-2 max-w-screen-sm"
-            content={product.remark}
+            content={product.remark || "暂无备注"}
           >
-            <p className=" max-w-24  truncate">备注：{product.remark}</p>
+            <p className=" max-w-44  truncate">备注：{product.remark}</p>
           </Tooltip>
           <button
             className="text-blue-500 underline"
@@ -63,14 +61,15 @@ export default function ProductItem({
           </button>
         </div>
       </div>
-      <div className="flex-1">
+
+      <div className="flex-1 flex flex-col items-center">
         {/* <div className="text-lg font-semibold text-red-500">
           总计: ${product.totalPrice}
         </div> */}
         <div className="font-semibold text-red-500">
           单价: {product?.unitPrice}
         </div>
-        <div className="text-gray-500">国内运费: {product?.totalFee}</div>
+        <div className="text-gray-500">国内运费: {product?.postFee}</div>
       </div>
       <div>
         <Stepper
