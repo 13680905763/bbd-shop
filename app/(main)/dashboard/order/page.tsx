@@ -8,6 +8,7 @@ import OrderItem from "./order-item";
 import Progress from "@/components/common/progress";
 import PaginationBar from "@/components/common/pagination-bar";
 import { useOrderList } from "@/hook";
+import FullscreenLoader from "@/components/common/fullscreen-loader";
 const tabKeyToStatusCode: Record<string, string> = {
   all: "",
   waitPay: "201",
@@ -38,7 +39,7 @@ export default function OrderPage() {
     </div>
   );
 
-  if (isLoading) return <div>加载中...</div>;
+  if (isLoading) return <FullscreenLoader loading={isLoading} />;
 
   return (
     <div className="flex w-full flex-col">

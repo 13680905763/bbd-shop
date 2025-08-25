@@ -18,6 +18,7 @@ import { addAddress, deleteAddress, updateAddress } from "@/services/address";
 import FormModal from "@/components/modal/form-modal";
 import ConfirmModal from "@/components/modal/confirm-modal";
 import { useAddressList } from "@/hook";
+import FullscreenLoader from "@/components/common/fullscreen-loader";
 const addressColumns = [
   {
     key: "recipient",
@@ -124,9 +125,17 @@ export default function AddressTab() {
 
     try {
       if (modalType === "add") {
-        await addAddress({ ...currentRowData, addressType: 1 }); // 新增接口
+        await addAddress({
+          ...currentRowData,
+          addressType: 1,
+          defaultAddress: filteredData.defaultAddress ? 1 : 0,
+        }); // 新增接口
       } else if (modalType === "edit") {
-        await updateAddress(filteredData); // 编辑接口
+        await updateAddress({
+          ...filteredData,
+          defaultAddress: filteredData.defaultAddress ? 1 : 0,
+          city: filteredData?.city || filteredData?.state,
+        }); // 编辑接口
       } else if (modalType === "delete") {
         await deleteAddress({ id: currentRowData.id });
       }
@@ -166,7 +175,7 @@ export default function AddressTab() {
     }
   }, []);
 
-  if (isLoading) return <div>加载中...</div>;
+  if (isLoading) return <FullscreenLoader loading={isLoading} />;
 
   return (
     <>

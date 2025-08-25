@@ -4,17 +4,82 @@ import { addToast, Button, Checkbox, Textarea } from "@heroui/react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import WarehouseCard from "./warehouse-card";
+import { AddAddressCard } from "./add-address-card";
 
 import Progress from "@/components/common/progress";
 import { useAddressList, useWarehousePreview } from "@/hook";
 import AddressCard from "@/components/common/address-card";
 import {
+  addAddress,
   createWaybill,
   gettWarehouseRoutesList,
   gettWarehouseServicesList,
+  updateAddress,
 } from "@/services";
 import ServiceCard from "@/components/common/service-card";
 import RouteCard from "@/components/common/route-card";
+import FullscreenLoader from "@/components/common/fullscreen-loader";
+import FormModal from "@/components/modal/form-modal";
+import { FieldConfig } from "@/components/form/formItem-renderer";
+import { queryClient } from "@/lib/react-query";
+const fieldsaddress: FieldConfig[] = [
+  {
+    type: "input",
+    name: "recipient",
+    label: "收件人",
+    placeholder: "请输入收件人姓名",
+  },
+  {
+    type: "input",
+    name: "phone",
+    label: "联系方式",
+    placeholder: "请输入联系方式",
+  },
+  {
+    type: "area",
+    name: "area",
+    label: "area",
+    placeholder: "area",
+  },
+
+  {
+    type: "input",
+    name: "address",
+    label: "详细地址",
+    placeholder: "请输入您详细地址",
+  },
+  {
+    type: "input",
+    name: "doorNo",
+    label: "门牌号",
+    placeholder: "请输入您的门牌号",
+  },
+  {
+    type: "input",
+    name: "postcode",
+    label: "邮编",
+    placeholder: "请输入邮编",
+  },
+
+  {
+    type: "checkbox",
+    name: "defaultAddress",
+    label: "设为默认地址",
+  },
+];
+const initAddress = {
+  recipient: "",
+  phone: "",
+  countryId: "",
+  stateId: "",
+  city: "",
+  addressType: "",
+  postcode: "",
+  defaultAddress: 0,
+  doorNo: "",
+};
+
+type ModalType = "add" | "edit" | "delete" | null;
 
 export default function SubmitOrder() {
   const searchParam = useSearchParams();
@@ -37,6 +102,8 @@ export default function SubmitOrder() {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
   const [remark, setRemark] = useState("");
+  const [currentRowData, setCurrentRowData] = useState<any>(initAddress);
+  const [modalType, setModalType] = useState<ModalType>(null);
 
   useEffect(() => {
     setOrderData(data);
@@ -107,7 +174,41 @@ export default function SubmitOrder() {
     }
   };
 
-  if (isLoading) return <div>加载中...</div>;
+  const handleAdd = () => {
+    setCurrentRowData(initAddress);
+    setModalType("add");
+  };
+  const handleEdit = (row: any) => {
+    setCurrentRowData(row);
+    setModalType("edit");
+  };
+  // 地址保存时处理
+  const handleSave = async () => {
+    const { createTime, updateTime, customerId, ...filteredData } =
+      currentRowData;
+
+    try {
+      if (modalType === "add") {
+        await addAddress({
+          ...currentRowData,
+          addressType: 1,
+          defaultAddress: filteredData.defaultAddress ? 1 : 0,
+        }); // 新增接口
+      } else if (modalType === "edit") {
+        await updateAddress({
+          ...filteredData,
+          defaultAddress: filteredData.defaultAddress ? 1 : 0,
+          city: filteredData?.city || filteredData?.state,
+        }); // 编辑接口
+      }
+      setModalType(null);
+    } catch {
+    } finally {
+      queryClient.invalidateQueries({ queryKey: ["addressList"] }); // 手动刷新
+    }
+  };
+
+  if (isLoading) return <FullscreenLoader loading={isLoading} />;
   if (isError) return <div>出错了</div>;
 
   return (
@@ -124,15 +225,19 @@ export default function SubmitOrder() {
           <div>
             <div className="text-title">Shipping Address</div>
             <div className="flex gap-4">
-              {addressData?.map((addr) => (
-                <AddressCard
-                  key={addr.id}
-                  data={addr}
-                  isSelected={selectedAddressId === String(addr.id)}
-                  onEdit={() => console.log("编辑", addr.id)}
-                  onSelect={(id) => setSelectedAddressId(String(id))}
-                />
-              ))}
+              {addressData?.length === 0 ? (
+                <AddAddressCard onAdd={handleAdd} />
+              ) : (
+                addressData?.map((addr) => (
+                  <AddressCard
+                    key={addr.id}
+                    data={addr}
+                    isSelected={selectedAddressId === String(addr.id)}
+                    onEdit={() => handleEdit(addr)}
+                    onSelect={(id) => setSelectedAddressId(String(id))}
+                  />
+                ))
+              )}
             </div>
           </div>
 
@@ -205,6 +310,18 @@ export default function SubmitOrder() {
             </Checkbox>
           </div>
         </div>
+
+        <FormModal
+          fields={fieldsaddress}
+          formData={currentRowData}
+          isOpen={modalType === "add" || modalType === "edit"}
+          title={modalType === "add" ? "添加地址" : "编辑地址"}
+          onChange={setCurrentRowData}
+          onOpenChange={(open) => {
+            if (!open) setModalType(null);
+          }}
+          onSave={handleSave}
+        />
       </div>
     </div>
   );

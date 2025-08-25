@@ -1,19 +1,20 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import NextLink from "next/link";
 import { Divider } from "@heroui/react";
 
 import { siteConfig } from "@/config/site";
 import { useServices } from "@/hook";
+
 export default function DashBoardlayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const [currentItem, setCurrentItem] = useState("");
-  const pathname = usePathname(); // 获取当前路径
+  const pathname = usePathname();
 
   useServices();
 
@@ -21,8 +22,6 @@ export default function DashBoardlayout({
     const pathParts = pathname.split("/").filter(Boolean);
 
     if (pathParts[0] === "dashboard" && pathParts[1]) {
-      console.log("pathParts[1]", pathname, pathParts, pathParts[1]);
-
       setCurrentItem(pathParts[1]);
     } else {
       setCurrentItem("");
@@ -47,7 +46,11 @@ export default function DashBoardlayout({
                 >
                   <li
                     key={item.title}
-                    className={`h-10 cursor-pointer  flex  items-center p-2 my-2 ${currentItem == item.key ? "bg-[#f0700c] rounded-lg" : "hover:bg-[#f5f5f5]"}`}
+                    className={`h-10 cursor-pointer flex items-center p-2 my-2 ${
+                      currentItem == item.key
+                        ? "bg-[#f0700c] rounded-lg"
+                        : "hover:bg-[#f5f5f5]"
+                    }`}
                     title={item.title}
                   >
                     {item.title}
@@ -57,8 +60,10 @@ export default function DashBoardlayout({
             })}
           </ul>
         </div>
+
+        {/* 直接渲染 children */}
         <div className="mx-5 flex-1 rounded-lg bg-[#fff] p-5 pt-0">
-          <Suspense fallback={<div>加载中...</div>}>{children}</Suspense>
+          {children}
         </div>
       </section>
     </div>

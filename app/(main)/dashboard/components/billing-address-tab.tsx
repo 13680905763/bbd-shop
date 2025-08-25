@@ -64,7 +64,7 @@ const initAddress = {
   doorNo: "",
 };
 
-export default function AddressTab() {
+export default function BillingAddressTab() {
   const billingAddress = useBillingAddressStore(
     (state) => state.billingAddress,
   );
@@ -92,11 +92,17 @@ export default function AddressTab() {
 
     try {
       if (modalType === "add") {
-        await addAddress({ ...currentRowData, addressType: 2 }); // 新增接口
+        await addAddress({
+          ...currentRowData,
+          addressType: 2,
+        }); // 新增接口
       } else if (modalType === "edit") {
-        await updateAddress(filteredData); // 编辑接口
+        await updateAddress({
+          ...filteredData,
+          city: filteredData?.city || filteredData?.state,
+        }); // 编辑接口
       } else if (modalType === "delete") {
-        await deleteAddress(currentRowData.id);
+        await deleteAddress({ id: currentRowData.id });
       }
       setModalType(null);
     } catch (error) {

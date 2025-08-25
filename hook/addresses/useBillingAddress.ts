@@ -17,6 +17,7 @@ export const useBillingAddress = () => {
 
       return data;
     },
+
     staleTime: 5 * 60 * 1000, // 缓存 5 分钟
   });
 };

@@ -4,12 +4,7 @@ import ProductItem from "./product-item";
 
 import SourceIcon from "@/components/common/source-icon";
 
-export default function OrderCard({
-  order,
-  updateServiceList,
-  checkboxGroupData,
-  setCheckboxGroupData,
-}: any) {
+export default function OrderCard({ order, openServiceModal }: any) {
   console.log(order);
 
   return (
@@ -25,10 +20,8 @@ export default function OrderCard({
         {order.products.map((product: any) => (
           <ProductItem
             key={product?.sku?.propName_valueName}
-            checkboxGroupData={checkboxGroupData}
+            openServiceModal={openServiceModal}
             product={product}
-            setCheckboxGroupData={setCheckboxGroupData}
-            updateServiceList={updateServiceList}
           />
         ))}
       </div>

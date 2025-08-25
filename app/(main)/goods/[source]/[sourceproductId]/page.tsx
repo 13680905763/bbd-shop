@@ -7,6 +7,7 @@ import {
   Checkbox,
   Divider,
   Image,
+  Skeleton,
   Textarea,
 } from "@heroui/react";
 import { useParams, useRouter } from "next/navigation";
@@ -28,6 +29,7 @@ import {
 } from "@/services";
 import { queryClient } from "@/lib/react-query";
 import SourceIcon from "@/components/common/source-icon";
+import CommonModal from "@/components/modal/common-modal";
 
 interface Sku {
   skuID: string;
@@ -124,15 +126,16 @@ export default function GoodsPage() {
   const params = useParams();
   const [remark, setRemark] = useState<string>();
   const [quantity, setQuantity] = useState<number>(1);
-
+  const [isOpen1, setIsOpen1] = useState(false);
   const [goodsInfo, setGoodsInfo] = useState<any>();
   const [pathMap, setPathMap] = useState<any>(null);
   const [isLoading, setisLoading] = useState<any>(false);
+  const [issub, setissub] = useState<any>(false);
   const [isCheck, setIsCheck] = useState<any>(false);
   const [currentImg, setCurrentImg] = useState<string>();
   const router = useRouter();
   const handleBuyNow = async () => {
-    if (isLoading) return;
+    if (issub) return;
     if (!isCheck) {
       addToast({
         title: "请勾选同意协议",
@@ -151,7 +154,7 @@ export default function GoodsPage() {
 
       return;
     }
-    setisLoading(true);
+    setissub(true);
 
     try {
       const key = await createOrderPreviewKeyByProduct({
@@ -171,11 +174,11 @@ export default function GoodsPage() {
       router.push("/order/submit-order?type=product&key=" + key);
     } catch (err: any) {
     } finally {
-      setisLoading(false);
+      setissub(false);
     }
   };
   const add = async () => {
-    if (isLoading) return;
+    if (issub) return;
     if (!isCheck) {
       addToast({
         title: "请勾选同意协议",
@@ -194,7 +197,7 @@ export default function GoodsPage() {
 
       return;
     }
-    setisLoading(true);
+    setissub(true);
 
     const data = {
       source: params.source,
@@ -212,7 +215,7 @@ export default function GoodsPage() {
       queryClient.invalidateQueries({ queryKey: ["cartList"] }); // 手动刷新
     } catch {
     } finally {
-      setisLoading(false);
+      setissub(false);
     }
   };
   // 切换选择状态
@@ -323,227 +326,291 @@ export default function GoodsPage() {
   }, [goodsInfo]); // 依赖 cart，当 cart 变化时才重新计算
 
   useEffect(() => {
-    getGoodsInfo({ ...params }).then((data: any) => {
-      // 数据初始化
-      const cloned = structuredClone(data);
-      let pathMap = generateDynamicSkuPathDict(cloned.productInfo);
+    setisLoading(true);
+    getGoodsInfo({ ...params })
+      .then((data: any) => {
+        // 数据初始化
+        const cloned = structuredClone(data);
+        let pathMap = generateDynamicSkuPathDict(cloned.productInfo);
 
-      setPathMap(pathMap);
-      cloned.productInfo.skuPropList.forEach((spec: any) => {
-        spec.propValueList.forEach((value: any) => {
-          value.selected = false;
-          console.log("value.valueName", value.valueName, pathMap);
+        setPathMap(pathMap);
+        cloned.productInfo.skuPropList.forEach((spec: any) => {
+          spec.propValueList.forEach((value: any) => {
+            value.selected = false;
+            console.log("value.valueName", value.valueName, pathMap);
 
-          if (pathMap[value.valueName]) {
-            value.disabled = false;
-          } else {
-            value.disabled = true;
-          }
+            if (pathMap[value.valueName]) {
+              value.disabled = false;
+            } else {
+              value.disabled = true;
+            }
+          });
         });
-      });
-      console.log("cloned", cloned);
+        console.log("cloned", cloned);
 
-      setCurrentImg(cloned?.productInfo?.imgList[0] ?? "");
-      setGoodsInfo(cloned);
-    });
+        setCurrentImg(cloned?.productInfo?.imgList[0] ?? "");
+        setGoodsInfo(cloned);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        setIsOpen1(true);
+      })
+      .finally(() => {
+        setisLoading(false);
+      });
   }, []);
 
   return (
     <div className="bg-[#fff] ">
       <div className="flex  container mx-auto  my-[15px] mt-16">
-        <div className="flex-[2] p-10 pt-0 overflow-auto scrollbar-hide">
-          <div className="w-[100%] flex gap-2">
-            <Image
-              alt="123"
-              className=" object-fill "
-              radius="sm"
-              src={currentImg}
-              width="100%"
-            />
+        {isLoading ? (
+          <div className="flex gap-5 w-full">
+            <Skeleton className="rounded-lg flex-[2] ">
+              <div className="h-[500px] rounded-lg bg-default-300 m-10 pt-0" />
+            </Skeleton>
+            <Skeleton className="rounded-lg flex-[5] ">
+              <div className="h-24 rounded-lg bg-default-300 max-w-[55%]" />
+            </Skeleton>
           </div>
-
-          <div className="flex mt-2 gap-2 flex-wrap justify-start">
-            {goodsInfo?.productInfo?.imgList?.map((src: string) => (
-              <button
-                key={src}
-                className=" "
-                onClick={() => setCurrentImg(src)}
-              >
+        ) : (
+          <>
+            <div className="flex-[2] p-10 pt-0 overflow-auto scrollbar-hide">
+              <div className="w-[100%] flex gap-2">
                 <Image
-                  key={src}
                   alt="123"
-                  className={` w-[80px] h-[80px] ${currentImg === src ? "border-[#f0700c] border-3" : ""}`}
+                  className=" object-fill "
                   radius="sm"
-                  src={src}
+                  src={currentImg}
+                  width="100%"
                 />
-              </button>
-            ))}
-          </div>
-          <h3 className={subtitle()}>购买记录</h3>
-          <div className="card-grey my-2 flex ">
-            <div className="flex-1 text-gray-base gap-2 flex flex-col">
-              <div>销量 0</div>
-              <div>重量（g）--</div>
-            </div>
-            <div className="flex-1 text-gray-base gap-2 flex flex-col">
-              <div>平均送达时间 --days</div>
-              <div>尺码（cm3）--</div>
-            </div>
-          </div>
-          <div>
-            <h3 className={subtitle()}>商品詳情</h3>
-            <div>
-              {goodsInfo?.productDetail?.productDescImgList?.map(
-                (src: string, index: number) => {
-                  return (
+              </div>
+
+              <div className="flex mt-2 gap-2 flex-wrap justify-start">
+                {goodsInfo?.productInfo?.imgList?.map((src: string) => (
+                  <button
+                    key={src}
+                    className=" "
+                    onClick={() => setCurrentImg(src)}
+                  >
                     <Image
-                      key={index}
+                      key={src}
                       alt="123"
-                      className=" object-fill "
-                      radius="none"
+                      className={` w-[80px] h-[80px] ${currentImg === src ? "border-[#f0700c] border-3" : ""}`}
+                      radius="sm"
                       src={src}
-                      width="100%"
                     />
-                  );
-                },
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="flex-[5] max-w-[55%]">
-          <div className="sticky top-20 flex  h-[calc(100vh-80px)] ">
-            <div className="overflow-y-auto scrollbar-hide flex flex-col gap-4 pb-7">
-              <div className="flex gap-2 items-center">
-                <SourceIcon source={goodsInfo?.productInfo?.source} />
-                <p className="font-bold text-lg">
-                  {goodsInfo?.productInfo?.sellerInfo?.shopName}
-                </p>
+                  </button>
+                ))}
               </div>
-              <Divider className="border-1" />
-              <h1 className={subtitle()}>{goodsInfo?.productInfo?.title}</h1>
-              <div className="flex -m-2 ml-0 gap-2 text-sm text-[#f0700c]">
-                <a
-                  className="flex items-center gap-1"
-                  href={goodsInfo?.productInfo?.productUrl}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  <IoIosLink />
-                  原链接
-                </a>
-                <button
-                  className="flex items-center gap-1"
-                  onClick={() => window.location.reload()}
-                >
-                  <GrPowerReset />
-                  刷新
-                </button>
-              </div>
-              <div className={priceFont({ size: "xl2" })}>
-                {currentSku?.price || goodsInfo?.productInfo.price}
-              </div>
-              <div className={lightFont({ size: "sm" })}>
-                支付后，我们会在09:00-18:00（UTC+8）为您进行代购服务
-              </div>
-              <div className={commonCard()}>
-                <div className=" text-sm py-2 px-1">
-                  <div>1、卖家 到 BBD 仓库,国内运费 0.00 CNY</div>
-                  <div>2、BBD 仓库 到 您的地址,估算国际运费</div>
+              <h3 className={subtitle()}>购买记录</h3>
+              <div className="card-grey my-2 flex ">
+                <div className="flex-1 text-gray-base gap-2 flex flex-col">
+                  <div>销量 0</div>
+                  <div>重量（g）--</div>
+                </div>
+                <div className="flex-1 text-gray-base gap-2 flex flex-col">
+                  <div>平均送达时间 --days</div>
+                  <div>尺码（cm3）--</div>
                 </div>
               </div>
-              {goodsInfo?.productInfo?.skuPropList.map(
-                (specs: any, index: number) => {
-                  return (
-                    <div key={specs.propName}>
-                      <div className={subtitle()}>{specs.propName}</div>
-                      <div className="flex gap-2 flex-wrap">
-                        {specs.propValueList.map((spec: any, indey: number) => {
-                          return (
-                            <div
-                              key={spec.valueName}
-                              data-index={spec.selected}
-                            >
-                              <Button
-                                className={`pl-2 bg-white ${spec.selected ? "border-[#f0700c] text-[#f0700c]" : "border-[#ccc]"} `}
-                                isDisabled={spec.disabled}
-                                radius="lg"
-                                size={spec.imageUrl ? "lg" : "md"}
-                                variant="bordered"
-                                onPress={() =>
-                                  changeSelectedStatus(index, indey)
-                                }
-                              >
-                                {spec.imageUrl ? (
-                                  <Avatar radius="none" src={spec.imageUrl} />
-                                ) : null}
-                                {spec.valueName}
-                              </Button>
-                            </div>
-                          );
-                        })}
+              <div>
+                <h3 className={subtitle()}>商品詳情</h3>
+                <div>
+                  {goodsInfo?.productDetail?.productDescImgList?.map(
+                    (src: string, index: number) => {
+                      return (
+                        <Image
+                          key={index}
+                          alt="123"
+                          className=" object-fill "
+                          radius="none"
+                          src={src}
+                          width="100%"
+                        />
+                      );
+                    },
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="flex-[5] max-w-[55%]">
+              <div className="sticky top-20 flex  h-[calc(100vh-80px)] ">
+                <div className="overflow-y-auto scrollbar-hide flex flex-col gap-4 pb-7">
+                  <div className="flex gap-2 items-center">
+                    <SourceIcon source={goodsInfo?.productInfo?.source} />
+                    <p className="font-bold text-lg">
+                      {goodsInfo?.productInfo?.sellerInfo?.shopName}
+                    </p>
+                  </div>
+                  <Divider className="border-1" />
+                  <h1 className={subtitle()}>
+                    {goodsInfo?.productInfo?.title}
+                  </h1>
+                  <div className="flex -m-2 ml-0 gap-2 text-sm text-[#f0700c]">
+                    <a
+                      className="flex items-center gap-1"
+                      href={goodsInfo?.productInfo?.productUrl}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      <IoIosLink />
+                      原链接
+                    </a>
+                    <button
+                      className="flex items-center gap-1"
+                      onClick={() => window.location.reload()}
+                    >
+                      <GrPowerReset />
+                      刷新
+                    </button>
+                  </div>
+                  <div className={priceFont({ size: "xl2" })}>
+                    {currentSku?.price || goodsInfo?.productInfo.price}
+                  </div>
+                  <div className={lightFont({ size: "sm" })}>
+                    支付后，我们会在09:00-18:00（UTC+8）为您进行代购服务
+                  </div>
+                  <div className={commonCard()}>
+                    <div className=" text-sm py-2 px-1">
+                      <div>
+                        1、卖家 到 BBD 仓库,国内运费{" "}
+                        <span className=" text-black  bg-white px-4 py-1 mx-2  text-xs rounded-sm">
+                          {goodsInfo?.productInfo?.postFee || 0.0}
+                        </span>
+                        CNY
+                      </div>
+                      <div className="mt-2">
+                        2、BBD 仓库 到 您的地址,估算国际运费
                       </div>
                     </div>
-                  );
-                },
-              )}
-              <div>
-                <div className={subtitle()}>数量</div>
-                <div className="w-[20%]">
-                  <Stepper
-                    value={quantity}
-                    onChange={(value) => setQuantity(value)}
-                  />
-                </div>
-              </div>
-              <div className="mb-4">
-                <div className={subtitle()}>备注</div>
-                <Textarea
-                  placeholder="Enter your description"
-                  value={remark}
-                  onChange={(e) => setRemark(e.target.value)}
-                />
-              </div>
-              <div className={commonCard({ type: "grey" })}>
-                <div className={subtitle()}>免责声明</div>
-                <div className="text-sm">
-                  <div>
-                    BBDbuy上展示的所有代购商品均来自第三方代购平台，非BBDbuy直接销售。因此，BBDbuy对侵犯知识产权和侵犯商品著作权所引起的问题不承担任何责任和法律责任。使用BBDbuy代购服务即表示您默认接受上述风险。
                   </div>
-                  <Checkbox
-                    className="mt-2 "
-                    color="primary"
-                    isSelected={isCheck}
-                    onValueChange={(e) => {
-                      setIsCheck(e);
-                    }}
-                  >
-                    <span className="text-[#676969]">
-                      我已阅读并同意BBDbuy的免责声明
-                    </span>
-                  </Checkbox>
+                  {goodsInfo?.productInfo?.skuPropList.map(
+                    (specs: any, index: number) => {
+                      return (
+                        <div key={specs.propName}>
+                          <div className={subtitle()}>{specs.propName}</div>
+                          <div className="flex gap-2 flex-wrap">
+                            {specs.propValueList.map(
+                              (spec: any, indey: number) => {
+                                return (
+                                  <div
+                                    key={spec.valueName}
+                                    data-index={spec.selected}
+                                  >
+                                    <Button
+                                      className={`pl-2 bg-white ${spec.selected ? "border-[#f0700c] text-[#f0700c]" : "border-[#ccc]"} `}
+                                      isDisabled={spec.disabled}
+                                      radius="lg"
+                                      size={spec.imageUrl ? "lg" : "md"}
+                                      variant="bordered"
+                                      onPress={() =>
+                                        changeSelectedStatus(index, indey)
+                                      }
+                                    >
+                                      {spec.imageUrl ? (
+                                        <Avatar
+                                          radius="none"
+                                          src={spec.imageUrl}
+                                        />
+                                      ) : null}
+                                      {spec.valueName}
+                                    </Button>
+                                  </div>
+                                );
+                              },
+                            )}
+                          </div>
+                        </div>
+                      );
+                    },
+                  )}
+                  <div>
+                    <div className={subtitle()}>数量</div>
+                    <div className="w-[20%]">
+                      <Stepper
+                        value={quantity}
+                        onChange={(value) => setQuantity(value)}
+                      />
+                    </div>
+                  </div>
+                  <div className="mb-4">
+                    <div className={subtitle()}>备注</div>
+                    <Textarea
+                      placeholder="Enter your description"
+                      value={remark}
+                      onChange={(e) => setRemark(e.target.value)}
+                    />
+                  </div>
+                  <div className={commonCard({ type: "grey" })}>
+                    <div className={subtitle()}>免责声明</div>
+                    <div className="text-sm">
+                      <div>
+                        BBDbuy上展示的所有代购商品均来自第三方代购平台，非BBDbuy直接销售。因此，BBDbuy对侵犯知识产权和侵犯商品著作权所引起的问题不承担任何责任和法律责任。使用BBDbuy代购服务即表示您默认接受上述风险。
+                      </div>
+                      <Checkbox
+                        className="mt-2 "
+                        color="primary"
+                        defaultSelected={true}
+                        isSelected={isCheck}
+                        onValueChange={(e) => {
+                          setIsCheck(e);
+                        }}
+                      >
+                        <span className="text-[#676969]">
+                          我已阅读并同意BBDbuy的免责声明
+                        </span>
+                      </Checkbox>
+                    </div>
+                  </div>
+                  <div className="flex-1 flex gap-2  mt-4 ">
+                    <Button
+                      className="flex-1 h-16"
+                      isLoading={issub}
+                      onPress={add}
+                    >
+                      加入购物车
+                    </Button>
+                    <Button
+                      className=" h-16 flex-1"
+                      color="primary"
+                      isLoading={issub}
+                      onPress={handleBuyNow}
+                    >
+                      立即购买
+                    </Button>
+                  </div>
                 </div>
-              </div>
-              <div className="flex-1 flex gap-2  mt-4 ">
-                <Button
-                  className="flex-1 h-16"
-                  isLoading={isLoading}
-                  onPress={add}
-                >
-                  加入购物车
-                </Button>
-                <Button
-                  className=" h-16 flex-1"
-                  color="primary"
-                  isLoading={isLoading}
-                  onPress={handleBuyNow}
-                >
-                  立即购买
-                </Button>
               </div>
             </div>
-          </div>
-        </div>
+          </>
+        )}
       </div>
+      <CommonModal
+        // cancelText="该商品涉及版权问题"
+        confirmText="继续购买其他"
+        isDismissable={false}
+        isKeyboardDismissDisabled={true}
+        isOpen={isOpen1}
+        showCancel={false}
+        size="xl"
+        title="风险提示"
+        onConfirm={async (onClose) => {
+          await onClose();
+          router.push("/");
+        }}
+        onOpenChange={setIsOpen1}
+      >
+        <div>
+          <div className="rounded-lg bg-[#ffeee1] p-2 my-4 text-sm">
+            您提交的产品可能存在一定的寄送风险。为了您的资金安全，我们暂时无法为您提供在线订购服务。如需了解更多信息，请联系在线客服！
+          </div>
+          {/* <div className="mt-5 mb-2">如果您支付成功，请点击支付完成。</div>
+          <div className="mb-5">
+            如果您在付款时遇到问题，请重试或给我们一个{" "}
+            <span className="text-blue-600">反馈</span>
+          </div> */}
+        </div>
+      </CommonModal>
     </div>
   );
 }

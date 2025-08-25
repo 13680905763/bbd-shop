@@ -13,16 +13,19 @@ import {
   addToast,
 } from "@heroui/react";
 import { HiQuestionMarkCircle } from "react-icons/hi";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { IoWallet } from "react-icons/io5";
+
+import BillingAddress from "./billing-address";
 
 import { price } from "@/components/primitives";
 import Progress from "@/components/common/progress";
-import { usePaymentMethodList } from "@/hook";
+import { useBillingAddress, usePaymentMethodList } from "@/hook";
 import RechargeModal from "@/components/modal/recharge.modal";
 import CommonModal from "@/components/modal/common-modal";
 import { createPayOrder, getPayOrderStatus } from "@/services";
 import { useBillingAddressStore, useWalletStore } from "@/store";
+import FullscreenLoader from "@/components/common/fullscreen-loader";
 
 const CustomRadio = (props: RadioProps) => {
   const {
@@ -62,29 +65,77 @@ const CustomRadio = (props: RadioProps) => {
 export default function SubmitOrder() {
   const params = useParams<{ bizCode: string }>();
   const wallet = useWalletStore((state) => state.wallet);
+  const router = useRouter();
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
   const [isOpen, setIsOpen] = useState(false);
   const [isOpen1, setIsOpen1] = useState(false);
   const [paymentId, setPaymentId] = useState("");
-
+  const [paymentCompleted, setPaymentCompleted] = useState(false);
   const { data, isLoading, isError } = usePaymentMethodList(params.bizCode);
 
   const billingAddress = useBillingAddressStore(
     (state) => state.billingAddress,
   );
+
+  useBillingAddress();
   const hanldeCreatePayOrder = async () => {
-    console.log("handleCreatePayOrder", paymentId);
+    if (submitting) return;
+    setSubmitting(true);
+
+    if (paymentId !== "1" && !billingAddress?.id) {
+      addToast({
+        title: "Please add billing address",
+        timeout: 1000,
+        color: "danger",
+      });
+      setSubmitting(false);
+
+      return;
+    }
 
     try {
-      const url = await createPayOrder({
+      const res = await createPayOrder({
         bizCode: params.bizCode,
         paymentId,
         addressId: billingAddress?.id as string,
       });
 
-      window.open(url, "_blank");
-      setIsOpen1(true);
-    } catch (error) {}
+      console.log("res", res);
+      setSubmitting(false);
+
+      if (typeof res === "string") {
+        // 判断是否是 URL
+        if (res.startsWith("http")) {
+          // 跳转第三方支付页面
+          window.open(res, "_blank");
+          setIsOpen1(true);
+          // 或者直接重定向
+          // window.location.href = res.data;
+        } else {
+          // 内部支付返回订单号，处理支付成功逻辑
+          addToast({
+            title: "Payment successful",
+            timeout: 1000,
+            color: "success",
+          });
+          router.push(`/dashboard/order`);
+        }
+      } else {
+        addToast({
+          title: "Unexpected response",
+          timeout: 1000,
+          color: "danger",
+        });
+      }
+    } catch {
+      setSubmitting(false);
+      addToast({
+        title: "Network error",
+        timeout: 1000,
+        color: "danger",
+      });
+    }
   };
 
   useEffect(() => {
@@ -103,36 +154,35 @@ export default function SubmitOrder() {
     );
   }, [paymentId]);
 
-  // console.log("currentPayMethod", currentPayMethod);
-
-  if (isLoading) return <div>加载中...</div>;
+  useEffect(() => {
+    if (!paymentCompleted) return;
+    addToast({
+      title: "支付完成",
+      timeout: 1000,
+      color: "success",
+    });
+    // 跳转到 dashboard
+    router.push("/dashboard");
+  }, [paymentCompleted]);
+  if (isLoading) return <FullscreenLoader loading={isLoading} />;
   if (isError) return <div>加载失败</div>;
 
   return (
     <div className="container mx-auto bg-[#fff]  p-4 ">
       <div className="mt-5">
         <Progress
-          currentStep={1}
+          currentStep={3}
           steps={["选择产品", "订单付款", "质检&仓库", "打包", "签收包裹"]}
         />
       </div>
       <div>
-        <div className="my-4">
-          <p className="text-title">账单地址</p>
-          <div className="p-4 border-2 border-dashed border-[#5e5e5e]">
-            <div className="flex justify-between ">
-              <div className="flex gap-8">
-                <div className="text-title">{billingAddress?.recipient}123</div>
-                <div>{billingAddress?.phone}</div>
-              </div>
-              <div>{billingAddress?.postcode}</div>
-            </div>
-            <div className="text-gray-base">
-              {billingAddress?.address},{billingAddress?.city},
-              {billingAddress?.state},{billingAddress?.country}
-            </div>
+        {paymentId !== "1" ? (
+          <div className="my-4">
+            <p className="text-title">账单地址</p>
+            <BillingAddress billingAddress={billingAddress} />
           </div>
-        </div>
+        ) : null}
+
         <div className="flex flex-col gap-1 w-full">
           <RadioGroup
             classNames={{
@@ -240,6 +290,7 @@ export default function SubmitOrder() {
           <Button
             className="w-[300px]"
             color="primary"
+            isLoading={submitting}
             size="lg"
             onPress={hanldeCreatePayOrder}
           >
@@ -258,7 +309,8 @@ export default function SubmitOrder() {
           const status = await getPayOrderStatus(params?.bizCode);
 
           if (status === 203) {
-            onClose();
+            await onClose(); // 等弹窗动画结束
+            setPaymentCompleted(true);
           } else {
             addToast({
               title: "未完成支付",

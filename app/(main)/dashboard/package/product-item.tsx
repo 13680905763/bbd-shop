@@ -10,9 +10,9 @@ export default function ProductItem({ product }: ProductItemProps) {
 
   return (
     <>
-      <div className="flex justify-between items-center gap-4 border-b-1 p-2 px-4">
-        <div className="flex ">
-          <div className=" grow-0 shrink-0 basis-[90px]">
+      <div className="flex justify-between items-center gap-4  p-2 px-4">
+        <div className="flex gap-4">
+          <div className="grow-0 shrink-0 basis-[90px]">
             <button
               onClick={() =>
                 router.push(

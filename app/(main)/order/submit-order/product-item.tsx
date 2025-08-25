@@ -1,87 +1,81 @@
 "use client";
-import { Checkbox, CheckboxGroup, Image, Tooltip } from "@heroui/react";
+import { Button, Image } from "@heroui/react";
 
-import { useServicesStore } from "@/store";
-
-export default function ProductItem({
-  product,
-  updateServiceList,
-  checkboxGroupData,
-  setCheckboxGroupData,
-}: any) {
-  const services = useServicesStore((state) => state.services);
-
-  console.log("services", services);
-
+export default function ProductItem({ product, openServiceModal }: any) {
   return (
-    <div className="flex justify-between  gap-4">
+    <>
       <div className="flex ">
-        <div className="flex grow-0 shrink-0 basis-[400px] gap-2">
-          <div className=" grow-0 shrink-0 basis-[90px]">
+        <div className="flex flex-1">
+          <div className="flex grow-0 shrink-0 basis-[400px] gap-2">
+            <div className=" grow-0 shrink-0 basis-[90px]">
+              <div>
+                <Image
+                  alt="Product"
+                  height={90}
+                  src={product?.skuPicUrl || product?.picUrl}
+                  width={90}
+                />
+              </div>
+            </div>
             <div>
-              <Image
-                alt="Product"
-                height={90}
-                src={product?.skuPicUrl || product?.picUrl}
-                width={90}
-              />
-            </div>
-          </div>
-          <div>
-            <div className="line-clamp-2 font-bold">
-              {product?.productTitle}
-            </div>
-            <div className="text-gray-500 text-sm">
-              {product?.sku?.propName_valueName}
+              <div className="line-clamp-2 font-bold">
+                {product?.productTitle}
+              </div>
+              <div className="text-gray-500 text-sm">
+                {product?.sku?.propName_valueName}
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="flex grow-0 shrink-0 basis-[200px] ">
-        <p className=" max-w-44   truncate ">
-          备注：
-          <span className="text-gray-500 ">
-            {product?.remark ?? "暂无备注"}
-          </span>
-        </p>
+        <div className="flex justify-center flex-[0_0_200px] ">
+          <p className=" max-w-44   truncate ">
+            备注：
+            <span className="text-gray-500 ">
+              {product?.remark ?? "暂无备注"}
+            </span>
+          </p>
+        </div>
+        <div className="flex justify-center  flex-[0_0_130px] ">
+          <p>{product.price}</p>
+        </div>
+        <div className="flex justify-center flex-[0_0_150px] ">
+          <p>x{product.quantity}</p>
+        </div>
+        <div className="flex justify-center flex-[0_0_150px] ">
+          <p>{product.price * product.quantity}</p>
+        </div>
       </div>
-      <div className="flex  gap-2   flex-col  grow-0 shrink-0 basis-[150px]">
-        <CheckboxGroup
-          defaultValue={checkboxGroupData}
-          onChange={(v) => {
-            setCheckboxGroupData(v);
-            updateServiceList(
-              product.cartId,
-              v.map((id) => {
-                return {
-                  serviceId: id,
-                  remark: "",
-                };
-              }),
-            );
-          }}
-        >
-          {services?.map((service: any) => (
-            <Tooltip
-              key={service?.id}
-              className="bg-[#262626] text-white p-2 max-w-screen-sm"
-              content={service?.introduction}
-              placement="right"
-            >
-              <Checkbox isDisabled={service?.id == 1} value={service?.id}>
-                {service?.serviceName}￥{service?.price}
-              </Checkbox>
-            </Tooltip>
-          ))}
-        </CheckboxGroup>
+      <div className="p-3 bg-[#f8f8f8] rounded-lg">
+        {/* 标题行 */}
+        <div className="flex justify-between items-center ">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm font-medium text-gray-800">增值服务</span>
+            {product?.orderServiceList?.length > 0 ? (
+              product?.orderServiceList.map((item: any) => (
+                <span
+                  key={item.serviceCode}
+                  className="px-2 py-0.5 text-xs rounded-md bg-white text-gray-700 border border-gray-200"
+                >
+                  {item.serviceName}
+                </span>
+              ))
+            ) : (
+              <span className="text-xs text-gray-400">暂无服务</span>
+            )}
+          </div>
+
+          <Button
+            className="button-white"
+            size="sm"
+            onPress={() => {
+              openServiceModal(product?.cartId);
+            }}
+          >
+            添加
+          </Button>
+        </div>
       </div>
-      <div className="flex grow-0 shrink-0 basis-[100px]">
-        <p>{product.price}</p>
-      </div>
-      <div className="flex grow-0 shrink-0 basis-[100px]">
-        <p>x{product.quantity}</p>
-      </div>
-    </div>
+    </>
   );
 }

@@ -9,6 +9,7 @@ import Progress from "@/components/common/progress";
 import PaginationBar from "@/components/common/pagination-bar";
 import { createWarehousePreviewKeyByCart } from "@/services";
 import { usePackageList } from "@/hook";
+import FullscreenLoader from "@/components/common/fullscreen-loader";
 
 // 仓库包裹类型
 interface WarehouseRecord {
@@ -44,7 +45,7 @@ export default function WarehousePage() {
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const router = useRouter();
   const onPayOrderRedirect = (bizCode: string) => {
-    router.push(`/order/pay-order/${bizCode}`);
+    router.push(`/warehouse/pay-order/${bizCode}`);
   };
   // 所有 packageCode
   const allIds = useMemo<string[]>(() => {
@@ -102,13 +103,14 @@ export default function WarehousePage() {
     </div>
   );
 
-  if (isLoading) return <div>加载中...</div>;
+  if (isLoading) return <FullscreenLoader loading={isLoading} />;
+  console.log("onPayOrderRedirect111", onPayOrderRedirect);
 
   return (
     <div className="flex w-full flex-col">
       <div className="mt-5">
         <Progress
-          currentStep={1}
+          currentStep={3}
           steps={["选择产品", "订单付款", "质检&仓库", "打包", "签收包裹"]}
         />
       </div>
@@ -147,6 +149,7 @@ export default function WarehousePage() {
                     key={order.outboundId}
                     activeTab={activeTab}
                     order={order}
+                    onPayOrderRedirect={onPayOrderRedirect}
                   />
                 ))}
               </div>
@@ -220,6 +223,7 @@ export default function WarehousePage() {
                     key={order.outboundId}
                     activeTab={activeTab}
                     order={order}
+                    onPayOrderRedirect={onPayOrderRedirect}
                   />
                 ))}
               </div>
@@ -255,6 +259,7 @@ export default function WarehousePage() {
                     key={order.outboundId}
                     activeTab={activeTab}
                     order={order}
+                    onPayOrderRedirect={onPayOrderRedirect}
                   />
                 ))}
               </div>

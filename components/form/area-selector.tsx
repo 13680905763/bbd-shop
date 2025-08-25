@@ -65,31 +65,33 @@ export default function AreaSelector({ value, onChange }: Props) {
         placeholder="选择省份"
         selectedKey={String(value.stateId) || null}
         variant="bordered"
-        onSelectionChange={(code) =>
-          onChange({
+        onSelectionChange={(code) => {
+          return onChange({
             ...value,
             stateId: String(code),
-            city: "",
-          })
-        }
+            city: states?.find((item: any) => item.id == code)?.name || "",
+          });
+        }}
       >
         {states.map(renderItem)}
       </Autocomplete>
 
-      <Autocomplete
-        label="城市"
-        placeholder="选择城市"
-        selectedKey={String(value.city) || null}
-        variant="bordered"
-        onSelectionChange={(code) =>
-          onChange({
-            ...value,
-            city: String(code),
-          })
-        }
-      >
-        {cities.map(renderItem)}
-      </Autocomplete>
+      {cities.length > 0 ? (
+        <Autocomplete
+          label="城市"
+          placeholder="选择城市"
+          selectedKey={String(value.city) || null}
+          variant="bordered"
+          onSelectionChange={(code) =>
+            onChange({
+              ...value,
+              city: String(code),
+            })
+          }
+        >
+          {cities.map(renderItem)}
+        </Autocomplete>
+      ) : null}
     </div>
   );
 }

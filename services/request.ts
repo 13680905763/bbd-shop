@@ -5,7 +5,7 @@ import { ApiResponse } from "@/types";
 
 export const request = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "/api",
-  timeout: 10000,
+  timeout: 300000,
   headers: {
     "Content-Type": "application/json",
   },

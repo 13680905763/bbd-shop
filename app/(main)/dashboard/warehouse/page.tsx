@@ -9,6 +9,7 @@ import Progress from "@/components/common/progress";
 import PaginationBar from "@/components/common/pagination-bar";
 import { createWarehousePreviewKeyByCart } from "@/services";
 import { useWarehouseList } from "@/hook";
+import FullscreenLoader from "@/components/common/fullscreen-loader";
 
 // 仓库包裹类型
 interface WarehouseRecord {
@@ -98,13 +99,13 @@ export default function WarehousePage() {
     </div>
   );
 
-  if (isLoading) return <div>加载中...</div>;
+  if (isLoading) return <FullscreenLoader loading={isLoading} />;
 
   return (
     <div className="flex w-full flex-col">
       <div className="mt-5">
         <Progress
-          currentStep={1}
+          currentStep={2}
           steps={["选择产品", "订单付款", "质检&仓库", "打包", "签收包裹"]}
         />
       </div>

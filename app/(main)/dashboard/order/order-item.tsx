@@ -1,4 +1,4 @@
-import { Button, Divider } from "@heroui/react";
+import { Button } from "@heroui/react";
 
 import ProductItem from "./product-item";
 
@@ -9,17 +9,19 @@ export default function OrderItem({ order, onPayOrderRedirect }: any) {
     <div className="card-cart ">
       <div className="p-4 flex items-center gap-1 ">
         <SourceIcon source={order?.source} />
-        <div>创建时间：{order?.createTime}</div>
-        <div>订单号：{order?.orderCode}</div>
+        <div className=" text-sm font-extrabold">
+          订单号：{order?.orderCode}
+        </div>
+        <div className="text-[#acacac] text-sm">
+          创建时间：{order?.createTime}
+        </div>
       </div>
-
-      <Divider className="border-1" />
 
       <div className="flex">
         <div className="flex flex-col   flex-[4]">
           {order?.products.map((product: any, index: number) => (
             <ProductItem
-              key={product.id}
+              key={product.sourceSkuId}
               isLastProduct={index === order?.products.length - 1}
               product={product}
             />

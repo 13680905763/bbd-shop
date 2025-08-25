@@ -22,6 +22,7 @@ import {
 } from "@/services";
 import { useCartList } from "@/hook";
 import CommonModal from "@/components/modal/common-modal";
+import FullscreenLoader from "@/components/common/fullscreen-loader";
 
 export default function CartPage() {
   const { data, isLoading, isError } = useCartList();
@@ -208,7 +209,7 @@ export default function CartPage() {
       setSelected(init);
     }
   }, [data]);
-  if (isLoading) return <div>加载中...</div>;
+  if (isLoading) return <FullscreenLoader loading={isLoading} />;
   if (isError) return <div>出错了</div>;
   // 判断购物车是否为空
   const isCartEmpty =

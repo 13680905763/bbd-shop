@@ -24,7 +24,7 @@ export default function ProductItem({
 
   return (
     <div className="flex justify-between  gap-4">
-      <div className="flex">
+      <div className="flex ">
         <Checkbox
           isSelected={isSelected}
           size="sm"
@@ -50,6 +50,7 @@ export default function ProductItem({
           <Tooltip
             className="bg-[#262626] text-white p-2 max-w-screen-sm"
             content={product.remark || "暂无备注"}
+            placement="right"
           >
             <p className=" max-w-44  truncate">备注：{product.remark}</p>
           </Tooltip>
@@ -62,7 +63,7 @@ export default function ProductItem({
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col items-center">
+      <div className="flex-1 flex flex-col items-center justify-center">
         {/* <div className="text-lg font-semibold text-red-500">
           总计: ${product.totalPrice}
         </div> */}
@@ -71,7 +72,7 @@ export default function ProductItem({
         </div>
         <div className="text-gray-500">国内运费: {product?.postFee}</div>
       </div>
-      <div>
+      <div className="flex items-center">
         <Stepper
           value={product.quantity}
           onChange={(quantity) => {
@@ -79,7 +80,7 @@ export default function ProductItem({
           }}
         />
       </div>
-      <div className="flex justify-center gap-2 flex-1">
+      <div className="flex justify-end gap-2 flex-1 items-center">
         <Button
           className="button-default"
           size="sm"

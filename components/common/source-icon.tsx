@@ -29,6 +29,15 @@ const SourceIcon: React.FC<SourceIconProps> = ({
           </span>
         </div>
       );
+    case "TMALL":
+      return (
+        <div className="relative w-[22px] h-[22px]">
+          <FaCircle className="bg-[#ff5000] text-[#ff5000] w-full h-full" />
+          <span className="text-white absolute inset-0 flex items-center justify-center  font-bold ">
+            淘
+          </span>
+        </div>
+      );
     case "1688":
       return (
         <AiOutlineAlibaba
