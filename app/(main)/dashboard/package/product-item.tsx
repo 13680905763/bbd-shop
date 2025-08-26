@@ -10,27 +10,23 @@ export default function ProductItem({ product }: ProductItemProps) {
 
   return (
     <>
-      <div className="flex justify-between items-center gap-4  p-2 px-4">
-        <div className="flex gap-4">
-          <div className="grow-0 shrink-0 basis-[90px]">
-            <button
-              onClick={() =>
-                router.push(
-                  `/goods/${product.source}/${product?.sourceProductId}`,
-                )
-              }
-            >
-              <Image
-                alt="Product"
-                height={90}
-                src={product.skuPicUrl || product?.picUrl}
-                width={90}
-              />
-            </button>
-          </div>
-          <div>
-            <div className="line-clamp-2 text-sm">{product?.productTitle}</div>
-          </div>
+      <div className="flex justify-between items-center  p-2 px-4">
+        <div className="grow-0 shrink-0 basis-[90px]">
+          <button
+            onClick={() =>
+              router.push(
+                `/goods/${product.source}/${product?.sourceProductId}`,
+              )
+            }
+          >
+            <Image
+              alt="Product"
+              height={90}
+              radius="sm"
+              src={product.skuPicUrl || product?.picUrl}
+              width={90}
+            />
+          </button>
         </div>
       </div>
     </>

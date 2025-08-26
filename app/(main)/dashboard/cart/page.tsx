@@ -188,10 +188,18 @@ export default function CartPage() {
     return selectedIds;
   }, [selected]);
   const togglePrice = useMemo(() => {
-    return data
+    const totalCents = data
       ?.flatMap((shop) => shop.cartList) // 拍平所有商品
       ?.filter((item) => selectedIdArr.includes(item.id)) // 过滤选中项
-      ?.reduce((sum, item) => sum + item?.unitPrice * item.quantity, 0); // 累加价格
+      ?.reduce((sum, item) => {
+        // 将 totalFee 转成分（乘100取整）
+        const fee = Math.round((item?.totalFee ?? 0) * 100);
+
+        return sum + fee;
+      }, 0);
+
+    // 最终除以100，保留两位小数
+    return totalCents !== undefined ? (totalCents / 100).toFixed(2) : "0.00";
   }, [selected]);
 
   useEffect(() => {

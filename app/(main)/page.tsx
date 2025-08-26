@@ -89,7 +89,7 @@ export default function Home() {
           </div>
           <div
             className="h-[116px] rounded-2xl p-4 flex items-center justify-around mb-4 w-[70%] 
-                 backdrop-blur-md "
+        bg-white/5  "
           >
             {[
               { title: "下单", desc: "粘贴商品链接以提交订单" },

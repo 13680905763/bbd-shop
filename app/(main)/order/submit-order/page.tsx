@@ -9,6 +9,7 @@ import {
   Textarea,
 } from "@heroui/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { FaCamera } from "react-icons/fa";
 
 import OrderCard from "./order-card";
 
@@ -60,7 +61,7 @@ export default function SubmitOrder() {
 
   // 打开商品服务列表弹窗
   const openServiceModal = (cartId: string) => {
-    console.log("cartId", cartId);
+    console.log("services", services);
 
     setCurrentCartId(cartId);
     // 克隆服务，初始化 isCheck、remark
@@ -85,6 +86,13 @@ export default function SubmitOrder() {
 
   // 保存服务详情备注
   const saveServiceDetail = () => {
+    // 如果是基础拍照（id === 1），直接关掉弹窗，不修改 localServices
+    if (currentService.id == 1) {
+      setIsServiceDetailOpen(false);
+
+      return;
+    }
+
     setLocalServices((prev) =>
       prev.map((s) =>
         s.id === currentService.id
@@ -106,10 +114,15 @@ export default function SubmitOrder() {
 
   // 修改 handleServiceSubmit
   const handleServiceSubmit = async () => {
+    console.log("currentCartId", currentCartId);
+
     if (!currentCartId) return;
+
     const checkedServices = localServices
       .filter((s) => s.isCheck)
       .map((s) => ({ serviceId: s.id, remark: s.remark }));
+
+    console.log("checkedServices", checkedServices);
 
     try {
       setIsServiceSubmitting(true); // ✅ 开始 loading
@@ -166,14 +179,16 @@ export default function SubmitOrder() {
     }
   };
 
-  const togglePrice = useMemo(
-    () =>
+  const togglePrice = useMemo(() => {
+    const totalCents =
       orderData?.orderList?.reduce(
-        (sum: any, item: any) => sum + item?.totalFee,
+        (sum: number, item: any) =>
+          sum + Math.round(Number(item?.totalFee || 0) * 100),
         0,
-      ),
-    [orderData],
-  );
+      ) || 0;
+
+    return totalCents / 100;
+  }, [orderData]);
 
   if (isLoading) return <FullscreenLoader loading={isLoading} />;
   if (isError) return <div>出错了</div>;
@@ -268,16 +283,27 @@ export default function SubmitOrder() {
           >
             <div className="flex justify-between items-center">
               <div className="font-medium">{service.serviceName}</div>
-              <Button
-                className="button-white"
-                size="sm"
-                onPress={() => openServiceDetail(service.id)}
-              >
-                添加
-              </Button>
+              {service.id == 1 ? (
+                // 免费的 icon
+                <button
+                  className="flex items-center text-green-500 text-sm gap-1"
+                  onClick={() => openServiceDetail(service.id)}
+                >
+                  <FaCamera className="mr-1" />
+                  免费
+                </button>
+              ) : (
+                <Button
+                  className="button-white"
+                  size="sm"
+                  onPress={() => openServiceDetail(service.id)}
+                >
+                  添加
+                </Button>
+              )}
             </div>
 
-            {service.isCheck && (
+            {service.isCheck && service.id != 1 && (
               <div className="bg-gray-50 px-3 py-2 rounded-lg mt-2 flex justify-between items-center border border-gray-200">
                 <div className="flex flex-col">
                   <span className="text-sm font-medium text-gray-800">
@@ -314,8 +340,9 @@ export default function SubmitOrder() {
       {currentService && (
         <CommonModal
           key={currentService.id}
-          confirmText="保存"
+          confirmText={currentService.id != 1 ? "保存" : "确认"}
           isOpen={isServiceDetailOpen}
+          showCancel={currentService.id != 1}
           size="xl"
           title={currentService.serviceName}
           onCancel={() => setIsServiceDetailOpen(false)}
@@ -323,6 +350,7 @@ export default function SubmitOrder() {
           onOpenChange={setIsServiceDetailOpen}
         >
           <div className="space-y-5">
+            {/* 服务介绍 */}
             <div className="bg-[#f8f8f8] p-4 rounded-lg space-y-4">
               <div className="space-y-2">
                 <h3 className="text-sm font-medium text-gray-900">服务介绍</h3>
@@ -331,6 +359,7 @@ export default function SubmitOrder() {
                 </p>
               </div>
 
+              {/* 示例（id != 1 时才展示） */}
               {currentService.sample && (
                 <div className="space-y-2">
                   <h3 className="text-sm font-medium text-gray-900">示例</h3>
@@ -346,25 +375,31 @@ export default function SubmitOrder() {
               )}
             </div>
 
-            <div className="flex items-center justify-between border-t pt-3">
-              <span className="text-sm text-gray-700">服务费</span>
-              <span className="text-lg font-semibold text-rose-600">
-                {currentService.price}
-              </span>
-            </div>
+            {/* 服务费（id != 1 时才展示） */}
+            {currentService.id != 1 && (
+              <div className="flex items-center justify-between border-t pt-3">
+                <span className="text-sm text-gray-700">服务费</span>
+                <span className="text-lg font-semibold text-rose-600">
+                  {currentService.price}
+                </span>
+              </div>
+            )}
 
-            <Textarea
-              className="w-full mt-2"
-              minRows={3}
-              placeholder="请输入备注（选填）"
-              value={currentService.remark}
-              onChange={(e) =>
-                setCurrentService({
-                  ...currentService,
-                  remark: e.target.value,
-                })
-              }
-            />
+            {/* 备注输入框（id != 1 时才展示） */}
+            {currentService.id != 1 && (
+              <Textarea
+                className="w-full mt-2"
+                minRows={3}
+                placeholder="请输入备注（选填）"
+                value={currentService.remark}
+                onChange={(e) =>
+                  setCurrentService({
+                    ...currentService,
+                    remark: e.target.value,
+                  })
+                }
+              />
+            )}
           </div>
         </CommonModal>
       )}

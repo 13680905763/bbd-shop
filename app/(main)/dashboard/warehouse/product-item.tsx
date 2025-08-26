@@ -2,6 +2,10 @@ import { useRouter } from "next/navigation";
 import { Image } from "antd";
 import { Button } from "@heroui/react";
 
+import MediaPreviewGroup, {
+  MediaItem,
+} from "@/components/common/media-preview";
+
 export default function ProductItem({ product, warehouse }: any) {
   const router = useRouter();
 
@@ -58,32 +62,12 @@ export default function ProductItem({ product, warehouse }: any) {
             </div>
           </div>
           <div className="flex  gap-2  justify-center flex-col py-2">
-            {product?.orderServiceList?.map((service: any) => (
-              <div key={service?.serviceId} className="flex gap-2">
-                <div className="text-[#acacac] text-sm">
-                  {service?.serviceName}
+            {product?.orderServiceList.map((service: any) => (
+              <div key={service.serviceId} className="mb-4 flex gap-2">
+                <div className="text-[#acacac] text-sm mb-2">
+                  {service.serviceName}
                 </div>
-                <div className="flex gap-2">
-                  <Image.PreviewGroup
-                    preview={{
-                      onChange: (current, prev) =>
-                        console.log(
-                          `current index: ${current}, prev index: ${prev}`,
-                        ),
-                    }}
-                  >
-                    {service?.fileList?.map((item: any) => {
-                      return (
-                        <Image
-                          key={item.id}
-                          height={40}
-                          src={item?.fileUrl}
-                          width={40}
-                        />
-                      );
-                    })}
-                  </Image.PreviewGroup>
-                </div>
+                <MediaPreviewGroup fileList={service.fileList as MediaItem[]} />
               </div>
             ))}
           </div>

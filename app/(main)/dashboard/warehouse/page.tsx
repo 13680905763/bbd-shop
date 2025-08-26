@@ -25,7 +25,7 @@ interface WarehouseListResponse {
 
 const tabKeyToStatusCode: Record<string, string> = {
   all: "",
-  submit: "CAN OUTBOUND",
+  submit: "302",
 };
 
 export default function WarehousePage() {

@@ -69,7 +69,7 @@ export default function ProductItem({ product, openServiceModal }: any) {
             className="button-white"
             size="sm"
             onPress={() => {
-              openServiceModal(product?.cartId);
+              openServiceModal(product?.cartId || 1);
             }}
           >
             添加

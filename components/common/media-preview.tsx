@@ -65,7 +65,7 @@ const MediaPreviewGroup: React.FC<MediaPreviewGroupProps> = ({
           return (
             <button
               key={item?.id ?? idx}
-              className="cursor-pointer rounded overflow-hidden flex-shrink-0 relative bg-gray-300"
+              className="cursor-pointer  overflow-hidden flex-shrink-0 relative bg-gray-300"
               style={{
                 width: thumbnailSize + "px",
                 height: thumbnailSize + "px",
