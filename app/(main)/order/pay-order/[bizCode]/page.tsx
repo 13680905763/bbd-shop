@@ -26,6 +26,7 @@ import CommonModal from "@/components/modal/common-modal";
 import { createPayOrder, getPayOrderStatus } from "@/services";
 import { useBillingAddressStore, useWalletStore } from "@/store";
 import FullscreenLoader from "@/components/common/fullscreen-loader";
+import { queryClient } from "@/lib/react-query";
 
 const CustomRadio = (props: RadioProps) => {
   const {
@@ -119,6 +120,9 @@ export default function SubmitOrder() {
             timeout: 1000,
             color: "success",
           });
+          queryClient.invalidateQueries({ queryKey: ["orderList"] }); // 手动刷新
+          queryClient.invalidateQueries({ queryKey: ["warehouseList"] }); // 手动刷新
+          queryClient.invalidateQueries({ queryKey: ["packageList"] }); // 手动刷新
           router.push(`/dashboard/order`);
         }
       } else {
@@ -161,6 +165,9 @@ export default function SubmitOrder() {
       timeout: 1000,
       color: "success",
     });
+    queryClient.invalidateQueries({ queryKey: ["orderList"] }); // 手动刷新
+    queryClient.invalidateQueries({ queryKey: ["warehouseList"] }); // 手动刷新
+    queryClient.invalidateQueries({ queryKey: ["packageList"] }); // 手动刷新
     // 跳转到 dashboard
     router.push("/dashboard");
   }, [paymentCompleted]);

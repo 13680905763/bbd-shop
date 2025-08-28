@@ -80,3 +80,10 @@ export const getServicesList = (): Promise<any> => {
     { showToast: false },
   );
 };
+/** 获取增值服务列表 */
+export const putOrderCancel = (data: { id: string }): Promise<any> => {
+  return requestWithOption(
+    { url: "/orders/cancel?orderId=" + data.id, method: "PUT" },
+    { showToast: true },
+  );
+};

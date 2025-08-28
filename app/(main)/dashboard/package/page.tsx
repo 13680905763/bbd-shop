@@ -146,7 +146,7 @@ export default function WarehousePage() {
               <div className="flex flex-col gap-3">
                 {data?.records?.map((order) => (
                   <OrderItem
-                    key={order.outboundId}
+                    key={order.packingPackageCode}
                     activeTab={activeTab}
                     order={order}
                     onPayOrderRedirect={onPayOrderRedirect}

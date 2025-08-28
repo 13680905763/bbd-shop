@@ -4,7 +4,11 @@ import ProductItem from "./product-item";
 
 import SourceIcon from "@/components/common/source-icon";
 
-export default function OrderItem({ order, onPayOrderRedirect }: any) {
+export default function OrderItem({
+  order,
+  onPayOrderRedirect,
+  onCancelOrder,
+}: any) {
   return (
     <div className="card-cart ">
       <div className="p-4 flex items-center gap-1 ">
@@ -32,7 +36,7 @@ export default function OrderItem({ order, onPayOrderRedirect }: any) {
           {/* <p>国内运费 $ {order?.totalFee}</p> */}
         </div>
         <div className="grow-0 shrink-0 basis-[180px] flex flex-col  gap-2  justify-center items-center">
-          {order?.customerPayStatusCode === 201 ? (
+          {order?.status === "待付款" ? (
             <>
               <Button
                 color="primary"
@@ -44,7 +48,14 @@ export default function OrderItem({ order, onPayOrderRedirect }: any) {
               >
                 支付
               </Button>
-              <Button className="button-default" radius="none" size="sm">
+              <Button
+                className="button-default"
+                radius="none"
+                size="sm"
+                onPress={() => {
+                  onCancelOrder(order?.id);
+                }}
+              >
                 取消
               </Button>
             </>

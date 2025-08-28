@@ -56,7 +56,7 @@ export default function OrderItem({ order, onPayOrderRedirect }: any) {
   return (
     <div className="card-cart mb-4 p-2 bg-white rounded-lg shadow-sm">
       <div className="flex items-center gap-2 p-2 text-sm">
-        包裹编号:{" "}
+        包裹编号:
         <span className="font-semibold">{order?.packingPackageCode}</span>
       </div>
       <Divider className="border-gray-200" />
