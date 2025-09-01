@@ -2,36 +2,49 @@
 
 import { Button, Card } from "@heroui/react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { AiFillCheckCircle, AiFillCloseCircle } from "react-icons/ai";
 
 import { payNotice } from "@/services/wallet";
+
+function formatTime(ts: string) {
+  if (!ts) return "";
+  const num = Number(ts);
+  const ms = num < 1e12 ? num * 1000 : num; // 秒级转毫秒
+
+  return new Date(ms).toLocaleString();
+}
 
 export default function PaymentResultPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
 
-  // 解析 URL 参数
+  // 提取参数
   const payOrderId = searchParams.get("payOrderId") || "";
-  const status = searchParams.get("status"); // "2"=成功
   const amount = searchParams.get("amount") || "0.00";
   const paySuccTime = searchParams.get("paySuccTime") || "";
+  const resultCode = searchParams.get("resultCode"); // 内部
+  const status = searchParams.get("status"); // onpay
+
+  // 支付是否成功
+  const isSuccess = useMemo(() => {
+    if (resultCode) return resultCode === "SUCCESS";
+    if (status) return status === "2";
+
+    return false;
+  }, [resultCode, status]);
 
   useEffect(() => {
     async function notifyBackend() {
-      // 构造完整参数字符串
-      const paramStr = searchParams.toString();
-
       try {
-        await payNotice(paramStr);
+        await payNotice(searchParams.toString());
       } catch (err) {
         console.error("通知后端支付状态失败", err);
       } finally {
         setLoading(false);
       }
     }
-
     notifyBackend();
   }, [searchParams]);
 
@@ -42,8 +55,6 @@ export default function PaymentResultPage() {
       </div>
     );
   }
-
-  const isSuccess = status === "2";
 
   return (
     <div className="flex justify-center items-center h-[80vh]">
@@ -59,8 +70,12 @@ export default function PaymentResultPage() {
               <h1 className="text-2xl font-bold text-green-600">支付成功</h1>
               <div className="text-gray-600 text-center space-y-2">
                 <p>交易号：{payOrderId}</p>
-                <p>支付金额：￥{amount}</p>
-                <p>支付时间：{paySuccTime}</p>
+                <p>
+                  支付金额：
+                  {searchParams.get("currency") === "USD" ? "$" : "￥"}
+                  {amount}
+                </p>
+                <p>支付时间：{formatTime(paySuccTime)}</p>
               </div>
               <p className="text-gray-500 text-center">
                 我们已收到您的付款，订单正在处理中。
@@ -72,8 +87,14 @@ export default function PaymentResultPage() {
               <h1 className="text-2xl font-bold text-red-600">支付失败</h1>
               <div className="text-gray-600 text-center space-y-2">
                 <p>订单号：{payOrderId}</p>
-                {amount && <p>支付金额：￥{amount}</p>}
-                {paySuccTime && <p>支付时间：{paySuccTime}</p>}
+                {amount && (
+                  <p>
+                    支付金额：
+                    {searchParams.get("currency") === "USD" ? "$" : "￥"}
+                    {amount}
+                  </p>
+                )}
+                {paySuccTime && <p>支付时间：{formatTime(paySuccTime)}</p>}
               </div>
               <p className="text-gray-500 text-center">
                 支付未完成，请检查订单或重新尝试付款。

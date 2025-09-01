@@ -71,3 +71,7 @@ export const updateUserInfo = (data: any): Promise<UserInfo> => {
     { showToast: true },
   );
 };
+/** 获取用户信息 */
+export const getMessageList = (): Promise<any> => {
+  return request("/system-notice/list");
+};

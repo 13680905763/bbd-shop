@@ -17,6 +17,7 @@ export interface GetOrderListParams {
   current: number;
   size: number;
   customerPayStatusCode?: string; // ✅ 可选，用于筛选订单状态
+  statusCode?: string;
 }
 export type source = "1688" | "TAOBAO";
 export interface createOrderPreviewKeyByProductParams {

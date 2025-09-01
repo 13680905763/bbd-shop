@@ -22,15 +22,23 @@ import {
   PopoverContent,
   PopoverTrigger,
   User,
+  Image,
+  Spinner,
 } from "@heroui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { IoCart } from "react-icons/io5";
+import { FaRegImage } from "react-icons/fa";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { SearchIcon, Logo } from "@/components/icons";
-import { getGoodsId, getUserInfo, logoutCustomer } from "@/services";
+import {
+  getGoodsId,
+  getGoodsImageId,
+  getUserInfo,
+  logoutCustomer,
+} from "@/services";
 import { useUserStore } from "@/store";
 
 export const Navbar = () => {
@@ -38,9 +46,52 @@ export const Navbar = () => {
 
   const [inputValue, setInputValue] = useState("");
   const pathname = usePathname(); // 获取当前路径
+  const prevPathRef = useRef(pathname);
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [uploading, setUploading] = useState(false); // 是否正在上传
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null); // 上传成功的图片 URL 或 base64
 
   const [currentNav, setCurrentNav] = useState(pathname);
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const res: any = await getGoodsImageId(file);
+
+      if (res && res.length > 0) {
+        const taobaoImageId = res.find(
+          (item: any) => item.source === "TAOBAO",
+        )?.imageId;
+        const alibabaImageId = res.find(
+          (item: any) => item.source === "1688",
+        )?.imageId;
+
+        if (taobaoImageId && alibabaImageId) {
+          router.push(`/search?TAOBAO=${taobaoImageId}&1688=${alibabaImageId}`);
+        }
+
+        // 生成本地缩略图显示
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          setUploadedImage(e.target?.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
+    } catch (error) {
+      console.error("上传图片失败", error);
+      addToast({ title: "上传失败，请重试", timeout: 1000, color: "danger" });
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
 
   const Search = async (e: any) => {
     e.preventDefault();
@@ -64,6 +115,7 @@ export const Navbar = () => {
     router.push(
       `/goods/${res.source}/${res.sourceProductId}`, // 目标路由
     );
+    router.refresh();
     setInputValue("");
   };
   const logout = async () => {
@@ -76,6 +128,9 @@ export const Navbar = () => {
       window.location.reload();
     } catch (error) {}
   };
+  const triggerUpload = () => {
+    if (!uploading) fileInputRef.current?.click();
+  };
 
   useEffect(() => {
     setCurrentNav(pathname);
@@ -87,6 +142,17 @@ export const Navbar = () => {
       router.refresh();
     });
   }, []);
+  useEffect(() => {
+    const prevPath = prevPathRef.current;
+
+    // 如果之前在 /search，且现在不是 /search，则重置上传状态
+    if (prevPath.startsWith("/search") && !pathname.startsWith("/search")) {
+      setUploadedImage(null);
+      setUploading(false);
+    }
+
+    prevPathRef.current = pathname;
+  }, [pathname]);
   const searchInput = (
     <Form className="w-full max-w-xs" onSubmit={Search}>
       <Input
@@ -96,15 +162,33 @@ export const Navbar = () => {
           input: "text-sm",
         }}
         endContent={
-          <Button
-            isIconOnly
-            color="primary"
-            size="sm"
-            type="submit"
-            variant="light"
-          >
-            搜索
-          </Button>
+          <div className="flex  items-center">
+            {uploading ? (
+              <Spinner color="primary" size="sm" />
+            ) : uploadedImage ? (
+              <Image
+                alt="Uploaded"
+                className="w-[30px] h-[30px] cursor-pointer min-w-[30px]"
+                radius="none"
+                src={uploadedImage}
+                onClick={triggerUpload}
+              />
+            ) : (
+              <FaRegImage
+                className="w-[30px] h-[30px] text-gray-400 cursor-pointer"
+                onClick={triggerUpload}
+              />
+            )}
+            {/* <Button
+              isIconOnly
+              color="primary"
+              size="sm"
+              type="submit"
+              variant="light"
+            >
+              搜索
+            </Button> */}
+          </div>
         }
         labelPlacement="outside"
         name="url"
@@ -115,6 +199,14 @@ export const Navbar = () => {
         type="search"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
+      />
+      {/* 隐藏的上传输入框 */}
+      <input
+        ref={fileInputRef}
+        hidden
+        accept="image/*"
+        type="file"
+        onChange={handleImageUpload}
       />
     </Form>
   );

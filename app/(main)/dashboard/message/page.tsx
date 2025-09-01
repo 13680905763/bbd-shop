@@ -1,11 +1,8 @@
 "use client";
 import {
   Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
+  Checkbox,
+  Spinner,
   Tab,
   Table,
   TableBody,
@@ -16,66 +13,94 @@ import {
   Tabs,
   useDisclosure,
 } from "@heroui/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-const rows = [
-  {
-    key: "1",
-    name: "Your Product Coupon is About to Expire – Use It Now!",
-    role: "2025-05-03 00:00:02",
-  },
-  {
-    key: "2",
-    name: "Your Shipping Coupon is About to Expire",
-    role: "2025-05-03 00:00:02",
-  },
-  {
-    key: "3",
-    name: "Your Shipping Coupon is About to Expire",
-    role: "2025-05-03 00:00:02",
-  },
-];
+import CommonModal from "@/components/modal/common-modal";
+import PaginationBar from "@/components/common/pagination-bar";
+import { getMessageList } from "@/services";
+
 const columns = [
-  {
-    key: "name",
-    label: "收货人",
-  },
-  {
-    key: "role",
-    label: "电话",
-  },
-
-  {
-    key: "actions",
-    label: "操作",
-  },
+  { key: "title", label: "标题" },
+  { key: "createTime", label: "时间" },
+  { key: "actions", label: "操作" },
 ];
 
 export default function MessagePage() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const renderCell = React.useCallback((rows: any, columnKey: any) => {
-    const cellValue = rows[columnKey];
+  const [page, setPage] = useState(1);
+  const [rows, setRows] = useState<any[]>([]);
+  const [selectedKeys, setSelectedKeys] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [currentContent, setCurrentContent] = useState(""); // 当前 Modal 内容
 
-    switch (columnKey) {
-      case "actions":
-        return (
-          <div className="relative flex items-center gap-2">
-            <Button className="button-default" size="sm" onPress={onOpen}>
+  const renderCell = React.useCallback(
+    (item: any, columnKey: any) => {
+      switch (columnKey) {
+        case "actions":
+          return (
+            <Button
+              color="primary"
+              size="sm"
+              onPress={() => {
+                setCurrentContent(item.content);
+                onOpen();
+              }}
+            >
               查看详情
             </Button>
-          </div>
-        );
-      default:
-        return cellValue;
+          );
+        default:
+          return item[columnKey];
+      }
+    },
+    [onOpen],
+  );
+
+  const allSelected = rows.length > 0 && selectedKeys.length === rows.length;
+
+  const toggleAll = () => {
+    if (allSelected) {
+      setSelectedKeys([]);
+    } else {
+      setSelectedKeys(rows.map((row) => row.key));
     }
-  }, []);
+  };
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      setLoading(true);
+      try {
+        const res = await getMessageList();
+
+        if (Array.isArray(res.records)) {
+          setRows(
+            res.records.map((message: any) => ({
+              key: message.id,
+              title: message.title,
+              createTime: message.createTime,
+              content: message.content,
+            })),
+          );
+        } else {
+          setRows([]);
+        }
+      } catch (error) {
+        console.error("加载消息失败:", error);
+        setRows([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMessages();
+  }, [page]);
 
   return (
     <div className="flex w-full flex-col">
       <Tabs
         aria-label="Options"
         classNames={{
-          tabList: "gap-6 w-full relative rounded-none p-0 ",
+          tabList: "gap-6 w-full relative rounded-none p-0",
           cursor: "w-full bg-[#f0700c]",
           tab: "max-w-fit px-0 h-12",
           tabContent: "group-data-[selected=true]:text-[#f0700c]",
@@ -83,108 +108,97 @@ export default function MessagePage() {
         color="primary"
         variant="underlined"
       >
-        <Tab
-          key="photos"
-          title={
-            <div className="flex items-center space-x-2">
-              <span>全部消息</span>
-            </div>
-          }
-        >
+        <Tab key="photos" title={<span>全部消息</span>}>
           <div>
-            <Table
-              hideHeader
-              isStriped
-              removeWrapper
-              aria-label="Example table with dynamic content"
-              classNames={{
-                tr: "border-b border-[#ccc] ",
-              }}
-              // selectionMode="multiple"
-            >
-              <TableHeader columns={columns}>
-                {(column) => (
-                  <TableColumn key={column.key}>{column.label}</TableColumn>
-                )}
-              </TableHeader>
-              <TableBody items={rows}>
-                {(item) => (
-                  <TableRow key={item.key}>
-                    {(columnKey) => (
-                      <TableCell>{renderCell(item, columnKey)}</TableCell>
-                    )}
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-              <ModalContent>
-                {(onClose) => (
-                  <>
-                    <ModalHeader className="flex flex-col gap-1">
-                      留言信息
-                    </ModalHeader>
-                    <ModalBody>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Nullam pulvinar risus non risus hendrerit venenatis.
-                        Pellentesque sit amet hendrerit risus, sed porttitor
-                        quam.
-                      </p>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Nullam pulvinar risus non risus hendrerit venenatis.
-                        Pellentesque sit amet hendrerit risus, sed porttitor
-                        quam.
-                      </p>
-                      <p>
-                        Magna exercitation reprehenderit magna aute tempor
-                        cupidatat consequat elit dolor adipisicing. Mollit dolor
-                        eiusmod sunt ex incididunt cillum quis. Velit duis sit
-                        officia eiusmod Lorem aliqua enim laboris do dolor
-                        eiusmod. Et mollit incididunt nisi consectetur esse
-                        laborum eiusmod pariatur proident Lorem eiusmod et.
-                        Culpa deserunt nostrud ad veniam.
-                      </p>
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button
-                        className="button-default"
-                        size="sm"
-                        variant="light"
-                        onPress={onClose}
+            {loading ? (
+              <div className="flex justify-center items-center h-[50vh]">
+                <Spinner color="primary" size="lg" />
+              </div>
+            ) : rows.length === 0 ? (
+              <div className="text-center text-gray-500 py-10">暂无消息</div>
+            ) : (
+              <Table
+                hideHeader
+                aria-label="消息表格"
+                bottomContent={
+                  <div className="flex items-center justify-between w-full">
+                    <div className="p-3 flex items-center gap-3">
+                      <Checkbox
+                        className="flex-1"
+                        isIndeterminate={
+                          selectedKeys.length > 0 &&
+                          selectedKeys.length < rows.length
+                        }
+                        isSelected={allSelected}
+                        onChange={toggleAll}
                       >
-                        Close
+                        全选
+                      </Checkbox>
+                      <Button
+                        className="bg-transparent text-[#f0700c]"
+                        onPress={() => {
+                          const remaining = rows.filter(
+                            (row) => !selectedKeys.includes(row.key),
+                          );
+
+                          setRows(remaining);
+                          setSelectedKeys([]);
+                        }}
+                      >
+                        删除
                       </Button>
-                      <Button color="primary" size="sm" onPress={onClose}>
-                        Action
-                      </Button>
-                    </ModalFooter>
-                  </>
-                )}
-              </ModalContent>
-            </Modal>
+                    </div>
+                    <div className="flex-1">
+                      <PaginationBar
+                        page={page}
+                        pageSize={20}
+                        total={rows.length} // 根据实际接口 total 调整
+                        onPageChange={setPage}
+                      />
+                    </div>
+                  </div>
+                }
+                selectedKeys={selectedKeys}
+                selectionMode="multiple"
+                onSelectionChange={(keys: any) => setSelectedKeys(keys)}
+              >
+                <TableHeader columns={columns}>
+                  {(column) => (
+                    <TableColumn key={column.key}>{column.label}</TableColumn>
+                  )}
+                </TableHeader>
+                <TableBody items={rows}>
+                  {(item) => (
+                    <TableRow key={item.key}>
+                      {(columnKey) => (
+                        <TableCell>{renderCell(item, columnKey)}</TableCell>
+                      )}
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            )}
+
+            <CommonModal
+              isOpen={isOpen}
+              title="查看详情"
+              onOpenChange={onOpenChange}
+            >
+              <div className="max-h-[60vh] overflow-auto px-4 py-2 scrollbar-hide">
+                <p>{currentContent}</p>
+              </div>
+            </CommonModal>
           </div>
         </Tab>
-        <Tab
-          key="music"
-          title={
-            <div className="flex items-center space-x-2">
-              <span>已读</span>
-            </div>
-          }
-        >
-          312
+
+        <Tab key="music" title={<span>已读</span>}>
+          {/* 这里可以放已读消息列表 */}
+          暂无数据
         </Tab>
-        <Tab
-          key="videos"
-          title={
-            <div className="flex items-center space-x-2">
-              <span>未读</span>
-            </div>
-          }
-        >
-          31231
+
+        <Tab key="videos" title={<span>未读</span>}>
+          {/* 这里可以放未读消息列表 */}
+          暂无数据
         </Tab>
       </Tabs>
     </div>

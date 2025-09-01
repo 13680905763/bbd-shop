@@ -1,12 +1,18 @@
 "use client";
 import { useRef } from "react";
-import { Button, Divider, Image } from "@heroui/react";
+import { Button, Checkbox, Divider, Image } from "@heroui/react";
 
 import MediaPreviewGroup, {
   MediaItem,
 } from "@/components/common/media-preview";
 
-export default function OrderItem({ order, onPayOrderRedirect }: any) {
+export default function OrderItem({
+  order,
+  onPayOrderRedirect,
+  activeTab,
+  selected,
+  onChange,
+}: any) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const isDragging = useRef(false);
@@ -56,6 +62,9 @@ export default function OrderItem({ order, onPayOrderRedirect }: any) {
   return (
     <div className="card-cart mb-4 p-2 bg-white rounded-lg shadow-sm">
       <div className="flex items-center gap-2 p-2 text-sm">
+        {activeTab === "pay" ? (
+          <Checkbox isSelected={selected} onChange={onChange} />
+        ) : null}
         包裹编号:
         <span className="font-semibold">{order?.packingPackageCode}</span>
       </div>

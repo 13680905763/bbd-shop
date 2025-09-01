@@ -63,8 +63,18 @@ export const updateOrderPreviewProduct = (
   data: any,
 ): Promise<OrderPreviewByCart> => request.post("/orders/preview", data);
 /** 付款 */
-export const createPayOrder = (data: createPayOrderParams): Promise<string> =>
-  request.post("/customer/pay-order/create", data);
+export const createPayOrder = (data: createPayOrderParams): Promise<any> => {
+  return requestWithOption(
+    {
+      url: "/customer/pay-order/create",
+      method: "POST",
+      data,
+    },
+    {
+      showToast: true,
+    },
+  );
+};
 /** 获取支付状态 */
 export const getPayOrderStatus = (bizCode: string): Promise<number> =>
   request.get(`/customer/pay-order/status?bizCode=${bizCode}`);
@@ -80,10 +90,24 @@ export const getServicesList = (): Promise<any> => {
     { showToast: false },
   );
 };
-/** 获取增值服务列表 */
+/** 订单取消 */
 export const putOrderCancel = (data: { id: string }): Promise<any> => {
   return requestWithOption(
     { url: "/orders/cancel?orderId=" + data.id, method: "PUT" },
+    { showToast: true },
+  );
+};
+/** 订单批量支付 */
+export const batchPayOrder = (data: any): Promise<any> => {
+  return requestWithOption(
+    { url: "/orders/pay/preview/init", method: "POST", data },
+    { showToast: true },
+  );
+};
+/** 订单取消 */
+export const OrderRefund = (data: any): Promise<any> => {
+  return requestWithOption(
+    { url: "/order-refund/applyRefund", method: "POST", data },
     { showToast: true },
   );
 };

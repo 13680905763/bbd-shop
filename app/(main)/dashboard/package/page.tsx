@@ -1,5 +1,5 @@
 "use client";
-import { Tab, Tabs } from "@heroui/react";
+import { Button, Checkbox, Tab, Tabs } from "@heroui/react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -7,9 +7,9 @@ import OrderItem from "./order-item";
 
 import Progress from "@/components/common/progress";
 import PaginationBar from "@/components/common/pagination-bar";
-import { createWarehousePreviewKeyByCart } from "@/services";
 import { usePackageList } from "@/hook";
 import FullscreenLoader from "@/components/common/fullscreen-loader";
+import { batchPayPackage } from "@/services";
 
 // 仓库包裹类型
 interface WarehouseRecord {
@@ -25,9 +25,9 @@ interface WarehouseListResponse {
 
 const tabKeyToStatusCode: Record<string, string> = {
   all: "",
-  pay: "TO PAY",
-  shipping: "SHIPPING",
-  receivde: "RECEIVED",
+  pay: "203",
+  shipping: "205",
+  receivde: "206",
 };
 
 export default function WarehousePage() {
@@ -49,13 +49,14 @@ export default function WarehousePage() {
   };
   // 所有 packageCode
   const allIds = useMemo<string[]>(() => {
-    return data?.records.map((w) => w.packageCode) || [];
+    return data?.records.map((w) => w.packingPackageCode) || [];
   }, [data]);
 
   // 是否全选
   const allSelected = useMemo(() => {
     return (
-      allIds.length > 0 && allIds.every((packageCode) => selected[packageCode])
+      allIds.length > 0 &&
+      allIds.every((packingPackageCode) => selected[packingPackageCode])
     );
   }, [allIds, selected]);
 
@@ -74,12 +75,15 @@ export default function WarehousePage() {
   }, [selected]);
 
   // 提交
-  const handleWarehouseSubmit = async () => {
-    const key = await createWarehousePreviewKeyByCart({
+  const handlePackageSubmit = async () => {
+    console.log("selectedIds", selectedIds);
+    const bizCode = await batchPayPackage({
       packageSet: selectedIds,
     });
 
-    router.push("/warehouse/submit-warehouse?key=" + key);
+    console.log("bizCode", bizCode);
+
+    router.push(`/order/pay-order/${bizCode}`);
   };
 
   // 初始化选中状态
@@ -87,7 +91,7 @@ export default function WarehousePage() {
     if (data?.records) {
       const initialSelected: Record<string, boolean> = data.records.reduce(
         (acc, item) => {
-          acc[item.packageCode] = false;
+          acc[item.packingPackageCode] = false;
 
           return acc;
         },
@@ -184,23 +188,44 @@ export default function WarehousePage() {
               <div className="flex flex-col gap-3">
                 {data?.records?.map((order) => (
                   <OrderItem
-                    key={order.outboundId}
+                    key={order.packingPackageCode}
                     activeTab={activeTab}
                     order={order}
+                    selected={!!selected[order.packingPackageCode]}
+                    onChange={(e: any) => {
+                      setSelected((prev) => ({
+                        ...prev,
+                        [order.packingPackageCode]: e.target.checked,
+                      }));
+                    }}
                     onPayOrderRedirect={onPayOrderRedirect}
                   />
                 ))}
               </div>
-              <div className="mt-10 sticky bottom-0 border-t-[1px] bg-white z-10 card-cart p-4 py-6">
-                {data && data.total > 0 && (
-                  <PaginationBar
-                    page={page}
-                    pageSize={pageSize}
-                    total={data.total}
-                    onPageChange={setPage}
-                    onPageSizeChange={setPageSize}
-                  />
-                )}
+              <div className="mt-10 sticky bottom-0 border-t-[1px] bg-white z-10 card-cart p-4 ">
+                <div className="flex justify-between items-center  gap-4">
+                  <div className="flex gap-4">
+                    <div className="p-2 flex gap-2">
+                      <Checkbox
+                        isSelected={allSelected}
+                        onChange={(e) => toggleAll(e.target.checked)}
+                      >
+                        全选
+                      </Checkbox>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      className="w-[150px]"
+                      color="primary"
+                      isDisabled={selectedIds.length === 0}
+                      size="lg"
+                      onPress={handlePackageSubmit}
+                    >
+                      批量支付
+                    </Button>
+                  </div>
+                </div>
               </div>
             </>
           ) : (

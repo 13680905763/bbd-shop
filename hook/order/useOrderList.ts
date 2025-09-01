@@ -9,8 +9,19 @@ export function useOrderList(
 ) {
   return useQuery({
     queryKey: ["orderList", page, pageSize, customerPayStatusCode],
-    queryFn: () =>
-      getOrderList({ current: page, size: pageSize, customerPayStatusCode }),
+    queryFn: () => {
+      const params: any = {
+        current: page,
+        size: pageSize,
+        customerPayStatusCode,
+      };
+
+      if (customerPayStatusCode === "201") {
+        params.statusCode = "101";
+      }
+
+      return getOrderList(params);
+    },
     placeholderData: keepPreviousData,
   });
 }

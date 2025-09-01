@@ -1,101 +1,165 @@
 "use client";
-import { Card, CardBody, Tab, Tabs, Image, CardFooter } from "@heroui/react";
-import React from "react";
+import {
+  Card,
+  CardBody,
+  Tab,
+  Tabs,
+  Image,
+  CardFooter,
+  Spinner,
+} from "@heroui/react";
+import React, { useEffect, useState, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+
+import { getGoodsList } from "@/services";
 
 export default function SearchPage() {
-  const list = [
-    {
-      title: "ElectronicNomad水洗大师美式可爱卡通Mega Man休闲210克短袖T恤",
-      img: "https://img.alicdn.com/bao/uploaded/i1/2215124709177/O1CN010ifo2p2Hf7jixNpYy_!!2215124709177.jpg",
-      price: "$ 19.89",
-    },
-    {
-      title:
-        "加大款日本硬币夹收纳盒日币零钱包日式日圆神器整理零钱收纳盒日币零钱包日式日圆神器整必旅游备",
-      img: "https://img.alicdn.com/bao/uploaded/i4/2605889239/O1CN01B7ANiO2I7WHGwZmGS_!!2605889239.jpg",
-      price: "$ 1.65",
-    },
+  const [list, setList] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
 
-    {
-      title: "拖鞋男款夏季外穿2024新款潮流一字拖户外运动耐磨室沙滩防滑凉拖",
-      img: "https://img.alicdn.com/bao/uploaded/i4/1806717375/O1CN01q5SQNb24LnorJBLM7_!!0-item_pic.jpg",
-      price: "$7.50",
+  const searchParams = useSearchParams();
+  const taobaoId = searchParams.get("TAOBAO");
+  const alibabaId = searchParams.get("1688");
+
+  const [selectedTab, setSelectedTab] = useState<string>("TAOBAO");
+  const router = useRouter();
+  const fetchData = useCallback(
+    async (pageNum: number) => {
+      const id = selectedTab === "TAOBAO" ? taobaoId : alibabaId;
+      const source = selectedTab;
+
+      if (!id) return;
+
+      try {
+        setLoading(true);
+        const res: any = await getGoodsList({
+          imageId: id,
+          source,
+          current: pageNum,
+          size: 20,
+        });
+
+        if (!res || res.length === 0) {
+          setHasMore(false);
+
+          return;
+        }
+
+        if (res.length < 20) setHasMore(false);
+
+        setList((prev) => [...prev, ...res]);
+      } catch (err) {
+        console.error("搜索失败:", err);
+      } finally {
+        setLoading(false);
+      }
     },
-    {
-      title: "优衣库C系列合作款男女装宽松连帽卫衣长袖运动T恤475379 479945",
-      img: "https://img.alicdn.com/bao/uploaded/i1/196993935/O1CN0110cx9T1ewHZNR6TmO_!!196993935.jpg",
-      price: "$10.00",
-    },
-    {
-      title: "优衣库男女装华夫格亨利领套头衫长袖T恤纯色休闲475353 469924",
-      img: "https://img.alicdn.com/bao/uploaded/i3/196993935/O1CN01WzOj2u1ewHZEPOLsu_!!196993935.jpg",
-      price: "$12.20",
-    },
-  ];
+    [selectedTab, taobaoId, alibabaId],
+  );
+
+  // 当 URL 参数变化时，重置状态并加载第一页数据
+  useEffect(() => {
+    setList([]);
+    setPage(1);
+    setHasMore(true);
+
+    // 只在有参数时触发
+    if (taobaoId || alibabaId) fetchData(1);
+  }, [taobaoId, alibabaId, selectedTab, fetchData]);
+
+  // 分页滚动加载
+  useEffect(() => {
+    if (page === 1) return; // 第一页由上面的 useEffect 已经加载
+    fetchData(page);
+  }, [page, fetchData]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (loading || !hasMore) return;
+
+      const { scrollTop, clientHeight, scrollHeight } =
+        document.documentElement;
+
+      if (scrollTop + clientHeight >= scrollHeight - 50) {
+        setPage((prev) => prev + 1);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [loading, hasMore]);
 
   return (
     <div className="w-full bg-[#f8f8f8] py-10">
-      <div className="container mx-auto ">
-        <div className="flex w-full flex-col">
-          <Tabs
-            aria-label="Options"
-            classNames={{
-              tabList: "gap-6 w-full relative rounded-none p-0 ",
-              cursor: "w-full bg-[#f0700c]",
-              tab: "max-w-fit px-0 h-12 text-2xl",
-              tabContent: "group-data-[selected=true]:text-[#f0700c]",
-            }}
-            color="primary"
-            variant="underlined"
-          >
-            <Tab
-              key="photos"
-              title={
-                <div className="flex items-center space-x-2">
-                  <span>taobao</span>
-                </div>
-              }
-            >
-              <div className="gap-5 grid grid-cols-2 sm:grid-cols-5">
-                {list.map((item, index) => (
-                  <Card
-                    key={index}
-                    isPressable
-                    shadow="sm"
-                    //   onPress={() => console.log('item pressed')}
-                  >
-                    <CardBody className="overflow-visible p-0">
-                      <Image
-                        alt={item.title}
-                        className="w-full object-fill h-[300px]"
-                        radius="lg"
-                        shadow="sm"
-                        src={item.img}
-                        width="100%"
-                      />
-                    </CardBody>
-                    <CardFooter className="text-small ">
-                      <div className="text-left">
-                        <b className="line-clamp-2">{item.title}</b>
-                        <p className="text-money-lg">{item.price}</p>
-                      </div>
-                    </CardFooter>
-                  </Card>
-                ))}
+      <div className="container mx-auto">
+        <Tabs
+          aria-label="Options"
+          classNames={{
+            tabList: "gap-6 w-full relative rounded-none p-0",
+            cursor: "w-full bg-[#f0700c]",
+            tab: "max-w-fit px-0 h-12 text-2xl",
+            tabContent: "group-data-[selected=true]:text-[#f0700c]",
+          }}
+          color="primary"
+          selectedKey={selectedTab}
+          variant="underlined"
+          onSelectionChange={(key) => setSelectedTab(key as string)}
+        >
+          {["TAOBAO", "1688"].map((tabKey) => (
+            <Tab key={tabKey} title={<span>{tabKey.toLowerCase()}</span>}>
+              <div>
+                {loading && list.length === 0 ? (
+                  <div className="flex justify-center items-center h-[50vh]">
+                    <Spinner color="primary" size="lg" />
+                  </div>
+                ) : list.length > 0 ? (
+                  <div className="gap-5 grid grid-cols-2 sm:grid-cols-5">
+                    {list.map((item: any, index: number) => (
+                      <Card
+                        key={index}
+                        isPressable
+                        radius="none"
+                        onPress={() =>
+                          router.push(
+                            `/goods/${item.source}/${item.sourceProductId}`,
+                          )
+                        }
+                      >
+                        <CardBody className="overflow-visible p-0">
+                          <Image
+                            alt={item.sourceProductId}
+                            className="w-full object-fill h-[300px]"
+                            radius="none"
+                            src={item.imageUrl}
+                            width="100%"
+                          />
+                        </CardBody>
+                        <CardFooter className="text-small">
+                          <div className="text-left">
+                            <b className="line-clamp-2">{item.title}</b>
+                            <p className="text-money-lg">{item.price}</p>
+                          </div>
+                        </CardFooter>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center text-gray-500 py-10">
+                    暂无匹配结果
+                  </div>
+                )}
+                {loading && hasMore && list.length > 0 && (
+                  <div className="flex justify-center items-center py-5">
+                    <Spinner color="primary" size="lg" />
+                  </div>
+                )}
               </div>
             </Tab>
-            <Tab
-              key="music"
-              title={
-                <div className="flex items-center space-x-2">
-                  <span>1688 </span>
-                </div>
-              }
-            >
-              312
-            </Tab>
-          </Tabs>
-        </div>
+          ))}
+        </Tabs>
       </div>
     </div>
   );

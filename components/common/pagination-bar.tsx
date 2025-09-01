@@ -8,8 +8,8 @@ type Props = {
   page: number;
   pageSize: number;
   total: number;
-  onPageChange: (page: number) => void;
-  onPageSizeChange: (size: number) => void;
+  onPageChange?: (page: number) => void;
+  onPageSizeChange?: (size: number) => void;
 };
 
 export default function PaginationBar({
@@ -42,9 +42,12 @@ export default function PaginationBar({
           const size = Number(e.target.value) || Number(pageSize);
 
           console.log("size", size, typeof size);
-
-          onPageChange(1); // 改变页大小后重置为第一页
-          onPageSizeChange(size);
+          if (onPageChange) {
+            onPageChange(1); // 改变页大小后重置为第一页
+          }
+          if (onPageSizeChange) {
+            onPageSizeChange(size);
+          }
         }}
       >
         {["10", "20", "50", "100"].map((size) => (

@@ -102,43 +102,21 @@ export default function SubmitOrder() {
         addressId: billingAddress?.id as string,
       });
 
-      console.log("res", res);
       setSubmitting(false);
 
       if (typeof res === "string") {
         // 判断是否是 URL
         if (res.startsWith("http")) {
           // 跳转第三方支付页面
-          window.open(res, "_blank");
-          setIsOpen1(true);
+          window.location.href = res;
+          // setIsOpen1(true);
           // 或者直接重定向
           // window.location.href = res.data;
-        } else {
-          // 内部支付返回订单号，处理支付成功逻辑
-          addToast({
-            title: "Payment successful",
-            timeout: 1000,
-            color: "success",
-          });
-          queryClient.invalidateQueries({ queryKey: ["orderList"] }); // 手动刷新
-          queryClient.invalidateQueries({ queryKey: ["warehouseList"] }); // 手动刷新
-          queryClient.invalidateQueries({ queryKey: ["packageList"] }); // 手动刷新
-          router.push(`/dashboard/order`);
         }
-      } else {
-        addToast({
-          title: "Unexpected response",
-          timeout: 1000,
-          color: "danger",
-        });
       }
-    } catch {
+    } catch (err) {
       setSubmitting(false);
-      addToast({
-        title: "Network error",
-        timeout: 1000,
-        color: "danger",
-      });
+      console.log(err);
     }
   };
 

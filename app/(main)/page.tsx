@@ -3,18 +3,60 @@ import { Button, Input, Image, Form, addToast } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { AiOutlineAlibaba } from "react-icons/ai";
 import { FaCircle, FaRegImage } from "react-icons/fa";
-import React from "react";
+import React, { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { FiVolume2 } from "react-icons/fi";
 
 import { siteConfig } from "@/config/site";
-import { getGoodsId } from "@/services";
+import { getGoodsId, getGoodsImageId } from "@/services";
+import FullscreenLoader from "@/components/common/fullscreen-loader";
 
 // import { siteConfig } from "@/config/site";
 
 export default function Home() {
   const router = useRouter();
   const t = useTranslations("Home");
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isLoading, setIsLoading] = useState(false); // 🔹 loading 状态
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    setIsLoading(true); // 上传开始
+    try {
+      const res: any = await getGoodsImageId(file);
+
+      if (res && res.length > 0) {
+        const taobaoImageId = res.find(
+          (item: any) => item.source === "TAOBAO",
+        )?.imageId;
+        const alibabaImageId = res.find(
+          (item: any) => item.source === "1688",
+        )?.imageId;
+
+        if (taobaoImageId && alibabaImageId) {
+          router.push(`/search?TAOBAO=${taobaoImageId}&1688=${alibabaImageId}`);
+        }
+      }
+    } catch (error) {
+      console.error("上传图片失败", error);
+      addToast({
+        title: "上传失败，请重试",
+        timeout: 1000,
+        color: "danger",
+      });
+    } finally {
+      setIsLoading(false); // 上传结束
+      if (fileInputRef.current) fileInputRef.current.value = ""; // 清空 input
+    }
+  };
+
+  const triggerUpload = () => {
+    if (!isLoading) fileInputRef.current?.click();
+  };
 
   console.log("tttt", t("slogan.line1"));
 
@@ -46,6 +88,7 @@ export default function Home() {
 
   return (
     <div className="pb-12">
+      {isLoading && <FullscreenLoader loading={isLoading} />}
       <section className="flex bg-cover bg-no-repeat h-[630px] bg-[url('/images/indexbg.webp')]">
         <div className="container mx-auto flex-col flex justify-end  gap-16">
           <div className="max-w-3xl">
@@ -57,7 +100,10 @@ export default function Home() {
               <Input
                 endContent={
                   <div className="flex gap-4 items-center">
-                    <FaRegImage className="w-[30px] h-[30px] text-gray-400" />
+                    <FaRegImage
+                      className="w-[30px] h-[30px] text-gray-400 cursor-pointer"
+                      onClick={triggerUpload}
+                    />
                     <Button className="bg-[#f0700c] text-[#fff] " type="submit">
                       Search
                     </Button>
@@ -84,6 +130,14 @@ export default function Home() {
                 name="url"
                 radius={"full"}
                 size={"lg"}
+              />
+              {/* 隐藏的上传输入框 */}
+              <input
+                ref={fileInputRef}
+                hidden
+                accept="image/*"
+                type="file"
+                onChange={handleImageUpload}
               />
             </Form>
           </div>
@@ -149,7 +203,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
       <div className="container mx-auto">
         <div className="mt-[20px] flex justify-evenly">
           <a href="https://discord.gg/yKNsV43Ddn">
