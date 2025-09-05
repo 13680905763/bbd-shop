@@ -75,3 +75,23 @@ export const updateUserInfo = (data: any): Promise<UserInfo> => {
 export const getMessageList = (): Promise<any> => {
   return request("/system-notice/list");
 };
+/** 上传用户头像 */
+
+export const uploadAvatar = async (file: File) => {
+  const formData = new FormData();
+
+  formData.append("file", file);
+
+  try {
+    const response = await request.post("/customer/avatar", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data", // 明确告知服务器这是一个表单数据
+      },
+    });
+
+    return response;
+  } catch (error) {
+    console.error("请求失败:", error);
+    throw error + "上用户头像";
+  }
+};

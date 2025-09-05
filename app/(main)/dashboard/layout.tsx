@@ -1,67 +1,64 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { usePathname } from "next/navigation";
 import NextLink from "next/link";
-import { Divider } from "@heroui/react";
+import { useTranslations } from "next-intl";
 
-import { siteConfig } from "@/config/site";
 import { useServices } from "@/hook";
 
-export default function DashBoardlayout({
-  children,
-}: {
+type MenuItem =
+  | { type: "divider"; key: string }
+  | { key: string; label: string; href: string; type?: undefined };
+
+interface DashBoardLayoutProps {
   children: React.ReactNode;
-}) {
-  const [currentItem, setCurrentItem] = useState("");
+}
+
+export default function DashBoardlayout({ children }: DashBoardLayoutProps) {
   const pathname = usePathname();
+  const t = useTranslations("Dashboard");
+
+  const menuItems = t.raw("LayoutMenu") as MenuItem[];
 
   useServices();
 
-  useEffect(() => {
+  const currentItem = useMemo(() => {
     const pathParts = pathname.split("/").filter(Boolean);
 
-    if (pathParts[0] === "dashboard" && pathParts[1]) {
-      setCurrentItem(pathParts[1]);
-    } else {
-      setCurrentItem("");
-    }
+    return pathParts[0] === "dashboard" ? (pathParts[1] ?? "") : "";
   }, [pathname]);
 
   return (
-    <div className="bg-[#f8f8f8] ">
-      <section className="container mx-auto max-w-[1440px] py-6 flex ">
+    <div className="bg-[#f8f8f8]">
+      <section className="container mx-auto max-w-[1440px] py-6 flex">
         <div>
-          <ul className="p-5  min-w-60 rounded-lg bg-[#fff] sticky top-20">
-            {siteConfig.menuItem.map((item, index) => {
-              if (item.type) {
-                return <Divider key={index} className="my-4" />;
-              }
-
-              return (
-                <NextLink
-                  key={item.title}
-                  className={`${currentItem == item.key ? " !text-[#fff]" : ""} `}
-                  href={`/dashboard/${item.key}`}
+          <ul className="p-5 min-w-60 rounded-lg bg-[#fff] sticky top-20">
+            {menuItems.map((item) =>
+              item.type === "divider" ? (
+                <li key={`divider-${item.key}`} className="my-4 border-t" />
+              ) : (
+                <li
+                  key={item.key}
+                  className={`h-10 flex items-center my-2 rounded-lg cursor-pointer ${
+                    currentItem === item.key
+                      ? "bg-[#f0700c] text-white"
+                      : "hover:bg-[#f5f5f5]"
+                  }`}
+                  title={item.label}
                 >
-                  <li
-                    key={item.title}
-                    className={`h-10 cursor-pointer flex items-center p-2 my-2 ${
-                      currentItem == item.key
-                        ? "bg-[#f0700c] rounded-lg"
-                        : "hover:bg-[#f5f5f5]"
-                    }`}
-                    title={item.title}
+                  <NextLink
+                    className="w-full h-full flex items-center p-2"
+                    href={item.href}
                   >
-                    {item.title}
-                  </li>
-                </NextLink>
-              );
-            })}
+                    {item.label}
+                  </NextLink>
+                </li>
+              ),
+            )}
           </ul>
         </div>
 
-        {/* 直接渲染 children */}
         <div className="mx-5 flex-1 rounded-lg bg-[#fff] p-5 pt-0">
           {children}
         </div>

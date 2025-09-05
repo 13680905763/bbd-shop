@@ -1,38 +1,195 @@
 {
     "Home": {
-        "slogan": {
-            "line1": "简化你的",
+        "Slogan": {
+            "line1": "简化您的",
             "line2": "BBD购物体验"
         },
-        "searchLabel": "输入商品名称 / 链接",
-        "steps": [
+        "Search": {
+            "placeholder": "输入商品名称 / 链接",
+            "button": "搜索"
+        },
+        "Steps": [
             {
-                "title": "提交订单",
-                "desc": "粘贴商品链接提交订单"
+                "key": "step1",
+                "title": "下单",
+                "desc": "粘贴商品链接以提交订单"
             },
             {
-                "title": "质检与仓储",
-                "desc": "提供 3–5 张质检照片，享受 90 天免费仓储"
+                "key": "step2",
+                "title": "质检&存储",
+                "desc": "提供3-5张QC图片和90天免费存储"
             },
             {
-                "title": "打包发货",
-                "desc": "合包处理，检查包裹"
+                "key": "step3",
+                "title": "提包",
+                "desc": "组合打包并检查包裹"
             },
             {
+                "key": "step4",
                 "title": "国际物流",
-                "desc": "150+ 条高性价比物流线路"
+                "desc": "选择150+条便宜的物流线路"
             }
         ],
-        "serviceTitle": "一站式购物服务",
-        "describeItems": {
-            "title1": "商品采购",
-            "desc1": "我们协助您在 1688、淘宝、天猫等平台寻找可靠卖家。",
-            "title2": "质量检查",
-            "desc2": "每件商品发货前均经过质检并拍照记录。",
-            "title3": "仓储服务",
-            "desc3": "所有商品均可享受最长 90 天免费仓储。",
-            "title4": "全球运输",
-            "desc4": "通过值得信赖且高性价比的物流商发往全球。"
+        "Announcement": {
+            "label": "公告",
+            "message": "🎉 全场商品限时享12%折扣！"
+        },
+        "Links": [
+            {
+                "key": "link1",
+                "href": "https://discord.gg/yKNsV43Ddn",
+                "src": "/images/page/tab1.png"
+            },
+            {
+                "key": "link2",
+                "href": "/dashboard",
+                "src": "/images/page/tab2.png"
+            },
+            {
+                "key": "link3",
+                "href": "/estimation",
+                "src": "/images/page/tab3.png"
+            },
+            {
+                "key": "link4",
+                "href": "/register",
+                "src": "/images/page/tab4.png"
+            }
+        ],
+        "ServiceTitle": "一站式购物服务",
+        "Services": [
+            {
+                "key": "service1",
+                "title": "下单流程",
+                "describe": "轻松购买中国商品，无论线上或线下，只需粘贴商品链接即可下单，享受无缝购物体验。",
+                "src": "/images/page/icon01.png"
+            },
+            {
+                "key": "service2",
+                "title": "送至仓库",
+                "describe": "通过我们的服务从不同卖家购买商品，我们会高效整合您的订单，所有商品送达BBDbuy仓库，方便快捷。",
+                "src": "/images/page/icon02.png"
+            },
+            {
+                "key": "service3",
+                "title": "质检流程",
+                "describe": "商品抵达BBDbuy仓库后，会经过严格的质检。团队会仔细检查每件商品的尺寸、颜色等，确保无误，让您安心享受售后服务。",
+                "src": "/images/page/icon03.png"
+            },
+            {
+                "key": "service4",
+                "title": "全球物流轻松送达",
+                "describe": "将仓库内的商品整合为一个包裹，利用BBDbuy可靠的全球物流服务直送到家，轻松享受世界级运输体验。",
+                "src": "/images/page/icon04.png"
+            }
+        ]
+    },
+    "Navbar": {
+        "Links": [
+            {
+                "label": "首页",
+                "href": "/"
+            },
+            {
+                "label": "转运",
+                "href": "/forwarding"
+            },
+            {
+                "label": "运费估算",
+                "href": "/estimation"
+            },
+            {
+                "label": "推广联盟",
+                "href": "/dashboard/promotion"
+            }
+        ],
+        "User": {
+            "register": "注册",
+            "login": "登录",
+            "account": "我的账户",
+            "orders": "我的订单",
+            "logout": "退出账户"
+        }
+    },
+    "Dashboard": {
+        "LayoutMenu": [
+            {
+                "key": "",
+                "label": "我的账户",
+                "href": "/dashboard"
+            },
+            {
+                "key": "wallet",
+                "label": "我的资产",
+                "href": "/dashboard/wallet"
+            },
+            {
+                "key": "message",
+                "label": "站内信",
+                "href": "/dashboard/message"
+            },
+            {
+                "type": "divider"
+            },
+            {
+                "key": "cart",
+                "label": "购物车",
+                "href": "/dashboard/cart"
+            },
+            {
+                "key": "order",
+                "label": "订单",
+                "href": "/dashboard/order"
+            },
+            {
+                "key": "warehouse",
+                "label": "仓库",
+                "href": "/dashboard/warehouse"
+            },
+            {
+                "key": "package",
+                "label": "包裹",
+                "href": "/dashboard/package"
+            },
+            {
+                "key": "favorites",
+                "label": "收藏夹",
+                "href": "/dashboard/favorites"
+            },
+            {
+                "key": "history",
+                "label": "浏览记录",
+                "href": "/dashboard/history"
+            },
+            {
+                "key": "promotion",
+                "label": "联盟",
+                "href": "/dashboard/promotion"
+            }
+        ],
+        "Page": {
+            "UserBalanceCard": {
+                "balance": "余额",
+                "score": "积分"
+            },
+            "Tabs": [
+                {
+                    "key": "profile",
+                    "label": "个人信息"
+                },
+                {
+                    "key": "address",
+                    "label": "收货地址"
+                },
+                {
+                    "key": "security",
+                    "label": "账号安全"
+                },
+                {
+                    "key": "billingAddress",
+                    "label": "信用卡账单地址"
+                }
+            ]
         }
     }
 }

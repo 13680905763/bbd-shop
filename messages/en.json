@@ -1,38 +1,195 @@
 {
     "Home": {
-        "slogan": {
+        "Slogan": {
             "line1": "Simplify Your",
             "line2": "Shopping With BBD"
         },
-        "searchLabel": "Enter product name / link",
-        "steps": [
+        "Search": {
+            "placeholder": "Enter product name / link",
+            "button": "Search"
+        },
+        "Steps": [
             {
+                "key": "step1",
                 "title": "Place Order",
-                "desc": "Paste the product link to submit an order"
+                "desc": "Paste product link to submit order"
             },
             {
+                "key": "step2",
                 "title": "QC & Storage",
-                "desc": "Provide 3–5 QC photos and 90 days of free storage"
+                "desc": "Receive 3-5 QC photos and 90-day free storage"
             },
             {
-                "title": "Packaging",
-                "desc": "Combine packages & inspect parcels"
+                "key": "step3",
+                "title": "Package",
+                "desc": "Package and inspect your order"
             },
             {
-                "title": "International Shipping",
-                "desc": "Over 150 affordable logistics routes"
+                "key": "step4",
+                "title": "Global Shipping",
+                "desc": "Choose from 150+ global shipping options"
             }
         ],
-        "serviceTitle": "One-Stop Shopping Service",
-        "describeItems": {
-            "title1": "Product Sourcing",
-            "desc1": "We help you source reliable suppliers on 1688, Taobao, and Tmall.",
-            "title2": "Quality Inspection",
-            "desc2": "Each item is inspected and photographed before shipment.",
-            "title3": "Warehousing",
-            "desc3": "Free storage for up to 90 days for all your purchases.",
-            "title4": "Global Shipping",
-            "desc4": "Ship worldwide via trusted and cost-effective logistics providers."
+        "Announcement": {
+            "label": "Announcement",
+            "message": "🎉 Enjoy 12% off on all items for a limited time!"
+        },
+        "Links": [
+            {
+                "key": "link1",
+                "href": "https://discord.gg/yKNsV43Ddn",
+                "src": "/images/page/tab1.png"
+            },
+            {
+                "key": "link2",
+                "href": "/dashboard",
+                "src": "/images/page/tab2.png"
+            },
+            {
+                "key": "link3",
+                "href": "/estimation",
+                "src": "/images/page/tab3.png"
+            },
+            {
+                "key": "link4",
+                "href": "/register",
+                "src": "/images/page/tab4.png"
+            }
+        ],
+        "ServiceTitle": " One-Stop Shopping Service",
+        "Services": [
+            {
+                "key": "service1",
+                "title": "Placing Your Order",
+                "describe": "Experience hassle-free shopping for any product from China, available both online and offline. To place your order, simply paste the link of the product you desire. Enjoy our seamless, end-to-end service that takes you from browsing to buying with ease.",
+                "src": "/images/page/icon01.png"
+            },
+            {
+                "key": "service2",
+                "title": "Delivery to Our Warehouse",
+                "describe": "Shop from a variety of sellers through our service, and we'll efficiently consolidate your purchases. All items will be shipped to the BBDbuy warehouse in China, streamlining the process for your convenience.",
+                "src": "/images/page/icon02.png"
+            },
+            {
+                "key": "service3",
+                "title": "Quality Assurance Process",
+                "describe": "Once your products arrive at the BBDbuy warehouse, they are subjected to a thorough Quality Check. Our team meticulously examines each item for any defects, ensuring accuracy in size, color, and more. With BBDbuy, you can enjoy peace of mind, knowing that our dedicated after-sales service is committed to your satisfaction.",
+                "src": "/images/page/icon03.png"
+            },
+            {
+                "key": "service4",
+                "title": "Global Shipping Made Easy",
+                "describe": "Select products from your warehouse inventory and consolidate them effortlessly into one parcel. With BBDbuy's reliable global shipping services, you can have your purchases delivered straight to your doorstep. Enjoy the convenience of world-class shipping at your fingertips.",
+                "src": "/images/page/icon04.png"
+            }
+        ]
+    },
+    "Navbar": {
+        "Links": [
+            {
+                "label": "Home",
+                "href": "/"
+            },
+            {
+                "label": "Forwarding",
+                "href": "/forwarding"
+            },
+            {
+                "label": "Estimation",
+                "href": "/estimation"
+            },
+            {
+                "label": "Promotion",
+                "href": "/dashboard/promotion"
+            }
+        ],
+        "User": {
+            "register": "Register",
+            "login": "Login",
+            "account": "My Account",
+            "orders": "My Orders",
+            "logout": "Logout"
+        }
+    },
+    "Dashboard": {
+        "LayoutMenu": [
+            {
+                "key": "",
+                "label": "My Account",
+                "href": "/dashboard"
+            },
+            {
+                "key": "wallet",
+                "label": "My Assets",
+                "href": "/dashboard/wallet"
+            },
+            {
+                "key": "message",
+                "label": "Messages",
+                "href": "/dashboard/message"
+            },
+            {
+                "type": "divider"
+            },
+            {
+                "key": "cart",
+                "label": "Cart",
+                "href": "/dashboard/cart"
+            },
+            {
+                "key": "order",
+                "label": "Orders",
+                "href": "/dashboard/order"
+            },
+            {
+                "key": "warehouse",
+                "label": "Warehouse",
+                "href": "/dashboard/warehouse"
+            },
+            {
+                "key": "package",
+                "label": "Packages",
+                "href": "/dashboard/package"
+            },
+            {
+                "key": "favorites",
+                "label": "Favorites",
+                "href": "/dashboard/favorites"
+            },
+            {
+                "key": "history",
+                "label": "History",
+                "href": "/dashboard/history"
+            },
+            {
+                "key": "promotion",
+                "label": "Promotion",
+                "href": "/dashboard/promotion"
+            }
+        ],
+        "Page": {
+            "UserBalanceCard": {
+                "balance": "Balance",
+                "score": "Points"
+            },
+            "Tabs": [
+                {
+                    "key": "profile",
+                    "label": "Profile"
+                },
+                {
+                    "key": "address",
+                    "label": "Address"
+                },
+                {
+                    "key": "security",
+                    "label": "Security"
+                },
+                {
+                    "key": "billingAddress",
+                    "label": "Billing Address"
+                }
+            ]
         }
     }
 }

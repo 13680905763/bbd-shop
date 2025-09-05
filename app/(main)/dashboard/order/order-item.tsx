@@ -1,4 +1,4 @@
-import { Button, Checkbox } from "@heroui/react";
+import { Checkbox } from "@heroui/react";
 
 import ProductItem from "./product-item";
 
@@ -45,41 +45,35 @@ export default function OrderItem({
         <div className="grow-0 shrink-0 basis-[180px] flex flex-col  gap-2  justify-center items-center">
           {order?.status === "待付款" ? (
             <>
-              <Button
-                color="primary"
-                radius="none"
-                size="sm"
-                onPress={() => {
+              <button
+                className="text-[#f0700c]"
+                onClick={() => {
                   onPayOrderRedirect(order?.orderCode);
                 }}
               >
-                支付
-              </Button>
-              <Button
-                className="button-default"
-                radius="none"
-                size="sm"
-                onPress={() => {
+                Payment
+              </button>
+              <button
+                className="text-[#f0700c]"
+                onClick={() => {
                   onCancelOrder(order?.id);
                 }}
               >
-                取消
-              </Button>
+                Cancel
+              </button>
             </>
           ) : (
             <>
               <div className="text-[#f0700c]">{order?.status}</div>
               {order?.status === "待采购" ? (
-                <Button
-                  color="primary"
-                  radius="none"
-                  size="sm"
-                  onPress={() => {
+                <button
+                  className="text-[#f0700c]"
+                  onClick={() => {
                     onRequestRefund(order?.id);
                   }}
                 >
-                  申请退款
-                </Button>
+                  Refund
+                </button>
               ) : null}
             </>
           )}

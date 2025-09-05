@@ -1,44 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { Avatar, Spinner } from "@heroui/react";
 
 import { FieldConfig } from "@/components/form/formItem-renderer";
 import CommonForm from "@/components/form/common-form";
-import { getUserInfo, updateUserInfo } from "@/services";
+import { getUserInfo, updateUserInfo, uploadAvatar } from "@/services"; // 需要你实现 uploadAvatar API
 import { useUserStore } from "@/store";
-const profileFields: FieldConfig[] = [
-  {
-    type: "input",
-    name: "name",
-    label: "用户名",
-  },
-  {
-    type: "input",
-    name: "familyName",
-    label: "姓",
-  },
-  {
-    type: "input",
-    name: "givenName",
-    label: "名",
-  },
 
-  {
-    type: "input",
-    name: "mobile",
-    label: "手机号码",
-  },
-  // { type: "date", name: "birthday", label: "生日" },
-  // {
-  //   type: "input",
-  //   name: "email",
-  //   label: "电子邮件",
-  // },
+const profileFields: FieldConfig[] = [
+  { type: "input", name: "name", label: "用户名" },
+  { type: "input", name: "familyName", label: "姓" },
+  { type: "input", name: "givenName", label: "名" },
+  { type: "input", name: "mobile", label: "手机号码" },
 ];
 
 export default function ProfileTab({ defaultformData }: any) {
-  console.log("defaultformData", defaultformData);
-
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState(defaultformData?.avatarUrl);
   const [formData, setFormData] = useState({
     id: defaultformData.id,
     name: defaultformData.name || "",
@@ -47,11 +26,12 @@ export default function ProfileTab({ defaultformData }: any) {
     mobile: defaultformData.mobile || "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [avatarLoading, setAvatarLoading] = useState(false);
+
   const handleSubmit = async (data: any) => {
     setIsLoading(true);
     try {
       await updateUserInfo(data);
-    } catch {
     } finally {
       setIsLoading(false);
       const user = await getUserInfo();
@@ -60,9 +40,56 @@ export default function ProfileTab({ defaultformData }: any) {
     }
   };
 
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    setAvatarLoading(true);
+    try {
+      // 这里需要你实现 uploadAvatar 接口：把 file 上传到后端并返回新的头像地址
+      const url = await uploadAvatar(file);
+
+      setAvatarUrl(url);
+
+      // 更新用户信息
+      await updateUserInfo({ ...formData, avatarUrl: url });
+      const user = await getUserInfo();
+
+      useUserStore.getState().setUser(user);
+    } finally {
+      setAvatarLoading(false);
+    }
+  };
+
   return (
     <>
       <div className="text-xl font-semibold text-title mb-4">修改用户信息</div>
+
+      <div className="my-2">
+        <button className="relative cursor-pointer" onClick={handleAvatarClick}>
+          {avatarLoading ? (
+            <Spinner size="lg" />
+          ) : (
+            <Avatar className="w-16 h-16 text-large" src={avatarUrl} />
+          )}
+          <span className="absolute bottom-0 left-0 bg-black/50 text-white text-xs px-1 rounded">
+            编辑
+          </span>
+        </button>
+        <input
+          ref={fileInputRef}
+          hidden
+          accept="image/*"
+          type="file"
+          onChange={handleAvatarChange}
+        />
+      </div>
+
       <div className="flex justify-center">
         <CommonForm
           fields={profileFields}

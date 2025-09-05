@@ -2,27 +2,62 @@
 
 import { cookies, headers } from "next/headers";
 
-import { defaultLocale } from "./config";
+import {
+  languages,
+  defaultLocale,
+  currencies,
+  defaultCurrency,
+} from "./config";
 
-const COOKIE_NAME = "NEXT_LOCALE";
+const COOKIE_LOCALE = "NEXT_LOCALE";
+const COOKIE_CURRENCY = "NEXT_CURRENCY";
 
+// =====================
+// 语言方法
+// =====================
 export async function getUserLocale() {
-  // 读取 cookie
-  const locale = (await cookies()).get(COOKIE_NAME)?.value;
+  const cookieStore = await cookies();
+  const locale = cookieStore.get(COOKIE_LOCALE)?.value;
 
-  if (locale) return locale;
+  if (locale && languages.some((l) => l.value === locale)) return locale;
 
-  // 读取请求头 accept-language
-  const acceptLanguage = (await headers()).get("accept-language");
+  const headerStore = await headers();
+  const acceptLanguage = headerStore.get("accept-language") || "";
+  const parsedLocale = acceptLanguage?.split(",")[0].split("-")[0] || "";
 
-  // 解析请求头
-  const parsedLocale = acceptLanguage?.split(",")[0].split("-")[0];
-
-  // 如果不在系统支持的语言列表，使用默认语言
-  // return locales.includes(parsedLocale) ? parsedLocale : defaultLocale;
-  return defaultLocale;
+  return languages.some((l) => l.value === parsedLocale)
+    ? parsedLocale
+    : defaultLocale;
 }
 
-export async function setUserLocale(locale: any) {
-  (await cookies()).set(COOKIE_NAME, locale);
+export async function setUserLocale(locale: string) {
+  const cookieStore = await cookies();
+
+  cookieStore.set({
+    name: COOKIE_LOCALE,
+    value: locale,
+    path: "/",
+  });
+}
+
+// =====================
+// 货币方法
+// =====================
+export async function getUserCurrency() {
+  const cookieStore = await cookies();
+  const currency = cookieStore.get(COOKIE_CURRENCY)?.value || "";
+
+  return currencies.some((c) => c.value === currency)
+    ? currency
+    : defaultCurrency;
+}
+
+export async function setUserCurrency(currency: string) {
+  const cookieStore = await cookies();
+
+  cookieStore.set({
+    name: COOKIE_CURRENCY,
+    value: currency,
+    path: "/",
+  });
 }
