@@ -13,26 +13,25 @@ import {
   addToast,
 } from "@heroui/react";
 import { HiQuestionMarkCircle } from "react-icons/hi";
-import { useParams, useRouter } from "next/navigation";
 import { IoWallet } from "react-icons/io5";
+import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import BillingAddress from "./billing-address";
 
-import { price } from "@/components/primitives";
-import Progress from "@/components/common/progress";
-import { useBillingAddress, usePaymentMethodList } from "@/hook";
+import Progress from "@/components/common/order-progress";
 import RechargeModal from "@/components/modal/recharge.modal";
-import CommonModal from "@/components/modal/common-modal";
-import { createPayOrder, getPayOrderStatus } from "@/services";
-import { useBillingAddressStore, useWalletStore } from "@/store";
 import FullscreenLoader from "@/components/common/fullscreen-loader";
-import { queryClient } from "@/lib/react-query";
+import { useBillingAddressStore, useWalletStore } from "@/store";
+import { useBillingAddress, usePaymentMethodList } from "@/hook";
+import { createPayOrder } from "@/services";
+import { price } from "@/components/primitives";
 
+// 自定义 Radio 组件
 const CustomRadio = (props: RadioProps) => {
   const {
     Component,
     children,
-    description,
     getBaseProps,
     getWrapperProps,
     getInputProps,
@@ -45,8 +44,8 @@ const CustomRadio = (props: RadioProps) => {
     <Component
       {...getBaseProps()}
       className={cn(
-        "group w-full inline-flex items-center hover:bg-content2  active:opacity-50  flex-row tap-highlight-transparent bg-white",
-        " cursor-pointer border-1 border-default rounded-lg gap-4 p-4",
+        "group w-full inline-flex items-center flex-row tap-highlight-transparent bg-white cursor-pointer border-1 border-default rounded-lg gap-4 p-4",
+        "hover:bg-content2 active:opacity-50",
         "data-[selected=true]:border-primary",
       )}
     >
@@ -63,30 +62,73 @@ const CustomRadio = (props: RadioProps) => {
   );
 };
 
+// 余额支付选项
+const BalancePayment = ({ payment, wallet, onRecharge, t }: any) => (
+  <CustomRadio value={payment.id}>
+    <div className="flex justify-between items-center w-full">
+      <div className="flex items-center gap-4">
+        <IoWallet className="w-14 h-14 text-[#f0700c]" />
+        <div>{t("balance")}</div>
+        <div className={price({ size: "xl2" })}>
+          ${wallet?.availabalBalance}
+        </div>
+      </div>
+      <Button color="primary" onPress={onRecharge}>
+        {t("recharge")}
+      </Button>
+    </div>
+  </CustomRadio>
+);
+
+// 其他支付方式选项
+const OtherPayment = ({ payment }: any) => (
+  <Radio
+    classNames={{
+      base: cn(
+        "inline-flex min-w-[100%] w-full bg-content1 m-0 mb-2 hover:bg-content2 items-center justify-start",
+        "cursor-pointer rounded-lg gap-2 p-3 border-1",
+        "data-[selected=true]:border-primary",
+      ),
+      labelWrapper: "w-full",
+      label: "w-full",
+    }}
+    value={payment.id}
+  >
+    <div className="w-full flex items-center gap-3">
+      <Image
+        className="object-contain"
+        height={60}
+        src={payment.logoUrl}
+        width={60}
+      />
+      <span className="text-sm font-semibold">{payment.payName}</span>
+    </div>
+  </Radio>
+);
+
 export default function SubmitOrder() {
+  const t = useTranslations("PayOrder");
   const params = useParams<{ bizCode: string }>();
   const wallet = useWalletStore((state) => state.wallet);
-  const router = useRouter();
-  const [submitting, setSubmitting] = useState<boolean>(false);
-
-  const [isOpen, setIsOpen] = useState(false);
-  const [isOpen1, setIsOpen1] = useState(false);
-  const [paymentId, setPaymentId] = useState("");
-  const [paymentCompleted, setPaymentCompleted] = useState(false);
-  const { data, isLoading, isError } = usePaymentMethodList(params.bizCode);
-
   const billingAddress = useBillingAddressStore(
     (state) => state.billingAddress,
   );
 
+  const [submitting, setSubmitting] = useState(false);
+  const [isRechargeOpen, setIsRechargeOpen] = useState(false);
+  const [paymentId, setPaymentId] = useState("");
+
+  const { data, isLoading, isError } = usePaymentMethodList(params.bizCode);
+
   useBillingAddress();
-  const hanldeCreatePayOrder = async () => {
+
+  const handleCreatePayOrder = async () => {
     if (submitting) return;
     setSubmitting(true);
 
     if (paymentId !== "1" && !billingAddress?.id) {
       addToast({
-        title: "Please add billing address",
+        title: t("addBillingAddress"),
         timeout: 1000,
         color: "danger",
       });
@@ -102,221 +144,114 @@ export default function SubmitOrder() {
         addressId: billingAddress?.id as string,
       });
 
-      setSubmitting(false);
-
-      if (typeof res === "string") {
-        // 判断是否是 URL
-        if (res.startsWith("http")) {
-          // 跳转第三方支付页面
-          window.location.href = res;
-          // setIsOpen1(true);
-          // 或者直接重定向
-          // window.location.href = res.data;
-        }
+      if (typeof res === "string" && res.startsWith("http")) {
+        window.location.href = res;
       }
     } catch (err) {
+      console.error(err);
+    } finally {
       setSubmitting(false);
-      console.log(err);
     }
   };
 
-  useEffect(() => {
-    if (data) {
-      console.log(6666, data[0]?.paymentList[0]?.id);
-
-      setPaymentId(data[0]?.paymentList[0]?.id);
-    }
-  }, [data]);
-
-  const currentPayMethod = useMemo(() => {
-    return (
+  const currentPayMethod = useMemo(
+    () =>
       data
         ?.flatMap((item: any) => item.paymentList)
-        .find((item: any) => item.id === paymentId) ?? {}
-    );
-  }, [paymentId]);
+        .find((p: any) => p.id === paymentId) ?? {},
+    [data, paymentId],
+  );
+
+  // 排序：余额支付放前面
+  const sortedData = useMemo(() => {
+    if (!data) return [];
+    const balance = data.filter((item: any) => item.methodName === "BALANCE");
+    const others = data.filter((item: any) => item.methodName !== "BALANCE");
+
+    return [...balance, ...others];
+  }, [data]);
 
   useEffect(() => {
-    if (!paymentCompleted) return;
-    addToast({
-      title: "支付完成",
-      timeout: 1000,
-      color: "success",
-    });
-    queryClient.invalidateQueries({ queryKey: ["orderList"] }); // 手动刷新
-    queryClient.invalidateQueries({ queryKey: ["warehouseList"] }); // 手动刷新
-    queryClient.invalidateQueries({ queryKey: ["packageList"] }); // 手动刷新
-    // 跳转到 dashboard
-    router.push("/dashboard");
-  }, [paymentCompleted]);
-  if (isLoading) return <FullscreenLoader loading={isLoading} />;
-  if (isError) return <div>加载失败</div>;
+    if (sortedData.length) {
+      const firstPayment = sortedData.flatMap(
+        (item: any) => item.paymentList,
+      )[0];
+
+      if (firstPayment) setPaymentId(firstPayment.id);
+    }
+  }, [sortedData]);
+
+  if (isLoading) return <FullscreenLoader />;
+  if (isError) return <div>{t("loadFailed")}</div>;
 
   return (
-    <div className="container mx-auto bg-[#fff]  p-4 ">
-      <div className="mt-5">
-        <Progress
-          currentStep={1}
-          steps={["选择产品", "订单付款", "质检&仓库", "打包", "签收包裹"]}
-        />
-      </div>
-      <div>
-        {paymentId !== "1" ? (
-          <div className="my-4">
-            <p className="text-title">账单地址</p>
-            <BillingAddress billingAddress={billingAddress} />
-          </div>
-        ) : null}
+    <div className="container mx-auto bg-white p-4">
+      <Progress currentStep={1} />
 
-        <div className="flex flex-col gap-1 w-full">
-          <RadioGroup
-            classNames={{
-              base: "w-full",
-            }}
-            value={paymentId}
-            onValueChange={(value) => {
-              setPaymentId(value);
-            }}
-          >
-            {data?.map((item: any) => {
-              if (item.methodName !== "BALANCE") return null;
-
-              return (
-                <div
-                  key={item.methodName}
-                  className="bg-[#ffeee1] p-4 rounded-2xl"
-                >
-                  <p className="text-title">{item.methodName}</p>
-                  {item.paymentList.map((payment: any) => {
-                    if (payment.id == 1)
-                      return (
-                        <CustomRadio key={payment.id} value={payment.id}>
-                          <div>
-                            <div className="flex justify-between text-sm py-2 px-1 items-center">
-                              <div className="flex items-center gap-4">
-                                <IoWallet className="w-14 h-14 text-[#f0700c]" />
-                                <div>余额 </div>
-                                <div className={price({ size: "xl2" })}>
-                                  $ {wallet?.availabalBalance}
-                                </div>
-                              </div>
-                              <Button
-                                color="primary"
-                                onPress={() => {
-                                  setIsOpen(true);
-                                }}
-                              >
-                                充值
-                              </Button>
-                            </div>
-                          </div>
-                        </CustomRadio>
-                      );
-
-                    return null;
-                  })}
-                </div>
-              );
-            })}
-            {data?.map((item: any) => {
-              if (item.methodName === "BALANCE") return null;
-
-              return (
-                <div key={item.methodName}>
-                  <p className="text-title">{item.methodName}</p>
-                  {item.paymentList.map((payment: any) => {
-                    return (
-                      <Radio
-                        key={payment.id}
-                        classNames={{
-                          base: cn(
-                            "inline-flex min-w-[100%] w-full bg-content1 m-0  mb-2 ",
-                            "hover:bg-content2 items-center justify-start",
-                            "cursor-pointer rounded-lg gap-2 p-3 border-1",
-                            "data-[selected=true]:border-primary",
-                          ),
-                          labelWrapper: "w-full",
-                          label: "w-full ",
-                        }}
-                        value={payment.id}
-                      >
-                        <div className="w-full flex items-center gap-3 ">
-                          <Image
-                            className="object-contain"
-                            height={60}
-                            src={payment.logoUrl}
-                            width={60}
-                          />
-                          <span className="text-sm font-semibold">
-                            {payment.payName}
-                          </span>
-                        </div>
-                      </Radio>
-                    );
-                  })}
-                </div>
-              );
-            })}
-          </RadioGroup>
+      {paymentId !== "1" && (
+        <div className="my-4">
+          <p className="text-title">{t("billingAddress")}</p>
+          <BillingAddress billingAddress={billingAddress} />
         </div>
-        <div className="flex justify-end items-center p-4 gap-4 sticky bottom-0  bg-white z-10">
-          <div className="text-[#3d3d3d] text-sm flex items-center gap-1">
-            应付金额
-            <Tooltip
-              className="bg-[#262626] text-white p-2 max-w-screen-sm"
-              content="由于币种汇率间转换计算，可能会产生约0.01或0.02的差额"
-            >
-              <HiQuestionMarkCircle />
-            </Tooltip>
-            ：{currentPayMethod?.payAmount} 手续费：
-            {currentPayMethod?.handlingFee}
-          </div>
-          <p className="text-price-xl">{currentPayMethod?.payAmount}</p>
-          <Button
-            className="w-[300px]"
-            color="primary"
-            isLoading={submitting}
-            size="lg"
-            onPress={hanldeCreatePayOrder}
-          >
-            下单结算
-          </Button>
-        </div>
-      </div>
-      <RechargeModal isOpen={isOpen} onOpenChange={setIsOpen} />
-      <CommonModal
-        cancelText="支付失败反馈"
-        confirmText="已付"
-        isOpen={isOpen1}
-        size="xl"
-        title="遇到问题？"
-        onConfirm={async (onClose) => {
-          const status = await getPayOrderStatus(params?.bizCode);
+      )}
 
-          if (status === 203) {
-            await onClose(); // 等弹窗动画结束
-            setPaymentCompleted(true);
-          } else {
-            addToast({
-              title: "未完成支付",
-              timeout: 1000,
-              color: "danger",
-            });
-          }
-        }}
-        onOpenChange={setIsOpen1}
+      <RadioGroup
+        classNames={{ base: "w-full" }}
+        value={paymentId}
+        onValueChange={setPaymentId}
       >
-        <div>
-          <div className="rounded-lg bg-[#ffeee1] p-2 my-4 text-sm">
-            温馨提示：请在新页面完成支付，支付完成前请勿关闭此窗口。
+        {sortedData.map((item: any) => (
+          <div
+            key={item.methodName}
+            className={
+              item.methodName === "BALANCE"
+                ? "bg-[#ffeee1] p-4 rounded-2xl mb-4"
+                : "mb-4"
+            }
+          >
+            <p className="text-title">{item.methodName}</p>
+            {item.paymentList.map((payment: any) =>
+              item.methodName === "BALANCE" ? (
+                <BalancePayment
+                  key={payment.id}
+                  payment={payment}
+                  t={t}
+                  wallet={wallet}
+                  onRecharge={() => setIsRechargeOpen(true)}
+                />
+              ) : (
+                <OtherPayment key={payment.id} payment={payment} />
+              ),
+            )}
           </div>
-          <div className="mt-5 mb-2">如果您支付成功，请点击支付完成。</div>
-          <div className="mb-5">
-            如果您在付款时遇到问题，请重试或给我们一个{" "}
-            <span className="text-blue-600">反馈</span>
-          </div>
+        ))}
+      </RadioGroup>
+
+      <div className="flex justify-end items-center p-4 gap-4 sticky bottom-0 bg-white z-10">
+        <div className="text-[#3d3d3d] text-sm flex items-center gap-1">
+          {t("payAmount")}
+          <Tooltip
+            className="bg-[#262626] text-white p-2 max-w-screen-sm"
+            content={t("tooltipTip")}
+          >
+            <HiQuestionMarkCircle />
+          </Tooltip>
+          ：{currentPayMethod?.payAmount} {t("handlingFee")}：
+          {currentPayMethod?.handlingFee}
         </div>
-      </CommonModal>
+        <p className="text-price-xl">{currentPayMethod?.payAmount}</p>
+        <Button
+          className="w-[300px]"
+          color="primary"
+          isLoading={submitting}
+          size="lg"
+          onPress={handleCreatePayOrder}
+        >
+          {t("submitOrder")}
+        </Button>
+      </div>
+
+      <RechargeModal isOpen={isRechargeOpen} onOpenChange={setIsRechargeOpen} />
     </div>
   );
 }

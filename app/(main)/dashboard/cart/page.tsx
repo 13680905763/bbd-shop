@@ -10,10 +10,10 @@ import {
 } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 
-import ShopCard from "./shop-card";
+import CartItem from "./cart-item";
 
-import Progress from "@/components/common/progress";
 import ConfirmModal from "@/components/modal/confirm-modal";
 import {
   createOrderPreviewKeyByCart,
@@ -23,8 +23,10 @@ import {
 import { useCartList } from "@/hook";
 import CommonModal from "@/components/modal/common-modal";
 import FullscreenLoader from "@/components/common/fullscreen-loader";
+import OrderProgress from "@/components/common/order-progress";
 
 export default function CartPage() {
+  const t = useTranslations("Dashboard.CartPage");
   const { data, isLoading, isError } = useCartList();
   const queryClient = useQueryClient();
 
@@ -65,25 +67,24 @@ export default function CartPage() {
       });
     }
   };
-  const handleDeleteCart = async (idList: string[], onClose: () => void) => {
+  const handleDeleteCart = async (idList: string[]) => {
     try {
-      const tip = await deleteCart({ idList });
-
-      addToast({ title: tip, timeout: 1000, color: "success" });
-      onClose();
+      await deleteCart({ idList });
       queryClient.invalidateQueries({ queryKey: ["cartList"] }); // 手动刷新
-    } catch (e) {}
+    } catch {}
   };
   const handleDelCart = () => {
-    if (selectedIdArr.length > 0) {
-      console.log("删除", { idList: selectedIdArr });
-      setPendingDeleteIds(selectedIdArr);
-    } else {
+    if (!selectedIdArr.length) {
       addToast({
-        title: "请先选择商品",
+        color: "danger",
+        title: t("selectItemFirst"), // 语言包示例: "Please select items first"
         timeout: 1000,
       });
+
+      return;
     }
+    // 打开确认弹窗
+    setPendingDeleteIds([...selectedIdArr]); // 克隆数组，避免引用问题
   };
   const handleProductDelete = (productId: string) => {
     setPendingDeleteIds([productId]);
@@ -217,7 +218,7 @@ export default function CartPage() {
       setSelected(init);
     }
   }, [data]);
-  if (isLoading) return <FullscreenLoader loading={isLoading} />;
+  if (isLoading) return <FullscreenLoader />;
   if (isError) return <div>出错了</div>;
   // 判断购物车是否为空
   const isCartEmpty =
@@ -226,75 +227,73 @@ export default function CartPage() {
   return (
     <div className="h-full">
       <div className="mt-5">
-        <Progress
-          currentStep={0}
-          steps={["选择产品", "订单付款", "质检&仓库", "打包", "签收包裹"]}
-        />
+        <OrderProgress currentStep={0} />
       </div>
-      <div className="">
+      <div>
         <div className="text-title">
-          全部商品 ({data?.flatMap((shop) => shop.cartList).length})
+          {t("title", {
+            count: data?.flatMap((shop) => shop.cartList).length || 0,
+          })}
         </div>
 
         {isCartEmpty ? (
           <div className="flex flex-col items-center justify-center h-[60vh] text-gray-500">
-            <p className="text-lg mb-2">购物车为空</p>
-            <p className="text-sm">快去挑选心仪的商品吧！</p>
+            <p className="text-lg mb-2">{t("empty.title")}</p>
+            <p className="text-sm">{t("empty.desc")}</p>
           </div>
         ) : (
           <>
             <div className="flex flex-col gap-4">
-              {data?.map((shop) => (
-                <ShopCard
-                  key={shop.shopId}
+              {data?.map((item) => (
+                <CartItem
+                  key={item.shopId}
                   handleProductDelete={handleProductDelete}
                   handleProductQuantity={handleProductQuantity}
                   handleProductRemark={handleProductRemark}
-                  selectedMap={selected[shop.shopId] || {}}
-                  shop={shop}
+                  selectedMap={selected[item.shopId] || {}}
+                  shop={item}
+                  texts={t.raw("item")}
                   onToggleItem={(productId, checked) =>
-                    toggleItem(shop.shopId, productId, checked)
+                    toggleItem(item.shopId, productId, checked)
                   }
-                  onToggleShop={(checked) => toggleShop(shop, checked)}
+                  onToggleShop={(checked) => toggleShop(item, checked)}
                 />
               ))}
             </div>
 
             <div className="mt-10  sticky bottom-0 border-t-[1px] bg-white z-10 card-cart">
-              <div className="p-2 flex gap-2">
+              <div className="p-3 flex gap-4">
                 <Checkbox
                   isSelected={allSelected}
                   onChange={(e) => toggleAll(e.target.checked)}
                 >
-                  全选
+                  {t("selectAll")}
                 </Checkbox>
-                <Button
-                  className="bg-transparent text-[#f0700c]"
-                  onPress={handleDelCart}
-                >
-                  删除商品
-                </Button>
+                <button className="text-[#f0700c]" onClick={handleDelCart}>
+                  {t("delete")}
+                </button>
               </div>
               <Divider />
               <div className="flex justify-between items-center p-4 gap-4 ">
                 <div className="flex gap-4">
-                  <span>已选择</span>
+                  <span>{t("selected")}</span>
                   <span className="text-[#f0700c]">{selectedIdArr.length}</span>
                 </div>
                 <div className="flex items-center gap-8">
                   <p>
-                    <span className="font-semibold ">应付金额：</span>
+                    <span className="font-semibold ">{t("totalPayable")}</span>
                     <span className=" font-semibold  text-[#f0700c]">
                       {togglePrice}
                     </span>
                   </p>
+
                   <Button
                     className="w-[150px]"
                     color="primary"
                     size="lg"
                     onPress={handleCartSubmit}
                   >
-                    下单结算
+                    {t("checkout")}
                   </Button>
                 </div>
               </div>
@@ -303,24 +302,28 @@ export default function CartPage() {
         )}
 
         <ConfirmModal
-          content="确定要删除当前商品吗？"
-          isOpen={!!pendingDeleteIds}
-          title="删除购物车"
-          onConfirm={(onClose) => {
+          content={t("confirmDeleteContent")} // 弹窗正文
+          isOpen={!!pendingDeleteIds} // 根据状态控制显示
+          title={t("confirmDeleteTitle")} // 弹窗标题
+          onConfirm={async () => {
+            console.log("pendingDeleteIds", pendingDeleteIds);
+
             if (pendingDeleteIds) {
-              handleDeleteCart(pendingDeleteIds, onClose);
+              await handleDeleteCart(pendingDeleteIds); // 调用删除逻辑
             }
           }}
-          onOpenChange={() => setPendingDeleteIds(null)}
+          onOpenChange={(open) => {
+            if (!open) setPendingDeleteIds(null); // 关闭时清空待删除 id
+          }}
         />
         <CommonModal
           isOpen={isOpenRemark}
-          title="备注"
+          title={t("remarkTitle")}
           onConfirm={submitRemark}
           onOpenChange={onOpenChangeRemark}
         >
           <Textarea
-            placeholder="请输入备注"
+            placeholder={t("remarkPlaceholder")}
             value={remarkText}
             onChange={(e) => setRemarkText(e.target.value)}
           />

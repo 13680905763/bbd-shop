@@ -8,8 +8,6 @@ import {
   Button,
   Input,
   Spacer,
-  Select,
-  SelectItem,
   Accordion,
   AccordionItem,
   Chip,
@@ -20,51 +18,73 @@ import {
   TableRow,
   TableCell,
   Divider,
+  addToast,
 } from "@heroui/react";
+import { useTranslations } from "next-intl";
 
 import { describeText, title } from "@/components/primitives";
-import { gettWarehouseRoutesList } from "@/services";
-
-const countrys = [
-  { label: "Argentina", key: "Argentina", src: "https://flagcdn.com/ar.svg" },
-  { label: "Venezuela", key: "Venezuela", src: "https://flagcdn.com/ve.svg" },
-  { label: "Brazil", key: "Brazil", src: "https://flagcdn.com/br.svg" },
-  {
-    label: "Switzerland",
-    key: "Switzerland",
-    src: "https://flagcdn.com/ch.svg",
-  },
-];
-const types = [
-  { key: "cat", label: "Cat" },
-  { key: "dog", label: "Dog" },
-  { key: "elephant", label: "Elephant" },
-  { key: "lion", label: "Lion" },
-  { key: "tiger", label: "Tiger" },
-  { key: "giraffe", label: "Giraffe" },
-];
+import { getWarehouseRoutesList, searchWarehouseRoutesList } from "@/services";
+import { useCountries } from "@/hook";
 
 export default function EstimationPage() {
-  const [submitted, setSubmitted] = useState<any>(null);
+  const t = useTranslations("EstimationPage");
+  const { data: countries = [] } = useCountries();
   const [routes, setRoutes] = useState<any[]>([]);
 
-  const onSubmit = (e: any) => {
+  // ✅ 受控表单数据
+  const [formData, setFormData] = useState({
+    countryId: 0, // 改成 number 类型
+    weight: "",
+    length: "",
+    width: "",
+    height: "",
+  });
+
+  const handleChange = (key: string, value: any) => {
+    console.log("key", key, value);
+
+    setFormData((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.currentTarget));
 
-    setSubmitted(data);
+    const { weight, length, width, height } = formData;
 
-    // 假设接口支持按表单条件查
-    gettWarehouseRoutesList().then((res) => {
-      setRoutes(res?.data || []);
-    });
+    // 校验逻辑
+    const isWeightFilled = weight && Number(weight) > 0;
+    const isSizeFilled =
+      length &&
+      Number(length) > 0 &&
+      width &&
+      Number(width) > 0 &&
+      height &&
+      Number(height) > 0;
+
+    if (!isWeightFilled && !isSizeFilled) {
+      addToast({
+        title: t("fillWeightOrSize"),
+        timeout: 1000,
+        color: "danger",
+      });
+
+      return;
+    }
+
+    console.log("formData", formData);
+
+    try {
+      const res = await searchWarehouseRoutesList(formData);
+
+      setRoutes(res || []);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
     // 初始化加载全部
-    gettWarehouseRoutesList().then((res) => {
-      console.log("res", res);
-
+    getWarehouseRoutesList().then((res) => {
       setRoutes(res || []);
     });
   }, []);
@@ -74,71 +94,77 @@ export default function EstimationPage() {
       <div className="bg-[url('https://hoobuy.com/_nuxt/estimation_bg.BPnQS2i-.webp')] bg-no-repeat bg-cover h-[180px]" />
       <div className=" bg-[#fff]">
         <div className="text-center container m-auto p-5">
-          <h1 className={title({ size: "xs" })}>运费估算</h1>
+          <h1 className={title({ size: "xs" })}>{t("title")}</h1>
           <Spacer y={8} />
           <Form className="w-full" onSubmit={onSubmit}>
             <div className="flex gap-8 w-full">
               <Autocomplete
                 isRequired
                 className="flex-1"
-                defaultItems={countrys}
-                label="仓库寄往"
-                name="country"
+                defaultItems={countries}
+                label={t("warehouse")}
+                name="countryId"
+                selectedKey={String(formData.countryId)}
+                onSelectionChange={(key) =>
+                  handleChange("countryId", Number(key))
+                }
               >
-                {(country) => (
+                {(country: any) => (
                   <AutocompleteItem
-                    key={country.key}
+                    key={country.id}
                     startContent={
                       <Avatar
-                        alt={country.label}
+                        alt={country.name}
                         className="w-6 h-6"
-                        src={country.src}
+                        src={country.nationalFlag}
                       />
                     }
                   >
-                    {country.label}
+                    {country.name}
                   </AutocompleteItem>
                 )}
               </Autocomplete>
+
               <Input
-                isRequired
                 className="flex-1"
-                label="重量（g）"
+                label={t("weight")}
                 name="weight"
                 type="number"
+                value={formData.weight}
+                onChange={(e) => handleChange("weight", e.target.value)}
               />
             </div>
+
             <Spacer y={2} />
             <div className="flex gap-8 w-full">
-              <Select
-                className="flex-1"
-                items={types}
-                label="商品类型"
-                name="productType"
-              >
-                {(type) => <SelectItem key={type.key}>{type.label}</SelectItem>}
-              </Select>
               <div className="flex-1 flex gap-8">
                 <Input
                   className="flex-1"
-                  label="长（cm）"
+                  label={t("length")}
                   name="length"
-                  type="text"
+                  type="number"
+                  value={formData.length}
+                  onChange={(e) => handleChange("length", e.target.value)}
                 />
                 <Input
                   className="flex-1"
-                  label="宽（cm）"
+                  label={t("width")}
                   name="width"
-                  type="text"
+                  type="number"
+                  value={formData.width}
+                  onChange={(e) => handleChange("width", e.target.value)}
                 />
                 <Input
                   className="flex-1"
-                  label="高（cm）"
+                  label={t("height")}
                   name="height"
                   type="number"
+                  value={formData.height}
+                  onChange={(e) => handleChange("height", e.target.value)}
                 />
               </div>
             </div>
+
             <Spacer y={2} />
             <div className="flex justify-center w-full">
               <Button
@@ -147,89 +173,99 @@ export default function EstimationPage() {
                 type="submit"
                 variant="bordered"
               >
-                立即查询
+                {t("search")}
               </Button>
             </div>
           </Form>
         </div>
       </div>
 
-      <div className="container m-auto p-5">
-        <Accordion className="!border-1" variant="bordered">
-          {routes.map((route, index) => (
-            <AccordionItem
-              key={index}
-              title={
-                <div className="flex gap-5 items-center">
-                  <div className="flex flex-col justify-center items-center flex-1">
-                    <Avatar className="w-20 h-20" src={route.logoUrl} />
-                    <Spacer y={4} />
-                    <p className="text-nowrap font-semibold">{route.name}</p>
-                    <div className="flex gap-2">
-                      {route.insurable && (
-                        <Chip color="primary" size="sm">
-                          可投保
-                        </Chip>
-                      )}
-                      {route.taxFree && (
-                        <Chip className="text-[#fff]" color="success" size="sm">
-                          免税
-                        </Chip>
-                      )}
+      {routes.length > 0 && (
+        <div className="container m-auto p-5">
+          <Accordion className="!border-1" variant="bordered">
+            {routes.map((route, index) => (
+              <AccordionItem
+                key={index}
+                title={
+                  <div className="flex gap-5 items-center">
+                    <div className="flex flex-col justify-center items-center flex-1">
+                      <Avatar className="w-20 h-20" src={route.logoUrl} />
+                      <Spacer y={4} />
+                      <p className="text-nowrap font-semibold">{route.name}</p>
+                      <div className="flex gap-2">
+                        {route.insurable && (
+                          <Chip color="primary" size="sm">
+                            {t("insurable")}
+                          </Chip>
+                        )}
+                        {route.taxFree && (
+                          <Chip
+                            className="text-[#fff]"
+                            color="success"
+                            size="sm"
+                          >
+                            {t("taxFree")}
+                          </Chip>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex-1 flex flex-col items-center">
+                      <div className={describeText()}>{t("price")}</div>
+                      <div className={describeText({ size: "xl", color: 333 })}>
+                        $ {route.additionalWeightFee}{" "}
+                        {route.additionalVolumeFee}
+                      </div>
+                    </div>
+                    <div className="flex-1 flex flex-col items-center text-default-500">
+                      <div className={describeText()}>{t("time")}</div>
+                      <div className={describeText({ size: "xl", color: 333 })}>
+                        {route.shippingLine.minDays}-
+                        {route.shippingLine.maxDays}
+                      </div>
+                    </div>
+                    <div className="max-w-[60%]">
+                      <span className={describeText({ weight: "normal" })}>
+                        {route.shippingLine.description}
+                      </span>
                     </div>
                   </div>
-                  <div className="flex-1 flex flex-col items-center">
-                    <div className={describeText()}>价格</div>
-                    <div className={describeText({ size: "xl", color: 333 })}>
-                      $ {route.additionalWeightFee} {route.additionalVolumeFee}
+                }
+              >
+                <Divider />
+                <div className="flex gap-5 pb-8">
+                  <div className="flex-1 rounded-sm p-4 ">
+                    <p className="font-semibold mb-2">{t("pricingStandard")}</p>
+                    <Table aria-label={t("pricingStandard")}>
+                      <TableHeader>
+                        <TableColumn>{t("firstWeightFee")}</TableColumn>
+                        <TableColumn>{t("additionalWeightFee")}</TableColumn>
+                        <TableColumn>{t("customsFee")}</TableColumn>
+                      </TableHeader>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell>{route.firstWeightFee}</TableCell>
+                          <TableCell>{route.additionalWeightFee}</TableCell>
+                          <TableCell>{route.customsFee}</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </div>
+                  <div className="flex-1 rounded-sm p-4">
+                    <p className="font-semibold mb-2">{t("shippingLimit")}</p>
+                    <div className="rounded-xl bg-[#fff] p-6 ">
+                      {route.limit}
+                    </div>
+                    <p className="font-semibold my-2">{t("routeFeature")}</p>
+                    <div className="rounded-xl bg-[#fff] p-6 text-sm">
+                      {route.shippingLine.description}
                     </div>
                   </div>
-                  <div className="flex-1 flex flex-col items-center text-default-500">
-                    <div className={describeText()}>时间</div>
-                    <div className={describeText({ size: "xl", color: 333 })}>
-                      {route.minDays}- {route.maxDays}
-                    </div>
-                  </div>
-                  <div className="max-w-[60%]">
-                    <span className={describeText({ weight: "normal" })}>
-                      {route.description}
-                    </span>
-                  </div>
                 </div>
-              }
-            >
-              <Divider />
-              <div className="flex gap-5 pb-8">
-                <div className="flex-1 rounded-sm  p-4 ">
-                  <p className="font-semibold mb-2">结算标准</p>
-                  <Table aria-label="结算标准">
-                    <TableHeader>
-                      <TableColumn>首重运费</TableColumn>
-                      <TableColumn>续重运费</TableColumn>
-                      <TableColumn>报关费</TableColumn>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell>{route.firstWeightFee}</TableCell>
-                        <TableCell>{route.additionalWeightFee}</TableCell>
-                        <TableCell>{route.customsFee}</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </div>
-                <div className="flex-1 rounded-sm p-4">
-                  <p className="font-semibold mb-2">邮寄限制</p>
-                  <div className="rounded-xl bg-[#fff] p-6 ">{route.limit}</div>
-                  <p className="font-semibold my-2">线路特点</p>
-                  <div className="rounded-xl bg-[#fff] p-6 text-sm">
-                    {route.description}
-                  </div>
-                </div>
-              </div>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </div>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+      )}
     </div>
   );
 }

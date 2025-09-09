@@ -11,18 +11,23 @@ import { queryClient } from "@/lib/react-query";
 
 const fieldsaddress: FieldConfig[] = [
   {
+    key: "recipient",
     type: "input",
     name: "recipient",
     label: "收件人",
     placeholder: "请输入收件人姓名",
   },
   {
+    key: "phone",
+
     type: "input",
     name: "phone",
     label: "联系方式",
     placeholder: "请输入联系方式",
   },
   {
+    key: "area",
+
     type: "area",
     name: "area",
     label: "area",
@@ -30,18 +35,24 @@ const fieldsaddress: FieldConfig[] = [
   },
 
   {
+    key: "address",
+
     type: "input",
     name: "address",
     label: "详细地址",
     placeholder: "请输入您详细地址",
   },
   {
+    key: "doorNo",
+
     type: "input",
     name: "doorNo",
     label: "门牌号",
     placeholder: "请输入您的门牌号",
   },
   {
+    key: "postcode",
+
     type: "input",
     name: "postcode",
     label: "邮编",

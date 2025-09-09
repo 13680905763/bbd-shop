@@ -26,7 +26,7 @@ export default function RechargeModal({
     setAmount(value.toString());
   };
 
-  const handleConfirm = async (onClose: any) => {
+  const handleConfirm = async () => {
     console.log("充值金额:", amount);
 
     const num = parseFloat(amount);
@@ -38,7 +38,6 @@ export default function RechargeModal({
       });
 
       router.push(`/order/pay-order/${bizCode}`);
-      onClose();
       //   onOpenChange(false);
       setAmount(""); // reset after confirm
     } else {

@@ -2,22 +2,21 @@
 import { Button, Checkbox, Tab, Tabs } from "@heroui/react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import WarehouseItem from "./warehouse-item";
 
-import Progress from "@/components/common/progress";
+import Progress from "@/components/common/order-progress";
 import PaginationBar from "@/components/common/pagination-bar";
 import { createWarehousePreviewKeyByCart } from "@/services";
 import { useWarehouseList } from "@/hook";
 import FullscreenLoader from "@/components/common/fullscreen-loader";
 
-// 仓库包裹类型
 interface WarehouseRecord {
   id: string;
   packageCode: string;
-  [key: string]: any; // 其他字段按需补充
+  [key: string]: any;
 }
-
 interface WarehouseListResponse {
   records: WarehouseRecord[];
   total: number;
@@ -29,6 +28,7 @@ const tabKeyToStatusCode: Record<string, string> = {
 };
 
 export default function WarehousePage() {
+  const t = useTranslations("Dashboard.WarehousePage");
   const [activeTab, setActiveTab] =
     useState<keyof typeof tabKeyToStatusCode>("all");
   const [page, setPage] = useState<number>(1);
@@ -43,33 +43,28 @@ export default function WarehousePage() {
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const router = useRouter();
 
-  // 所有 packageCode
   const allIds = useMemo<string[]>(() => {
     return data?.records.map((w) => w.packageCode) || [];
   }, [data]);
 
-  // 是否全选
   const allSelected = useMemo(() => {
     return (
       allIds.length > 0 && allIds.every((packageCode) => selected[packageCode])
     );
   }, [allIds, selected]);
 
-  // 切换全选
   const toggleAll = (checked: boolean) => {
     const newSelected = Object.fromEntries(allIds.map((id) => [id, checked]));
 
     setSelected(newSelected);
   };
 
-  // 选中的 packageCode
   const selectedIds = useMemo<string[]>(() => {
     return Object.entries(selected)
       .filter(([_, value]) => value)
       .map(([key]) => key);
   }, [selected]);
 
-  // 提交
   const handleWarehouseSubmit = async () => {
     const key = await createWarehousePreviewKeyByCart({
       packageSet: selectedIds,
@@ -78,7 +73,6 @@ export default function WarehousePage() {
     router.push("/warehouse/submit-warehouse?key=" + key);
   };
 
-  // 初始化选中状态
   useEffect(() => {
     if (data?.records) {
       const initialSelected: Record<string, boolean> = data.records.reduce(
@@ -93,21 +87,59 @@ export default function WarehousePage() {
       setSelected(initialSelected);
     }
   }, [data]);
+
   const EmptyWarehouse = () => (
     <div className="flex flex-col items-center justify-center h-[60vh] text-gray-500">
-      <p className="text-lg mb-2">暂无包裹</p>
+      <p className="text-lg mb-2">{t("emptyText")}</p>
     </div>
   );
 
-  if (isLoading) return <FullscreenLoader loading={isLoading} />;
+  if (isLoading) return <FullscreenLoader />;
+
+  /** Tab 内容组件 */
+  const WarehouseTabContent = ({ footer }: { footer?: React.ReactNode }) => {
+    if (!data?.records?.length) return <EmptyWarehouse />;
+
+    return (
+      <>
+        <div className="flex flex-col gap-3">
+          {data?.records?.map((warehouse) => (
+            <WarehouseItem
+              key={warehouse.id}
+              activeTab={activeTab}
+              selected={!!selected[warehouse.packageCode]}
+              texts={t.raw("texts")}
+              warehouse={warehouse}
+              onChange={(e: any) => {
+                setSelected((prev) => ({
+                  ...prev,
+                  [warehouse.packageCode]: e.target.checked,
+                }));
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="mt-10 sticky bottom-0 border-t bg-white z-10 p-4 card-cart">
+          {footer}
+          {(data?.total as number) > 0 && (
+            <PaginationBar
+              page={page}
+              pageSize={pageSize}
+              total={data?.total as number}
+              onPageChange={setPage}
+              onPageSizeChange={setPageSize}
+            />
+          )}
+        </div>
+      </>
+    );
+  };
 
   return (
     <div className="flex w-full flex-col">
       <div className="mt-5">
-        <Progress
-          currentStep={2}
-          steps={["选择产品", "订单付款", "质检&仓库", "打包", "签收包裹"]}
-        />
+        <Progress currentStep={2} />
       </div>
 
       <Tabs
@@ -121,106 +153,35 @@ export default function WarehousePage() {
         color="primary"
         variant="underlined"
         onSelectionChange={(key) => {
-          const k = String(key) as keyof typeof tabKeyToStatusCode;
-
-          setActiveTab(k);
+          setActiveTab(String(key));
           setPage(1);
-          setPageSize(k === "submit" ? 100 : 10);
         }}
       >
-        {/* 全部 */}
-        <Tab
-          key="all"
-          title={
-            <div className="flex items-center space-x-2">
-              <span>全部</span>
-            </div>
-          }
-        >
-          {data?.records?.length ? (
-            <>
-              <div className="flex flex-col gap-3">
-                {data?.records?.map((warehouse) => (
-                  <WarehouseItem
-                    key={warehouse.id}
-                    activeTab={activeTab}
-                    warehouse={warehouse}
-                  />
-                ))}
-              </div>
-              <div className="mt-10 sticky bottom-0 border-t-[1px] bg-white z-10 card-cart p-4 py-6">
-                {data && data.total > 0 && (
-                  <PaginationBar
-                    page={page}
-                    pageSize={pageSize}
-                    total={data.total}
-                    onPageChange={setPage}
-                    onPageSizeChange={setPageSize}
-                  />
-                )}
-              </div>
-            </>
-          ) : (
-            <EmptyWarehouse />
-          )}
+        <Tab key="all" title={<span>{t("allTab")}</span>}>
+          <WarehouseTabContent />
         </Tab>
-
-        {/* 可提交 */}
-        <Tab
-          key="submit"
-          title={
-            <div className="flex items-center space-x-2">
-              <span>可提交包裹</span>
-            </div>
-          }
-        >
-          {data?.records?.length ? (
-            <>
-              <div className="flex flex-col gap-3">
-                {data?.records?.map((warehouse) => (
-                  <WarehouseItem
-                    key={warehouse.id}
-                    activeTab={activeTab}
-                    selected={!!selected[warehouse.packageCode]}
-                    warehouse={warehouse}
-                    onChange={(e: any) => {
-                      setSelected((prev) => ({
-                        ...prev,
-                        [warehouse.packageCode]: e.target.checked,
-                      }));
-                    }}
-                  />
-                ))}
+        <Tab key="submit" title={<span>{t("submitTab")}</span>}>
+          <WarehouseTabContent
+            footer={
+              <div className="flex justify-between items-center gap-4">
+                <Checkbox
+                  isSelected={allSelected}
+                  onChange={(e) => toggleAll(e.target.checked)}
+                >
+                  {t("selectAll")}
+                </Checkbox>
+                <Button
+                  className="w-[150px]"
+                  color="primary"
+                  isDisabled={!selectedIds.length}
+                  size="lg"
+                  onPress={handleWarehouseSubmit}
+                >
+                  {t("submitPackage")}
+                </Button>
               </div>
-              <div className="mt-10 sticky bottom-0 border-t-[1px] bg-white z-10 card-cart">
-                <div className="flex justify-between items-center p-4 gap-4">
-                  <div className="flex gap-4">
-                    <div className="p-2 flex gap-2">
-                      <Checkbox
-                        isSelected={allSelected}
-                        onChange={(e) => toggleAll(e.target.checked)}
-                      >
-                        全选
-                      </Checkbox>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      className="w-[150px]"
-                      color="primary"
-                      isDisabled={selectedIds.length === 0}
-                      size="lg"
-                      onPress={handleWarehouseSubmit}
-                    >
-                      提交包裹
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </>
-          ) : (
-            <EmptyWarehouse />
-          )}
+            }
+          />
         </Tab>
       </Tabs>
     </div>

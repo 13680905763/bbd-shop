@@ -12,6 +12,7 @@ import UserBalanceCard, { UserInfo } from "@/components/wallet-card";
 import { useUserStore, useWalletStore } from "@/store";
 import { useBillingAddress } from "@/hook";
 import { getWalletInfo } from "@/services/wallet";
+import { FieldConfig } from "@/components/form/formItem-renderer";
 
 interface TabConfig {
   key: string;
@@ -44,16 +45,38 @@ export default function DashBoard() {
 
     switch (tab.key) {
       case "profile":
-        component = <ProfileTab defaultformData={user} />;
+        component = (
+          <ProfileTab
+            defaultformData={user as UserInfo}
+            profileFields={t.raw("ProfileTab.fields")}
+            texts={t.raw("ProfileTab.texts")}
+          />
+        );
         break;
       case "address":
-        component = <AddressTab />;
+        component = (
+          <AddressTab
+            fields={t.raw("AddressTab.fields") as FieldConfig[]}
+            tableColumns={t.raw("AddressTab.tableColumns") as any}
+            texts={t.raw("AddressTab.texts")}
+          />
+        );
         break;
       case "security":
-        component = <SecurityTab />;
+        component = (
+          <SecurityTab
+            fields={t.raw("SecurityTab.fields") as FieldConfig[]}
+            texts={t.raw("SecurityTab.texts")}
+          />
+        );
         break;
       case "billingAddress":
-        component = <BillingAddressTab />;
+        component = (
+          <BillingAddressTab
+            fields={t.raw("BillingAddressTab.fields") as FieldConfig[]}
+            texts={t.raw("BillingAddressTab.texts")}
+          />
+        );
         break;
     }
 
@@ -66,8 +89,8 @@ export default function DashBoard() {
         availabalBalance={wallet?.availabalBalance ?? 0}
         score={5262}
         text={{
-          balance: t("UserBalanceCard.balance"),
-          score: t("UserBalanceCard.score"),
+          balance: t("texts.UserBalanceCard.balance"),
+          score: t("texts.UserBalanceCard.score"),
           vip: (level) => `VIP${level}`,
         }}
         userInfo={user as UserInfo}

@@ -19,11 +19,10 @@ import { IoWallet } from "react-icons/io5";
 import BillingAddress from "./billing-address";
 
 import { price } from "@/components/primitives";
-import Progress from "@/components/common/progress";
+import Progress from "@/components/common/order-progress";
 import { useBillingAddress, usePaymentMethodList } from "@/hook";
 import RechargeModal from "@/components/modal/recharge.modal";
-import CommonModal from "@/components/modal/common-modal";
-import { createPayOrder, getPayOrderStatus } from "@/services";
+import { createPayOrder } from "@/services";
 import { useBillingAddressStore, useWalletStore } from "@/store";
 import FullscreenLoader from "@/components/common/fullscreen-loader";
 
@@ -164,16 +163,13 @@ export default function SubmitOrder() {
     // 跳转到 dashboard
     router.push("/dashboard");
   }, [paymentCompleted]);
-  if (isLoading) return <FullscreenLoader loading={isLoading} />;
+  if (isLoading) return <FullscreenLoader />;
   if (isError) return <div>加载失败</div>;
 
   return (
     <div className="container mx-auto bg-[#fff]  p-4 ">
       <div className="mt-5">
-        <Progress
-          currentStep={3}
-          steps={["选择产品", "订单付款", "质检&仓库", "打包", "签收包裹"]}
-        />
+        <Progress currentStep={3} />
       </div>
       <div>
         {paymentId !== "1" ? (
@@ -299,39 +295,6 @@ export default function SubmitOrder() {
         </div>
       </div>
       <RechargeModal isOpen={isOpen} onOpenChange={setIsOpen} />
-      <CommonModal
-        cancelText="支付失败反馈"
-        confirmText="已付"
-        isOpen={isOpen1}
-        size="xl"
-        title="遇到问题？"
-        onConfirm={async (onClose) => {
-          const status = await getPayOrderStatus(params?.bizCode);
-
-          if (status === 203) {
-            await onClose(); // 等弹窗动画结束
-            setPaymentCompleted(true);
-          } else {
-            addToast({
-              title: "未完成支付",
-              timeout: 1000,
-              color: "danger",
-            });
-          }
-        }}
-        onOpenChange={setIsOpen1}
-      >
-        <div>
-          <div className="rounded-lg bg-[#ffeee1] p-2 my-4 text-sm">
-            温馨提示：请在新页面完成支付，支付完成前请勿关闭此窗口。
-          </div>
-          <div className="mt-5 mb-2">如果您支付成功，请点击支付完成。</div>
-          <div className="mb-5">
-            如果您在付款时遇到问题，请重试或给我们一个{" "}
-            <span className="text-blue-600">反馈</span>
-          </div>
-        </div>
-      </CommonModal>
     </div>
   );
 }

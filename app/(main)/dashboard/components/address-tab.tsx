@@ -19,71 +19,9 @@ import FormModal from "@/components/modal/form-modal";
 import ConfirmModal from "@/components/modal/confirm-modal";
 import { useAddressList } from "@/hook";
 import FullscreenLoader from "@/components/common/fullscreen-loader";
-const addressColumns = [
-  {
-    key: "recipient",
-    label: "收货人",
-  },
-  {
-    key: "phone",
-    label: "电话",
-  },
-  {
-    key: "address",
-    label: "详情地址",
-  },
-  {
-    key: "actions",
-    label: "操作",
-  },
-];
-const fieldsaddress: FieldConfig[] = [
-  {
-    type: "input",
-    name: "recipient",
-    label: "收件人",
-    placeholder: "请输入收件人姓名",
-  },
-  {
-    type: "input",
-    name: "phone",
-    label: "联系方式",
-    placeholder: "请输入联系方式",
-  },
-  {
-    type: "area",
-    name: "area",
-    label: "area",
-    placeholder: "area",
-  },
-
-  {
-    type: "input",
-    name: "address",
-    label: "详细地址",
-    placeholder: "请输入您详细地址",
-  },
-  {
-    type: "input",
-    name: "doorNo",
-    label: "门牌号",
-    placeholder: "请输入您的门牌号",
-  },
-  {
-    type: "input",
-    name: "postcode",
-    label: "邮编",
-    placeholder: "请输入邮编",
-  },
-
-  {
-    type: "checkbox",
-    name: "defaultAddress",
-    label: "设为默认地址",
-  },
-];
 
 type ModalType = "add" | "edit" | "delete" | null;
+
 const initAddress = {
   recipient: "",
   phone: "",
@@ -96,13 +34,26 @@ const initAddress = {
   doorNo: "",
 };
 
-export default function AddressTab() {
+interface AddressTabProps {
+  texts: {
+    title: { add: string; edit: string; deleteConfirm: string };
+    buttons: { add: string; edit: string; delete: string };
+    tableColumns: { key: string; label: string }[];
+    tableEmpty: string;
+  };
+  fields: FieldConfig[];
+  tableColumns: any;
+}
+
+export default function AddressTab({
+  texts,
+  fields,
+  tableColumns,
+}: AddressTabProps) {
   const [modalType, setModalType] = useState<ModalType>(null);
   const { data, isLoading } = useAddressList();
   const [currentRowData, setCurrentRowData] = useState<any>(initAddress);
   const queryClient = useQueryClient();
-
-  console.log("data", data);
 
   const handleAdd = () => {
     setCurrentRowData(initAddress);
@@ -118,7 +69,7 @@ export default function AddressTab() {
     setCurrentRowData(row);
     setModalType("delete");
   };
-  // 地址保存时处理
+
   const handleSave = async () => {
     const { createTime, updateTime, customerId, ...filteredData } =
       currentRowData;
@@ -129,27 +80,27 @@ export default function AddressTab() {
           ...currentRowData,
           addressType: 1,
           defaultAddress: filteredData.defaultAddress ? 1 : 0,
-        }); // 新增接口
+        });
       } else if (modalType === "edit") {
         await updateAddress({
           ...filteredData,
           defaultAddress: filteredData.defaultAddress ? 1 : 0,
           city: filteredData?.city || filteredData?.state,
-        }); // 编辑接口
+        });
       } else if (modalType === "delete") {
         await deleteAddress({ id: currentRowData.id });
       }
       setModalType(null);
-    } catch {
     } finally {
-      queryClient.invalidateQueries({ queryKey: ["addressList"] }); // 手动刷新
+      queryClient.invalidateQueries({ queryKey: ["addressList"] });
     }
   };
-  const renderCell = useCallback((rows: any, columnKey: any) => {
-    const cellValue = rows[columnKey];
 
-    switch (columnKey) {
-      case "actions":
+  const renderCell = useCallback(
+    (rows: any, columnKey: any) => {
+      const cellValue = rows[columnKey];
+
+      if (columnKey === "actions") {
         return (
           <div className="relative flex items-center gap-2">
             <Button
@@ -158,7 +109,7 @@ export default function AddressTab() {
               size="sm"
               onPress={() => handleEdit(rows)}
             >
-              编辑
+              {texts.buttons.edit}
             </Button>
             <Button
               className="button-default"
@@ -166,21 +117,23 @@ export default function AddressTab() {
               size="sm"
               onPress={() => handleDelete(rows)}
             >
-              删除
+              {texts.buttons.delete}
             </Button>
           </div>
         );
-      default:
-        return cellValue;
-    }
-  }, []);
+      }
 
-  if (isLoading) return <FullscreenLoader loading={isLoading} />;
+      return cellValue;
+    },
+    [texts.buttons],
+  );
+
+  if (isLoading) return <FullscreenLoader />;
 
   return (
     <>
       <Button color="primary" radius="none" size="sm" onPress={handleAdd}>
-        + 添加地址
+        {texts.buttons.add}
       </Button>
       <Spacer y={2} />
 
@@ -194,15 +147,12 @@ export default function AddressTab() {
         radius="none"
         shadow="none"
       >
-        <TableHeader columns={addressColumns}>
-          {(column) => (
+        <TableHeader columns={tableColumns}>
+          {(column: any) => (
             <TableColumn key={column.key}>{column.label}</TableColumn>
           )}
         </TableHeader>
-        <TableBody
-          emptyContent={"No address information available at the moment."}
-          items={data}
-        >
+        <TableBody emptyContent={texts.tableEmpty} items={data}>
           {(item: any) => (
             <TableRow key={item?.id}>
               {(columnKey) => (
@@ -214,22 +164,22 @@ export default function AddressTab() {
       </Table>
 
       <FormModal
-        fields={fieldsaddress}
+        fields={fields}
         formData={currentRowData}
         isOpen={modalType === "add" || modalType === "edit"}
-        title={modalType === "add" ? "添加地址" : "编辑地址"}
+        title={modalType === "add" ? texts.title.add : texts.title.edit}
         onChange={setCurrentRowData}
         onOpenChange={(open) => {
           if (!open) setModalType(null);
         }}
         onSave={handleSave}
       />
+
       <ConfirmModal
-        content={`确定要删除该地址吗？`}
+        content={texts.title.deleteConfirm}
         isOpen={modalType === "delete"}
-        onConfirm={(close) => {
+        onConfirm={async () => {
           handleSave();
-          close();
         }}
         onOpenChange={(open) => {
           if (!open) setModalType(null);

@@ -8,6 +8,7 @@ interface BackendRoute {
   logoUrl?: string; // logo
   minDays?: number;
   maxDays?: number;
+  shippingLine: any;
   firstWeightFee?: number; // 首重价格
   description?: string; // 描述
 }
@@ -30,15 +31,19 @@ export default function RouteCard({
     templateName = "",
     methodName = "",
     logoUrl = "",
-    minDays = 0,
-    maxDays = 0,
+    shippingLine = {},
     firstWeightFee = 0,
     description = "",
   } = data;
 
+  console.log("data", data);
+
   const name = templateName || methodName;
   const price = `$ ${firstWeightFee.toFixed(2)}`;
-  const time = minDays && maxDays ? `${minDays}-${maxDays} days` : "暂无时效";
+  const time =
+    shippingLine.minDays && shippingLine.maxDays
+      ? `${shippingLine.minDays}-${shippingLine.maxDays} days`
+      : "暂无时效";
 
   return (
     <Card
@@ -79,7 +84,9 @@ export default function RouteCard({
 
         {/* 备注 */}
         <div className="flex-1">
-          <span className="text-sm text-gray-600">{description}</span>
+          <span className="text-sm text-gray-600 text-left">
+            {shippingLine.description}
+          </span>
         </div>
       </div>
     </Card>

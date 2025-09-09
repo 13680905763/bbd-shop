@@ -17,15 +17,17 @@ export default function Home() {
   const links = t.raw("Links") as LinkItem[];
   const services = t.raw("Services") as ServiceItem[];
 
+  console.log(t.raw("texts"));
+
   return (
     <div className="pb-12">
-      {isLoading && <FullscreenLoader loading={isLoading} />}
+      {isLoading && <FullscreenLoader />}
       <section className="flex bg-cover bg-no-repeat h-[630px] bg-[url('/images/indexbg.webp')]">
         <div className="container mx-auto flex-col flex justify-end  gap-16">
           <div className="max-w-3xl">
             <div className="text-7xl tracking-tighter font-bold text-white flex flex-col  mb-10">
-              <p>{t("Slogan.line1")}</p>
-              <p>{t("Slogan.line2")}</p>
+              <p>{t("texts.Slogan.line1")}</p>
+              <p>{t("texts.Slogan.line2")}</p>
             </div>
 
             <HomeSearchForm isLoading={isLoading} setIsLoading={setIsLoading} />
@@ -36,14 +38,14 @@ export default function Home() {
       {/* 公告条 */}
       <HomeAnnouncementBar
         texts={{
-          label: t("Announcement.label"),
-          message: t("Announcement.message"),
+          label: t("texts.Announcement.label"),
+          message: t("texts.Announcement.message"),
         }}
       />
       <div className="container mx-auto">
         <HomeImageLinks links={links} />
         <h2 className="text-4xl  font-bold text-center my-10">
-          {t("ServiceTitle")}
+          {t("texts.ServiceTitle")}
         </h2>
         <HomeServiceCards services={services} />
       </div>

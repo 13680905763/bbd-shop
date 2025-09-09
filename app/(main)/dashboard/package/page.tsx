@@ -2,10 +2,11 @@
 import { Button, Checkbox, Tab, Tabs } from "@heroui/react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
-import OrderItem from "./order-item";
+import PackageItem from "./package-item";
 
-import Progress from "@/components/common/progress";
+import Progress from "@/components/common/order-progress";
 import PaginationBar from "@/components/common/pagination-bar";
 import { usePackageList } from "@/hook";
 import FullscreenLoader from "@/components/common/fullscreen-loader";
@@ -15,9 +16,10 @@ import { batchPayPackage } from "@/services";
 interface WarehouseRecord {
   id: string;
   packageCode: string;
-  [key: string]: any; // 其他字段按需补充
+  packingPackageCode: string;
+  outboundId?: string;
+  [key: string]: any;
 }
-
 interface WarehouseListResponse {
   records: WarehouseRecord[];
   total: number;
@@ -31,6 +33,8 @@ const tabKeyToStatusCode: Record<string, string> = {
 };
 
 export default function WarehousePage() {
+  const t = useTranslations("Dashboard.PackagePage");
+
   const [activeTab, setActiveTab] =
     useState<keyof typeof tabKeyToStatusCode>("all");
   const [page, setPage] = useState<number>(1);
@@ -40,48 +44,43 @@ export default function WarehousePage() {
     page,
     pageSize,
     tabKeyToStatusCode[activeTab],
-  ) as { data?: WarehouseListResponse; isLoading: boolean };
+  ) as {
+    data?: WarehouseListResponse;
+    isLoading: boolean;
+  };
 
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const router = useRouter();
+
   const onPayOrderRedirect = (bizCode: string) => {
     router.push(`/warehouse/pay-order/${bizCode}`);
   };
+
   // 所有 packageCode
-  const allIds = useMemo<string[]>(() => {
-    return data?.records.map((w) => w.packingPackageCode) || [];
-  }, [data]);
+  const allIds = useMemo<string[]>(
+    () => data?.records.map((w) => w.packingPackageCode) || [],
+    [data],
+  );
 
-  // 是否全选
-  const allSelected = useMemo(() => {
-    return (
-      allIds.length > 0 &&
-      allIds.every((packingPackageCode) => selected[packingPackageCode])
-    );
-  }, [allIds, selected]);
+  const allSelected = useMemo(
+    () => allIds.length > 0 && allIds.every((id) => selected[id]),
+    [allIds, selected],
+  );
 
-  // 切换全选
   const toggleAll = (checked: boolean) => {
-    const newSelected = Object.fromEntries(allIds.map((id) => [id, checked]));
-
-    setSelected(newSelected);
+    setSelected(Object.fromEntries(allIds.map((id) => [id, checked])));
   };
 
-  // 选中的 packageCode
-  const selectedIds = useMemo<string[]>(() => {
-    return Object.entries(selected)
-      .filter(([_, value]) => value)
-      .map(([key]) => key);
-  }, [selected]);
+  const selectedIds = useMemo(
+    () =>
+      Object.entries(selected)
+        .filter(([_, v]) => v)
+        .map(([k]) => k),
+    [selected],
+  );
 
-  // 提交
   const handlePackageSubmit = async () => {
-    console.log("selectedIds", selectedIds);
-    const bizCode = await batchPayPackage({
-      packageSet: selectedIds,
-    });
-
-    console.log("bizCode", bizCode);
+    const bizCode = await batchPayPackage({ packageSet: selectedIds });
 
     router.push(`/order/pay-order/${bizCode}`);
   };
@@ -89,34 +88,78 @@ export default function WarehousePage() {
   // 初始化选中状态
   useEffect(() => {
     if (data?.records) {
-      const initialSelected: Record<string, boolean> = data.records.reduce(
-        (acc, item) => {
-          acc[item.packingPackageCode] = false;
-
-          return acc;
-        },
-        {} as Record<string, boolean>,
+      setSelected(
+        data.records.reduce(
+          (acc, item) => ({ ...acc, [item.packingPackageCode]: false }),
+          {} as Record<string, boolean>,
+        ),
       );
-
-      setSelected(initialSelected);
     }
   }, [data]);
+  // 空状态组件
   const EmptyPackage = () => (
     <div className="flex flex-col items-center justify-center h-[60vh] text-gray-500">
       <p className="text-lg mb-2">暂无运单</p>
     </div>
   );
+  const PackageTabContent = ({
+    packList,
+    footer,
+  }: {
+    packList: any[];
+    footer?: React.ReactNode;
+  }) => {
+    if (!packList?.length) return <EmptyPackage />;
 
-  if (isLoading) return <FullscreenLoader loading={isLoading} />;
-  console.log("onPayOrderRedirect111", onPayOrderRedirect);
+    return (
+      <>
+        <div className="flex flex-col gap-3">
+          {packList.map((order: any) => (
+            <PackageItem
+              key={order.packingPackageCode || order.outboundId}
+              activeTab={activeTab}
+              order={order}
+              selected={
+                activeTab === "pay"
+                  ? !!selected[order.packingPackageCode]
+                  : undefined
+              }
+              texts={t.raw("texts")}
+              onChange={
+                activeTab === "pay"
+                  ? (e: any) =>
+                      setSelected((prev: any) => ({
+                        ...prev,
+                        [order.packingPackageCode]: e.target.checked,
+                      }))
+                  : undefined
+              }
+              onPayOrderRedirect={onPayOrderRedirect}
+            />
+          ))}
+        </div>
+        <div className="mt-10 sticky bottom-0 border-t bg-white z-10 p-4 card-cart">
+          {footer}
+          {(data?.total as number) > 0 && (
+            <PaginationBar
+              page={page}
+              pageSize={pageSize}
+              total={data?.total as number}
+              onPageChange={setPage}
+              onPageSizeChange={setPageSize}
+            />
+          )}
+        </div>
+      </>
+    );
+  };
+
+  if (isLoading) return <FullscreenLoader />;
 
   return (
     <div className="flex w-full flex-col">
       <div className="mt-5">
-        <Progress
-          currentStep={3}
-          steps={["选择产品", "订单付款", "质检&仓库", "打包", "签收包裹"]}
-        />
+        <Progress currentStep={3} />
       </div>
 
       <Tabs
@@ -137,172 +180,41 @@ export default function WarehousePage() {
           setPageSize(k === "submit" ? 100 : 10);
         }}
       >
-        <Tab
-          key="all"
-          title={
-            <div className="flex items-center space-x-2">
-              <span>全部</span>
-            </div>
-          }
-        >
-          {data?.records?.length ? (
-            <>
-              <div className="flex flex-col gap-3">
-                {data?.records?.map((order) => (
-                  <OrderItem
-                    key={order.packingPackageCode}
-                    activeTab={activeTab}
-                    order={order}
-                    onPayOrderRedirect={onPayOrderRedirect}
-                  />
-                ))}
-              </div>
-              <div className="mt-10 sticky bottom-0 border-t-[1px] bg-white z-10 card-cart p-4 py-6">
-                {data && data.total > 0 && (
-                  <PaginationBar
-                    page={page}
-                    pageSize={pageSize}
-                    total={data.total}
-                    onPageChange={setPage}
-                    onPageSizeChange={setPageSize}
-                  />
-                )}
-              </div>
-            </>
-          ) : (
-            <EmptyPackage />
-          )}
+        <Tab key="all" title={t("all")}>
+          <PackageTabContent packList={data?.records || []} />
         </Tab>
 
-        {/* 可提交 */}
-        <Tab
-          key="pay"
-          title={
-            <div className="flex items-center space-x-2">
-              <span>待付款</span>
-            </div>
-          }
-        >
-          {data?.records?.length ? (
-            <>
-              <div className="flex flex-col gap-3">
-                {data?.records?.map((order) => (
-                  <OrderItem
-                    key={order.packingPackageCode}
-                    activeTab={activeTab}
-                    order={order}
-                    selected={!!selected[order.packingPackageCode]}
-                    onChange={(e: any) => {
-                      setSelected((prev) => ({
-                        ...prev,
-                        [order.packingPackageCode]: e.target.checked,
-                      }));
-                    }}
-                    onPayOrderRedirect={onPayOrderRedirect}
-                  />
-                ))}
+        <Tab key="pay" title={t("pay")}>
+          <PackageTabContent
+            footer={
+              <div className="flex justify-between items-center gap-4">
+                <Checkbox
+                  isSelected={allSelected}
+                  onChange={(e) => toggleAll(e.target.checked)}
+                >
+                  {t("selectAll")}
+                </Checkbox>
+                <Button
+                  className="w-[150px]"
+                  color="primary"
+                  isDisabled={!selectedIds.length}
+                  size="lg"
+                  onPress={handlePackageSubmit}
+                >
+                  {t("batchPay")}
+                </Button>
               </div>
-              <div className="mt-10 sticky bottom-0 border-t-[1px] bg-white z-10 card-cart p-4 ">
-                <div className="flex justify-between items-center  gap-4">
-                  <div className="flex gap-4">
-                    <div className="p-2 flex gap-2">
-                      <Checkbox
-                        isSelected={allSelected}
-                        onChange={(e) => toggleAll(e.target.checked)}
-                      >
-                        全选
-                      </Checkbox>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      className="w-[150px]"
-                      color="primary"
-                      isDisabled={selectedIds.length === 0}
-                      size="lg"
-                      onPress={handlePackageSubmit}
-                    >
-                      批量支付
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </>
-          ) : (
-            <EmptyPackage />
-          )}
+            }
+            packList={data?.records || []}
+          />
         </Tab>
-        <Tab
-          key="shipping"
-          title={
-            <div className="flex items-center space-x-2">
-              <span>运输中</span>
-            </div>
-          }
-        >
-          {data?.records?.length ? (
-            <>
-              <div className="flex flex-col gap-3">
-                {data?.records?.map((order) => (
-                  <OrderItem
-                    key={order.outboundId}
-                    activeTab={activeTab}
-                    order={order}
-                    onPayOrderRedirect={onPayOrderRedirect}
-                  />
-                ))}
-              </div>
-              <div className="mt-10 sticky bottom-0 border-t-[1px] bg-white z-10 card-cart p-4 py-6">
-                {data && data.total > 0 && (
-                  <PaginationBar
-                    page={page}
-                    pageSize={pageSize}
-                    total={data.total}
-                    onPageChange={setPage}
-                    onPageSizeChange={setPageSize}
-                  />
-                )}
-              </div>
-            </>
-          ) : (
-            <EmptyPackage />
-          )}
+
+        <Tab key="shipping" title={t("shipping")}>
+          <PackageTabContent packList={data?.records || []} />
         </Tab>
-        <Tab
-          key="receivde"
-          title={
-            <div className="flex items-center space-x-2">
-              <span>已收货</span>
-            </div>
-          }
-        >
-          {data?.records?.length ? (
-            <>
-              <div className="flex flex-col gap-3">
-                {data?.records?.map((order) => (
-                  <OrderItem
-                    key={order.outboundId}
-                    activeTab={activeTab}
-                    order={order}
-                    onPayOrderRedirect={onPayOrderRedirect}
-                  />
-                ))}
-              </div>
-              <div className="mt-10 sticky bottom-0 border-t-[1px] bg-white z-10 card-cart p-4 py-6">
-                {data && data.total > 0 && (
-                  <PaginationBar
-                    page={page}
-                    pageSize={pageSize}
-                    total={data.total}
-                    onPageChange={setPage}
-                    onPageSizeChange={setPageSize}
-                  />
-                )}
-              </div>
-            </>
-          ) : (
-            <EmptyPackage />
-          )}
+
+        <Tab key="receivde" title={t("receivde")}>
+          <PackageTabContent packList={data?.records || []} />
         </Tab>
       </Tabs>
     </div>

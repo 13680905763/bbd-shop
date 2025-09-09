@@ -91,18 +91,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   useEffect(() => {
     const prevPath = prevPathRef.current;
 
-    console.log(
-      666,
-      prevPath,
-      pathname,
-      prevPath.startsWith("/search"),
-      !pathname.startsWith("/search"),
-    );
-
     // 如果之前在 /search，且现在不是 /search，则重置上传状态
     if (prevPath.startsWith("/search") && !pathname.startsWith("/search")) {
-      console.log(666);
-
       setUploadedImage(null);
       setUploading(false);
     }

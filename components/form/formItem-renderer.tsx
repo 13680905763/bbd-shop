@@ -16,11 +16,12 @@ export interface FieldOption {
 }
 
 export interface FieldConfig {
+  key: string; // 用于 React 元素 key
   type: "input" | "select" | "checkbox" | "date" | "area";
-  name: string;
+  name: string; // 用于 formData
   label?: string;
   placeholder?: string;
-  size?: "sm" | "md" | "lg"; // ✅ 新增 size 支持
+  size?: "sm" | "md" | "lg";
   options?: FieldOption[];
   startContent?: React.ReactNode;
 }
@@ -36,11 +37,9 @@ export default function FormItemRenderer<T extends Record<string, any>>({
   formData,
   onChange,
 }: DynamicFormProps<T>) {
-  const handleChange = (key: string, value: any) => {
-    onChange({ ...formData, [key]: value });
+  const handleChange = (name: string, value: any) => {
+    onChange({ ...formData, [name]: value });
   };
-
-  // console.log("formData", formData);
 
   return (
     <>
@@ -53,14 +52,16 @@ export default function FormItemRenderer<T extends Record<string, any>>({
           options = [],
           startContent = "",
           size = "md",
+          key,
         } = field;
+
         const value = formData[name] ?? "";
 
         switch (type) {
           case "input":
             return (
               <Input
-                key={name}
+                key={key} // 用 key
                 label={label}
                 placeholder={placeholder}
                 size={size}
@@ -73,7 +74,7 @@ export default function FormItemRenderer<T extends Record<string, any>>({
           case "select":
             return (
               <Autocomplete
-                key={name}
+                key={key} // 用 key
                 label={label}
                 placeholder={placeholder}
                 selectedKey={value}
@@ -101,7 +102,7 @@ export default function FormItemRenderer<T extends Record<string, any>>({
           case "checkbox":
             return (
               <Checkbox
-                key={name}
+                key={key} // 用 key
                 isSelected={!!value}
                 size={size}
                 onValueChange={(val) => handleChange(name, val)}
@@ -112,25 +113,22 @@ export default function FormItemRenderer<T extends Record<string, any>>({
           case "date":
             return (
               <DatePicker
-                key={name}
+                key={key} // 用 key
                 classNames={{ inputWrapper: "focus-within:!border-[#f0700c]" }}
                 label={label}
                 variant="bordered"
-                // 你可以根据需要实现日期回填与格式转换
               />
             );
           case "area":
             return (
               <AreaSelector
-                key={name}
+                key={key} // 用 key
                 value={{
                   countryId: formData.countryId ?? "",
                   stateId: formData.stateId ?? "",
                   city: formData.city ?? "",
                 }}
-                onChange={
-                  (val) => onChange({ ...formData, ...val }) // 统一更新 3 个字段
-                }
+                onChange={(val) => onChange({ ...formData, ...val })}
               />
             );
           default:

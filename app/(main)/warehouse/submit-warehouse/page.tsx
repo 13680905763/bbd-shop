@@ -6,14 +6,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import WarehouseCard from "./warehouse-card";
 import { AddAddressCard } from "./add-address-card";
 
-import Progress from "@/components/common/progress";
+import Progress from "@/components/common/order-progress";
 import { useAddressList, useWarehousePreview } from "@/hook";
 import AddressCard from "@/components/common/address-card";
 import {
   addAddress,
   createWaybill,
-  gettWarehouseRoutesList,
-  gettWarehouseServicesList,
+  getWarehouseRoutesList,
+  getWarehouseServicesList,
   updateAddress,
 } from "@/services";
 import ServiceCard from "@/components/common/service-card";
@@ -24,18 +24,23 @@ import { FieldConfig } from "@/components/form/formItem-renderer";
 import { queryClient } from "@/lib/react-query";
 const fieldsaddress: FieldConfig[] = [
   {
+    key: "recipient",
     type: "input",
     name: "recipient",
     label: "收件人",
     placeholder: "请输入收件人姓名",
   },
   {
+    key: "phone",
+
     type: "input",
     name: "phone",
     label: "联系方式",
     placeholder: "请输入联系方式",
   },
   {
+    key: "area",
+
     type: "area",
     name: "area",
     label: "area",
@@ -43,18 +48,24 @@ const fieldsaddress: FieldConfig[] = [
   },
 
   {
+    key: "address",
+
     type: "input",
     name: "address",
     label: "详细地址",
     placeholder: "请输入您详细地址",
   },
   {
+    key: "doorNo",
+
     type: "input",
     name: "doorNo",
     label: "门牌号",
     placeholder: "请输入您的门牌号",
   },
   {
+    key: "postcode",
+
     type: "input",
     name: "postcode",
     label: "邮编",
@@ -62,6 +73,8 @@ const fieldsaddress: FieldConfig[] = [
   },
 
   {
+    key: "defaultAddress",
+
     type: "checkbox",
     name: "defaultAddress",
     label: "设为默认地址",
@@ -110,8 +123,8 @@ export default function SubmitOrder() {
   }, [data]);
 
   useEffect(() => {
-    gettWarehouseServicesList().then((res) => setServices(res || []));
-    gettWarehouseRoutesList().then((res) => setRoutesData(res || []));
+    getWarehouseServicesList().then((res) => setServices(res || []));
+    getWarehouseRoutesList().then((res) => setRoutesData(res || []));
   }, []);
 
   // 切换服务选择
@@ -208,15 +221,12 @@ export default function SubmitOrder() {
     }
   };
 
-  if (isLoading) return <FullscreenLoader loading={isLoading} />;
+  if (isLoading) return <FullscreenLoader />;
   if (isError) return <div>出错了</div>;
 
   return (
     <div className="container mx-auto bg-[#fff] p-4 py-6">
-      <Progress
-        currentStep={2}
-        steps={["选择产品", "订单付款", "质检&仓库", "打包", "签收包裹"]}
-      />
+      <Progress currentStep={2} />
 
       <div className="flex container gap-10">
         {/* 左侧内容 */}

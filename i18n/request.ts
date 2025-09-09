@@ -6,14 +6,12 @@ import { defaultLocale } from "./config";
 export default getRequestConfig(async () => {
   const locale = (await getUserLocale()) || defaultLocale;
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/lang/${locale}.json`,
-  );
-  const messages = await res.json();
+  // const res = await fetch(
+  //   `${process.env.NEXT_PUBLIC_API_BASE_URL}/lang/${locale}.json`,
+  // );
+  // const messages = await res.json();
 
-  // console.log("鉴定到变化");
-
-  // const messages = (await import(`../messages/${locale}.json`)).default;
+  const messages = (await import(`../messages/${locale}.json`)).default;
 
   // console.log("messages", messages);
 

@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Button,
   getKeyValue,
   Table,
@@ -13,8 +12,6 @@ import React, { useState } from "react";
 import { IoRepeat } from "react-icons/io5";
 
 import WalletCard from "./wallet-card";
-
-import CommonModal from "@/components/modal/common-modal";
 
 const columns = [
   {
@@ -93,7 +90,7 @@ export default function ScoreTab() {
           )}
         </TableBody>
       </Table>
-      <CommonModal
+      {/* <CommonModal
         isOpen={isOpen}
         showFooter={false}
         title="积分兑换"
@@ -121,7 +118,7 @@ export default function ScoreTab() {
             </div>
           </div>
         </div>
-      </CommonModal>
+      </CommonModal> */}
     </div>
   );
 }

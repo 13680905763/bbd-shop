@@ -1,39 +1,69 @@
 "use client";
 import { Tab, Tabs } from "@heroui/react";
-import React from "react";
+import React, { useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useTranslations } from "next-intl";
 
 import BalanceTab from "./balance-tab";
-import ScoreTab from "./score-tab";
-import CouponTab from "./coupon-tab";
 
-const TABS = ["balance", "score", "coupon"] as const;
+interface TabConfig {
+  key: string;
+  component: React.ReactNode;
+}
 
-type TabKey = (typeof TABS)[number];
 export default function WalletPage() {
+  const t = useTranslations("Dashboard.WalletPage");
   const searchParams = useSearchParams();
   const router = useRouter();
-
   const currentTab = searchParams.get("tab") || "balance";
 
   const changeTab = useCallback(
     (key: React.Key) => {
-      const tabKey = key as TabKey;
-
-      router.push(`/dashboard/wallet?tab=${tabKey}`);
+      router.push(`/dashboard/wallet?tab=${key}`);
     },
     [router],
   );
 
+  // 动态生成 Tabs 配置
+  const tabLabels = t.raw("Tabs") as {
+    key: string;
+    label: string;
+  }[];
+
+  const tabsConfig: TabConfig[] = tabLabels.map((tab) => {
+    let component: React.ReactNode = null;
+
+    switch (tab.key) {
+      case "balance":
+        component = (
+          <BalanceTab
+            tableColumns={t.raw("BalanceTab.tableColumns")}
+            texts={t.raw("BalanceTab.texts")}
+            withdrawalFields={t.raw("BalanceTab.fields")}
+          />
+        );
+        break;
+      case "score":
+        // component = <ScoreTab />;
+        component = <div>score</div>;
+        break;
+      case "coupon":
+        // component = <CouponTab />;
+        component = <div>coupon</div>;
+        break;
+    }
+
+    return { key: tab.key, component };
+  });
+
   return (
-    <div className="flex w-full flex-col ">
+    <div className="flex w-full flex-col">
       <Tabs
-        aria-label="Options"
+        aria-label="Wallet Tabs"
         classNames={{
           base: "mt-2 w-full bg-white p-2",
-          tabList: "gap-6 w-full relative rounded-none p-0 ",
-          cursor: "w-full bg-[#f0700c] ",
+          tabList: "gap-6 w-full relative rounded-none p-0",
+          cursor: "w-full bg-[#f0700c]",
           tab: "max-w-fit px-0 h-12",
           tabContent: "group-data-[selected=true]:text-[#f0700c]",
         }}
@@ -42,36 +72,18 @@ export default function WalletPage() {
         variant="underlined"
         onSelectionChange={changeTab}
       >
-        <Tab
-          key="balance"
-          title={
-            <div className="flex items-center space-x-2">
-              <span>余额</span>
-            </div>
-          }
-        >
-          <BalanceTab />
-        </Tab>
-        <Tab
-          key="score"
-          title={
-            <div className="flex items-center space-x-2">
-              <span>积分</span>
-            </div>
-          }
-        >
-          <ScoreTab />
-        </Tab>
-        <Tab
-          key="coupon"
-          title={
-            <div className="flex items-center space-x-2">
-              <span>优惠券</span>
-            </div>
-          }
-        >
-          <CouponTab />
-        </Tab>
+        {tabLabels.map((tab) => (
+          <Tab
+            key={tab.key}
+            title={
+              <div className="flex items-center space-x-2">
+                <span>{tab.label}</span>
+              </div>
+            }
+          >
+            {tabsConfig.find((c) => c.key === tab.key)?.component}
+          </Tab>
+        ))}
       </Tabs>
     </div>
   );

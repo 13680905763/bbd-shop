@@ -13,6 +13,7 @@ import {
 import { useParams, useRouter } from "next/navigation";
 import { GrPowerReset } from "react-icons/gr";
 import { IoIosLink } from "react-icons/io";
+import { useTranslations } from "next-intl";
 
 import {
   commonCard,
@@ -72,15 +73,19 @@ function generateDynamicSkuPathDict(productInfo: ProductInfo): SkuPathDict {
 
       // 确保属性名和值在映射表中存在
       if (skuPropMap[propName] && skuPropValueMap[propValue]) {
-        propertyMap[skuPropMap[propName]] = skuPropValueMap[propValue];
+        propertyMap["k" + propName] = propValue;
       }
     });
 
     // 获取所有属性名并按字母排序确保一致性
     const propNames = Object.keys(propertyMap);
 
+    console.log("propNames", propNames, propertyMap);
+
     // 生成所有可能的组合键
     const allCombinations = getAllCombinations(propNames, propertyMap);
+
+    console.log("allCombinations", allCombinations);
 
     // 将SKU ID添加到所有相关组合中
     allCombinations.forEach((combination) => {
@@ -90,6 +95,7 @@ function generateDynamicSkuPathDict(productInfo: ProductInfo): SkuPathDict {
       dict[combination].push(sku?.skuID);
     });
   });
+  console.log("dict", dict);
 
   return dict;
 }
@@ -123,6 +129,7 @@ function getAllCombinations(
 }
 
 export default function GoodsPage() {
+  const t = useTranslations("Goods");
   const params = useParams();
   const [remark, setRemark] = useState<string>();
   const [quantity, setQuantity] = useState<number>(1);
@@ -235,9 +242,6 @@ export default function GoodsPage() {
         });
       }
     });
-
-    // setGoodsInfo(cloned);
-
     undateDisabledStatus(cloned);
   };
   const getSelectedValues = (specs: any) => {
@@ -246,7 +250,7 @@ export default function GoodsPage() {
     specs.forEach((spec: any) => {
       const selectedVal = spec.propValueList.find((item: any) => item.selected);
 
-      arr.push(selectedVal ? selectedVal.valueName : undefined);
+      arr.push(selectedVal ? selectedVal.valueID : undefined);
     });
 
     return arr;
@@ -265,25 +269,21 @@ export default function GoodsPage() {
         url = goodsInfo?.productInfo.skuPropImageMap[selectedVal.valueID];
       }
     });
-    console.log(666, url);
+    // console.log("url", url);
 
     return url;
   };
   // 更新选中状态
   const undateDisabledStatus = (cloned: any) => {
-    // const cloned: any = structuredClone(goodsInfo);
-
-    // console.log("goodsInfo666", goodsInfo);
-
     cloned?.productInfo.skuPropList.forEach((spec: any, index: number) => {
       const selectedValues = getSelectedValues(cloned.productInfo.skuPropList);
 
       spec.propValueList.forEach((val: any) => {
-        selectedValues[index] = val.valueName;
-        // console.log("selectedValues", selectedValues, val.valueName);
+        selectedValues[index] = val.valueID;
         const key = selectedValues.filter((value: any) => value).join("-");
 
-        // console.log("key", key);
+        console.log("key", key, !!pathMap[key]);
+
         if (pathMap[key]) {
           val.disabled = false;
         } else {
@@ -291,7 +291,6 @@ export default function GoodsPage() {
         }
       });
     });
-    // console.log("cloned", cloned);
 
     setGoodsInfo(cloned);
   };
@@ -308,10 +307,8 @@ export default function GoodsPage() {
     if (selectedUrl) setCurrentImg(selectedUrl);
 
     const currentSku = goodsInfo?.productInfo.skuList.find((item: any) => {
-      // console.log("item", item);
-
       return (
-        selectedValues.filter((i: any) => item?.propName_valueName.includes(i))
+        selectedValues.filter((i: any) => item?.propId_valueId.includes(i))
           ?.length == selectedValues.length
       );
     });
@@ -322,7 +319,6 @@ export default function GoodsPage() {
 
       return currentSku;
     }
-    // else return goodsInfo.productInfo.skuList[0];
   }, [goodsInfo]); // 依赖 cart，当 cart 变化时才重新计算
 
   useEffect(() => {
@@ -337,17 +333,13 @@ export default function GoodsPage() {
         cloned.productInfo.skuPropList.forEach((spec: any) => {
           spec.propValueList.forEach((value: any) => {
             value.selected = false;
-            console.log("value.valueName", value.valueName, pathMap);
-
-            if (pathMap[value.valueName]) {
+            if (pathMap[value.valueID]) {
               value.disabled = false;
             } else {
               value.disabled = true;
             }
           });
         });
-        console.log("cloned", cloned);
-
         setCurrentImg(cloned?.productInfo?.imgList[0] ?? "");
         setGoodsInfo(cloned);
       })
@@ -402,19 +394,20 @@ export default function GoodsPage() {
                   </button>
                 ))}
               </div>
-              <h3 className={subtitle()}>购买记录</h3>
+              <h3 className={subtitle()}>{t("purchaseRecord")}</h3>
+
               <div className="card-grey my-2 flex ">
                 <div className="flex-1 text-gray-base gap-2 flex flex-col">
-                  <div>销量 0</div>
-                  <div>重量（g）--</div>
+                  <div>{t("sales")} 0</div>
+                  <div>{t("weight")} --</div>
                 </div>
                 <div className="flex-1 text-gray-base gap-2 flex flex-col">
-                  <div>平均送达时间 --days</div>
-                  <div>尺码（cm3）--</div>
+                  <div>{t("avgDelivery")} --days</div>
+                  <div>{t("size")} --</div>
                 </div>
               </div>
               <div>
-                <h3 className={subtitle()}>商品詳情</h3>
+                <h3 className={subtitle()}>{t("productDetails")}</h3>
                 <div>
                   {goodsInfo?.productDetail?.productDescImgList?.map(
                     (src: string, index: number) => {
@@ -454,34 +447,32 @@ export default function GoodsPage() {
                       target="_blank"
                     >
                       <IoIosLink />
-                      原链接
+                      {t("originalLink")}
                     </a>
                     <button
                       className="flex items-center gap-1"
                       onClick={() => window.location.reload()}
                     >
                       <GrPowerReset />
-                      刷新
+                      {t("refresh")}
                     </button>
                   </div>
                   <div className={priceFont({ size: "xl2" })}>
                     {currentSku?.price || goodsInfo?.productInfo.price}
                   </div>
                   <div className={lightFont({ size: "sm" })}>
-                    支付后，我们会在09:00-18:00（UTC+8）为您进行代购服务
+                    {t("afterPaymentNotice")}
                   </div>
                   <div className={commonCard()}>
                     <div className=" text-sm py-2 px-1">
                       <div>
-                        1、卖家 到 BBD 仓库,国内运费{" "}
+                        {t("shippingStep1")}
                         <span className=" text-black  bg-white px-4 py-1 mx-2  text-xs rounded-sm">
                           {goodsInfo?.productInfo?.postFee || 0.0}
                         </span>
                         CNY
                       </div>
-                      <div className="mt-2">
-                        2、BBD 仓库 到 您的地址,估算国际运费
-                      </div>
+                      <div className="mt-2">{t("shippingStep2")}</div>
                     </div>
                   </div>
                   {goodsInfo?.productInfo?.skuPropList.map(
@@ -525,7 +516,7 @@ export default function GoodsPage() {
                     },
                   )}
                   <div>
-                    <div className={subtitle()}>数量</div>
+                    <div className={subtitle()}>{t("quantity")}</div>
                     <div className="w-[20%]">
                       <Stepper
                         value={quantity}
@@ -534,19 +525,17 @@ export default function GoodsPage() {
                     </div>
                   </div>
                   <div className="mb-4">
-                    <div className={subtitle()}>备注</div>
+                    <div className={subtitle()}>{t("remark")}</div>
                     <Textarea
-                      placeholder="Enter your description"
+                      placeholder={t("remarkPlaceholder")}
                       value={remark}
                       onChange={(e) => setRemark(e.target.value)}
                     />
                   </div>
                   <div className={commonCard({ type: "grey" })}>
-                    <div className={subtitle()}>免责声明</div>
+                    <div className={subtitle()}>{t("disclaimer")}</div>
                     <div className="text-sm">
-                      <div>
-                        BBDbuy上展示的所有代购商品均来自第三方代购平台，非BBDbuy直接销售。因此，BBDbuy对侵犯知识产权和侵犯商品著作权所引起的问题不承担任何责任和法律责任。使用BBDbuy代购服务即表示您默认接受上述风险。
-                      </div>
+                      <div>{t("disclaimerDescription")}</div>
                       <Checkbox
                         className="mt-2 "
                         color="primary"
@@ -557,7 +546,7 @@ export default function GoodsPage() {
                         }}
                       >
                         <span className="text-[#676969]">
-                          我已阅读并同意BBDbuy的免责声明
+                          {t("agreeDisclaimer")}
                         </span>
                       </Checkbox>
                     </div>
@@ -568,7 +557,7 @@ export default function GoodsPage() {
                       isLoading={issub}
                       onPress={add}
                     >
-                      加入购物车
+                      {t("addToCart")}
                     </Button>
                     <Button
                       className=" h-16 flex-1"
@@ -576,7 +565,7 @@ export default function GoodsPage() {
                       isLoading={issub}
                       onPress={handleBuyNow}
                     >
-                      立即购买
+                      {t("buyNow")}
                     </Button>
                   </div>
                 </div>
@@ -586,29 +575,22 @@ export default function GoodsPage() {
         )}
       </div>
       <CommonModal
-        // cancelText="该商品涉及版权问题"
-        confirmText="继续购买其他"
+        confirmText={t("continueShopping")}
         isDismissable={false}
         isKeyboardDismissDisabled={true}
         isOpen={isOpen1}
         showCancel={false}
         size="xl"
-        title="风险提示"
-        onConfirm={async (onClose) => {
-          await onClose();
+        title={t("riskNotice")}
+        onConfirm={() => {
           router.push("/");
         }}
         onOpenChange={setIsOpen1}
       >
         <div>
           <div className="rounded-lg bg-[#ffeee1] p-2 my-4 text-sm">
-            您提交的产品可能存在一定的寄送风险。为了您的资金安全，我们暂时无法为您提供在线订购服务。如需了解更多信息，请联系在线客服！
+            {t("riskDescription")}
           </div>
-          {/* <div className="mt-5 mb-2">如果您支付成功，请点击支付完成。</div>
-          <div className="mb-5">
-            如果您在付款时遇到问题，请重试或给我们一个{" "}
-            <span className="text-blue-600">反馈</span>
-          </div> */}
         </div>
       </CommonModal>
     </div>

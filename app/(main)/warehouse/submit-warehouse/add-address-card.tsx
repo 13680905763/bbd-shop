@@ -5,56 +5,11 @@ import { useState } from "react";
 
 import { addAddress } from "@/services";
 import { queryClient } from "@/lib/react-query";
-import { FieldConfig } from "@/components/form/formItem-renderer";
 
 interface AddAddressCardProps {
   onAdd?: () => void;
 }
-const fieldsaddress: FieldConfig[] = [
-  {
-    type: "input",
-    name: "recipient",
-    label: "收件人",
-    placeholder: "请输入收件人姓名",
-  },
-  {
-    type: "input",
-    name: "phone",
-    label: "联系方式",
-    placeholder: "请输入联系方式",
-  },
-  {
-    type: "area",
-    name: "area",
-    label: "area",
-    placeholder: "area",
-  },
 
-  {
-    type: "input",
-    name: "address",
-    label: "详细地址",
-    placeholder: "请输入您详细地址",
-  },
-  {
-    type: "input",
-    name: "doorNo",
-    label: "门牌号",
-    placeholder: "请输入您的门牌号",
-  },
-  {
-    type: "input",
-    name: "postcode",
-    label: "邮编",
-    placeholder: "请输入邮编",
-  },
-
-  {
-    type: "checkbox",
-    name: "defaultAddress",
-    label: "设为默认地址",
-  },
-];
 const initAddress = {
   recipient: "",
   phone: "",

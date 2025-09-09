@@ -43,7 +43,16 @@ export interface CartShopGroup {
 export type CartListResponse = CartShopGroup[];
 
 export const deleteCart = (data: any): Promise<string> => {
-  return request.post("/customer/cart/delete", data);
+  return requestWithOption(
+    {
+      url: "/customer/cart/delete",
+      method: "POST",
+      data,
+    },
+    {
+      showToast: true, // 默认显示 toast
+    },
+  );
 };
 export const addCart = (
   data: any,

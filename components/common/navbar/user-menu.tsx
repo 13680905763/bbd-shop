@@ -13,14 +13,15 @@ import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store";
 import { logoutCustomer } from "@/services";
 
+export interface User {
+  register: string;
+  login: string;
+  account: string;
+  orders: string;
+  logout: string;
+}
 interface UserMenuProps {
-  texts: {
-    register: string;
-    login: string;
-    account: string;
-    orders: string;
-    logout: string;
-  };
+  texts: User;
 }
 
 export const UserMenu = ({ texts }: UserMenuProps) => {

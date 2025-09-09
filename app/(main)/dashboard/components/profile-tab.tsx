@@ -3,19 +3,15 @@
 import { useRef, useState } from "react";
 import { Avatar, Spinner } from "@heroui/react";
 
-import { FieldConfig } from "@/components/form/formItem-renderer";
 import CommonForm from "@/components/form/common-form";
 import { getUserInfo, updateUserInfo, uploadAvatar } from "@/services"; // 需要你实现 uploadAvatar API
 import { useUserStore } from "@/store";
 
-const profileFields: FieldConfig[] = [
-  { type: "input", name: "name", label: "用户名" },
-  { type: "input", name: "familyName", label: "姓" },
-  { type: "input", name: "givenName", label: "名" },
-  { type: "input", name: "mobile", label: "手机号码" },
-];
-
-export default function ProfileTab({ defaultformData }: any) {
+export default function ProfileTab({
+  defaultformData,
+  texts,
+  profileFields,
+}: any) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [avatarUrl, setAvatarUrl] = useState(defaultformData?.avatarUrl);
   const [formData, setFormData] = useState({
@@ -68,7 +64,7 @@ export default function ProfileTab({ defaultformData }: any) {
 
   return (
     <>
-      <div className="text-xl font-semibold text-title mb-4">修改用户信息</div>
+      <div className="text-xl font-semibold text-title mb-4">{texts.title}</div>
 
       <div className="my-2">
         <button className="relative cursor-pointer" onClick={handleAvatarClick}>
@@ -78,7 +74,7 @@ export default function ProfileTab({ defaultformData }: any) {
             <Avatar className="w-16 h-16 text-large" src={avatarUrl} />
           )}
           <span className="absolute bottom-0 left-0 bg-black/50 text-white text-xs px-1 rounded">
-            编辑
+            {texts.edit}
           </span>
         </button>
         <input

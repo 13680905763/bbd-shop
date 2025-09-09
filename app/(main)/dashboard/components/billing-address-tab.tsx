@@ -3,53 +3,13 @@ import { Button } from "@heroui/react";
 import { useEffect, useState } from "react";
 import React from "react";
 
-import { FieldConfig } from "@/components/form/formItem-renderer";
 import FormModal from "@/components/modal/form-modal";
 import ConfirmModal from "@/components/modal/confirm-modal";
 import { addAddress, deleteAddress, updateAddress } from "@/services";
 import { useBillingAddressStore } from "@/store";
 import { AddressItem } from "@/types";
 import { queryClient } from "@/lib/react-query";
-
-const fieldsaddress: FieldConfig[] = [
-  {
-    type: "input",
-    name: "recipient",
-    label: "收件人",
-    placeholder: "请输入收件人姓名",
-  },
-  {
-    type: "input",
-    name: "phone",
-    label: "联系方式",
-    placeholder: "请输入联系方式",
-  },
-  {
-    type: "area",
-    name: "area",
-    label: "area",
-    placeholder: "area",
-  },
-
-  {
-    type: "input",
-    name: "address",
-    label: "详细地址",
-    placeholder: "请输入您详细地址",
-  },
-  {
-    type: "input",
-    name: "doorNo",
-    label: "门牌号",
-    placeholder: "请输入您的门牌号",
-  },
-  {
-    type: "input",
-    name: "postcode",
-    label: "邮编",
-    placeholder: "请输入邮编",
-  },
-];
+import { FieldConfig } from "@/components/form/formItem-renderer";
 
 type ModalType = "add" | "edit" | "delete" | null;
 const initAddress = {
@@ -64,7 +24,23 @@ const initAddress = {
   doorNo: "",
 };
 
-export default function BillingAddressTab() {
+interface BillingAddressTabProps {
+  texts: {
+    addButton: string;
+    editButton: string;
+    deleteButton: string;
+    deleteConfirm: string;
+    modalAddTitle: string;
+    modalEditTitle: string;
+    noAddress: string;
+  };
+  fields: FieldConfig[];
+}
+
+export default function BillingAddressTab({
+  texts,
+  fields,
+}: BillingAddressTabProps) {
   const billingAddress = useBillingAddressStore(
     (state) => state.billingAddress,
   );
@@ -92,10 +68,7 @@ export default function BillingAddressTab() {
 
     try {
       if (modalType === "add") {
-        await addAddress({
-          ...currentRowData,
-          addressType: 2,
-        }); // 新增接口
+        await addAddress({ ...currentRowData, addressType: 2 }); // 新增接口
       } else if (modalType === "edit") {
         await updateAddress({
           ...filteredData,
@@ -108,15 +81,12 @@ export default function BillingAddressTab() {
     } catch (error) {
       console.error("Error:", error);
     } finally {
-      console.log(123);
-
       queryClient.invalidateQueries({ queryKey: ["billingAddress"] }); // 手动刷新
     }
   };
 
   useEffect(() => {
     setCurrentRowData(billingAddress);
-    console.log("currentRowData", currentRowData);
   }, [billingAddress]);
 
   return (
@@ -142,10 +112,10 @@ export default function BillingAddressTab() {
               radius="sm"
               onPress={handleDelete}
             >
-              删除账单地址
+              {texts.deleteButton}
             </Button>
             <Button color="primary" radius="sm" onPress={handleEdit}>
-              修改账单地址
+              {texts.editButton}
             </Button>
           </div>
         </div>
@@ -156,28 +126,28 @@ export default function BillingAddressTab() {
         >
           <p className="flex items-center gap-2 justify-center">
             <span>+</span>
-            <span>添加账单地址</span>
+            <span>{texts.addButton}</span>
           </p>
         </button>
       )}
 
       <FormModal
-        fields={fieldsaddress}
+        fields={fields}
         formData={currentRowData}
         isOpen={modalType === "add" || modalType === "edit"}
-        title={modalType === "add" ? "添加地址" : "编辑地址"}
+        title={modalType === "add" ? texts.modalAddTitle : texts.modalEditTitle}
         onChange={setCurrentRowData}
         onOpenChange={(open) => {
           if (!open) setModalType(null);
         }}
         onSave={handleSave}
       />
+
       <ConfirmModal
-        content={`确定要删除该地址吗？`}
+        content={texts.deleteConfirm}
         isOpen={modalType === "delete"}
-        onConfirm={(close) => {
-          handleSave();
-          close();
+        onConfirm={async () => {
+          await handleSave();
         }}
         onOpenChange={(open) => {
           if (!open) setModalType(null);

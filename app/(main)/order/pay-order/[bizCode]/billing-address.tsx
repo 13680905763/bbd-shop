@@ -2,52 +2,12 @@
 import { useEffect, useState } from "react";
 import React from "react";
 import { AiOutlineEdit } from "react-icons/ai";
+import { useTranslations } from "next-intl";
 
-import { FieldConfig } from "@/components/form/formItem-renderer";
 import FormModal from "@/components/modal/form-modal";
 import { addAddress, updateAddress } from "@/services";
 import { AddressItem } from "@/types";
 import { queryClient } from "@/lib/react-query";
-
-const fieldsaddress: FieldConfig[] = [
-  {
-    type: "input",
-    name: "recipient",
-    label: "收件人",
-    placeholder: "请输入收件人姓名",
-  },
-  {
-    type: "input",
-    name: "phone",
-    label: "联系方式",
-    placeholder: "请输入联系方式",
-  },
-  {
-    type: "area",
-    name: "area",
-    label: "area",
-    placeholder: "area",
-  },
-
-  {
-    type: "input",
-    name: "address",
-    label: "详细地址",
-    placeholder: "请输入您详细地址",
-  },
-  {
-    type: "input",
-    name: "doorNo",
-    label: "门牌号",
-    placeholder: "请输入您的门牌号",
-  },
-  {
-    type: "input",
-    name: "postcode",
-    label: "邮编",
-    placeholder: "请输入邮编",
-  },
-];
 
 type ModalType = "add" | "edit" | null;
 const initAddress = {
@@ -63,10 +23,8 @@ const initAddress = {
 };
 
 export default function BillingAddress({ billingAddress }: any) {
-  //   const billingAddress = useBillingAddressStore(
-  //     (state) => state.billingAddress,
-  //   );
   console.log("billingAddress", billingAddress);
+  const t = useTranslations("PayOrder");
 
   const [modalType, setModalType] = useState<ModalType>(null);
   const [currentRowData, setCurrentRowData] = useState<any>(initAddress);
@@ -147,7 +105,7 @@ export default function BillingAddress({ billingAddress }: any) {
       )}
 
       <FormModal
-        fields={fieldsaddress}
+        fields={t.raw("fields")}
         formData={currentRowData}
         isOpen={modalType === "add" || modalType === "edit"}
         title={modalType === "add" ? "添加地址" : "编辑地址"}

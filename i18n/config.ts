@@ -13,5 +13,5 @@ export const currencies = [
   { label: "CNY", value: "CNY" },
 ];
 
-export const defaultLocale = "zh";
+export const defaultLocale = "en";
 export const defaultCurrency = "CNY";

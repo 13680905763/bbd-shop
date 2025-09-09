@@ -12,7 +12,7 @@ import { useTranslations } from "next-intl";
 
 import { SearchBar } from "./search-bar";
 import LanguageCurrencySelector from "./language-currency-selector";
-import { UserMenu } from "./user-menu";
+import { User, UserMenu } from "./user-menu";
 
 import { Logo } from "@/components/icons";
 import { getUserInfo } from "@/services";
@@ -22,7 +22,7 @@ interface NavLink {
   href: string;
 }
 export const Navbar = () => {
-  const t = useTranslations("Navbar");
+  const t = useTranslations("Components.Navbar");
   const pathname = usePathname(); // 获取当前路径
   const router = useRouter();
 
@@ -73,15 +73,7 @@ export const Navbar = () => {
         >
           <IoCart className="w-full h-full" />
         </Button>
-        <UserMenu
-          texts={{
-            register: t("User.register"),
-            login: t("User.login"),
-            account: t("User.account"),
-            orders: t("User.orders"),
-            logout: t("User.logout"),
-          }}
-        />
+        <UserMenu texts={t.raw("texts.User") as User} />
       </NavbarContent>
     </HeroUINavbar>
   );

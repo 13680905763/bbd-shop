@@ -1,8 +1,79 @@
-import { Checkbox } from "@heroui/react";
-
-import ProductItem from "./product-item";
+"use client";
+import { Checkbox, Image } from "@heroui/react";
+import { useRouter } from "next/navigation";
 
 import SourceIcon from "@/components/common/source-icon";
+
+type ProductItemProps = {
+  product: any;
+  isLastProduct: boolean;
+  texts: any;
+};
+
+function ProductItem({ product, texts }: ProductItemProps) {
+  const router = useRouter();
+
+  return (
+    <div className="flex flex-col gap-1 border-b p-2 px-4">
+      {/* 商品主行 */}
+      <div className="flex justify-between items-center gap-4">
+        <div className="flex grow-0 shrink-0 basis-[400px] gap-2">
+          <div className="grow-0 shrink-0 basis-[90px]">
+            <button
+              onClick={() =>
+                router.push(
+                  `/goods/${product.source}/${product?.sourceProductId}`,
+                )
+              }
+            >
+              <Image
+                alt="Product"
+                height={90}
+                radius="none"
+                src={product.skuPicUrl || product?.picUrl}
+                width={90}
+              />
+            </button>
+          </div>
+          <div>
+            <div className="line-clamp-2 font-bold">
+              {product?.productTitle}
+            </div>
+            <div className="text-gray-500 text-sm">
+              {product?.sku?.propName_valueName}
+            </div>
+            <div className="text-gray-500">{product?.remark}</div>
+          </div>
+        </div>
+
+        <div>
+          <p className="text-gray-700 text-sm font-medium">${product.price}</p>
+        </div>
+        <div>
+          <p className="text-gray-500 text-sm">x{product.quantity}</p>
+        </div>
+      </div>
+
+      {product?.orderServiceList?.length > 0 && (
+        <div className="p-3 bg-[#f8f8f8] rounded-lg mt-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm font-medium text-gray-800">
+              {texts.valueAddedService}
+            </span>
+            {product.orderServiceList.map((item: any) => (
+              <span
+                key={item.serviceId}
+                className="px-2 py-0.5 text-xs rounded-md bg-white text-gray-700 border border-gray-200"
+              >
+                {item.serviceName}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function OrderItem({
   order,
@@ -12,67 +83,64 @@ export default function OrderItem({
   onChange,
   selected,
   onRequestRefund,
+  texts,
 }: any) {
   return (
-    <div className="card-cart ">
-      <div className="p-4 flex items-center gap-1 ">
+    <div className="card-cart">
+      <div className="p-4 flex items-center gap-1">
         {activeTab === "waitPay" ? (
           <Checkbox isSelected={selected} onChange={onChange} />
         ) : null}
         <SourceIcon source={order?.source} />
-        <div className=" text-sm font-extrabold">
-          订单号：{order?.orderCode}
+        <div className="text-sm font-extrabold">
+          {texts.orderNumber} {order?.orderCode}
         </div>
         <div className="text-[#acacac] text-sm">
-          创建时间：{order?.createTime}
+          {texts.createTime} {order?.createTime}
         </div>
       </div>
 
       <div className="flex">
-        <div className="flex flex-col   flex-[4]">
+        <div className="flex flex-col flex-[4]">
           {order?.products.map((product: any, index: number) => (
             <ProductItem
               key={product.sourceSkuId}
               isLastProduct={index === order?.products.length - 1}
               product={product}
+              texts={texts}
             />
           ))}
         </div>
+
         <div className="flex grow-0 shrink-0 basis-[120px] justify-center items-center">
           <p>$ {order?.totalFee}</p>
-          {/* <p>国内运费 $ {order?.totalFee}</p> */}
         </div>
-        <div className="grow-0 shrink-0 basis-[180px] flex flex-col  gap-2  justify-center items-center">
-          {order?.status === "待付款" ? (
+
+        <div className="grow-0 shrink-0 basis-[180px] flex flex-col gap-2 justify-center items-center">
+          {order?.statusCode === 101 ? (
             <>
               <button
                 className="text-[#f0700c]"
-                onClick={() => {
-                  onPayOrderRedirect(order?.orderCode);
-                }}
+                onClick={() => onPayOrderRedirect(order?.orderCode)}
               >
-                Payment
+                {texts.payment}
               </button>
               <button
                 className="text-[#f0700c]"
-                onClick={() => {
-                  onCancelOrder(order?.id);
-                }}
+                onClick={() => onCancelOrder(order?.id)}
               >
-                Cancel
+                {texts.cancel}
               </button>
             </>
           ) : (
             <>
               <div className="text-[#f0700c]">{order?.status}</div>
-              {order?.status === "待采购" ? (
+              {order?.statusCode === 102 ? (
                 <button
                   className="text-[#f0700c]"
-                  onClick={() => {
-                    onRequestRefund(order?.id);
-                  }}
+                  onClick={() => onRequestRefund(order?.id)}
                 >
-                  Refund
+                  {texts.refund}
                 </button>
               ) : null}
             </>

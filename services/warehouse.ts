@@ -12,11 +12,14 @@ export const getWarehousePreview = (key: string): Promise<any> =>
   request.get("/waybill/preview/key?key=" + key);
 
 /** 获取增值服务列表 */
-export const gettWarehouseServicesList = (): Promise<any> =>
+export const getWarehouseServicesList = (): Promise<any> =>
   request.get("/services/query?serviceLevel=2");
 /** 获取运费模板 */
-export const gettWarehouseRoutesList = (): Promise<any> =>
-  request.get("/shipping-fee-template/all");
+export const getWarehouseRoutesList = (): Promise<any> =>
+  request.get("/shipping-line-template/all");
+/** 获取运费模板 */
+export const searchWarehouseRoutesList = (data: any): Promise<any> =>
+  request.post("/shipping-line-template/estimate", data);
 
 export const createWaybill = (data: any): Promise<any> =>
   request.post("/waybill/submit", data);

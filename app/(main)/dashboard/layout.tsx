@@ -29,6 +29,8 @@ export default function DashBoardlayout({ children }: DashBoardLayoutProps) {
     return pathParts[0] === "dashboard" ? (pathParts[1] ?? "") : "";
   }, [pathname]);
 
+  // if (!t) return <FullscreenLoader />;
+
   return (
     <div className="bg-[#f8f8f8]">
       <section className="container mx-auto max-w-[1440px] py-6 flex">
@@ -36,7 +38,7 @@ export default function DashBoardlayout({ children }: DashBoardLayoutProps) {
           <ul className="p-5 min-w-60 rounded-lg bg-[#fff] sticky top-20">
             {menuItems.map((item) =>
               item.type === "divider" ? (
-                <li key={`divider-${item.key}`} className="my-4 border-t" />
+                <li key={`${item.key}`} className="my-4 border-t" />
               ) : (
                 <li
                   key={item.key}

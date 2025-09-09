@@ -9,43 +9,17 @@ import {
   IoPeopleSharp,
   IoArrowBack,
 } from "react-icons/io5";
+import { useTranslations } from "next-intl";
 
 import { activateEmail, signUpCustomer } from "@/services";
 import { handleAuthSuccess } from "@/lib/auth-handler";
 import CommonForm from "@/components/form/common-form";
 import { FieldConfig } from "@/components/form/formItem-renderer";
-const loginFormFields: FieldConfig[] = [
-  {
-    type: "input",
-    name: "email",
-    size: "lg",
-    placeholder: "Enter your email",
-    startContent: <IoPerson />,
-  },
-  {
-    type: "input",
-    name: "password",
-    size: "lg",
-    placeholder: "password",
-    startContent: <IoLockClosed />,
-  },
-  {
-    type: "input",
-    name: "inviteCode",
-    size: "lg",
-    placeholder: "请输入邀请码，没有邀请码请留空",
-    startContent: <IoPeopleSharp />,
-  },
-  {
-    type: "checkbox",
-    name: "isChecked",
-    size: "sm",
-    label: " I have read and agree to the website terms and conditions",
-  },
-];
 
 export default function RegisterPage() {
   const router = useRouter();
+  const t = useTranslations("RegisterPage");
+
   const [isActive, setIsActive] = useState(false); // 是否进入验证码页
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<any>({
@@ -54,6 +28,40 @@ export default function RegisterPage() {
     inviteCode: "",
     isChecked: false,
   });
+
+  const loginFormFields: FieldConfig[] = [
+    {
+      key: "email",
+      type: "input",
+      name: "email",
+      size: "lg",
+      placeholder: t("fields.email.placeholder"),
+      startContent: <IoPerson />,
+    },
+    {
+      key: "password",
+      type: "input",
+      name: "password",
+      size: "lg",
+      placeholder: t("fields.password.placeholder"),
+      startContent: <IoLockClosed />,
+    },
+    {
+      key: "inviteCode",
+      type: "input",
+      name: "inviteCode",
+      size: "lg",
+      placeholder: t("fields.inviteCode.placeholder"),
+      startContent: <IoPeopleSharp />,
+    },
+    {
+      key: "isChecked",
+      type: "checkbox",
+      name: "isChecked",
+      size: "sm",
+      label: t("fields.isChecked.label"),
+    },
+  ];
 
   // 验证码回调
   const handleOtpChange = async (code: string) => {
@@ -78,7 +86,7 @@ export default function RegisterPage() {
     const { isChecked, ...signData } = data;
 
     if (!isChecked) {
-      addToast({ title: "请勾选统一协议", color: "danger" });
+      addToast({ title: t("errors.agreementRequired"), color: "danger" });
 
       return;
     }
@@ -102,11 +110,10 @@ export default function RegisterPage() {
             className="cursor-pointer text-lg"
             onClick={handleBackToEmail}
           />
-          <p className="text-title-xl m-0">验证你的电子邮箱</p>
+          <p className="text-title-xl m-0">{t("otp.title")}</p>
         </div>
         <p className="text-sm mb-4">
-          我们已发送验证码到 <span className="font-bold">{formData.email}</span>
-          ， 请输入验证码完成验证。
+          {t("otp.description", { email: formData.email })}
         </p>
         <InputOtp
           className="m-auto mb-4"
@@ -120,20 +127,23 @@ export default function RegisterPage() {
 
   return (
     <div>
-      <div className="text-3xl text-default-600 font-semibold mb-4">注册</div>
+      <div className="text-3xl text-default-600 font-semibold mb-4">
+        {t("title")}
+      </div>
       <CommonForm
-        confirmText="注册"
+        confirmText={t("confirmText")}
         fields={loginFormFields}
         formData={formData}
         isLoading={isLoading}
         onChange={setFormData}
         onSubmit={handleSubmit}
       />
-
       <div className="text-center mt-4">
-        已有账号？
+        {t("links.alreadyHaveAccount")}{" "}
         <NextLink href="/login">
-          <span className="text-[#f0700c] cursor-pointer">登录</span>
+          <span className="text-[#f0700c] cursor-pointer">
+            {t("links.login")}
+          </span>
         </NextLink>
       </div>
     </div>

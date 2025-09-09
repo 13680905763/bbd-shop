@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -8,67 +9,72 @@ import {
   ModalFooter,
   Button,
 } from "@heroui/react";
-import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface ConfirmModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  title?: string;
-  content?: string;
+  title?: React.ReactNode;
+  content: React.ReactNode;
   confirmText?: string;
   cancelText?: string;
-  onConfirm: (onClose: () => void) => void | Promise<void>;
+  onConfirm: () => Promise<void> | void;
+  footer?: React.ReactNode; // 可自定义 footer
 }
 
-const ConfirmModal = ({
+const ConfirmModal: React.FC<ConfirmModalProps> = ({
   isOpen,
   onOpenChange,
-  title = "操作确认",
-  content = "确定要执行这个操作吗？",
-  confirmText = "确认",
-  cancelText = "取消",
+  title,
+  content,
+  confirmText,
+  cancelText,
   onConfirm,
-}: ConfirmModalProps) => {
+  footer,
+}) => {
+  const t = useTranslations("Components.Modal"); // Common 是语言包的 namespace
+
   const [loading, setLoading] = useState(false);
 
-  const handleConfirm = async (onClose: () => void) => {
+  const handleConfirm = async () => {
     setLoading(true);
     try {
-      await onConfirm(onClose);
+      await onConfirm(); // 调用外部传入的逻辑
+      onOpenChange(false); // 成功后自动关闭
+    } catch (err) {
+      console.error("ConfirmModal error:", err);
+      // 可加 toast 提示
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Modal isOpen={isOpen} placement="center" onOpenChange={onOpenChange}>
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
-        {(onClose) => (
-          <>
-            <ModalHeader className="flex flex-col gap-1">{title}</ModalHeader>
-            <ModalBody>
-              <p>{content}</p>
-            </ModalBody>
-            <ModalFooter className="flex gap-2">
+        <ModalHeader>{title ?? t("confirmModalTitle")}</ModalHeader>
+        <ModalBody>{content}</ModalBody>
+        <ModalFooter className="flex gap-2">
+          {footer || (
+            <>
               <Button
                 className="flex-1 button-default"
-                disabled={loading}
                 variant="light"
-                onPress={onClose}
+                onPress={() => onOpenChange(false)}
               >
-                {cancelText}
+                {cancelText ?? t("cancel")}
               </Button>
               <Button
                 className="flex-1"
                 color="primary"
                 isLoading={loading}
-                onPress={() => handleConfirm(onClose)}
+                onPress={handleConfirm}
               >
-                {confirmText}
+                {confirmText ?? t("confirm")}
               </Button>
-            </ModalFooter>
-          </>
-        )}
+            </>
+          )}
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );

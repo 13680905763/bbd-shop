@@ -1,3 +1,5 @@
+import axios from "axios";
+
 import { request, requestWithOption } from "./request";
 
 import { AddressItem } from "@/types";
@@ -38,8 +40,20 @@ export const deleteAddress = (data: any): Promise<string> => {
 export const getAddressList = (addressType: number): Promise<AddressItem[]> => {
   return request.get("/customer/address/list?addressType=" + addressType);
 };
-export const getCountries = (): Promise<any> => {
-  return request.get("/countries/list");
+export const getCountries = async (): Promise<any> => {
+  try {
+    const { data } = await axios.get(
+      process.env.NEXT_PUBLIC_API_BASE_URL + "/countries.json",
+    );
+
+    console.log("countries", data);
+
+    return data;
+  } catch (err) {
+    console.error("获取国家列表失败", err);
+
+    return [];
+  }
 };
 export const getProvinces = (countryId: string): Promise<any> => {
   return request.get("/state/country?countryId=" + countryId);

@@ -7,13 +7,15 @@ import {
   Divider,
   Image,
   Textarea,
+  useDisclosure,
 } from "@heroui/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FaCamera } from "react-icons/fa";
+import { useTranslations } from "next-intl";
 
-import OrderCard from "./order-card";
+import OrderItem from "./order-item";
 
-import Progress from "@/components/common/progress";
+import Progress from "@/components/common/order-progress";
 import FullscreenLoader from "@/components/common/fullscreen-loader";
 import CommonModal from "@/components/modal/common-modal";
 import { useOrderPreview } from "@/hook";
@@ -27,10 +29,12 @@ import { useServicesStore } from "@/store";
 import { createOrderPreviewKeyByProductParams } from "@/types";
 
 export default function SubmitOrder() {
+  const t = useTranslations("SubmitOrder");
   const searchParam = useSearchParams();
   const router = useRouter();
   const type = searchParam.get("type") as "cart" | "product";
   const key = searchParam.get("key") as string;
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const { data, isLoading, isError } = useOrderPreview(type, key);
   const [orderData, setOrderData] = useState<any>(null);
@@ -44,7 +48,6 @@ export default function SubmitOrder() {
   const [localServices, setLocalServices] = useState<any[]>([]);
 
   // 弹窗状态
-  const [isServiceListOpen, setIsServiceListOpen] = useState(false);
   const [isServiceDetailOpen, setIsServiceDetailOpen] = useState(false);
 
   // 当前操作的商品ID
@@ -52,8 +55,6 @@ export default function SubmitOrder() {
 
   // 当前服务详情对象
   const [currentService, setCurrentService] = useState<any>(null);
-  // 新增状态
-  const [isServiceSubmitting, setIsServiceSubmitting] = useState(false);
 
   useEffect(() => {
     if (data) setOrderData(data);
@@ -62,7 +63,6 @@ export default function SubmitOrder() {
   // 打开商品服务列表弹窗
   const openServiceModal = (cartId: string) => {
     console.log("services", services);
-
     setCurrentCartId(cartId);
     // 克隆服务，初始化 isCheck、remark
     setLocalServices(
@@ -72,7 +72,7 @@ export default function SubmitOrder() {
         remark: "",
       })),
     );
-    setIsServiceListOpen(true);
+    onOpen();
   };
 
   // 打开某个服务详情
@@ -125,7 +125,6 @@ export default function SubmitOrder() {
     console.log("checkedServices", checkedServices);
 
     try {
-      setIsServiceSubmitting(true); // ✅ 开始 loading
       let res;
 
       if (type === "cart") {
@@ -145,12 +144,8 @@ export default function SubmitOrder() {
       }
 
       setOrderData(res);
-      setIsServiceListOpen(false);
-    } catch (err) {
-      addToast({ title: "提交失败", color: "danger" });
-    } finally {
-      setIsServiceSubmitting(false); // ✅ 结束 loading
-    }
+      onOpen();
+    } catch {}
   };
 
   const handleSubmitOrder = async () => {
@@ -190,31 +185,29 @@ export default function SubmitOrder() {
     return totalCents / 100;
   }, [orderData]);
 
-  if (isLoading) return <FullscreenLoader loading={isLoading} />;
+  if (isLoading) return <FullscreenLoader />;
   if (isError) return <div>出错了</div>;
 
   return (
     <div className="container mx-auto bg-white p-4 py-6">
-      <Progress
-        currentStep={0}
-        steps={["选择产品", "订单付款", "质检&仓库", "打包", "签收包裹"]}
-      />
+      <Progress currentStep={0} />
 
-      <div className="text-title mt-4 mb-2">确认产品信息</div>
+      <div className="text-title mt-4 mb-2">{t("confirmProductInfo")}</div>
       <div className="flex flex-col gap-4">
         <div className="flex items-center p-4 bg-[#ffeee1] rounded-lg">
-          <span className="flex-1 text-left">产品</span>
-          <span className="flex-[0_0_200px] text-center">备注</span>
-          <span className="flex-[0_0_130px] text-center">单价</span>
-          <span className="flex-[0_0_150px] text-center">数量</span>
-          <span className="flex-[0_0_150px] text-center">合计</span>
+          <span className="flex-1 text-left">{t("product")}</span>
+          <span className="flex-[0_0_200px] text-center">{t("remark")}</span>
+          <span className="flex-[0_0_130px] text-center">{t("price")}</span>
+          <span className="flex-[0_0_150px] text-center">{t("quantity")}</span>
+          <span className="flex-[0_0_150px] text-center">{t("subtotal")}</span>
         </div>
 
         {orderData?.orderList?.map((order: any) => (
-          <OrderCard
+          <OrderItem
             key={order.shopName}
             openServiceModal={openServiceModal}
             order={order}
+            texts={t.raw("OrderItem")}
           />
         ))}
       </div>
@@ -223,16 +216,16 @@ export default function SubmitOrder() {
       <div className="text-right mt-5 p-4">
         <p className="text-sm text-[#fbbd8a] mb-2">
           <span className="hover:text-[#f0700c] cursor-pointer">
-            《禁运物品声明》
+            《{t("declaration")}》
           </span>
           <span className="hover:text-[#f0700c] cursor-pointer ml-2">
-            《服务条款和用户管理》
+            《{t("terms")}》
           </span>
           <span className="hover:text-[#f0700c] cursor-pointer ml-2">
-            《退换货服务》
+            《{t("returnPolicy")}》
           </span>
           <span className="hover:text-[#f0700c] cursor-pointer ml-2">
-            《免责声明》
+            《{t("disclaimer")}》
           </span>
         </p>
         <Checkbox
@@ -241,18 +234,16 @@ export default function SubmitOrder() {
           size="sm"
           onValueChange={setIscheck}
         >
-          <span className="text-[#676969]">我已阅读并同意BBDbuy的免责声明</span>
+          <span className="text-[#676969]">{t("agreement")}</span>
         </Checkbox>
-        <div className="card-tip text-left !mb-0 mt-2">
-          注意：付款完成后，您需要在包裹到达并存放在仓库后提交包裹进行国际递送。
-        </div>
+        <div className="card-tip text-left !mb-0 mt-2">{t("notice")}</div>
       </div>
 
       <Divider className="mb-4" />
 
       <div className="flex justify-end items-center gap-4 mb-2">
         <div className="text-[#3d3d3d] text-sm flex items-center gap-1">
-          应付金额:
+          {t("amountDue")}
         </div>
         <p className="text-price-xl">{togglePrice}</p>
         <Button
@@ -262,35 +253,29 @@ export default function SubmitOrder() {
           size="lg"
           onPress={handleSubmitOrder}
         >
-          提交
+          {t("submit")}
         </Button>
       </div>
 
       {/* 商品服务列表弹窗 */}
       <CommonModal
-        confirmText="提交"
-        isLoading={isServiceSubmitting}
-        isOpen={isServiceListOpen}
-        size="xl"
-        title="增值服务"
+        isOpen={isOpen}
+        title={t("valueAddedService")}
         onConfirm={handleServiceSubmit}
-        onOpenChange={setIsServiceListOpen}
+        onOpenChange={onOpenChange}
       >
         {localServices.map((service) => (
-          <div
-            key={service.id}
-            className="items-center p-4 border rounded-lg mb-4"
-          >
+          <div key={service.id} className="items-center p-3 border rounded-lg ">
             <div className="flex justify-between items-center">
               <div className="font-medium">{service.serviceName}</div>
               {service.id == 1 ? (
                 // 免费的 icon
                 <button
-                  className="flex items-center text-green-500 text-sm gap-1"
+                  className="flex items-center text-green-500 text-sm gap-1 h-8 w-16 justify-center"
                   onClick={() => openServiceDetail(service.id)}
                 >
-                  <FaCamera className="mr-1" />
-                  免费
+                  <FaCamera />
+                  {t("free")}
                 </button>
               ) : (
                 <Button
@@ -298,7 +283,7 @@ export default function SubmitOrder() {
                   size="sm"
                   onPress={() => openServiceDetail(service.id)}
                 >
-                  添加
+                  {t("add")}
                 </Button>
               )}
             </div>
@@ -307,11 +292,11 @@ export default function SubmitOrder() {
               <div className="bg-gray-50 px-3 py-2 rounded-lg mt-2 flex justify-between items-center border border-gray-200">
                 <div className="flex flex-col">
                   <span className="text-sm font-medium text-gray-800">
-                    服务项
+                    {t("serviceItem")}
                   </span>
                   {service.remark && (
                     <span className="text-[11px] text-gray-400 mt-0.5 truncate">
-                      备注：{service.remark}
+                      {t("remark")}: {service.remark}
                     </span>
                   )}
                 </div>
@@ -327,7 +312,7 @@ export default function SubmitOrder() {
                     variant="light"
                     onPress={() => removeService(service.id)}
                   >
-                    删除
+                    {t("delete")}
                   </Button>
                 </div>
               </div>
@@ -339,13 +324,9 @@ export default function SubmitOrder() {
       {/* 服务详情弹窗 */}
       {currentService && (
         <CommonModal
-          key={currentService.id}
-          confirmText={currentService.id != 1 ? "保存" : "确认"}
           isOpen={isServiceDetailOpen}
           showCancel={currentService.id != 1}
-          size="xl"
           title={currentService.serviceName}
-          onCancel={() => setIsServiceDetailOpen(false)}
           onConfirm={saveServiceDetail}
           onOpenChange={setIsServiceDetailOpen}
         >
@@ -353,18 +334,22 @@ export default function SubmitOrder() {
             {/* 服务介绍 */}
             <div className="bg-[#f8f8f8] p-4 rounded-lg space-y-4">
               <div className="space-y-2">
-                <h3 className="text-sm font-medium text-gray-900">服务介绍</h3>
+                <h3 className="text-sm font-medium text-gray-900">
+                  {t("serviceIntro")}
+                </h3>
                 <p className="text-sm leading-relaxed text-gray-600">
-                  {currentService.introduction || "暂无介绍"}
+                  {currentService.introduction || t("noIntro")}
                 </p>
               </div>
 
               {/* 示例（id != 1 时才展示） */}
               {currentService.sample && (
                 <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-gray-900">示例</h3>
+                  <h3 className="text-sm font-medium text-gray-900">
+                    {t("sample")}
+                  </h3>
                   <Image
-                    alt="服务示例"
+                    alt="sample"
                     className="border border-gray-200"
                     height={80}
                     radius="md"
@@ -378,7 +363,7 @@ export default function SubmitOrder() {
             {/* 服务费（id != 1 时才展示） */}
             {currentService.id != 1 && (
               <div className="flex items-center justify-between border-t pt-3">
-                <span className="text-sm text-gray-700">服务费</span>
+                <span className="text-sm text-gray-700">{t("serviceFee")}</span>
                 <span className="text-lg font-semibold text-rose-600">
                   {currentService.price}
                 </span>
@@ -390,7 +375,7 @@ export default function SubmitOrder() {
               <Textarea
                 className="w-full mt-2"
                 minRows={3}
-                placeholder="请输入备注（选填）"
+                placeholder={t("remarkPlaceholder")}
                 value={currentService.remark}
                 onChange={(e) =>
                   setCurrentService({
