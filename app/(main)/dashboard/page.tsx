@@ -87,11 +87,11 @@ export default function DashBoard() {
     <div className="flex flex-col gap-6 bg-[#f8f8f8] -mx-5">
       <UserBalanceCard
         availabalBalance={wallet?.availabalBalance ?? 0}
-        score={5262}
+        score={user?.myPoints as number}
         text={{
           balance: t("texts.UserBalanceCard.balance"),
           score: t("texts.UserBalanceCard.score"),
-          vip: (level) => `VIP${level}`,
+          vip: (level) => `VIP${user?.vipLv}`,
         }}
         userInfo={user as UserInfo}
       />

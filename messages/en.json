@@ -602,6 +602,22 @@
                         "placeholder": "Enter withdrawal amount"
                     }
                 ]
+            },
+            "ScoreTab": {
+                "texts": {
+                    "title": "Balance",
+                    "recharge": "Recharge",
+                    "withdraw": "Withdraw",
+                    "tableTitle": "Transaction History",
+                    "noData": "No transaction records",
+                    "withdrawModalTitle": "Withdraw"
+                },
+                "tableColumns": [
+                    {
+                        "key": "id",
+                        "label": "Transaction Time"
+                    }
+                ]
             }
         },
         "MessagePage": {

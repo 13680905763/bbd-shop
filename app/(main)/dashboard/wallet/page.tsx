@@ -5,6 +5,9 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import BalanceTab from "./balance-tab";
+import ScoreTab from "./score-tab";
+
+import { useUserStore } from "@/store";
 
 interface TabConfig {
   key: string;
@@ -13,6 +16,8 @@ interface TabConfig {
 
 export default function WalletPage() {
   const t = useTranslations("Dashboard.WalletPage");
+  const user = useUserStore((state) => state.user);
+
   const searchParams = useSearchParams();
   const router = useRouter();
   const currentTab = searchParams.get("tab") || "balance";
@@ -44,8 +49,14 @@ export default function WalletPage() {
         );
         break;
       case "score":
-        // component = <ScoreTab />;
-        component = <div>score</div>;
+        component = (
+          <ScoreTab
+            tableColumns={t.raw("ScoreTab.tableColumns")}
+            texts={t.raw("ScoreTab.texts")}
+            user={user}
+          />
+        );
+        // component = <div>score</div>;
         break;
       case "coupon":
         // component = <CouponTab />;

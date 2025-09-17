@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Accordion,
   AccordionItem,
@@ -7,9 +7,18 @@ import {
   Snippet,
   Image,
   Button,
+  Tab,
+  Tabs,
 } from "@heroui/react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { describeText, price, subtitle } from "@/components/primitives";
+import {
+  getExperience,
+  getExperienceList,
+  getPromotionConfig,
+  getPromotionList,
+} from "@/services";
 const processItems = [
   {
     title: "1",
@@ -28,6 +37,90 @@ const defaultContent =
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
 
 export default function PromotionPage() {
+  const [experience, setExperience] = useState(null);
+  const [experienceList, setExperienceList] = useState(null);
+  const [promotionConfig, setPromotionConfig] = useState([]);
+  const [promotionList, setPromotionList] = useState([]);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const currentTab = searchParams.get("tab") || "balance";
+
+  const changeTab = useCallback(
+    (key: React.Key) => {
+      router.push(`/dashboard/promotion?tab=${key}`);
+    },
+    [router],
+  );
+  const fetchExperience = async () => {
+    try {
+      const res = await getExperience();
+      const res1 = await getPromotionConfig();
+      const res2 = await getExperienceList();
+      const res3 = await getPromotionList();
+
+      console.log("res2", res2);
+      console.log("res3", res3);
+
+      setPromotionConfig(res1);
+      setPromotionList(res3);
+      setExperience(res || null);
+      setExperienceList(res2 || null);
+    } catch (err) {
+      console.error("获取经验失败:", err);
+    } finally {
+    }
+  };
+
+  // 动态生成 Tabs 配置
+  const tabLabels = [
+    {
+      key: "经验明细",
+      label: "经验明细",
+    },
+    {
+      label: "奖金明细",
+      key: "奖金明细",
+    },
+    {
+      label: "邀请明细",
+      key: "邀请明细",
+    },
+  ];
+  const tabsConfig = [
+    {
+      key: "经验明细",
+    },
+    {
+      key: "邀请明细",
+    },
+    {
+      key: "奖金明细",
+    },
+  ].map((tab) => {
+    let component: React.ReactNode = null;
+
+    switch (tab.key) {
+      case "经验明细":
+        component = <div>score</div>;
+
+        break;
+      case "邀请明细":
+        component = <div>score</div>;
+        break;
+      case "奖金明细":
+        // component = <CouponTab />;
+        component = <div>coupon</div>;
+        break;
+    }
+
+    return { key: tab.key, component };
+  });
+
+  useEffect(() => {
+    fetchExperience();
+  }, []);
+
   return (
     <div className="pt-5">
       <Image
@@ -101,56 +194,32 @@ export default function PromotionPage() {
         </div>
       </div>
       <div>
-        <div className={subtitle()}>我的权益</div>
-        <div className="flex justify-center items-center bg-[#f7f8f9] rounded-lg ">
-          <div className="flex-1 flex justify-center items-center flex-col border border-[#eeeeee] border-r-0 bg-[#ffeee1]">
-            <div className="py-4 text-[#f0700c]"> Bronze Affiliate </div>
-            <div className="flex flex-col gap-1 p-5 w-full  items-center ">
-              <div className={describeText()}>奖金比例</div>
-              <div className={price()}>3.00%</div>
-              <div className={describeText()}>0~500积分</div>
+        <div className={subtitle()}>
+          我的等级
+          {/* <span className="text-sm">经验：{experience?.experience}</span> */}
+        </div>
+        <div className="flex justify-center items-center bg-[#f7f8f9] rounded-lg">
+          {promotionConfig.map((item: any, index) => (
+            <div
+              key={item.id}
+              className={`
+        flex-1 flex justify-center items-center flex-col border border-[#eeeeee]
+        ${index !== promotionConfig.length - 1 ? "border-r-0" : ""}
+        ${index === 0 ? "bg-[#ffeee1]" : ""}
+      `}
+            >
+              <div className="py-4 text-[#f0700c]">{item.rangeCode}</div>
+              <div className="flex flex-col gap-1 p-5 w-full items-center bg-[#fff]">
+                <div className={describeText()}>奖金比例</div>
+                <div className={price()}>
+                  {(Number(item.configValue) * 100).toFixed(2)}%
+                </div>
+                <div className={describeText()}>
+                  {item.rangeMin} ~ {item.rangeMax} 经验
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="flex-1 flex justify-center items-center flex-col border border-[#eeeeee] border-r-0">
-            <div className="py-4 border-b border-[#eeeeee]">
-              Bronze Affiliate
-            </div>
-            <div className="flex flex-col gap-1 p-5 w-full bg-[#fff] items-center ">
-              <div className={describeText()}>奖金比例</div>
-              <div className={price()}>3.00%</div>
-              <div className={describeText()}>0~500积分</div>
-            </div>
-          </div>
-          <div className="flex-1 flex justify-center items-center flex-col border border-[#eeeeee] border-r-0">
-            <div className="py-4 border-b border-[#eeeeee]">
-              Bronze Affiliate
-            </div>
-            <div className="flex flex-col gap-1 p-5 w-full bg-[#fff] items-center ">
-              <div className={describeText()}>奖金比例</div>
-              <div className={price()}>3.00%</div>
-              <div className={describeText()}>0~500积分</div>
-            </div>
-          </div>
-          <div className="flex-1 flex justify-center items-center flex-col border border-[#eeeeee] border-r-0">
-            <div className="py-4 border-b border-[#eeeeee]">
-              Bronze Affiliate
-            </div>
-            <div className="flex flex-col gap-1 p-5 w-full bg-[#fff] items-center ">
-              <div className={describeText()}>奖金比例</div>
-              <div className={price()}>3.00%</div>
-              <div className={describeText()}>0~500积分</div>
-            </div>
-          </div>
-          <div className="flex-1 flex justify-center items-center flex-col border border-[#eeeeee] ">
-            <div className="py-4 border-b border-[#eeeeee]">
-              Bronze Affiliate
-            </div>
-            <div className="flex flex-col gap-1 p-5 w-full bg-[#fff] items-center ">
-              <div className={describeText()}>奖金比例</div>
-              <div className={price()}>3.00%</div>
-              <div className={describeText()}>0~500积分</div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
       <div>
@@ -179,6 +248,34 @@ export default function PromotionPage() {
           </AccordionItem>
         </Accordion>
       </div>
+
+      <Tabs
+        aria-label="Wallet Tabs"
+        classNames={{
+          base: "mt-2 w-full bg-white p-2",
+          tabList: "gap-6 w-full relative rounded-none p-0",
+          cursor: "w-full bg-[#f0700c]",
+          tab: "max-w-fit px-0 h-12",
+          tabContent: "group-data-[selected=true]:text-[#f0700c]",
+        }}
+        color="primary"
+        selectedKey={currentTab}
+        variant="underlined"
+        onSelectionChange={changeTab}
+      >
+        {tabLabels.map((tab) => (
+          <Tab
+            key={tab.key}
+            title={
+              <div className="flex items-center space-x-2">
+                <span>{tab.label}</span>
+              </div>
+            }
+          >
+            {tabsConfig.find((c) => c.key === tab.key)?.component}
+          </Tab>
+        ))}
+      </Tabs>
     </div>
   );
 }

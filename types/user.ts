@@ -27,6 +27,8 @@ export interface UserInfo {
   signUpType?: number; // 注册类型，具体含义看后台文档
   urlExpirationAt?: string; // 过期时间，格式 "YYYY-MM-DD HH:mm:ss"
   status?: number; // 用户状态，具体含义看后台文档
+  myPoints: number;
+  vipLv: string;
 }
 export interface UserState {
   user: UserInfo | null;

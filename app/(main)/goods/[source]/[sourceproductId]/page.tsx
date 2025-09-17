@@ -80,12 +80,8 @@ function generateDynamicSkuPathDict(productInfo: ProductInfo): SkuPathDict {
     // 获取所有属性名并按字母排序确保一致性
     const propNames = Object.keys(propertyMap);
 
-    console.log("propNames", propNames, propertyMap);
-
     // 生成所有可能的组合键
     const allCombinations = getAllCombinations(propNames, propertyMap);
-
-    console.log("allCombinations", allCombinations);
 
     // 将SKU ID添加到所有相关组合中
     allCombinations.forEach((combination) => {
@@ -95,7 +91,6 @@ function generateDynamicSkuPathDict(productInfo: ProductInfo): SkuPathDict {
       dict[combination].push(sku?.skuID);
     });
   });
-  console.log("dict", dict);
 
   return dict;
 }

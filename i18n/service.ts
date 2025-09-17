@@ -1,6 +1,6 @@
 "use server";
 
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 
 import {
   languages,
@@ -21,13 +21,7 @@ export async function getUserLocale() {
 
   if (locale && languages.some((l) => l.value === locale)) return locale;
 
-  const headerStore = await headers();
-  const acceptLanguage = headerStore.get("accept-language") || "";
-  const parsedLocale = acceptLanguage?.split(",")[0].split("-")[0] || "";
-
-  return languages.some((l) => l.value === parsedLocale)
-    ? parsedLocale
-    : defaultLocale;
+  return defaultLocale;
 }
 
 export async function setUserLocale(locale: string) {
