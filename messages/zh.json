@@ -3,7 +3,7 @@
         "texts": {
             "Slogan": {
                 "line1": "简化您的",
-                "line2": "购物体验，就用BBD"
+                "line2": "购物体验，选择BBD"
             },
             "Search": {
                 "placeholder": "输入商品名称/链接",
@@ -11,7 +11,7 @@
             },
             "Announcement": {
                 "label": "公告",
-                "message": "🎉 限时优惠，所有商品享12%折扣！"
+                "message": "🎉 限时优惠，所有商品享受12%折扣！"
             },
             "ServiceTitle": "一站式购物服务"
         },
@@ -24,17 +24,17 @@
             {
                 "key": "step2",
                 "title": "质检与仓储",
-                "desc": "接收3-5张质检照片，享受90天免费仓储"
+                "desc": "接收3-5张质检照片和90天免费仓储"
             },
             {
                 "key": "step3",
                 "title": "打包",
-                "desc": "为您的订单打包并检查"
+                "desc": "打包并检查您的订单"
             },
             {
                 "key": "step4",
                 "title": "全球运输",
-                "desc": "从150多种全球运输方式中选择"
+                "desc": "从150多种全球运输选项中选择"
             }
         ],
         "Links": [
@@ -62,26 +62,26 @@
         "Services": [
             {
                 "key": "service1",
-                "title": "下单订购",
-                "describe": "轻松无忧购买来自中国的任何线上或线下商品。只需粘贴您想要的商品链接即可下单。享受我们从浏览到购买的无缝端到端服务。",
+                "title": "下单服务",
+                "describe": "轻松购买来自中国的任何产品，线上线下均可。要下单，只需粘贴您想要的商品链接。享受我们无缝的端到端服务，从浏览到购买轻松完成。",
                 "src": "/images/page/icon01.png"
             },
             {
                 "key": "service2",
                 "title": "送货至我们仓库",
-                "describe": "通过我们的服务从多个卖家购物，我们将高效整合您的购买。所有商品将运往中国的BBDbuy仓库，为您简化流程。",
+                "describe": "通过我们的服务从多个卖家购物，我们将高效整合您的购买。所有物品将运往中国的BBDbuy仓库，为您简化流程。",
                 "src": "/images/page/icon02.png"
             },
             {
                 "key": "service3",
                 "title": "质量保证流程",
-                "describe": "当您的商品到达BBDbuy仓库后，会经过严格的质量检查。我们的团队会仔细检查每件商品是否有缺陷，确保尺寸、颜色等的准确性。选择BBDbuy，您可以放心，我们 dedicated 的售后服务致力于您的满意。",
+                "describe": "您的产品到达BBDbuy仓库后，将经过严格的质量检查。我们的团队仔细检查每件物品是否有缺陷，确保尺寸、颜色等的准确性。使用BBDbuy，您可以放心，我们 dedicated 的售后服务致力于您的满意。",
                 "src": "/images/page/icon03.png"
             },
             {
                 "key": "service4",
-                "title": "轻松全球运输",
-                "describe": "从您的仓库库存中选择商品，并轻松整合到一个包裹中。凭借BBDbuy可靠的全球运输服务，您可以将购买的商品直接送到家门口。享受世界级运输的便利。",
+                "title": "便捷全球运输",
+                "describe": "从仓库库存中选择产品，轻松合并到一个包裹中。借助BBDbuy可靠的全球运输服务，您可以将购买的商品直接送到家门口。享受世界级运输的便利。",
                 "src": "/images/page/icon04.png"
             }
         ]
@@ -103,11 +103,11 @@
                     "href": "/"
                 },
                 {
-                    "label": "代运",
+                    "label": "代发",
                     "href": "/forwarding"
                 },
                 {
-                    "label": "费用估算",
+                    "label": "运费估算",
                     "href": "/estimation"
                 },
                 {
@@ -120,9 +120,9 @@
             "steps": [
                 "选择商品",
                 "支付订单",
-                "质检与入库",
+                "质检与仓储",
                 "打包",
-                "接收包裹"
+                "收货"
             ]
         },
         "Modal": {
@@ -204,18 +204,18 @@
                 "placeholder": "密码"
             },
             "inviteCode": {
-                "placeholder": "输入邀请码，若无则留空"
+                "placeholder": "输入邀请码，如果没有请留空"
             },
             "isChecked": {
                 "label": "我已阅读并同意网站条款和条件"
             }
         },
         "errors": {
-            "agreementRequired": "请勾选同意协议"
+            "agreementRequired": "请同意协议"
         },
         "otp": {
             "title": "验证您的邮箱",
-            "description": "我们已向{email}发送验证码，请输入验证码完成验证。"
+            "description": "我们已向{email}发送了验证码，请输入验证码完成验证。"
         },
         "links": {
             "alreadyHaveAccount": "已有账户？",
@@ -270,13 +270,35 @@
             },
             {
                 "key": "history",
-                "label": "历史",
+                "label": "历史记录",
                 "href": "/dashboard/history"
             },
             {
                 "key": "promotion",
-                "label": "促销活动",
-                "href": "/dashboard/promotion"
+                "label": "邀请联盟",
+                "type": "accordion",
+                "children": [
+                    {
+                        "key": "promotion",
+                        "label": "仪表板",
+                        "href": "/dashboard/promotion"
+                    },
+                    {
+                        "key": "user",
+                        "label": "用户明细",
+                        "href": "/dashboard/promotion/user"
+                    },
+                    {
+                        "key": "experience",
+                        "label": "经验明细",
+                        "href": "/dashboard/promotion/experience"
+                    },
+                    {
+                        "key": "bonus",
+                        "label": "奖金明细",
+                        "href": "/dashboard/promotion/bonus"
+                    }
+                ]
             }
         ],
         "Page": {
@@ -341,7 +363,7 @@
                     "title": {
                         "add": "添加地址",
                         "edit": "编辑地址",
-                        "deleteConfirm": "确定要删除此地址吗？"
+                        "deleteConfirm": "您确定要删除此地址吗？"
                     },
                     "buttons": {
                         "add": "+ 添加地址",
@@ -422,7 +444,7 @@
             "SecurityTab": {
                 "texts": {
                     "title": "登录密码",
-                    "description": "强密码保障账户安全。建议定期更改密码。请使用包含字母和数字且至少6位字符的密码。",
+                    "description": "强密码保护您的账户安全。我们建议定期更改密码。使用包含字母和数字的密码，且至少6个字符。",
                     "button": "修改密码",
                     "modalTitle": "修改密码"
                 },
@@ -452,7 +474,7 @@
                     "addButton": "添加账单地址",
                     "editButton": "编辑账单地址",
                     "deleteButton": "删除账单地址",
-                    "deleteConfirm": "确定要删除此地址吗？",
+                    "deleteConfirm": "您确定要删除此地址吗？",
                     "modalAddTitle": "添加地址",
                     "modalEditTitle": "编辑地址",
                     "noAddress": "暂无账单地址"
@@ -602,6 +624,31 @@
                         "placeholder": "输入提现金额"
                     }
                 ]
+            },
+            "ScoreTab": {
+                "texts": {
+                    "title": "积分",
+                    "exchangeCoupon": "积分兑换优惠券",
+                    "details": "积分明细"
+                },
+                "tableColumns": [
+                    {
+                        "key": "bizType",
+                        "label": "来源"
+                    },
+                    {
+                        "key": "amount",
+                        "label": "数量"
+                    },
+                    {
+                        "key": "availablePoints",
+                        "label": "可用积分"
+                    },
+                    {
+                        "key": "createTime",
+                        "label": "时间"
+                    }
+                ]
             }
         },
         "MessagePage": {
@@ -694,6 +741,66 @@
                 "payButton": "支付",
                 "cancelButton": "取消"
             }
+        },
+        "Promotion": {
+            "user": {
+                "title": "用户明细",
+                "noData": "暂无交易记录",
+                "tableColumns": [
+                    {
+                        "key": "name",
+                        "label": "被邀请人"
+                    },
+                    {
+                        "key": "email",
+                        "label": "被邀请人邮箱"
+                    },
+                    {
+                        "key": "createTime",
+                        "label": "时间"
+                    }
+                ]
+            },
+            "bonus": {
+                "title": "奖金明细",
+                "noData": "暂无交易记录",
+                "tableColumns": [
+                    {
+                        "key": "bizType",
+                        "label": "来源"
+                    },
+                    {
+                        "key": "amount",
+                        "label": "数量"
+                    },
+                    {
+                        "key": "currentBalance",
+                        "label": "可用奖金"
+                    },
+                    {
+                        "key": "createTime",
+                        "label": "时间"
+                    }
+                ]
+            },
+            "experience": {
+                "title": "经验明细",
+                "noData": "暂无交易记录",
+                "tableColumns": [
+                    {
+                        "key": "email",
+                        "label": "被邀请人邮箱"
+                    },
+                    {
+                        "key": "experience",
+                        "label": "经验值"
+                    },
+                    {
+                        "key": "createTime",
+                        "label": "时间"
+                    }
+                ]
+            }
         }
     },
     "SubmitOrder": {
@@ -709,7 +816,7 @@
         "returnPolicy": "退换货服务",
         "disclaimer": "免责声明",
         "agreement": "我已阅读并同意BBDbuy的免责声明",
-        "notice": "注意：完成支付后，商品到达并存入仓库后，您需要提交包裹进行国际配送。",
+        "notice": "注意：完成支付后，商品到达并存入仓库后，您需要提交包裹进行国际运输。",
         "amountDue": "应付金额:",
         "submit": "提交",
         "valueAddedService": "增值服务",
@@ -723,7 +830,7 @@
         "noIntro": "无介绍",
         "sample": "样品",
         "serviceFee": "服务费",
-        "remarkPlaceholder": "请输入备注（选填）",
+        "remarkPlaceholder": "请输入备注（可选）",
         "OrderItem": {
             "valueAddedService": "增值服务",
             "noService": "无服务",
@@ -800,62 +907,62 @@
         "purchaseRecord": "购买记录",
         "sales": "销量",
         "weight": "重量 (克)",
-        "avgDelivery": "平均配送时间",
+        "avgDelivery": "平均发货时间",
         "size": "尺寸 (立方厘米)",
         "productDetails": "商品详情",
-        "originalLink": "原链接",
+        "originalLink": "原商品链接",
         "refresh": "刷新",
-        "afterPaymentNotice": "支付后，我们将在北京时间09:00至18:00（UTC+8）提供代购服务",
-        "shippingStep1": "1. 卖家至BBD仓库，国内运费",
-        "shippingStep2": "2. BBD仓库至您的地址，预估国际运费",
+        "afterPaymentNotice": "支付后，我们将在北京时间09:00至18:00提供代购服务",
+        "shippingStep1": "1. 卖家到BBD仓库，国内运费",
+        "shippingStep2": "2. BBD仓库到您的地址，预估国际运费",
         "quantity": "数量",
         "remark": "备注",
         "remarkPlaceholder": "输入您的描述",
         "disclaimer": "免责声明",
-        "disclaimerDescription": "BBDbuy上显示的所有代购商品均来自第三方平台，并非由BBDbuy直接销售。BBDbuy不对任何知识产权侵权或版权问题负责。使用BBDbuy代购服务即表示您接受这些风险。",
+        "disclaimerDescription": "BBDbuy上显示的所有代购商品均来自第三方平台，非BBDbuy直接销售。BBDbuy不对任何知识产权侵权或版权问题负责。使用BBDbuy代购服务即表示您接受这些风险。",
         "agreeDisclaimer": "我已阅读并同意BBDbuy的免责声明",
         "addToCart": "加入购物车",
         "buyNow": "立即购买",
         "continueShopping": "继续购物",
         "riskNotice": "风险提示",
-        "riskDescription": "您提交的商品可能存在一定的运输风险。为保障您的资金安全，我们暂时无法提供在线订购服务。详情请咨询在线客服！"
+        "riskDescription": "您提交的商品可能存在一定的运输风险。为了您的资金安全，我们暂时无法提供在线订购服务。详情请咨询在线客服！"
     },
     "ForwardingPage": {
         "warehouseAddress": "仓库地址",
-        "warehouseFullAddress": "中国广东省惠州市水口街道荔枝城工业园晟豪科技大厦8A-801顺道云仓",
-        "forwardingPackage": "转运包裹",
-        "trackingNo": "物流单号：",
-        "trackingNoPlaceholder": "请输入物流单号",
+        "warehouseFullAddress": "中国广东省惠州市水口街道荔城工业园胜豪科技大厦8A-801",
+        "forwardingPackage": "代发包裹",
+        "trackingNo": "物流单号:",
+        "trackingNoPlaceholder": "输入您的物流单号",
         "errorTrackingNo": "请输入有效的物流单号",
-        "packageName": "包裹名称：",
-        "packageNamePlaceholder": "请输入包裹名称",
+        "packageName": "包裹名称:",
+        "packageNamePlaceholder": "输入您的包裹名称",
         "errorPackageName": "请输入有效的包裹名称",
-        "extraServices": "附加服务",
-        "serviceInspection": "开箱检查违禁品",
-        "serviceConfirmation": "BBDbuy 的转发服务默认不提供产品确认。如果您需要产品确认，请选择“产品确认”。",
-        "serviceRemoveInvoice": "取出发票（可减少征税概率）",
-        "serviceOriginalBox": "原箱入库",
+        "extraServices": "额外服务",
+        "serviceInspection": "开箱检查违禁物品",
+        "serviceConfirmation": "BBDbuy代发默认不提供商品确认。如需确认，请选择'商品确认'服务。",
+        "serviceRemoveInvoice": "移除发票（可能降低被税概率）",
+        "serviceOriginalBox": "原箱储存",
         "submit": "提交",
-        "acceptAgreement": "我已阅读和接受 《转发包裹检验规则和服务协议》"
+        "acceptAgreement": "我已阅读并接受《代发包裹检查规则与服务协议》"
     },
     "EstimationPage": {
-        "fillWeightOrSize": "请填写重量或者尺寸（长、宽、高）！",
+        "fillWeightOrSize": "请输入重量或尺寸（长、宽、高）！",
         "title": "运费估算",
-        "warehouse": "仓库寄往",
-        "weight": "重量（g）",
-        "length": "长（cm）",
-        "width": "宽（cm）",
-        "height": "高（cm）",
+        "warehouse": "仓库至",
+        "weight": "重量 (克)",
+        "length": "长度 (厘米)",
+        "width": "宽度 (厘米)",
+        "height": "高度 (厘米)",
         "search": "立即查询",
         "insurable": "可投保",
         "taxFree": "免税",
         "price": "价格",
-        "time": "时间",
-        "pricingStandard": "结算标准",
-        "firstWeightFee": "首重运费",
-        "additionalWeightFee": "续重运费",
-        "customsFee": "报关费",
-        "shippingLimit": "邮寄限制",
-        "routeFeature": "线路特点"
+        "time": "时效",
+        "pricingStandard": "计价标准",
+        "firstWeightFee": "首重费用",
+        "additionalWeightFee": "续重费用",
+        "customsFee": "关税",
+        "shippingLimit": "运输限制",
+        "routeFeature": "路线特点"
     }
 }

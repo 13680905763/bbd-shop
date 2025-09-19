@@ -275,8 +275,30 @@
             },
             {
                 "key": "promotion",
-                "label": "Promotion",
-                "href": "/dashboard/promotion"
+                "label": "Affiliate Program",
+                "type": "accordion",
+                "children": [
+                    {
+                        "key": "promotion",
+                        "label": "Dashboard",
+                        "href": "/dashboard/promotion"
+                    },
+                    {
+                        "key": "user",
+                        "label": "User Details",
+                        "href": "/dashboard/promotion/user"
+                    },
+                    {
+                        "key": "experience",
+                        "label": "Experience Details",
+                        "href": "/dashboard/promotion/experience"
+                    },
+                    {
+                        "key": "bonus",
+                        "label": "Bonus Details",
+                        "href": "/dashboard/promotion/bonus"
+                    }
+                ]
             }
         ],
         "Page": {
@@ -605,17 +627,26 @@
             },
             "ScoreTab": {
                 "texts": {
-                    "title": "Balance",
-                    "recharge": "Recharge",
-                    "withdraw": "Withdraw",
-                    "tableTitle": "Transaction History",
-                    "noData": "No transaction records",
-                    "withdrawModalTitle": "Withdraw"
+                    "title": "Points",
+                    "exchangeCoupon": "Redeem Points for Coupons",
+                    "details": "Points Details"
                 },
                 "tableColumns": [
                     {
-                        "key": "id",
-                        "label": "Transaction Time"
+                        "key": "bizType",
+                        "label": "Source"
+                    },
+                    {
+                        "key": "amount",
+                        "label": "Quantity"
+                    },
+                    {
+                        "key": "availablePoints",
+                        "label": "Available Points"
+                    },
+                    {
+                        "key": "createTime",
+                        "label": "Time"
                     }
                 ]
             }
@@ -709,6 +740,66 @@
                 "pendingPaymentStatus": "Pending Payment",
                 "payButton": "Pay",
                 "cancelButton": "Cancel"
+            }
+        },
+        "Promotion": {
+            "user": {
+                "title": "User Details",
+                "noData": "No transaction records",
+                "tableColumns": [
+                    {
+                        "key": "name",
+                        "label": "Invitee"
+                    },
+                    {
+                        "key": "email",
+                        "label": "Invitee Email"
+                    },
+                    {
+                        "key": "createTime",
+                        "label": "Time"
+                    }
+                ]
+            },
+            "bonus": {
+                "title": "Bonus Details",
+                "noData": "No transaction records",
+                "tableColumns": [
+                    {
+                        "key": "bizType",
+                        "label": "Source"
+                    },
+                    {
+                        "key": "amount",
+                        "label": "Amount"
+                    },
+                    {
+                        "key": "currentBalance",
+                        "label": "Available Bonus"
+                    },
+                    {
+                        "key": "createTime",
+                        "label": "Time"
+                    }
+                ]
+            },
+            "experience": {
+                "title": "Experience Details",
+                "noData": "No transaction records",
+                "tableColumns": [
+                    {
+                        "key": "email",
+                        "label": "Invitee Email"
+                    },
+                    {
+                        "key": "experience",
+                        "label": "Experience Points"
+                    },
+                    {
+                        "key": "createTime",
+                        "label": "Time"
+                    }
+                ]
             }
         }
     },

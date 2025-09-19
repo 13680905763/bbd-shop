@@ -7,8 +7,6 @@ import {
   Snippet,
   Image,
   Button,
-  Tab,
-  Tabs,
 } from "@heroui/react";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -17,7 +15,6 @@ import {
   getExperience,
   getExperienceList,
   getPromotionConfig,
-  getPromotionList,
 } from "@/services";
 const processItems = [
   {
@@ -57,13 +54,10 @@ export default function PromotionPage() {
       const res = await getExperience();
       const res1 = await getPromotionConfig();
       const res2 = await getExperienceList();
-      const res3 = await getPromotionList();
 
       console.log("res2", res2);
-      console.log("res3", res3);
 
       setPromotionConfig(res1);
-      setPromotionList(res3);
       setExperience(res || null);
       setExperienceList(res2 || null);
     } catch (err) {
@@ -71,51 +65,6 @@ export default function PromotionPage() {
     } finally {
     }
   };
-
-  // 动态生成 Tabs 配置
-  const tabLabels = [
-    {
-      key: "经验明细",
-      label: "经验明细",
-    },
-    {
-      label: "奖金明细",
-      key: "奖金明细",
-    },
-    {
-      label: "邀请明细",
-      key: "邀请明细",
-    },
-  ];
-  const tabsConfig = [
-    {
-      key: "经验明细",
-    },
-    {
-      key: "邀请明细",
-    },
-    {
-      key: "奖金明细",
-    },
-  ].map((tab) => {
-    let component: React.ReactNode = null;
-
-    switch (tab.key) {
-      case "经验明细":
-        component = <div>score</div>;
-
-        break;
-      case "邀请明细":
-        component = <div>score</div>;
-        break;
-      case "奖金明细":
-        // component = <CouponTab />;
-        component = <div>coupon</div>;
-        break;
-    }
-
-    return { key: tab.key, component };
-  });
 
   useEffect(() => {
     fetchExperience();
@@ -248,34 +197,6 @@ export default function PromotionPage() {
           </AccordionItem>
         </Accordion>
       </div>
-
-      <Tabs
-        aria-label="Wallet Tabs"
-        classNames={{
-          base: "mt-2 w-full bg-white p-2",
-          tabList: "gap-6 w-full relative rounded-none p-0",
-          cursor: "w-full bg-[#f0700c]",
-          tab: "max-w-fit px-0 h-12",
-          tabContent: "group-data-[selected=true]:text-[#f0700c]",
-        }}
-        color="primary"
-        selectedKey={currentTab}
-        variant="underlined"
-        onSelectionChange={changeTab}
-      >
-        {tabLabels.map((tab) => (
-          <Tab
-            key={tab.key}
-            title={
-              <div className="flex items-center space-x-2">
-                <span>{tab.label}</span>
-              </div>
-            }
-          >
-            {tabsConfig.find((c) => c.key === tab.key)?.component}
-          </Tab>
-        ))}
-      </Tabs>
     </div>
   );
 }

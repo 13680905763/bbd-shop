@@ -62,7 +62,7 @@ export const UserMenu = ({ texts }: UserMenuProps) => {
           as="button"
           avatarProps={{ isBordered: true, src: user?.avatarUrl }}
           className="transition-transform"
-          description={user?.email}
+          // description={user?.email}
           name={user?.name}
         />
       </DropdownTrigger>

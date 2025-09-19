@@ -275,8 +275,30 @@
             },
             {
                 "key": "promotion",
-                "label": "Promotion",
-                "href": "/dashboard/promotion"
+                "label": "Programme d'Affiliation",
+                "type": "accordion",
+                "children": [
+                    {
+                        "key": "promotion",
+                        "label": "Tableau de Bord",
+                        "href": "/dashboard/promotion"
+                    },
+                    {
+                        "key": "user",
+                        "label": "Détails des Utilisateurs",
+                        "href": "/dashboard/promotion/user"
+                    },
+                    {
+                        "key": "experience",
+                        "label": "Détails de l'Expérience",
+                        "href": "/dashboard/promotion/experience"
+                    },
+                    {
+                        "key": "bonus",
+                        "label": "Détails des Bonus",
+                        "href": "/dashboard/promotion/bonus"
+                    }
+                ]
             }
         ],
         "Page": {
@@ -709,6 +731,66 @@
                 "pendingPaymentStatus": "Paiement en Attente",
                 "payButton": "Payer",
                 "cancelButton": "Annuler"
+            }
+        },
+        "Promotion": {
+            "user": {
+                "title": "Détails de l'utilisateur",
+                "noData": "Aucun enregistrement de transaction",
+                "tableColumns": [
+                    {
+                        "key": "name",
+                        "label": "Invité"
+                    },
+                    {
+                        "key": "email",
+                        "label": "Email de l'invité"
+                    },
+                    {
+                        "key": "createTime",
+                        "label": "Heure"
+                    }
+                ]
+            },
+            "bonus": {
+                "title": "Détails des bonus",
+                "noData": "Aucun enregistrement de transaction",
+                "tableColumns": [
+                    {
+                        "key": "bizType",
+                        "label": "Source"
+                    },
+                    {
+                        "key": "amount",
+                        "label": "Quantité"
+                    },
+                    {
+                        "key": "currentBalance",
+                        "label": "Bonus disponible"
+                    },
+                    {
+                        "key": "createTime",
+                        "label": "Heure"
+                    }
+                ]
+            },
+            "experience": {
+                "title": "Détails de l'expérience",
+                "noData": "Aucun enregistrement de transaction",
+                "tableColumns": [
+                    {
+                        "key": "email",
+                        "label": "Email de l'invité"
+                    },
+                    {
+                        "key": "experience",
+                        "label": "Points d'expérience"
+                    },
+                    {
+                        "key": "createTime",
+                        "label": "Heure"
+                    }
+                ]
             }
         }
     },

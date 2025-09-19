@@ -1,6 +1,15 @@
-import { Button } from "@heroui/react";
+import {
+  Button,
+  getKeyValue,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
+} from "@heroui/react";
 import React, { useEffect, useState } from "react";
-import { IoAddCircleOutline, IoWallet } from "react-icons/io5";
+import { IoTicketOutline, IoWallet } from "react-icons/io5";
 
 import { getPointsList } from "@/services";
 
@@ -52,7 +61,7 @@ export default function ScoreTab({ user, tableColumns, texts }: any) {
   useEffect(() => {
     getPointsList().then((res) => {
       console.log("res", res);
-      setScoreList(res.data);
+      setScoreList(res.records);
     });
   }, []);
 
@@ -62,7 +71,7 @@ export default function ScoreTab({ user, tableColumns, texts }: any) {
       <div className="flex justify-between bg-[#ffeee1] rounded-lg p-8">
         <div className="flex items-center gap-2">
           <IoWallet className="w-6 h-6 text-[#f0700c]" />
-          <div className="text-lg font-bold">积分</div>
+          <div className="text-lg font-bold">{texts.title}</div>
           <span className="text-money-3xl">{user?.myPoints}</span>
         </div>
         <div className="flex items-center gap-4">
@@ -71,15 +80,15 @@ export default function ScoreTab({ user, tableColumns, texts }: any) {
             size="md"
             // onPress={() => setIsOpenRecharge(true)}
           >
-            <IoAddCircleOutline className="w-5 h-5" />
-            积分兑换优惠券
+            <IoTicketOutline className="w-5 h-5 " />
+            {texts.exchangeCoupon}
           </Button>
         </div>
       </div>
 
       {/* 表格 */}
-      <div className="font-bold my-4">积分明细</div>
-      {/* <Table
+      <div className="font-bold my-4">{texts.details}</div>
+      <Table
         isHeaderSticky
         classNames={{
           wrapper: "p-0 rounded-none border-1",
@@ -103,7 +112,7 @@ export default function ScoreTab({ user, tableColumns, texts }: any) {
             </TableRow>
           )}
         </TableBody>
-      </Table> */}
+      </Table>
     </div>
     // <div>
     //   <WalletCard

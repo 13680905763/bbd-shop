@@ -118,11 +118,15 @@ export const getPointsList = (): Promise<any> => {
 export const getExperienceList = (): Promise<any> => {
   return request.get(`/customer-experience-detail`);
 };
+/** 获取邀请列表 */
+export const getPromotionUserList = (): Promise<any> => {
+  return request.get(`/customer/inviteList`);
+};
 /** 获取奖金配置 */
 export const getPromotionConfig = (): Promise<any> => {
   return request.get(`/promotion-config?configType=EXPERIENCE`);
 };
 /** 获取奖金配置 */
-export const getPromotionList = (): Promise<any> => {
+export const getPromotionBonusList = (): Promise<any> => {
   return request.get(`/customer-bonus-detail`);
 };
