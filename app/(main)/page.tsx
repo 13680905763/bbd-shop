@@ -18,8 +18,6 @@ export default function Home() {
   const links = t.raw("Links") as LinkItem[];
   const services = t.raw("Services") as ServiceItem[];
 
-  console.log(t.raw("texts"));
-
   return (
     <div className="pb-12">
       {isLoading && <FullscreenLoader />}

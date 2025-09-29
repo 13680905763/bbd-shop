@@ -37,6 +37,14 @@ export const Navbar = () => {
   useEffect(() => {
     // 获取一次用户信息
     getUserInfo().catch(() => {
+      console.log("123");
+
+      [
+        "user-storage",
+        "wallet-storage",
+        "services-storage",
+        "billingAddress-storage",
+      ].forEach((key) => localStorage.removeItem(key));
       router.refresh();
     });
   }, []);

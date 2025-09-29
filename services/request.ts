@@ -38,7 +38,7 @@ request.interceptors.response.use(
   (response: AxiosResponse<ApiResponse<any> & { config?: any }>) => {
     const res = response.data;
 
-    console.log("res", res);
+    // console.log("res", res);
 
     const showToast = (response.config as any)?.showToast ?? false; // 默认不显示提示
 

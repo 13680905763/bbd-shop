@@ -8,12 +8,13 @@ import {
   ModalContent,
   Textarea,
   Image,
+  addToast,
 } from "@heroui/react";
 import { FaComments, FaImage, FaTimes } from "react-icons/fa";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 
-import { fetchChatHistory, uploadChatImage } from "@/services";
+import { fetchChatHistory, getUserInfo, uploadChatImage } from "@/services";
 import { useUserStore } from "@/store";
 
 interface Message {
@@ -46,44 +47,68 @@ export default function ChatWidget() {
 
   /** 初始化 WebSocket */
   useEffect(() => {
-    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
+    if (!user?.id) return; // 用户未登录，先不初始化
 
-    if (!apiBase) return;
+    let socket: WebSocket | null = null;
+    let retryTimer: NodeJS.Timeout | null = null;
 
-    const wsUrl = apiBase.replace(/^http/, "ws") + "/ws";
-    const socket = new WebSocket(wsUrl);
+    const initWebSocket = () => {
+      const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-    socketRef.current = socket;
+      if (!apiBase) return;
 
-    socket.onopen = () => console.log("✅ WebSocket 已连接");
-    socket.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
+      const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+      const host = apiBase.replace(/^https?:\/\//, "");
+      const wsUrl = `${protocol}://${host}/ws`;
 
-        if (data.sender === "SERVER" && !receiverIdRef.current) {
-          receiverIdRef.current = data.receiverId;
-          setReceiverId(data.receiverId);
-          setHasAgent(true);
+      socket = new WebSocket(wsUrl);
+      socketRef.current = socket;
+
+      socket.onopen = () => console.log("✅ WebSocket 已连接");
+      socket.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+
+          if (data.sender === "SERVER" && !receiverIdRef.current) {
+            receiverIdRef.current = data.receiverId;
+            setReceiverId(data.receiverId);
+            setHasAgent(true);
+          }
+
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: Date.now(),
+              sender: data.sender === "CUSTOMER" ? "user" : "bot",
+              text: data.content,
+              type: data.type,
+            },
+          ]);
+        } catch (err) {
+          console.error("解析消息失败:", err, event.data);
         }
+      };
+      socket.onclose = (event) => {
+        console.log(
+          `❌ WebSocket 已关闭, code=${event.code}, reason=${event.reason}`,
+        );
 
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: Date.now(),
-            sender: data.sender === "CUSTOMER" ? "user" : "bot",
-            text: data.content,
-            type: data.type,
-          },
-        ]);
-      } catch (err) {
-        console.error("解析消息失败:", err, event.data);
-      }
+        // 可选：断线重连（可加上次数限制）
+        // retryTimer = setTimeout(initWebSocket, 3000);
+      };
+      socket.onerror = (err) => console.error("⚠️ WebSocket 错误:", err);
     };
-    socket.onclose = () => console.log("❌ WebSocket 已关闭");
-    socket.onerror = (err) => console.error("⚠️ WebSocket 错误:", err);
 
-    return () => socket.close();
-  }, []);
+    // 延迟 50ms 确保 store 更新
+    const timer = setTimeout(initWebSocket, 50);
+
+    return () => {
+      clearTimeout(timer);
+      if (retryTimer) clearTimeout(retryTimer);
+      socket?.close();
+      socketRef.current = null;
+    };
+  }, [user?.id]);
 
   /** 发送消息 */
   const sendMessage = (msgText: string, type: Message["type"] = "TEXT") => {
@@ -108,6 +133,16 @@ export default function ChatWidget() {
   };
 
   const handleSend = () => {
+    if (!user?.id) {
+      addToast({
+        title: "请先登录",
+        timeout: 1000,
+        color: "danger",
+      });
+
+      return;
+    }
+
     const msgText = input.trim();
 
     if (!msgText) return;
@@ -141,6 +176,15 @@ export default function ChatWidget() {
   const triggerUpload = () => fileInputRef.current?.click();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!user?.id) {
+      addToast({
+        title: "请先登录",
+        timeout: 1000,
+        color: "danger",
+      });
+
+      return;
+    }
     const file = e.target.files?.[0];
 
     if (!file) return;
@@ -242,7 +286,16 @@ export default function ChatWidget() {
 
   /** 首次加载历史 */
   useEffect(() => {
-    if (!user?.id) return;
+    if (!user?.id) {
+      // 用户未登录，直接提示，不调用接口
+      // addToast({
+      //   title: "请先登录",
+      //   timeout: 1000,
+      //   color: "danger",
+      // });
+
+      return;
+    }
     loadHistory(true);
   }, [user]);
 
@@ -284,6 +337,33 @@ export default function ChatWidget() {
     }
   };
 
+  // 切换用户 / 打开聊天时滚动到底部
+  useEffect(() => {
+    console.log("open", !isOpen);
+
+    if (!isOpen) return;
+    const container = scrollContainerRef.current;
+
+    console.log("open123", !container);
+    if (!container) return;
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        container.scrollTop = container.scrollHeight;
+      });
+    });
+  }, [receiverId, isOpen]);
+  useEffect(() => {
+    // 获取一次用户信息
+    getUserInfo().catch(() => {
+      // addToast({
+      //   title: "请先登录",
+      //   timeout: 1000,
+      //   color: "danger",
+      // });
+    });
+  }, []);
+
   return (
     <>
       {/* 右下角按钮 */}
@@ -311,7 +391,7 @@ export default function ChatWidget() {
         <ModalContent className="p-0 m-0 fixed bottom-20 right-6 w-[380px] h-[520px] shadow-xl overflow-hidden">
           <Card className="w-full h-full flex flex-col">
             {/* 顶部栏 */}
-            <div className="flex items-center justify-between bg-blue-600 text-white px-4 py-4">
+            <div className="flex items-center justify-between text-white px-4 py-4">
               <div className="flex items-center gap-2">
                 <img alt="logo" className="w-15 h-6 rounded" src="/logo.png" />
                 <span className="font-semibold text-sm">在线客服</span>

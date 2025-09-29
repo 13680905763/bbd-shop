@@ -100,7 +100,6 @@ export default function OrderPage() {
     footer?: React.ReactNode;
   }) => {
     if (!orders?.length) return <EmptyOrder />;
-    console.log(t.raw("texts"));
 
     return (
       <>
