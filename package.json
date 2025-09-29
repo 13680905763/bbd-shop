@@ -10,6 +10,8 @@
     "lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix"
   },
   "dependencies": {
+    "@emoji-mart/data": "^1.2.1",
+    "@emoji-mart/react": "^1.1.1",
     "@heroui/button": "2.2.19",
     "@heroui/code": "2.2.14",
     "@heroui/input": "2.4.19",
@@ -30,6 +32,7 @@
     "antd": "^5.26.7",
     "axios": "^1.9.0",
     "clsx": "2.1.1",
+    "emoji-mart": "^5.6.0",
     "framer-motion": "11.13.1",
     "git-filter-repo": "^0.0.30",
     "global-agent": "^3.0.0",

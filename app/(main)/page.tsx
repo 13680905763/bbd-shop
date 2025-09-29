@@ -9,6 +9,7 @@ import HomeServiceCards, { ServiceItem } from "./components/home-service-cards";
 import HomeStepFlow, { Step } from "./components/home-step-flow";
 
 import FullscreenLoader from "@/components/common/fullscreen-loader";
+import ChatBox from "@/components/common/chatbox";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false); // 🔹 loading 状态
@@ -48,6 +49,7 @@ export default function Home() {
           {t("texts.ServiceTitle")}
         </h2>
         <HomeServiceCards services={services} />
+        <ChatBox />
       </div>
     </div>
   );

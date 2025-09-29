@@ -12,6 +12,10 @@ export const request = axios.create({
   },
   withCredentials: true,
 });
+// console.log(
+//   "process.env.NEXT_PUBLIC_API_BASE_URL",
+//   process.env.NEXT_PUBLIC_API_BASE_URL,
+// );
 
 // 请求拦截器：注入 token、语言等
 request.interceptors.request.use(
