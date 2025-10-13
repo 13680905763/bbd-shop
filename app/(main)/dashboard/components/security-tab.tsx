@@ -1,10 +1,12 @@
 "use client";
 
-import { Button, Divider } from "@heroui/react";
+import { addToast, Button, Divider } from "@heroui/react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import FormModal from "@/components/modal/form-modal";
 import { FieldConfig } from "@/components/form/formItem-renderer";
+import { updatePwd } from "@/services";
 
 interface SecurityTabProps {
   texts: {
@@ -18,10 +20,44 @@ interface SecurityTabProps {
 
 export function SecurityTab({ texts, fields }: SecurityTabProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState<any>({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
+  const router = useRouter();
 
   const handleSave = async () => {
-    // 保存逻辑
+    // 校验两次密码一致性
+    if (formData.newPassword !== formData.confirmPassword) {
+      addToast({
+        title: "两次输入的新密码不一致",
+        timeout: 1000,
+        color: "danger",
+      });
+
+      return false;
+    }
+
+    try {
+      await updatePwd({
+        oldPassword: formData.oldPassword,
+        newPassword: formData.newPassword,
+      });
+
+      // addToast({
+      //   title: "密码修改成功，请重新登录",
+      //   timeout: 1000,
+      //   color: "danger",
+      // });
+      // 跳转登录页（可改成你的登录路由）
+      setTimeout(() => {
+        router.push("/login");
+      }, 2000);
+
+      return true;
+    } catch {}
   };
 
   return (
@@ -43,7 +79,7 @@ export function SecurityTab({ texts, fields }: SecurityTabProps) {
         formData={formData}
         isOpen={isOpen}
         title={texts.modalTitle}
-        onChange={setFormData}
+        onChange={(data) => setFormData(data)} // ✅ 避免类型不匹配
         onOpenChange={setIsOpen}
         onSave={handleSave}
       />

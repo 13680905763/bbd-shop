@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import {
   getKeyValue,
+  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -17,14 +18,27 @@ import { getPromotionUserList } from "@/services";
 export default function PromotionUserPage() {
   const t: any = useTranslations("Dashboard.Promotion.user");
 
-  const [promotionUserList, setPromotionUserList] = useState([]);
+  const [promotionUserList, setPromotionUserList] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getPromotionUserList().then((res) => {
-      console.log("res.records", res);
-      setPromotionUserList(res.records);
-    });
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const res = await getPromotionUserList();
+
+        console.log("res.records", res);
+        setPromotionUserList(res.records || []);
+      } catch (err) {
+        console.error("获取推广用户失败:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
+
   console.log("promotionUserList", promotionUserList);
 
   return (
@@ -32,6 +46,7 @@ export default function PromotionUserPage() {
       <div className="font-bold my-4">{t.title}</div>
       <Table
         isHeaderSticky
+        aria-label="promotion-user-table"
         classNames={{
           wrapper: "p-0 rounded-none border-1",
           tr: "border-b-1 last:border-b-0 !shadow-none",
@@ -45,7 +60,12 @@ export default function PromotionUserPage() {
             <TableColumn key={column.key}>{column.label}</TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={t.noData} items={promotionUserList || []}>
+        <TableBody
+          emptyContent={t.noData}
+          isLoading={loading}
+          items={promotionUserList || []}
+          loadingContent={<Spinner label="Loading..." />}
+        >
           {(item: any) => (
             <TableRow key={item?.id}>
               {(columnKey) => (

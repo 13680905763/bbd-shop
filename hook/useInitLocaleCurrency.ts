@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 
 import { useGlobalStore } from "@/store";
+import { setUserCurrency, setUserLocale } from "@/i18n/service";
 
 export function useInitLocaleCurrency() {
   const { setLocale, setCurrency } = useGlobalStore();
@@ -11,7 +12,13 @@ export function useInitLocaleCurrency() {
     const storedLocale = localStorage.getItem("locale");
     const storedCurrency = localStorage.getItem("currency");
 
-    if (storedLocale) setLocale(storedLocale);
-    if (storedCurrency) setCurrency(storedCurrency);
+    if (storedLocale) {
+      setLocale(storedLocale);
+      setUserLocale(storedLocale);
+    }
+    if (storedCurrency) {
+      setCurrency(storedCurrency);
+      setUserCurrency(storedCurrency);
+    }
   }, []);
 }

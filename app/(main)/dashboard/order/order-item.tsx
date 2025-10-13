@@ -20,11 +20,12 @@ function ProductItem({ product, texts }: ProductItemProps) {
         <div className="flex grow-0 shrink-0 basis-[400px] gap-2">
           <div className="grow-0 shrink-0 basis-[90px]">
             <button
-              onClick={() =>
+              onClick={() => {
+                if (product.source === "BBD") return;
                 router.push(
                   `/goods/${product.source}/${product?.sourceProductId}`,
-                )
-              }
+                );
+              }}
             >
               <Image
                 alt="Product"
@@ -138,7 +139,7 @@ export default function OrderItem({
               {order?.statusCode === 102 ? (
                 <button
                   className="text-[#f0700c]"
-                  onClick={() => onRequestRefund(order?.id)}
+                  onClick={() => onRequestRefund()} // ✅ 这里加上
                 >
                   {texts.refund}
                 </button>

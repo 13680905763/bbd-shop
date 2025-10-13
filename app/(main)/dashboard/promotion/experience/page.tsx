@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import {
   getKeyValue,
+  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -17,32 +18,26 @@ import { getExperienceList } from "@/services";
 export default function PromotionExperiencePage() {
   const t: any = useTranslations("Dashboard.Promotion.experience");
 
-  const [experienceList, setExperienceList] = useState([]);
+  const [experienceList, setExperienceList] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getExperienceList().then((res) => {
-      console.log("res", res);
-      setExperienceList(res.records);
-    });
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const res = await getExperienceList();
+
+        console.log("res", res);
+        setExperienceList(res.records || []);
+      } catch (err) {
+        console.error("获取经验明细失败:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
-  const texts = {
-    title: "经验明细",
-    noData: "暂无交易记录",
-  };
-  const tableColumns = [
-    {
-      key: "email",
-      label: "被邀请人邮箱",
-    },
-    {
-      key: "experience",
-      label: "经验值",
-    },
-    {
-      key: "createTime",
-      label: "时间",
-    },
-  ];
 
   return (
     <>
@@ -62,7 +57,12 @@ export default function PromotionExperiencePage() {
             <TableColumn key={column.key}>{column.label}</TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={t.noData} items={experienceList || []}>
+        <TableBody
+          emptyContent={t.noData}
+          isLoading={loading}
+          items={experienceList || []}
+          loadingContent={<Spinner label="Loading..." />}
+        >
           {(item: any) => (
             <TableRow key={item?.id}>
               {(columnKey) => (

@@ -6,6 +6,7 @@ import {
   ModalFooter,
   Button,
 } from "@heroui/react";
+import { useState } from "react";
 
 import FormItemRenderer, { FieldConfig } from "../form/formItem-renderer";
 
@@ -16,10 +17,12 @@ interface FormModalProps {
   fields: FieldConfig[];
   formData: Record<string, any>;
   onChange: (data: Record<string, any>) => void;
-  onSave: (data: Record<string, any>) => void;
+  // ✅ onSave 可以返回 boolean（true 表示关闭）
+  onSave: (
+    data: Record<string, any>,
+  ) => Promise<boolean | void> | boolean | void;
   confirmText?: string;
   cancelText?: string;
-  loading?: boolean;
 }
 
 const FormModal = ({
@@ -32,8 +35,25 @@ const FormModal = ({
   onSave,
   confirmText = "保存",
   cancelText = "取消",
-  loading = false,
 }: FormModalProps) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+      const result = await onSave(formData);
+
+      // 只有返回 true 时才关闭
+      if (result === true) {
+        onOpenChange(false);
+      }
+    } catch (e) {
+      console.error("保存失败:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Modal
       isDismissable={false}
@@ -42,33 +62,28 @@ const FormModal = ({
       onOpenChange={onOpenChange}
     >
       <ModalContent>
-        {(onClose) => (
-          <>
-            <ModalHeader>{title}</ModalHeader>
-            <ModalBody>
-              <FormItemRenderer
-                fields={fields}
-                formData={formData}
-                onChange={onChange}
-              />
-            </ModalBody>
-            <ModalFooter>
-              <Button variant="flat" onPress={onClose}>
-                {cancelText}
-              </Button>
-              <Button
-                color="primary"
-                isLoading={loading}
-                onPress={() => {
-                  onSave(formData);
-                  onClose();
-                }}
-              >
-                {confirmText}
-              </Button>
-            </ModalFooter>
-          </>
-        )}
+        <>
+          <ModalHeader>{title}</ModalHeader>
+          <ModalBody>
+            <FormItemRenderer
+              fields={fields}
+              formData={formData}
+              onChange={onChange}
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              isDisabled={loading}
+              variant="flat"
+              onPress={() => onOpenChange(false)}
+            >
+              {cancelText}
+            </Button>
+            <Button color="primary" isLoading={loading} onPress={handleSave}>
+              {confirmText}
+            </Button>
+          </ModalFooter>
+        </>
       </ModalContent>
     </Modal>
   );

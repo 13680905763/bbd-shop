@@ -145,7 +145,9 @@ export default function SubmitOrder() {
       });
 
       if (typeof res === "string" && res.startsWith("http")) {
-        window.location.href = res;
+        console.log("res", res);
+
+        // window.location.href = res;
       }
     } catch (err) {
       console.error(err);

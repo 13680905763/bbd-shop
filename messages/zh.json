@@ -451,19 +451,22 @@
                 "fields": [
                     {
                         "type": "input",
-                        "key": "currentPassword",
+                        "key": "oldPassword",
+                        "name": "oldPassword",
                         "label": "当前密码",
                         "placeholder": "输入当前密码"
                     },
                     {
                         "type": "input",
                         "key": "newPassword",
+                        "name": "newPassword",
                         "label": "新密码",
                         "placeholder": "输入新密码"
                     },
                     {
                         "type": "input",
                         "key": "confirmPassword",
+                        "name": "confirmPassword",
                         "label": "确认新密码",
                         "placeholder": "确认新密码"
                     }
@@ -743,6 +746,40 @@
             }
         },
         "Promotion": {
+            "page": {
+                "process": [
+                    "分享您的联盟代码",
+                    "您邀请的朋友确认收到您的联盟代码",
+                    "收到您的联盟佣金"
+                ],
+                "invite": {
+                    "copyUrl": "复制此 URL 并使用它将用户重定向到您的联盟 lD 的主页"
+                },
+                "myAlliance": {
+                    "title": "我的联盟",
+                    "totalReward": "总奖励",
+                    "record": "记录",
+                    "withdraw": "领取",
+                    "inviteUsers": "邀请用户 >",
+                    "withdrawTimes": "取款",
+                    "earned": "赚取 >"
+                },
+                "myLevel": {
+                    "title": "我的等级",
+                    "experience": "我的经验：",
+                    "bonusRate": "奖金比例",
+                    "experienceRange": "经验"
+                },
+                "faq": {
+                    "title": "权益FAQ",
+                    "questions": [
+                        "什么是联盟会员计划？",
+                        "我的奖金是如何计算的？",
+                        "如何免费推广？"
+                    ],
+                    "defaultContent": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                }
+            },
             "user": {
                 "title": "用户明细",
                 "noData": "暂无交易记录",

@@ -28,13 +28,13 @@ export default function DashBoardlayout({ children }: DashBoardLayoutProps) {
   const currentItem = useMemo(() => {
     const pathParts = pathname.split("/").filter(Boolean);
 
-    console.log("pathParts", pathParts);
+    // console.log("pathParts", pathParts);
     if (pathParts[2]) return pathParts[2];
 
     return pathParts[0] === "dashboard" ? (pathParts[1] ?? "") : "";
   }, [pathname]);
 
-  console.log("currentItem", currentItem);
+  // console.log("currentItem", currentItem);
 
   // if (!t) return <FullscreenLoader />;
 

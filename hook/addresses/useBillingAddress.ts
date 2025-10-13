@@ -4,12 +4,12 @@ import { getAddressList } from "@/services";
 import { useBillingAddressStore } from "@/store";
 
 export const useBillingAddress = () => {
-  console.log("useBillingAddress");
+  // console.log("useBillingAddress");
 
   return useQuery({
     queryKey: ["billingAddress"],
     queryFn: async () => {
-      console.log("shuaxin");
+      // console.log("shuaxin");
 
       const data = await getAddressList(2).then((res) => res[0] || {});
 

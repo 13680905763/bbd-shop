@@ -451,19 +451,22 @@
                 "fields": [
                     {
                         "type": "input",
-                        "key": "currentPassword",
-                        "label": "Current Password",
-                        "placeholder": "Enter current password"
+                        "key": "oldPassword",
+                        "name": "oldPassword",
+                        "label": "Old Password",
+                        "placeholder": "Enter Old password"
                     },
                     {
                         "type": "input",
                         "key": "newPassword",
+                        "name": "newPassword",
                         "label": "New Password",
                         "placeholder": "Enter new password"
                     },
                     {
                         "type": "input",
                         "key": "confirmPassword",
+                        "name": "confirmPassword",
                         "label": "Confirm New Password",
                         "placeholder": "Confirm new password"
                     }
@@ -743,6 +746,40 @@
             }
         },
         "Promotion": {
+            "page": {
+                "process": [
+                    "Share your referral code",
+                    "Your invited friends confirm they received your referral code",
+                    "Receive your referral commission"
+                ],
+                "invite": {
+                    "copyUrl": "Copy this URL and use it to redirect users to your referral ID homepage"
+                },
+                "myAlliance": {
+                    "title": "My Alliance",
+                    "totalReward": "Total Reward",
+                    "record": "Records",
+                    "withdraw": "Withdraw",
+                    "inviteUsers": "Invited Users >",
+                    "withdrawTimes": "Withdrawals",
+                    "earned": "Earned >"
+                },
+                "myLevel": {
+                    "title": "My Level",
+                    "experience": "My Experience:",
+                    "bonusRate": "Bonus Rate",
+                    "experienceRange": "Experience"
+                },
+                "faq": {
+                    "title": "Rights FAQ",
+                    "questions": [
+                        "What is the Referral Membership Program?",
+                        "How is my bonus calculated?",
+                        "How to promote for free?"
+                    ],
+                    "defaultContent": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                }
+            },
             "user": {
                 "title": "User Details",
                 "noData": "No transaction records",

@@ -11,6 +11,8 @@ import { useGlobalStore } from "@/store";
 export default function LanguageCurrencySelector() {
   const { locale, setLocale, currency, setCurrency } = useGlobalStore();
 
+  // console.log("locale", locale);
+
   const [tempLocale, setTempLocale] = useState(locale); // 临时选择
   const [tempCurrency, setTempCurrency] = useState(currency);
 
@@ -20,7 +22,7 @@ export default function LanguageCurrencySelector() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      console.log("保存选择", tempLocale, tempCurrency);
+      // console.log("保存选择", tempLocale, tempCurrency);
       // 1. 更新 store
       setLocale(tempLocale);
       setCurrency(tempCurrency);

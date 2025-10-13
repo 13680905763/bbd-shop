@@ -130,3 +130,9 @@ export const getPromotionConfig = (): Promise<any> => {
 export const getPromotionBonusList = (): Promise<any> => {
   return request.get(`/customer-bonus-detail`);
 };
+export const updatePwd = (data: any): Promise<UserInfo> => {
+  return requestWithOption(
+    { url: "/customer/password", method: "POST", data },
+    { showToast: true },
+  );
+};

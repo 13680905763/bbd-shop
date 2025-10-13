@@ -23,7 +23,7 @@ import {
 import { useTranslations } from "next-intl";
 
 import { describeText, title } from "@/components/primitives";
-import { getWarehouseRoutesList, searchWarehouseRoutesList } from "@/services";
+import { searchWarehouseRoutesList } from "@/services";
 import { useCountries } from "@/hook";
 
 export default function EstimationPage() {
@@ -84,9 +84,9 @@ export default function EstimationPage() {
 
   useEffect(() => {
     // 初始化加载全部
-    getWarehouseRoutesList().then((res) => {
-      setRoutes(res || []);
-    });
+    // getWarehouseRoutesList().then((res) => {
+    //   setRoutes(res || []);
+    // });
   }, []);
 
   return (
@@ -126,6 +126,7 @@ export default function EstimationPage() {
               </Autocomplete>
 
               <Input
+                isRequired
                 className="flex-1"
                 label={t("weight")}
                 name="weight"
@@ -212,8 +213,9 @@ export default function EstimationPage() {
                     <div className="flex-1 flex flex-col items-center">
                       <div className={describeText()}>{t("price")}</div>
                       <div className={describeText({ size: "xl", color: 333 })}>
-                        $ {route.additionalWeightFee}{" "}
-                        {route.additionalVolumeFee}
+                        {route.shippingFee}
+                        {/* {route.additionalWeightFee} -{" "}
+                        {route.additionalVolumeFee} */}
                       </div>
                     </div>
                     <div className="flex-1 flex flex-col items-center text-default-500">
@@ -223,7 +225,7 @@ export default function EstimationPage() {
                         {route.shippingLine.maxDays}
                       </div>
                     </div>
-                    <div className="max-w-[60%]">
+                    <div className="max-w-[60%] min-w-[60%]">
                       <span className={describeText({ weight: "normal" })}>
                         {route.shippingLine.description}
                       </span>

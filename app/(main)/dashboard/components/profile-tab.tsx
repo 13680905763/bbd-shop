@@ -71,7 +71,7 @@ export default function ProfileTab({
           {avatarLoading ? (
             <Spinner size="lg" />
           ) : (
-            <Avatar className="w-16 h-16 text-large" src={avatarUrl} />
+            <Avatar className="w-16 h-16 text-large" src={avatarUrl ?? ""} />
           )}
           <span className="absolute bottom-0 left-0 bg-black/50 text-white text-xs px-1 rounded">
             {texts.edit}

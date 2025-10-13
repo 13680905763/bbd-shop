@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import {
   getKeyValue,
+  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -14,16 +15,28 @@ import { useTranslations } from "next-intl";
 
 import { getPromotionBonusList } from "@/services";
 
-export default function PromotionBonuscePage() {
+export default function PromotionBonusPage() {
   const t: any = useTranslations("Dashboard.Promotion.bonus");
 
-  const [bonusList, setBonusList] = useState([]);
+  const [bonusList, setBonusList] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getPromotionBonusList().then((res) => {
-      console.log("res", res);
-      setBonusList(res.records);
-    });
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const res = await getPromotionBonusList();
+
+        console.log("res", res);
+        setBonusList(res.records || []);
+      } catch (err) {
+        console.error("获取推广奖励失败:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (
@@ -44,7 +57,16 @@ export default function PromotionBonuscePage() {
             <TableColumn key={column.key}>{column.label}</TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={t.noData} items={bonusList || []}>
+        <TableBody
+          emptyContent={t.noData}
+          isLoading={loading}
+          items={bonusList || []}
+          loadingContent={
+            <div className="flex w-full justify-center items-center py-6">
+              <Spinner color="primary" label="Loading..." />
+            </div>
+          }
+        >
           {(item: any) => (
             <TableRow key={item?.id}>
               {(columnKey) => (
