@@ -8,22 +8,44 @@ import {
   Input,
   Snippet,
 } from "@heroui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
-import { useServicesStore } from "@/store";
-import { createCustomizeOrder } from "@/services";
+import { useGlobalStore } from "@/store";
+import { createCustomizeOrder, getServicesList } from "@/services";
+import FullscreenLoader from "@/components/common/fullscreen-loader";
 
 export default function ForwardingPage() {
   const t = useTranslations("ForwardingPage");
-  const services = useServicesStore((state) => state.services);
+  const [isLoading, setIsLoading] = useState(false); // 🔹 loading 状态
+
+  const { currency } = useGlobalStore();
+
+  const [servicesList, setServicesList] = useState([]);
+
   const router = useRouter();
 
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [acceptAgreement, setAcceptAgreement] = useState(false);
   const [loading, setLoading] = useState(false); // 🔥 loading 状态
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const res = await getServicesList();
+
+        setServicesList(res);
+      } catch (err) {
+        console.error("获取服务列表失败:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.currentTarget));
@@ -60,6 +82,7 @@ export default function ForwardingPage() {
 
   return (
     <div>
+      {isLoading && <FullscreenLoader />}
       {/* 顶部 Banner */}
       <div className="bg-[url('https://hoobuy.com/_nuxt/estimation_bg.BPnQS2i-.webp')] bg-no-repeat bg-cover h-[180px]" />
 
@@ -110,9 +133,10 @@ export default function ForwardingPage() {
               value={selectedServices}
               onChange={setSelectedServices}
             >
-              {services.map((item: any) => (
+              {servicesList.map((item: any) => (
                 <Checkbox key={item.id} value={item.id}>
-                  {item.serviceName}
+                  {item.serviceName}&nbsp;&nbsp;{currency.symbol}&nbsp;
+                  {item.price}
                 </Checkbox>
               ))}
             </CheckboxGroup>

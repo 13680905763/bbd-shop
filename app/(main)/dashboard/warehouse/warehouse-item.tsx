@@ -1,6 +1,6 @@
 "use client";
 import { Image } from "antd";
-import { Button, Checkbox } from "@heroui/react";
+import { Checkbox } from "@heroui/react";
 
 import MediaPreviewGroup, {
   MediaItem,
@@ -27,6 +27,7 @@ function ProductItem({ product, warehouse, texts }: ProductItemProps) {
           <Image
             alt="Product"
             height={90}
+            referrerPolicy="no-referrer"
             src={product?.skuPicUrl || product?.picUrl}
             width={90}
           />
@@ -56,12 +57,12 @@ function ProductItem({ product, warehouse, texts }: ProductItemProps) {
           {warehouse.status}
         </div>
 
-        <div className="flex-[0_0_80px] flex flex-col gap-2">
+        {/* <div className="flex-[0_0_80px] flex flex-col gap-2">
           <Button className="button-default" radius="lg" size="sm">
             <p>{texts.refundRequest}</p>
             <p>111:12:12</p>
           </Button>
-        </div>
+        </div> */}
       </div>
 
       <div className="flex gap-2 justify-center flex-col py-2">

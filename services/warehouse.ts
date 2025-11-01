@@ -17,6 +17,9 @@ export const getWarehouseServicesList = (): Promise<any> =>
 /** 获取运费模板 */
 export const getWarehouseRoutesList = (): Promise<any> =>
   request.get("/shipping-line-template/all");
+/** 获取运费模板 根据货物类别跟国家*/
+export const getWarehouseRoutesListByCC = (data: any): Promise<any> =>
+  request.post("/shipping-line-template/query", data);
 /** 获取运费模板 */
 export const searchWarehouseRoutesList = (data: any): Promise<any> =>
   request.post("/shipping-line-template/estimate", data);

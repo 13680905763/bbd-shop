@@ -10,7 +10,6 @@ import {
   Spacer,
   Accordion,
   AccordionItem,
-  Chip,
   Table,
   TableHeader,
   TableColumn,
@@ -25,10 +24,15 @@ import { useTranslations } from "next-intl";
 import { describeText, title } from "@/components/primitives";
 import { searchWarehouseRoutesList } from "@/services";
 import { useCountries } from "@/hook";
+import { useGlobalStore } from "@/store";
 
 export default function EstimationPage() {
   const t = useTranslations("EstimationPage");
+  const { currency } = useGlobalStore();
   const { data: countries = [] } = useCountries();
+
+  console.log("currency", currency);
+
   const [routes, setRoutes] = useState<any[]>([]);
 
   // ✅ 受控表单数据
@@ -188,44 +192,35 @@ export default function EstimationPage() {
               <AccordionItem
                 key={index}
                 title={
-                  <div className="flex gap-5 items-center">
-                    <div className="flex flex-col justify-center items-center flex-1">
-                      <Avatar className="w-20 h-20" src={route.logoUrl} />
-                      <Spacer y={4} />
-                      <p className="text-nowrap font-semibold">{route.name}</p>
-                      <div className="flex gap-2">
-                        {route.insurable && (
-                          <Chip color="primary" size="sm">
-                            {t("insurable")}
-                          </Chip>
-                        )}
-                        {route.taxFree && (
-                          <Chip
-                            className="text-[#fff]"
-                            color="success"
-                            size="sm"
-                          >
-                            {t("taxFree")}
-                          </Chip>
-                        )}
-                      </div>
+                  <div className="flex gap-5 items-start">
+                    <div className="flex flex-col justify-center items-center w-[240px]">
+                      <Avatar
+                        className="w-20 h-20"
+                        radius="sm"
+                        src={route.logoUrl}
+                      />
+                      <p className="mt-1 text-sm font-semibold text-center">
+                        {route.templateName}
+                      </p>
                     </div>
-                    <div className="flex-1 flex flex-col items-center">
-                      <div className={describeText()}>{t("price")}</div>
-                      <div className={describeText({ size: "xl", color: 333 })}>
+                    <div className="flex flex-col items-center justify-center w-[220px]">
+                      <div className="text-gray-500 text-sm">{t("price")}</div>
+                      <div className="text-lg font-bold">
+                        {/* {currency?.symbol} */}
+                        {currency.symbol}&nbsp;
                         {route.shippingFee}
                         {/* {route.additionalWeightFee} -{" "}
                         {route.additionalVolumeFee} */}
                       </div>
                     </div>
-                    <div className="flex-1 flex flex-col items-center text-default-500">
-                      <div className={describeText()}>{t("time")}</div>
-                      <div className={describeText({ size: "xl", color: 333 })}>
+                    <div className="flex flex-col items-center justify-center w-[220px]">
+                      <div className="text-gray-500 text-sm">{t("time")}</div>
+                      <div className="text-lg font-bold">
                         {route.shippingLine.minDays}-
-                        {route.shippingLine.maxDays}
+                        {route.shippingLine.maxDays} days
                       </div>
                     </div>
-                    <div className="max-w-[60%] min-w-[60%]">
+                    <div className="flex-1">
                       <span className={describeText({ weight: "normal" })}>
                         {route.shippingLine.description}
                       </span>
@@ -241,21 +236,25 @@ export default function EstimationPage() {
                       <TableHeader>
                         <TableColumn>{t("firstWeightFee")}</TableColumn>
                         <TableColumn>{t("additionalWeightFee")}</TableColumn>
-                        <TableColumn>{t("customsFee")}</TableColumn>
+                        {/* <TableColumn>{t("customsFee")}</TableColumn> */}
                       </TableHeader>
                       <TableBody>
                         <TableRow>
                           <TableCell>{route.firstWeightFee}</TableCell>
                           <TableCell>{route.additionalWeightFee}</TableCell>
-                          <TableCell>{route.customsFee}</TableCell>
+                          {/* <TableCell>{route.customsFee}</TableCell> */}
                         </TableRow>
                       </TableBody>
                     </Table>
                   </div>
                   <div className="flex-1 rounded-sm p-4">
                     <p className="font-semibold mb-2">{t("shippingLimit")}</p>
-                    <div className="rounded-xl bg-[#fff] p-6 ">
-                      {route.limit}
+                    <div className="rounded-xl bg-white px-5 py-4 shadow-sm border border-gray-100">
+                      <span className="text-lg font-semibold text-gray-800">
+                        {route?.shippingLine?.minWeight} -{" "}
+                        {route?.shippingLine?.maxWeight}
+                      </span>
+                      <span className="ml-1 text-sm text-gray-500">g</span>
                     </div>
                     <p className="font-semibold my-2">{t("routeFeature")}</p>
                     <div className="rounded-xl bg-[#fff] p-6 text-sm">

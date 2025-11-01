@@ -3,6 +3,7 @@
 import {
   Button,
   getKeyValue,
+  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -10,14 +11,15 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoAddCircleOutline, IoWallet } from "react-icons/io5";
 
 import FormModal from "@/components/modal/form-modal";
 import { FieldConfig } from "@/components/form/formItem-renderer";
 import RechargeModal from "@/components/modal/recharge.modal";
-import { useWalletStore } from "@/store";
+import { useGlobalStore, useWalletStore } from "@/store";
 import { useWalletDetailList } from "@/hook";
+import { getWalletInfo } from "@/services/wallet";
 
 interface BalanceTabProps {
   tableColumns: any[];
@@ -38,7 +40,9 @@ export default function BalanceTab({
   texts,
 }: BalanceTabProps) {
   const wallet = useWalletStore((state) => state.wallet);
-  const { data } = useWalletDetailList();
+  const { currency } = useGlobalStore();
+
+  const { data, isLoading } = useWalletDetailList();
 
   const walletDetailList =
     data?.pages?.flatMap((page: any) => page?.records) ?? [];
@@ -51,6 +55,18 @@ export default function BalanceTab({
     console.log("保存提现数据:", formData);
   };
 
+  useEffect(() => {
+    const fetchWallet = async () => {
+      try {
+        const wallet = await getWalletInfo();
+
+        useWalletStore.getState().setWallet(wallet);
+      } catch {}
+    };
+
+    fetchWallet();
+  }, []);
+
   return (
     <div>
       {/* 钱包卡片区域 */}
@@ -58,7 +74,10 @@ export default function BalanceTab({
         <div className="flex items-center gap-2">
           <IoWallet className="w-6 h-6 text-[#f0700c]" />
           <div className="text-lg font-bold">{texts.title}</div>
-          <span className="text-money-3xl">{wallet?.availabalBalance}</span>
+          <span className="text-money-3xl">
+            {currency.symbol}
+            {wallet?.availabalBalance}
+          </span>
         </div>
         <div className="flex items-center gap-4">
           <Button
@@ -97,12 +116,26 @@ export default function BalanceTab({
             <TableColumn key={column.key}>{column.label}</TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={texts.noData} items={walletDetailList}>
+        <TableBody
+          emptyContent={texts.noData}
+          isLoading={isLoading}
+          items={walletDetailList}
+          loadingContent={<Spinner />}
+        >
           {(item: any) => (
             <TableRow key={item?.id}>
-              {(columnKey) => (
-                <TableCell>{getKeyValue(item, columnKey)}</TableCell>
-              )}
+              {(columnKey) => {
+                const value = getKeyValue(item, columnKey);
+                const formatted =
+                  (columnKey === "amount" || columnKey === "currentBalance") &&
+                  value !== undefined
+                    ? Number(value) < 0
+                      ? `-${currency.symbol}${Math.abs(Number(value))}`
+                      : `${currency.symbol}${value}`
+                    : value;
+
+                return <TableCell>{formatted}</TableCell>;
+              }}
             </TableRow>
           )}
         </TableBody>

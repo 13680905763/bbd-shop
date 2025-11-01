@@ -3,6 +3,7 @@ import { Checkbox, Image } from "@heroui/react";
 import { useRouter } from "next/navigation";
 
 import SourceIcon from "@/components/common/source-icon";
+import { useGlobalStore } from "@/store";
 
 type ProductItemProps = {
   product: any;
@@ -12,6 +13,7 @@ type ProductItemProps = {
 
 function ProductItem({ product, texts }: ProductItemProps) {
   const router = useRouter();
+  const { currency } = useGlobalStore();
 
   return (
     <div className="flex flex-col gap-1 border-b p-2 px-4">
@@ -31,6 +33,7 @@ function ProductItem({ product, texts }: ProductItemProps) {
                 alt="Product"
                 height={90}
                 radius="none"
+                referrerPolicy="no-referrer"
                 src={product.skuPicUrl || product?.picUrl}
                 width={90}
               />
@@ -44,11 +47,15 @@ function ProductItem({ product, texts }: ProductItemProps) {
               {product?.sku?.propName_valueName}
             </div>
             <div className="text-gray-500">{product?.remark}</div>
+            <div className="text-red-500">{product?.refundStatus}</div>
           </div>
         </div>
 
         <div>
-          <p className="text-gray-700 text-sm font-medium">${product.price}</p>
+          <p className="text-gray-700 text-sm font-medium">
+            {currency.symbol}
+            {product.price}
+          </p>
         </div>
         <div>
           <p className="text-gray-500 text-sm">x{product.quantity}</p>
@@ -86,6 +93,8 @@ export default function OrderItem({
   onRequestRefund,
   texts,
 }: any) {
+  const { currency } = useGlobalStore();
+
   return (
     <div className="card-cart">
       <div className="p-4 flex items-center gap-1">
@@ -114,7 +123,10 @@ export default function OrderItem({
         </div>
 
         <div className="flex grow-0 shrink-0 basis-[120px] justify-center items-center">
-          <p>$ {order?.totalFee}</p>
+          <p>
+            {currency.symbol}
+            {order?.totalFee}
+          </p>
         </div>
 
         <div className="grow-0 shrink-0 basis-[180px] flex flex-col gap-2 justify-center items-center">

@@ -16,6 +16,7 @@ import { User, UserMenu } from "./user-menu";
 
 import { Logo } from "@/components/icons";
 import { getUserInfo } from "@/services";
+import { useUserStore } from "@/store";
 interface NavLink {
   key: string;
   label: string;
@@ -23,6 +24,7 @@ interface NavLink {
 }
 export const Navbar = () => {
   const t = useTranslations("Components.Navbar");
+  const clearUser = useUserStore((state) => state.clearUser);
   const pathname = usePathname(); // 获取当前路径
   const router = useRouter();
 
@@ -36,17 +38,21 @@ export const Navbar = () => {
 
   useEffect(() => {
     // 获取一次用户信息
-    getUserInfo().catch(() => {
-      console.log("123");
+    console.log("nav加载");
+    (async () => {
+      try {
+        const res = await getUserInfo();
 
-      [
-        "user-storage",
-        "wallet-storage",
-        "services-storage",
-        "billingAddress-storage",
-      ].forEach((key) => localStorage.removeItem(key));
-      router.refresh();
-    });
+        if (!res) {
+          console.log("清空userStore");
+          clearUser();
+        }
+        // ✅ 如果返回正常用户信息则不做处理
+      } catch (err: any) {
+        // ✅ 如果 getUserInfo 抛出了异常（例如 axios 拦截器 Promise.reject）
+        console.warn("获取用户信息失败:", err);
+      }
+    })();
   }, []);
 
   return (

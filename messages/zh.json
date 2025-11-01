@@ -484,18 +484,28 @@
                 },
                 "fields": [
                     {
-                        "key": "recipient",
+                        "key": "familyName",
                         "type": "input",
-                        "name": "recipient",
-                        "label": "收件人",
-                        "placeholder": "输入收件人姓名"
+                        "name": "familyName",
+                        "label": "姓",
+                        "placeholder": "输入姓",
+                        "required": true
+                    },
+                    {
+                        "key": "givenName",
+                        "type": "input",
+                        "name": "givenName",
+                        "label": "名",
+                        "placeholder": "输入名",
+                        "required": true
                     },
                     {
                         "key": "phone",
                         "type": "input",
                         "name": "phone",
                         "label": "电话",
-                        "placeholder": "输入电话号码"
+                        "placeholder": "输入电话号码",
+                        "required": true
                     },
                     {
                         "key": "area",
@@ -509,27 +519,24 @@
                         "type": "input",
                         "name": "address",
                         "label": "地址",
-                        "placeholder": "输入完整地址"
+                        "placeholder": "输入完整地址",
+                        "required": true
                     },
                     {
                         "key": "doorNo",
                         "type": "input",
                         "name": "doorNo",
                         "label": "门牌号",
-                        "placeholder": "输入门牌号"
+                        "placeholder": "输入门牌号",
+                        "required": true
                     },
                     {
                         "key": "postcode",
                         "type": "input",
                         "name": "postcode",
                         "label": "邮编",
-                        "placeholder": "输入邮政编码"
-                    },
-                    {
-                        "key": "defaultAddress",
-                        "type": "checkbox",
-                        "name": "defaultAddress",
-                        "label": "设为默认地址"
+                        "placeholder": "输入邮政编码",
+                        "required": true
                     }
                 ]
             }
@@ -891,18 +898,28 @@
         "tooltipTip": "由于货币转换，可能会有0.01或0.02的小额差异",
         "fields": [
             {
-                "key": "recipient",
+                "key": "familyName",
                 "type": "input",
-                "name": "recipient",
-                "label": "收件人",
-                "placeholder": "输入收件人姓名"
+                "name": "familyName",
+                "label": "姓",
+                "placeholder": "输入姓",
+                "required": true
+            },
+            {
+                "key": "givenName",
+                "type": "input",
+                "name": "givenName",
+                "label": "名",
+                "placeholder": "输入名",
+                "required": true
             },
             {
                 "key": "phone",
                 "type": "input",
                 "name": "phone",
                 "label": "电话",
-                "placeholder": "输入电话号码"
+                "placeholder": "输入电话号码",
+                "required": true
             },
             {
                 "key": "area",
@@ -916,27 +933,24 @@
                 "type": "input",
                 "name": "address",
                 "label": "地址",
-                "placeholder": "输入完整地址"
+                "placeholder": "输入完整地址",
+                "required": true
             },
             {
                 "key": "doorNo",
                 "type": "input",
                 "name": "doorNo",
                 "label": "门牌号",
-                "placeholder": "输入门牌号"
+                "placeholder": "输入门牌号",
+                "required": true
             },
             {
                 "key": "postcode",
                 "type": "input",
                 "name": "postcode",
                 "label": "邮编",
-                "placeholder": "输入邮政编码"
-            },
-            {
-                "key": "defaultAddress",
-                "type": "checkbox",
-                "name": "defaultAddress",
-                "label": "设为默认地址"
+                "placeholder": "输入邮政编码",
+                "required": true
             }
         ]
     },

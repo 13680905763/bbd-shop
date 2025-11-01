@@ -1,5 +1,5 @@
 "use client";
-import { Avatar, Chip, Card } from "@heroui/react";
+import { Avatar, Card } from "@heroui/react";
 
 interface BackendRoute {
   id?: string;
@@ -8,8 +8,10 @@ interface BackendRoute {
   logoUrl?: string; // logo
   minDays?: number;
   maxDays?: number;
+  billTypeCode?: string;
   shippingLine: any;
   firstWeightFee?: number; // 首重价格
+  firstVolumeFee?: number; // 首重价格
   description?: string; // 描述
 }
 
@@ -33,13 +35,15 @@ export default function RouteCard({
     logoUrl = "",
     shippingLine = {},
     firstWeightFee = 0,
+    firstVolumeFee = 0,
+    billTypeCode = "",
     description = "",
   } = data;
 
-  console.log("data", data);
+  // console.log("data", data);
 
   const name = templateName || methodName;
-  const price = `$ ${firstWeightFee.toFixed(2)}`;
+  const price = ` ${billTypeCode == "VOLUME" ? firstVolumeFee.toFixed(2) : firstWeightFee.toFixed(2)}`;
   const time =
     shippingLine.minDays && shippingLine.maxDays
       ? `${shippingLine.minDays}-${shippingLine.maxDays} days`
@@ -59,26 +63,17 @@ export default function RouteCard({
         <div className="flex flex-col justify-center items-center w-[140px]">
           <Avatar className="w-20 h-20" radius="sm" src={logoUrl} />
           <p className="mt-2 text-sm font-semibold text-center">{name}</p>
-          <div className="flex gap-2 mt-1 flex-wrap justify-center">
-            {/* 可以根据业务规则动态加标签 */}
-            <Chip color="primary" size="sm">
-              可投保
-            </Chip>
-            <Chip className="text-[#fff]" color="success" size="sm">
-              免税
-            </Chip>
-          </div>
         </div>
 
         {/* 价格 */}
-        <div className="flex flex-col items-center justify-center w-[120px]">
-          <div className="text-gray-500 text-sm">价格</div>
+        <div className="flex flex-col items-center justify-center w-[120px] ">
+          <div className="text-gray-500 text-sm">Price</div>
           <div className="text-lg font-bold">{price}</div>
         </div>
 
         {/* 时间 */}
         <div className="flex flex-col items-center justify-center w-[120px]">
-          <div className="text-gray-500 text-sm">时间</div>
+          <div className="text-gray-500 text-sm">Time</div>
           <div className="text-lg font-bold">{time}</div>
         </div>
 

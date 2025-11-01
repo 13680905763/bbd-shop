@@ -5,6 +5,7 @@ import {
   ModalBody,
   ModalFooter,
   Button,
+  addToast,
 } from "@heroui/react";
 import { useState } from "react";
 
@@ -39,6 +40,21 @@ const FormModal = ({
   const [loading, setLoading] = useState(false);
 
   const handleSave = async () => {
+    const missingFields = fields
+      .filter((f) => f.required && !formData[f.name])
+      .map((f) => f.label || f.name);
+
+    console.log("missingFields", missingFields);
+
+    if (missingFields.length > 0) {
+      addToast({
+        title: `Please fill in：${missingFields.join("、")}`,
+        timeout: 1000,
+        color: "danger",
+      });
+
+      return;
+    }
     try {
       setLoading(true);
       const result = await onSave(formData);

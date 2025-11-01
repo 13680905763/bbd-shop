@@ -15,11 +15,11 @@ export default function ProfileTab({
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [avatarUrl, setAvatarUrl] = useState(defaultformData?.avatarUrl);
   const [formData, setFormData] = useState({
-    id: defaultformData.id,
-    name: defaultformData.name || "",
-    familyName: defaultformData.familyName || "",
-    givenName: defaultformData.givenName || "",
-    mobile: defaultformData.mobile || "",
+    id: defaultformData?.id,
+    name: defaultformData?.name || "",
+    familyName: defaultformData?.familyName || "",
+    givenName: defaultformData?.givenName || "",
+    mobile: defaultformData?.mobile || "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [avatarLoading, setAvatarLoading] = useState(false);

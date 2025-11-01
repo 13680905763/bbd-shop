@@ -1,37 +1,55 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Popover, PopoverTrigger, PopoverContent, Button } from "@heroui/react";
-import { useRouter } from "next/navigation";
 
-import { setUserCurrency, setUserLocale } from "@/i18n/service";
-import { currencies, languages } from "@/i18n/config";
+import { languages } from "@/i18n/config";
 import { useGlobalStore } from "@/store";
+import { setUserLocale } from "@/i18n/service";
 
 export default function LanguageCurrencySelector() {
-  const { locale, setLocale, currency, setCurrency } = useGlobalStore();
+  const {
+    language,
+    setLanguage,
+    currency,
+    setCurrency,
+    fetchConfig,
+    currencies,
+  } = useGlobalStore();
 
-  // console.log("locale", locale);
+  useEffect(() => {
+    const init = async () => {
+      console.log("初始化 store");
 
-  const [tempLocale, setTempLocale] = useState(locale); // 临时选择
-  const [tempCurrency, setTempCurrency] = useState(currency);
+      await fetchConfig(); // 等待异步执行完成
+      console.log("currencies", currencies);
+    };
+
+    init();
+  }, []);
+
+  const [tempLanguage, setTempLanguage] = useState(language); // 临时选择
+  const [tempCurrency, setTempCurrency] = useState({ ...currency });
 
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
+
+  useEffect(() => {
+    fetchConfig();
+  }, []);
   const handleSubmit = async () => {
     setLoading(true);
     try {
       // console.log("保存选择", tempLocale, tempCurrency);
       // 1. 更新 store
-      setLocale(tempLocale);
-      setCurrency(tempCurrency);
+      setLanguage(tempLanguage);
+      setCurrency({ ...tempCurrency });
       // 2. 写 localStorage
-      localStorage.setItem("locale", tempLocale);
-      localStorage.setItem("currency", tempCurrency);
+      localStorage.setItem("language", tempLanguage);
+      localStorage.setItem("currency", JSON.stringify(tempCurrency));
       // 保存语言
-      await setUserLocale(tempLocale);
-      await setUserCurrency(tempCurrency);
+      await setUserLocale(tempLanguage);
+      // await setUserCurrency(tempCurrency);
 
       // 关闭弹窗
       setIsOpen(false);
@@ -54,8 +72,8 @@ export default function LanguageCurrencySelector() {
         setIsOpen(open);
         if (open) {
           // 每次打开时同步最新保存值
-          setTempLocale(locale);
-          setTempCurrency(currency);
+          setTempLanguage(language);
+          setTempCurrency({ ...currency });
         }
       }}
     >
@@ -65,7 +83,7 @@ export default function LanguageCurrencySelector() {
           size="lg"
           variant="light"
         >
-          {languages.find((l) => l.value === locale)?.label}/{currency}
+          {languages.find((l) => l.value === language)?.label}/{currency.value}
         </Button>
       </PopoverTrigger>
       <PopoverContent>
@@ -77,11 +95,11 @@ export default function LanguageCurrencySelector() {
               {languages.map((l) => (
                 <Button
                   key={l.value}
-                  color={tempLocale === l.value ? "primary" : "default"}
+                  color={tempLanguage === l.value ? "primary" : "default"}
                   radius="sm"
                   size="sm"
-                  variant={tempLocale === l.value ? "solid" : "flat"}
-                  onPress={() => setTempLocale(l.value)}
+                  variant={tempLanguage === l.value ? "solid" : "flat"}
+                  onPress={() => setTempLanguage(l.value)}
                 >
                   {l.label}
                 </Button>
@@ -93,14 +111,14 @@ export default function LanguageCurrencySelector() {
           <div className="mb-6">
             <p className="text-sm font-semibold text-gray-700">货币</p>
             <div className="grid grid-cols-2 gap-3 mt-3">
-              {currencies.map((c) => (
+              {currencies.map((c: any) => (
                 <Button
                   key={c.value}
-                  color={tempCurrency === c.value ? "primary" : "default"}
+                  color={tempCurrency.value === c.value ? "primary" : "default"}
                   radius="sm"
                   size="sm"
-                  variant={tempCurrency === c.value ? "solid" : "flat"}
-                  onPress={() => setTempCurrency(c.value)}
+                  variant={tempCurrency.value === c.value ? "solid" : "flat"}
+                  onPress={() => setTempCurrency({ ...c })}
                 >
                   {c.label}
                 </Button>

@@ -2,7 +2,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
   addToast,
-  Avatar,
   Button,
   Checkbox,
   Divider,
@@ -31,6 +30,7 @@ import {
 import { queryClient } from "@/lib/react-query";
 import SourceIcon from "@/components/common/source-icon";
 import CommonModal from "@/components/modal/common-modal";
+import { useGlobalStore } from "@/store";
 
 interface Sku {
   skuID: string;
@@ -126,6 +126,8 @@ function getAllCombinations(
 export default function GoodsPage() {
   const t = useTranslations("Goods");
   const params = useParams();
+  const { currency, fetchConfig } = useGlobalStore();
+
   const [remark, setRemark] = useState<string>();
   const [quantity, setQuantity] = useState<number>(1);
   const [isOpen1, setIsOpen1] = useState(false);
@@ -136,6 +138,16 @@ export default function GoodsPage() {
   const [isCheck, setIsCheck] = useState<any>(false);
   const [currentImg, setCurrentImg] = useState<string>();
   const router = useRouter();
+
+  // useEffect(() => {
+  //   const init = async () => {
+  //     console.log("初始化 store");
+
+  //     await fetchConfig(); // 等待异步执行完成
+  //   };
+
+  //   init();
+  // }, []);
   const handleBuyNow = async () => {
     if (issub) return;
     if (!isCheck) {
@@ -367,6 +379,7 @@ export default function GoodsPage() {
                   alt="123"
                   className=" object-fill "
                   radius="sm"
+                  referrerPolicy="no-referrer"
                   src={currentImg}
                   width="100%"
                 />
@@ -384,6 +397,7 @@ export default function GoodsPage() {
                       alt="123"
                       className={` w-[80px] h-[80px] ${currentImg === src ? "border-[#f0700c] border-3" : ""}`}
                       radius="sm"
+                      referrerPolicy="no-referrer"
                       src={src}
                     />
                   </button>
@@ -412,6 +426,7 @@ export default function GoodsPage() {
                           alt="123"
                           className=" object-fill "
                           radius="none"
+                          referrerPolicy="no-referrer"
                           src={src}
                           width="100%"
                         />
@@ -453,6 +468,7 @@ export default function GoodsPage() {
                     </button>
                   </div>
                   <div className={priceFont({ size: "xl2" })}>
+                    {currency.symbol}
                     {currentSku?.price || goodsInfo?.productInfo.price}
                   </div>
                   <div className={lightFont({ size: "sm" })}>
@@ -465,7 +481,7 @@ export default function GoodsPage() {
                         <span className=" text-black  bg-white px-4 py-1 mx-2  text-xs rounded-sm">
                           {goodsInfo?.productInfo?.postFee || 0.0}
                         </span>
-                        CNY
+                        {currency.label}
                       </div>
                       <div className="mt-2">{t("shippingStep2")}</div>
                     </div>
@@ -494,8 +510,11 @@ export default function GoodsPage() {
                                       }
                                     >
                                       {spec.imageUrl ? (
-                                        <Avatar
+                                        <Image
+                                          alt="avatar"
+                                          className="w-10 h-10 object-cover"
                                           radius="none"
+                                          referrerPolicy="no-referrer"
                                           src={spec.imageUrl}
                                         />
                                       ) : null}

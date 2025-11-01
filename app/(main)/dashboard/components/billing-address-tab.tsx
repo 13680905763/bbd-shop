@@ -13,14 +13,15 @@ import { FieldConfig } from "@/components/form/formItem-renderer";
 
 type ModalType = "add" | "edit" | "delete" | null;
 const initAddress = {
-  recipient: "",
+  familyName: "",
+  givenName: "",
   phone: "",
   countryId: "",
   stateId: "",
   city: "",
   addressType: "",
   postcode: "",
-  defaultAddress: 0,
+  // defaultAddress: 0,
   doorNo: "",
 };
 
@@ -68,7 +69,11 @@ export default function BillingAddressTab({
 
     try {
       if (modalType === "add") {
-        await addAddress({ ...currentRowData, addressType: 2 }); // 新增接口
+        await addAddress({
+          ...currentRowData,
+          addressType: 2,
+          defaultAddress: 1,
+        }); // 新增接口
       } else if (modalType === "edit") {
         await updateAddress({
           ...filteredData,

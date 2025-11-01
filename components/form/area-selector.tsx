@@ -45,6 +45,7 @@ export default function AreaSelector({ value, onChange }: Props) {
   return (
     <div className="flex flex-col gap-4">
       <Autocomplete
+        isRequired={true}
         label="国家"
         placeholder="选择国家"
         selectedKey={String(value.countryId) || null}
@@ -61,6 +62,7 @@ export default function AreaSelector({ value, onChange }: Props) {
       </Autocomplete>
 
       <Autocomplete
+        isRequired={true}
         label="省份"
         placeholder="选择省份"
         selectedKey={String(value.stateId) || null}
@@ -78,6 +80,7 @@ export default function AreaSelector({ value, onChange }: Props) {
 
       {cities.length > 0 ? (
         <Autocomplete
+          isRequired={true}
           label="城市"
           placeholder="选择城市"
           selectedKey={String(value.city) || null}

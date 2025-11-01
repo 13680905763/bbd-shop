@@ -22,6 +22,7 @@ export interface FieldConfig {
   label?: string;
   placeholder?: string;
   size?: "sm" | "md" | "lg";
+  required?: boolean;
   options?: FieldOption[];
   startContent?: React.ReactNode;
 }
@@ -52,6 +53,7 @@ export default function FormItemRenderer<T extends Record<string, any>>({
           options = [],
           startContent = "",
           size = "md",
+          required = false,
           key,
         } = field;
 
@@ -62,6 +64,7 @@ export default function FormItemRenderer<T extends Record<string, any>>({
             return (
               <Input
                 key={key} // 用 key
+                isRequired={required}
                 label={label}
                 placeholder={placeholder}
                 size={size}

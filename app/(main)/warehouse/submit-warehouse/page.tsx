@@ -13,6 +13,7 @@ import {
   addAddress,
   createWaybill,
   getWarehouseRoutesList,
+  getWarehouseRoutesListByCC,
   getWarehouseServicesList,
   updateAddress,
 } from "@/services";
@@ -126,7 +127,21 @@ export default function SubmitOrder() {
     getWarehouseServicesList().then((res) => setServices(res || []));
     getWarehouseRoutesList().then((res) => setRoutesData(res || []));
   }, []);
-
+  useEffect(() => {
+    console.log(
+      "切换了地址",
+      data?.packageItemList.map((item: any) => item?.categoryId),
+      addressData?.find((item) => item.id == selectedAddressId)?.countryId,
+    );
+    getWarehouseRoutesListByCC({
+      categoryIds: data?.packageItemList.map((item: any) => item?.categoryId),
+      countryId: addressData?.find((item) => item.id == selectedAddressId)
+        ?.countryId,
+    }).then((res) => {
+      console.log("res", res);
+      setRoutesData(res || []);
+    });
+  }, [selectedAddressId]);
   // 切换服务选择
   const toggleService = (id: string) => {
     setSelectedServices((prev) =>
@@ -234,7 +249,7 @@ export default function SubmitOrder() {
           {/* 地址 */}
           <div>
             <div className="text-title">Shipping Address</div>
-            <div className="flex gap-4">
+            <div className="grid grid-cols-2 gap-4">
               {addressData?.length === 0 ? (
                 <AddAddressCard onAdd={handleAdd} />
               ) : (
@@ -264,7 +279,7 @@ export default function SubmitOrder() {
           {/* 服务（多选） */}
           <div>
             <div className="text-title">Packaging Method</div>
-            <div className="flex flex-wrap gap-4">
+            <div className="grid grid-cols-4 gap-4">
               {services?.map((svc) => (
                 <ServiceCard
                   key={svc.id}

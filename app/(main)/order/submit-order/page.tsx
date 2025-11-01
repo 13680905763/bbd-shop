@@ -25,11 +25,13 @@ import {
   updateOrderPreviewCart,
   updateOrderPreviewProduct,
 } from "@/services";
-import { useServicesStore } from "@/store";
+import { useGlobalStore, useServicesStore } from "@/store";
 import { createOrderPreviewKeyByProductParams } from "@/types";
 
 export default function SubmitOrder() {
   const t = useTranslations("SubmitOrder");
+  const { currency } = useGlobalStore();
+
   const searchParam = useSearchParams();
   const router = useRouter();
   const type = searchParam.get("type") as "cart" | "product";
@@ -61,16 +63,34 @@ export default function SubmitOrder() {
   }, [data]);
 
   // 打开商品服务列表弹窗
-  const openServiceModal = (cartId: string) => {
-    console.log("services", services);
+  const openServiceModal = (cartId: string, skuId: string) => {
+    // console.log("services", services, cartId);
     setCurrentCartId(cartId);
+    const handleSO = orderData?.orderList?.find((item: any) => {
+      // console.log(item);
+
+      return item?.products.find((iitem: any) => {
+        return iitem?.sku?.propId_valueId == skuId;
+      });
+    });
+
+    const hanldeSer =
+      handleSO.products
+        .find((item: any) => {
+          return item?.sku?.propId_valueId == skuId;
+        })
+        ?.orderServiceList?.map((item: any) => item.id) || [];
+
     // 克隆服务，初始化 isCheck、remark
     setLocalServices(
-      services.map((s: any) => ({
-        ...s,
-        isCheck: false,
-        remark: "",
-      })),
+      services.map((s: any) => {
+        return {
+          ...s,
+          isCheck: hanldeSer.find((id: any) => id == s.id) ? true : false,
+          // isCheck: false,
+          remark: "",
+        };
+      }),
     );
     onOpen();
   };
@@ -245,7 +265,10 @@ export default function SubmitOrder() {
         <div className="text-[#3d3d3d] text-sm flex items-center gap-1">
           {t("amountDue")}
         </div>
-        <p className="text-price-xl">{togglePrice}</p>
+        <p className="text-price-xl">
+          {currency.symbol}
+          {togglePrice}
+        </p>
         <Button
           className="w-[300px]"
           color="primary"
@@ -303,7 +326,8 @@ export default function SubmitOrder() {
                 <div className="flex items-center gap-2">
                   <span className="text-[12px] text-gray-500">x1</span>
                   <span className="text-sm font-semibold text-red-500">
-                    ￥{service.price}
+                    {currency.symbol}
+                    {service.price}
                   </span>
                   <Button
                     className="text-[11px] px-2 h-6"
@@ -365,6 +389,7 @@ export default function SubmitOrder() {
               <div className="flex items-center justify-between border-t pt-3">
                 <span className="text-sm text-gray-700">{t("serviceFee")}</span>
                 <span className="text-lg font-semibold text-rose-600">
+                  {currency.symbol}
                   {currentService.price}
                 </span>
               </div>

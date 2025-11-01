@@ -14,7 +14,7 @@ import { FaComments, FaImage, FaTimes } from "react-icons/fa";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 
-import { fetchChatHistory, getUserInfo, uploadChatImage } from "@/services";
+import { fetchChatHistory, uploadChatImage } from "@/services";
 import { useUserStore } from "@/store";
 
 interface Message {
@@ -34,8 +34,15 @@ export default function ChatWidget() {
   const [hasAgent, setHasAgent] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  const [historyPage, setHistoryPage] = useState(1);
+  // 初次加载
+  const firstLoadRef = useRef(true);
+  // 初始化加载聊天记录
+  const [firstLoading, setFirstLoading] = useState(false); // ✅ 加载状态
+
+  const [page, setPage] = useState(1);
   const [hasMoreHistory, setHasMoreHistory] = useState(true);
+
+  // 加载记录中
   const historyLoadingRef = useRef(false);
   const isInitialLoadRef = useRef(true);
 
@@ -47,24 +54,62 @@ export default function ChatWidget() {
 
   /** 初始化 WebSocket */
   useEffect(() => {
-    if (!user?.id) return; // 用户未登录，先不初始化
+    // 如果用户未登录，直接关闭现有连接
+    if (!user?.id) {
+      console.log("🚪 用户未登录，关闭 WebSocket");
+      if (socketRef.current) {
+        socketRef.current.close();
+        socketRef.current = null;
+      }
+
+      return;
+    }
 
     let socket: WebSocket | null = null;
     let retryTimer: NodeJS.Timeout | null = null;
+    let retryCount = 0;
+    let allowReconnect = true; // ✅ 退出时设为 false 停止重连
+
+    const MAX_RETRY = 5;
+    const RETRY_DELAY = 3000;
 
     const initWebSocket = () => {
+      if (!allowReconnect) return; // 已退出不再建立连接
+
       const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-      if (!apiBase) return;
+      if (!apiBase) {
+        console.error("❌ 缺少 NEXT_PUBLIC_API_BASE_URL");
+
+        return;
+      }
 
       const protocol = window.location.protocol === "https:" ? "wss" : "ws";
       const host = apiBase.replace(/^https?:\/\//, "");
       const wsUrl = `${protocol}://${host}/ws`;
 
+      // 防止重复连接
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        console.log("⚠️ WebSocket 已连接，跳过新建");
+
+        return;
+      }
+
+      console.log(
+        `🔌 尝试连接 WebSocket (${retryCount + 1}/${MAX_RETRY}) →`,
+        wsUrl,
+      );
+
       socket = new WebSocket(wsUrl);
       socketRef.current = socket;
 
-      socket.onopen = () => console.log("✅ WebSocket 已连接");
+      socket.onopen = () => {
+        console.log("✅ WebSocket 已连接");
+        retryCount = 0;
+        clearTimeout(retryTimer!);
+        retryTimer = null;
+      };
+
       socket.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
@@ -84,25 +129,60 @@ export default function ChatWidget() {
               type: data.type,
             },
           ]);
+          firstLoadRef.current = true;
         } catch (err) {
-          console.error("解析消息失败:", err, event.data);
+          console.error("❌ 解析消息失败:", err, event.data);
         }
       };
-      socket.onclose = (event) => {
-        console.log(
-          `❌ WebSocket 已关闭, code=${event.code}, reason=${event.reason}`,
-        );
 
-        // 可选：断线重连（可加上次数限制）
-        // retryTimer = setTimeout(initWebSocket, 3000);
+      socket.onclose = (event) => {
+        console.warn(
+          `⚠️ WebSocket 关闭 (code=${event.code}, reason=${event.reason})`,
+        );
+        socketRef.current = null;
+
+        // 仅在允许重连时尝试重连
+        if (allowReconnect && retryCount < MAX_RETRY) {
+          retryCount++;
+          console.log(`🔄 ${RETRY_DELAY / 1000}s 后尝试重连...`);
+          retryTimer = setTimeout(initWebSocket, RETRY_DELAY);
+        } else if (!allowReconnect) {
+          console.log("🛑 已退出登录，不再重连");
+        } else {
+          console.error("🚫 达到最大重连次数，停止重连");
+        }
       };
-      socket.onerror = (err) => console.error("⚠️ WebSocket 错误:", err);
+
+      socket.onerror = (err) => {
+        console.error("⚠️ WebSocket 错误:", err);
+        socket?.close();
+      };
     };
 
-    // 延迟 50ms 确保 store 更新
-    const timer = setTimeout(initWebSocket, 50);
+    const timer = setTimeout(initWebSocket, 100);
 
+    // ✅ 模拟网络异常调试函数
+    (window as any).simulateWSError = () => {
+      const ws = socketRef.current;
+
+      if (!ws) {
+        console.warn("⚠️ WebSocket 未初始化，无法模拟错误");
+
+        return;
+      }
+
+      console.log("🧪 模拟网络错误中...");
+      try {
+        ws.dispatchEvent(new Event("error")); // 尝试触发 onerror
+      } catch {
+        ws.close(1006, "Simulated network error"); // 强制异常断开
+      }
+    };
+
+    // 清理逻辑（组件卸载或退出时调用）
     return () => {
+      console.log("🧹 清理 WebSocket 连接");
+      allowReconnect = false; // ❌ 禁止重连
       clearTimeout(timer);
       if (retryTimer) clearTimeout(retryTimer);
       socket?.close();
@@ -121,6 +201,7 @@ export default function ChatWidget() {
       type,
       content: msgText,
       sendTime: new Date().toISOString(),
+      receiverId,
     };
 
     if (receiverIdRef.current) payload.receiverId = receiverIdRef.current;
@@ -130,6 +211,7 @@ export default function ChatWidget() {
       ...prev,
       { id: Date.now(), sender: "user", text: msgText, type },
     ]);
+    firstLoadRef.current = true;
   };
 
   const handleSend = () => {
@@ -244,11 +326,9 @@ export default function ChatWidget() {
 
   /** 加载历史函数 */
   const loadHistory = async (initialLoad = false) => {
-    if (historyLoadingRef.current || !hasMoreHistory) return;
     historyLoadingRef.current = true;
-
     try {
-      const res: any = await fetchChatHistory(user!.id, historyPage);
+      const res: any = await fetchChatHistory(user!.id, page);
       const records: any = res.records || [];
       const lastPage: number = res.pages ?? 1;
 
@@ -264,10 +344,11 @@ export default function ChatWidget() {
         ]);
       }
 
-      setHasMoreHistory(historyPage < lastPage);
-      setHistoryPage((prev) => prev + 1);
+      setHasMoreHistory(page < lastPage);
+      setPage((prev) => prev + 1);
 
       if (initialLoad) {
+        // 获取客服id
         const hisM = records.filter((item: any) => {
           return item.sender == "SERVER";
         });
@@ -284,42 +365,9 @@ export default function ChatWidget() {
     }
   };
 
-  /** 首次加载历史 */
-  useEffect(() => {
-    if (!user?.id) {
-      // 用户未登录，直接提示，不调用接口
-      // addToast({
-      //   title: "请先登录",
-      //   timeout: 1000,
-      //   color: "danger",
-      // });
-
-      return;
-    }
-    loadHistory(true);
-  }, [user]);
-
-  /** 初次加载完成后滚动到底部 */
-  useEffect(() => {
-    if (!isInitialLoadRef.current || messages.length === 0) return;
-
-    const scrollToBottom = () => {
-      const container = scrollContainerRef.current;
-
-      if (!container) {
-        requestAnimationFrame(scrollToBottom);
-
-        return;
-      }
-      container.scrollTop = container.scrollHeight;
-      isInitialLoadRef.current = false;
-    };
-
-    requestAnimationFrame(scrollToBottom);
-  }, [messages]);
-
   /** 上拉加载历史 */
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    if (historyLoadingRef.current) return;
     const target = e.currentTarget;
 
     if (target.scrollTop <= 10 && hasMoreHistory) {
@@ -337,32 +385,50 @@ export default function ChatWidget() {
     }
   };
 
-  // 切换用户 / 打开聊天时滚动到底部
+  // 初始化打开弹窗
   useEffect(() => {
-    console.log("open", !isOpen);
+    const fetchHistory = async () => {
+      if (isOpen) {
+        console.log("打开弹窗加载历史");
+        setFirstLoading(true);
+        try {
+          await loadHistory(true); // ✅ 等待加载完成
+          firstLoadRef.current = true;
+        } catch (e) {
+          console.error("加载历史失败:", e);
+        } finally {
+          setFirstLoading(false);
+        }
+      } else {
+        console.log("关闭弹窗清空历史,重置消息状态");
+        setMessages([]);
+        setPage(1);
+        setHasMoreHistory(true);
+        setReceiverId(null);
+      }
+    };
 
-    if (!isOpen) return;
-    const container = scrollContainerRef.current;
-
-    console.log("open123", !container);
-    if (!container) return;
-
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        container.scrollTop = container.scrollHeight;
-      });
-    });
-  }, [receiverId, isOpen]);
+    fetchHistory();
+  }, [isOpen]);
+  /** 初次加载完成后滚动到底部 */
   useEffect(() => {
-    // 获取一次用户信息
-    getUserInfo().catch(() => {
-      // addToast({
-      //   title: "请先登录",
-      //   timeout: 1000,
-      //   color: "danger",
-      // });
-    });
-  }, []);
+    if (!firstLoadRef.current || messages.length === 0) return;
+    console.log("初次加载完成后滚动到底部");
+
+    const scrollToBottom = () => {
+      const container = scrollContainerRef.current;
+
+      if (!container) {
+        requestAnimationFrame(scrollToBottom);
+
+        return;
+      }
+      container.scrollTop = container.scrollHeight;
+      firstLoadRef.current = false;
+    };
+
+    requestAnimationFrame(scrollToBottom);
+  }, [messages]);
 
   return (
     <>
@@ -373,7 +439,19 @@ export default function ChatWidget() {
           className="w-14 h-14 shadow-lg"
           color="primary"
           radius="full"
-          onPress={() => setIsOpen(true)}
+          onPress={() => {
+            if (!user?.id) {
+              // 用户未登录，直接提示，不调用接口
+              addToast({
+                title: "请先登录",
+                timeout: 1000,
+                color: "danger",
+              });
+
+              return;
+            }
+            setIsOpen(true);
+          }}
         >
           <FaComments className="w-6 h-6" />
         </Button>
@@ -403,19 +481,28 @@ export default function ChatWidget() {
                 <FaTimes />
               </button>
             </div>
-
             {/* 消息区 */}
             <div
               ref={scrollContainerRef}
               className="flex-1 overflow-y-auto p-3 space-y-2 bg-gray-50"
               onScroll={handleScroll}
             >
-              {hasAgent && (
+              {/* {hasAgent && (
                 <div className="text-xs text-gray-400 text-center mb-2">
                   客服已接入
                 </div>
+              )} */}
+              {/* ✅ 加载中动画 */}
+              {firstLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-50/70 z-10">
+                  <div className="w-8 h-8 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin" />
+                </div>
               )}
-
+              {historyLoadingRef && (
+                <div className="flex justify-center py-2">
+                  <div className="w-5 h-5 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin" />
+                </div>
+              )}
               {messages.map((msg) => (
                 <div
                   key={msg.id}
@@ -448,7 +535,6 @@ export default function ChatWidget() {
                 </div>
               ))}
             </div>
-
             {/* 输入区 */}
             <div className="p-3 border-t bg-white flex flex-col gap-2 relative">
               <Textarea

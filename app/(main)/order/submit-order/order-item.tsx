@@ -3,10 +3,12 @@
 import { Button, Divider, Image } from "@heroui/react";
 
 import SourceIcon from "@/components/common/source-icon";
+import { safeMul } from "@/utils/number";
+import { useGlobalStore } from "@/store";
 
 interface OrderItemProps {
   order: any;
-  openServiceModal: (cartId: string) => void;
+  openServiceModal: (cartId: string, skuId: string) => void;
   texts: {
     valueAddedService: string;
     noService: string;
@@ -24,6 +26,8 @@ export default function OrderItem({
   openServiceModal,
   texts,
 }: OrderItemProps) {
+  const { currency } = useGlobalStore();
+
   return (
     <div className="card-cart overflow-auto">
       {/* 店铺头部 */}
@@ -73,7 +77,10 @@ export default function OrderItem({
               </div>
               {/* 单价 */}
               <div className="flex justify-center flex-[0_0_130px]">
-                <p>{product.price}</p>
+                <p>
+                  {currency.symbol}
+                  {product.price}
+                </p>
               </div>
               {/* 数量 */}
               <div className="flex justify-center flex-[0_0_150px]">
@@ -81,7 +88,10 @@ export default function OrderItem({
               </div>
               {/* 小计 */}
               <div className="flex justify-center flex-[0_0_150px]">
-                <p>{product.price * product.quantity}</p>
+                <p>
+                  {currency.symbol}
+                  {safeMul(product.price, product.quantity).toFixed(2)}
+                </p>
               </div>
             </div>
 
@@ -112,7 +122,10 @@ export default function OrderItem({
                   className="button-white"
                   size="sm"
                   onPress={() => {
-                    openServiceModal(product?.cartId || 1);
+                    openServiceModal(
+                      product?.cartId || 1,
+                      product?.sku?.propId_valueId,
+                    );
                   }}
                 >
                   {texts.add}
@@ -126,16 +139,20 @@ export default function OrderItem({
       {/* 底部合计 */}
       <div className="p-4 text-right">
         <div>
-          {texts.shippingFee}: {order?.postFee}
+          {texts.shippingFee}: {currency.symbol}
+          {order?.postFee}
         </div>
         <div>
-          {texts.serviceFee}: {order?.serviceFee}
+          {texts.serviceFee}: {currency.symbol}
+          {order?.serviceFee}
         </div>
         <div>
-          {texts.productFee}: {order?.productFee}
+          {texts.productFee}: {currency.symbol}
+          {order?.productFee}
         </div>
         <div className="font-bold">
-          {texts.shopTotal}: {order?.totalFee}
+          {texts.shopTotal}: {currency.symbol}
+          {order?.totalFee}
         </div>
       </div>
     </div>

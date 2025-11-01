@@ -24,12 +24,12 @@ export async function getUserLocale() {
   return defaultLocale;
 }
 
-export async function setUserLocale(locale: string) {
+export async function setUserLocale(language: string) {
   const cookieStore = await cookies();
 
   cookieStore.set({
     name: COOKIE_LOCALE,
-    value: locale,
+    value: language,
     path: "/",
   });
 }

@@ -484,18 +484,28 @@
                 },
                 "fields": [
                     {
-                        "key": "recipient",
+                        "key": "familyName",
                         "type": "input",
-                        "name": "recipient",
-                        "label": "Recipient",
-                        "placeholder": "Enter recipient name"
+                        "name": "familyName",
+                        "label": "FamilyName",
+                        "placeholder": "Enter familyName",
+                        "required": true
+                    },
+                    {
+                        "key": "givenName",
+                        "type": "input",
+                        "name": "givenName",
+                        "label": "GivenName",
+                        "placeholder": "Enter givenName",
+                        "required": true
                     },
                     {
                         "key": "phone",
                         "type": "input",
                         "name": "phone",
                         "label": "Phone",
-                        "placeholder": "Enter phone number"
+                        "placeholder": "Enter phone number",
+                        "required": true
                     },
                     {
                         "key": "area",
@@ -509,27 +519,24 @@
                         "type": "input",
                         "name": "address",
                         "label": "Address",
-                        "placeholder": "Enter full address"
+                        "placeholder": "Enter full address",
+                        "required": true
                     },
                     {
                         "key": "doorNo",
                         "type": "input",
                         "name": "doorNo",
                         "label": "Door No",
-                        "placeholder": "Enter door number"
+                        "placeholder": "Enter door number",
+                        "required": true
                     },
                     {
                         "key": "postcode",
                         "type": "input",
                         "name": "postcode",
                         "label": "Postcode",
-                        "placeholder": "Enter postcode"
-                    },
-                    {
-                        "key": "defaultAddress",
-                        "type": "checkbox",
-                        "name": "defaultAddress",
-                        "label": "Set as default address"
+                        "placeholder": "Enter postcode",
+                        "required": true
                     }
                 ]
             }

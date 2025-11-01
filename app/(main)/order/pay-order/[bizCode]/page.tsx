@@ -22,10 +22,15 @@ import BillingAddress from "./billing-address";
 import Progress from "@/components/common/order-progress";
 import RechargeModal from "@/components/modal/recharge.modal";
 import FullscreenLoader from "@/components/common/fullscreen-loader";
-import { useBillingAddressStore, useWalletStore } from "@/store";
+import {
+  useBillingAddressStore,
+  useGlobalStore,
+  useWalletStore,
+} from "@/store";
 import { useBillingAddress, usePaymentMethodList } from "@/hook";
 import { createPayOrder } from "@/services";
 import { price } from "@/components/primitives";
+import { getWalletInfo } from "@/services/wallet";
 
 // 自定义 Radio 组件
 const CustomRadio = (props: RadioProps) => {
@@ -63,22 +68,27 @@ const CustomRadio = (props: RadioProps) => {
 };
 
 // 余额支付选项
-const BalancePayment = ({ payment, wallet, onRecharge, t }: any) => (
-  <CustomRadio value={payment.id}>
-    <div className="flex justify-between items-center w-full">
-      <div className="flex items-center gap-4">
-        <IoWallet className="w-14 h-14 text-[#f0700c]" />
-        <div>{t("balance")}</div>
-        <div className={price({ size: "xl2" })}>
-          ${wallet?.availabalBalance}
+const BalancePayment = ({ payment, wallet, onRecharge, t }: any) => {
+  const { currency } = useGlobalStore();
+
+  return (
+    <CustomRadio value={payment.id}>
+      <div className="flex justify-between items-center w-full">
+        <div className="flex items-center gap-4">
+          <IoWallet className="w-14 h-14 text-[#f0700c]" />
+          <div>{t("balance")}</div>
+          <div className={price({ size: "xl2" })}>
+            {currency.symbol}
+            {wallet?.availabalBalance}
+          </div>
         </div>
+        <Button color="primary" onPress={onRecharge}>
+          {t("recharge")}
+        </Button>
       </div>
-      <Button color="primary" onPress={onRecharge}>
-        {t("recharge")}
-      </Button>
-    </div>
-  </CustomRadio>
-);
+    </CustomRadio>
+  );
+};
 
 // 其他支付方式选项
 const OtherPayment = ({ payment }: any) => (
@@ -108,6 +118,8 @@ const OtherPayment = ({ payment }: any) => (
 
 export default function SubmitOrder() {
   const t = useTranslations("PayOrder");
+  const { currency } = useGlobalStore();
+
   const params = useParams<{ bizCode: string }>();
   const wallet = useWalletStore((state) => state.wallet);
   const billingAddress = useBillingAddressStore(
@@ -146,8 +158,8 @@ export default function SubmitOrder() {
 
       if (typeof res === "string" && res.startsWith("http")) {
         console.log("res", res);
-
-        // window.location.href = res;
+        // window.open(res, "_blank");
+        window.location.href = res;
       }
     } catch (err) {
       console.error(err);
@@ -182,7 +194,17 @@ export default function SubmitOrder() {
       if (firstPayment) setPaymentId(firstPayment.id);
     }
   }, [sortedData]);
+  useEffect(() => {
+    const fetchWallet = async () => {
+      try {
+        const wallet = await getWalletInfo();
 
+        useWalletStore.getState().setWallet(wallet);
+      } catch {}
+    };
+
+    fetchWallet();
+  }, []);
   if (isLoading) return <FullscreenLoader />;
   if (isError) return <div>{t("loadFailed")}</div>;
 
@@ -238,10 +260,14 @@ export default function SubmitOrder() {
           >
             <HiQuestionMarkCircle />
           </Tooltip>
-          ：{currentPayMethod?.payAmount} {t("handlingFee")}：
+          ： {currency.symbol}
+          {currentPayMethod?.payAmount} {t("handlingFee")}：{currency.symbol}
           {currentPayMethod?.handlingFee}
         </div>
-        <p className="text-price-xl">{currentPayMethod?.payAmount}</p>
+        <p className="text-price-xl">
+          {currency.symbol}
+          {currentPayMethod?.payAmount}
+        </p>
         <Button
           className="w-[300px]"
           color="primary"

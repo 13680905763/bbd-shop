@@ -11,14 +11,14 @@ import { queryClient } from "@/lib/react-query";
 
 type ModalType = "add" | "edit" | null;
 const initAddress = {
-  recipient: "",
+  familyName: "",
+  givenName: "",
   phone: "",
   countryId: "",
   stateId: "",
   city: "",
   addressType: "",
   postcode: "",
-  defaultAddress: 0,
   doorNo: "",
 };
 

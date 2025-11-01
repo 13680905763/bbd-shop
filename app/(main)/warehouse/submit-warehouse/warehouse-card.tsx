@@ -1,9 +1,10 @@
+"use client";
 import { Image } from "@heroui/react";
 
 export default function WarehouseCard({ warehouse }: any) {
   const { orderProduct: product } = warehouse;
 
-  console.log(warehouse, product, warehouse.orderProduct);
+  // console.log(warehouse, product, warehouse.orderProduct);
 
   return (
     <div className="card-cart overflow-auto ">

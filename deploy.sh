@@ -2,7 +2,10 @@
 
 # === 配置区 ===
 REMOTE_USER="root"
-REMOTE_HOST="8.211.61.244"
+# 线上
+REMOTE_HOST="47.91.72.123"
+# 测试
+# REMOTE_HOST="8.211.61.244" 
 REMOTE_DIR="/usr/frontend/bbdbuy-pc"
 PROJECT_NAME="bbdbuy-pc"
 ARCHIVE_NAME="bbdbuy-pc.zip"
@@ -16,6 +19,8 @@ pnpm build
 if [ $? -ne 0 ]; then
   echo "❌ Build failed"
   exit 1
+  6+
+
 fi
 
 echo "==> Step 2: Packaging build artifacts..."

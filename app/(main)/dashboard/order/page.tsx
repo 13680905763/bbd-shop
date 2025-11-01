@@ -14,6 +14,7 @@ import { batchPayOrder, OrderRefund, putOrderCancel } from "@/services";
 import ConfirmModal from "@/components/modal/confirm-modal";
 import { queryClient } from "@/lib/react-query";
 import CommonModal from "@/components/modal/common-modal";
+import { useGlobalStore } from "@/store";
 
 const tabKeyToStatusCode: Record<string, string> = {
   all: "",
@@ -27,6 +28,7 @@ export default function OrderPage() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const router = useRouter();
+  const { currency } = useGlobalStore();
 
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   // === 新增两个 state 分开控制 ===
@@ -91,7 +93,7 @@ export default function OrderPage() {
     const productsWithRefund = order.products.map((p: any) => ({
       ...p,
       selected: true, // 默认不勾选
-      refundQuantity: p.quantity, // 默认退款数量为原订单数量
+      refundQuantity: p.canRefundQty, // 默认退款数量为原订单数量
     }));
 
     setRefundConfig({
@@ -329,7 +331,7 @@ export default function OrderPage() {
               {/* 右侧：价格、数量 */}
               <div className="flex flex-col items-end gap-1">
                 <span className="text-gray-700 text-sm font-medium">
-                  ${product.price}
+                  {product.price}
                 </span>
                 <span className="text-gray-500 text-sm">
                   x{product.quantity}
@@ -338,8 +340,8 @@ export default function OrderPage() {
                 <div className="flex gap-2 mt-1">
                   <input
                     className="w-16 px-2 py-1 border rounded text-sm"
-                    max={product.quantity}
-                    min={1}
+                    max={product.canRefundQty}
+                    min={0}
                     type="number"
                     value={product.refundQuantity}
                     onChange={(e) => {

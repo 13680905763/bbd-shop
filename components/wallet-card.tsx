@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { Avatar, Chip } from "@heroui/react";
 import { IoWallet } from "react-icons/io5";
 
+import { useGlobalStore } from "@/store";
+
 export interface UserInfo {
   name: string;
   email: string;
@@ -18,21 +20,23 @@ interface BalanceButtonProps {
   onClick: () => void;
 }
 
-const BalanceButton = ({ label, amount, onClick }: BalanceButtonProps) => (
-  <button
-    aria-label={`${label}: ${amount}`}
-    className="flex-1"
-    onClick={onClick}
-  >
-    <div className="flex items-center gap-2 p-5">
-      <IoWallet className="w-5 h-5 text-[#f0700c]" />
-      <div>{label}</div>
-      <div className="flex items-center gap-2">
-        <span className="text-money-3xl">{amount}</span>
+const BalanceButton = ({ label, amount, onClick }: BalanceButtonProps) => {
+  return (
+    <button
+      aria-label={`${label}: ${amount}`}
+      className="flex-1"
+      onClick={onClick}
+    >
+      <div className="flex items-center gap-2 p-5">
+        <IoWallet className="w-5 h-5 text-[#f0700c]" />
+        <div>{label}</div>
+        <div className="flex items-center gap-2">
+          <span className="text-money-3xl">{amount}</span>
+        </div>
       </div>
-    </div>
-  </button>
-);
+    </button>
+  );
+};
 
 interface UserBalanceCardProps {
   userInfo: UserInfo;
@@ -54,6 +58,7 @@ const UserBalanceCard = ({
   text,
 }: UserBalanceCardProps) => {
   const router = useRouter();
+  const { currency } = useGlobalStore();
 
   return (
     <div className={`flex justify-between rounded-lg p-8 ${bgColor}`}>
@@ -72,7 +77,7 @@ const UserBalanceCard = ({
       {/* 右侧余额/积分按钮 */}
       <div className="flex gap-4 flex-[2]">
         <BalanceButton
-          amount={availabalBalance ?? 0}
+          amount={`${currency.symbol}${availabalBalance}`}
           label={text.balance}
           onClick={() => router.push("/dashboard/wallet?tab=balance")}
         />

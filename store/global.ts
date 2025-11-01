@@ -1,18 +1,31 @@
 // /store/useGlobalStore.ts
 import { create } from "zustand";
 
-import { defaultCurrency, defaultLocale } from "@/i18n/config";
+import { getCurrency } from "@/services";
 
-interface GlobalState {
-  locale: string;
-  currency: string;
-  setLocale: (locale: string) => void;
-  setCurrency: (currency: string) => void;
-}
+export const useGlobalStore = create<any>((set) => ({
+  language: localStorage.getItem("language") || "en",
+  currency: localStorage.getItem("currency")
+    ? JSON.parse(localStorage.getItem("currency") as string)
+    : {
+        label: "CNY",
+        value: "CNY",
+        symbol: "¥",
+      },
+  languages: [],
+  currencies: [],
+  setLanguage: (language: any) => set({ language }),
+  setCurrency: (currency: any) => set({ currency }),
+  // 加一个异步 action
+  fetchConfig: async () => {
+    const res: any = await getCurrency();
 
-export const useGlobalStore = create<GlobalState>((set) => ({
-  locale: defaultLocale,
-  currency: defaultCurrency,
-  setLocale: (locale) => set({ locale }),
-  setCurrency: (currency) => set({ currency }),
+    set({
+      currencies: res.map((item: any) => ({
+        label: item?.currency,
+        value: item?.currency,
+        symbol: item?.symbol,
+      })),
+    });
+  },
 }));

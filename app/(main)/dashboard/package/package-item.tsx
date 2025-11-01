@@ -88,6 +88,7 @@ export default function PackageItem({
                   draggable={false}
                   height={120}
                   radius="sm"
+                  referrerPolicy="no-referrer"
                   src={
                     item.orderProduct?.skuPicUrl || item.orderProduct?.picUrl
                   }
@@ -139,7 +140,12 @@ export default function PackageItem({
                 </Button>
               </>
             ) : (
-              <div className="text-[#f0700c] font-medium">{order?.status}</div>
+              <div>
+                <div className="text-[#f0700c] font-medium">
+                  {order?.status}
+                </div>
+                <div className="">{order?.shipping?.shippingCode}</div>
+              </div>
             )}
           </div>
         </div>

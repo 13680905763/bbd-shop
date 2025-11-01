@@ -22,6 +22,7 @@ interface TabConfig {
 export default function DashBoard() {
   const user = useUserStore((state) => state.user);
   const wallet = useWalletStore((state) => state.wallet);
+
   const t = useTranslations("Dashboard.Page");
 
   useBillingAddress();

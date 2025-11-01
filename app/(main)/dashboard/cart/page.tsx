@@ -24,9 +24,11 @@ import { useCartList } from "@/hook";
 import CommonModal from "@/components/modal/common-modal";
 import FullscreenLoader from "@/components/common/fullscreen-loader";
 import OrderProgress from "@/components/common/order-progress";
+import { useGlobalStore } from "@/store";
 
 export default function CartPage() {
   const t = useTranslations("Dashboard.CartPage");
+  const { currency } = useGlobalStore();
   const { data, isLoading, isError } = useCartList();
   const queryClient = useQueryClient();
 
@@ -283,6 +285,7 @@ export default function CartPage() {
                   <p>
                     <span className="font-semibold ">{t("totalPayable")}</span>
                     <span className=" font-semibold  text-[#f0700c]">
+                      {currency.symbol}
                       {togglePrice}
                     </span>
                   </p>
