@@ -39,7 +39,7 @@ export default function WarehousePage() {
     useState<keyof typeof tabKeyToStatusCode>("all");
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
-
+  const [isSubLoading, setIsSubLoading] = useState(false);
   const { data, isLoading } = usePackageList(
     page,
     pageSize,
@@ -80,9 +80,32 @@ export default function WarehousePage() {
   );
 
   const handlePackageSubmit = async () => {
-    const bizCode = await batchPayPackage({ packageSet: selectedIds });
+    if (isSubLoading) return;
+    setIsSubLoading(true);
+    try {
+      const bizCode = await batchPayPackage({ packageSet: selectedIds });
 
-    router.push(`/order/pay-order/${bizCode}`);
+      if (bizCode) {
+        router.push(`/order/pay-order/${bizCode}`);
+      }
+    } catch {
+    } finally {
+      setIsSubLoading(false);
+    }
+  };
+  const handlePackageSubmitItem = async (selectedIds: any) => {
+    if (isSubLoading) return;
+    setIsSubLoading(true);
+    try {
+      const bizCode = await batchPayPackage({ packageSet: [selectedIds] });
+
+      if (bizCode) {
+        router.push(`/order/pay-order/${bizCode}`);
+      }
+    } catch {
+    } finally {
+      setIsSubLoading(false);
+    }
   };
 
   // 初始化选中状态
@@ -96,6 +119,8 @@ export default function WarehousePage() {
       );
     }
   }, [data]);
+  console.log("selectedIds", selectedIds);
+
   // 空状态组件
   const EmptyPackage = () => (
     <div className="flex flex-col items-center justify-center h-[60vh] text-gray-500">
@@ -118,6 +143,7 @@ export default function WarehousePage() {
             <PackageItem
               key={order.packingPackageCode || order.outboundId}
               activeTab={activeTab}
+              handlePackageSubmitItem={handlePackageSubmitItem}
               order={order}
               selected={
                 activeTab === "pay"
@@ -154,7 +180,7 @@ export default function WarehousePage() {
     );
   };
 
-  if (isLoading) return <FullscreenLoader />;
+  if (isLoading || isSubLoading) return <FullscreenLoader />;
 
   return (
     <div className="flex w-full flex-col">

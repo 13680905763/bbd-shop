@@ -17,8 +17,8 @@ export default function ProfileTab({
   const [formData, setFormData] = useState({
     id: defaultformData?.id,
     name: defaultformData?.name || "",
-    familyName: defaultformData?.familyName || "",
-    givenName: defaultformData?.givenName || "",
+    // familyName: defaultformData?.familyName || "",
+    // givenName: defaultformData?.givenName || "",
     mobile: defaultformData?.mobile || "",
   });
   const [isLoading, setIsLoading] = useState(false);

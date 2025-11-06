@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   addToast,
   Button,
@@ -31,6 +31,7 @@ import { queryClient } from "@/lib/react-query";
 import SourceIcon from "@/components/common/source-icon";
 import CommonModal from "@/components/modal/common-modal";
 import { useGlobalStore } from "@/store";
+import { safeMul } from "@/utils/number";
 
 interface Sku {
   skuID: string;
@@ -73,7 +74,8 @@ function generateDynamicSkuPathDict(productInfo: ProductInfo): SkuPathDict {
 
       // 确保属性名和值在映射表中存在
       if (skuPropMap[propName] && skuPropValueMap[propValue]) {
-        propertyMap["k" + propName] = propValue;
+        // propertyMap["k" + propName] = propValue;
+        propertyMap["k" + propName] = prop;
       }
     });
 
@@ -91,6 +93,7 @@ function generateDynamicSkuPathDict(productInfo: ProductInfo): SkuPathDict {
       dict[combination].push(sku?.skuID);
     });
   });
+  console.log("dict", dict);
 
   return dict;
 }
@@ -126,7 +129,11 @@ function getAllCombinations(
 export default function GoodsPage() {
   const t = useTranslations("Goods");
   const params = useParams();
-  const { currency, fetchConfig } = useGlobalStore();
+  const { currency } = useGlobalStore();
+  // sku滚动部分
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState("78vh");
+  const [lastTop, setLastTop] = useState<number | null>(null);
 
   const [remark, setRemark] = useState<string>();
   const [quantity, setQuantity] = useState<number>(1);
@@ -152,7 +159,7 @@ export default function GoodsPage() {
     if (issub) return;
     if (!isCheck) {
       addToast({
-        title: "请勾选同意协议",
+        title: t("agreeTerms"),
         color: "danger",
         timeout: 1000,
       });
@@ -161,7 +168,7 @@ export default function GoodsPage() {
     }
     if (!currentSku) {
       addToast({
-        title: "请选择商品规格",
+        title: t("selectSku"),
         color: "danger",
         timeout: 1000,
       });
@@ -195,7 +202,7 @@ export default function GoodsPage() {
     if (issub) return;
     if (!isCheck) {
       addToast({
-        title: "请勾选同意协议",
+        title: t("agreeTerms"),
         color: "danger",
         timeout: 1000,
       });
@@ -204,7 +211,7 @@ export default function GoodsPage() {
     }
     if (!currentSku) {
       addToast({
-        title: "请选择商品规格",
+        title: t("selectSku"),
         color: "danger",
         timeout: 1000,
       });
@@ -257,7 +264,9 @@ export default function GoodsPage() {
     specs.forEach((spec: any) => {
       const selectedVal = spec.propValueList.find((item: any) => item.selected);
 
-      arr.push(selectedVal ? selectedVal.valueID : undefined);
+      arr.push(
+        selectedVal ? `${spec.propId}:${selectedVal.valueID}` : undefined,
+      );
     });
 
     return arr;
@@ -286,7 +295,7 @@ export default function GoodsPage() {
       const selectedValues = getSelectedValues(cloned.productInfo.skuPropList);
 
       spec.propValueList.forEach((val: any) => {
-        selectedValues[index] = val.valueID;
+        selectedValues[index] = `${spec.propId}:${val.valueID}`;
         const key = selectedValues.filter((value: any) => value).join("-");
 
         console.log("key", key, !!pathMap[key]);
@@ -332,6 +341,8 @@ export default function GoodsPage() {
     setisLoading(true);
     getGoodsInfo({ ...params })
       .then((data: any) => {
+        console.log("get goods");
+
         // 数据初始化
         const cloned = structuredClone(data);
         let pathMap = generateDynamicSkuPathDict(cloned.productInfo);
@@ -340,7 +351,7 @@ export default function GoodsPage() {
         cloned.productInfo.skuPropList.forEach((spec: any) => {
           spec.propValueList.forEach((value: any) => {
             value.selected = false;
-            if (pathMap[value.valueID]) {
+            if (pathMap[`${spec.propId}:${value.valueID}`]) {
               value.disabled = false;
             } else {
               value.disabled = true;
@@ -358,22 +369,52 @@ export default function GoodsPage() {
         setisLoading(false);
       });
   }, []);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!containerRef.current) return;
+
+      const topOffset = containerRef.current.getBoundingClientRect().top;
+      const STICKY_THRESHOLD = 1; // 微小误差允许
+      const STICKY_HEIGHT = "calc(78vh + 80px)";
+      const NORMAL_HEIGHT = "78vh";
+
+      const isSticky =
+        lastTop !== null && Math.abs(topOffset - lastTop) < STICKY_THRESHOLD;
+
+      // 只有状态变化才更新 height，避免抖动
+      setHeight((prev) =>
+        isSticky && prev !== STICKY_HEIGHT
+          ? STICKY_HEIGHT
+          : !isSticky && prev !== NORMAL_HEIGHT
+            ? NORMAL_HEIGHT
+            : prev,
+      );
+
+      setLastTop(topOffset);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastTop]);
+
+  console.log("goodsInfo?.productInfo.price", goodsInfo?.productInfo.price);
 
   return (
     <div className="bg-[#fff] ">
-      <div className="flex  container mx-auto  my-[15px] mt-16">
+      <div className="flex  container mx-auto  my-[15px] mt-10">
         {isLoading ? (
           <div className="flex gap-5 w-full">
-            <Skeleton className="rounded-lg flex-[2] ">
-              <div className="h-[500px] rounded-lg bg-default-300 m-10 pt-0" />
+            <Skeleton className="rounded-lg flex-[4] ">
+              <div className="h-[500px] rounded-lg bg-default-300  pt-0" />
             </Skeleton>
-            <Skeleton className="rounded-lg flex-[5] ">
-              <div className="h-24 rounded-lg bg-default-300 max-w-[55%]" />
+            <Skeleton className="rounded-lg flex-[6] max-w-[60%]">
+              <div className="h-24 rounded-lg bg-default-300 max-w-[60%]" />
             </Skeleton>
           </div>
         ) : (
           <>
-            <div className="flex-[2] p-10 pt-0 overflow-auto scrollbar-hide">
+            <div className="flex-[4] p-10 pt-0 overflow-auto scrollbar-hide">
               <div className="w-[100%] flex gap-2">
                 <Image
                   alt="123"
@@ -436,9 +477,13 @@ export default function GoodsPage() {
                 </div>
               </div>
             </div>
-            <div className="flex-[5] max-w-[55%]">
-              <div className="sticky top-20 flex  h-[calc(100vh-80px)] ">
-                <div className="overflow-y-auto scrollbar-hide flex flex-col gap-4 pb-7">
+            <div className="flex-[6] max-w-[60%]">
+              <div
+                ref={containerRef}
+                className="sticky top-28 flex flex-col  "
+                style={{ height }}
+              >
+                <div className="flex flex-col gap-2 mb-2">
                   <div className="flex gap-2 items-center">
                     <SourceIcon source={goodsInfo?.productInfo?.source} />
                     <p className="font-bold text-lg">
@@ -468,8 +513,15 @@ export default function GoodsPage() {
                     </button>
                   </div>
                   <div className={priceFont({ size: "xl2" })}>
-                    {currency.symbol}
-                    {currentSku?.price || goodsInfo?.productInfo.price}
+                    {currency.label} {currency.symbol}
+                    {goodsInfo?.productInfo.price
+                      ? currentSku?.price
+                        ? safeMul(currentSku?.price, quantity)
+                        : safeMul(goodsInfo?.productInfo.price, quantity)
+                      : null}
+                    {/* {currentSku?.price
+                      ? currentSku?.price * quantity
+                      : goodsInfo?.productInfo.price * quantity} */}
                   </div>
                   <div className={lightFont({ size: "sm" })}>
                     {t("afterPaymentNotice")}
@@ -486,6 +538,8 @@ export default function GoodsPage() {
                       <div className="mt-2">{t("shippingStep2")}</div>
                     </div>
                   </div>
+                </div>
+                <div className="overflow-y-auto scrollbar-hide flex flex-col gap-4 ">
                   {goodsInfo?.productInfo?.skuPropList.map(
                     (specs: any, index: number) => {
                       return (
@@ -502,8 +556,8 @@ export default function GoodsPage() {
                                     <Button
                                       className={`pl-2 bg-white ${spec.selected ? "border-[#f0700c] text-[#f0700c]" : "border-[#ccc]"} `}
                                       isDisabled={spec.disabled}
-                                      radius="lg"
-                                      size={spec.imageUrl ? "lg" : "md"}
+                                      radius="md"
+                                      size={spec.imageUrl ? "md" : "sm"}
                                       variant="bordered"
                                       onPress={() =>
                                         changeSelectedStatus(index, indey)
@@ -512,7 +566,7 @@ export default function GoodsPage() {
                                       {spec.imageUrl ? (
                                         <Image
                                           alt="avatar"
-                                          className="w-10 h-10 object-cover"
+                                          className="w-8 h-8 object-cover"
                                           radius="none"
                                           referrerPolicy="no-referrer"
                                           src={spec.imageUrl}
@@ -565,23 +619,23 @@ export default function GoodsPage() {
                       </Checkbox>
                     </div>
                   </div>
-                  <div className="flex-1 flex gap-2  mt-4 ">
-                    <Button
-                      className="flex-1 h-16"
-                      isLoading={issub}
-                      onPress={add}
-                    >
-                      {t("addToCart")}
-                    </Button>
-                    <Button
-                      className=" h-16 flex-1"
-                      color="primary"
-                      isLoading={issub}
-                      onPress={handleBuyNow}
-                    >
-                      {t("buyNow")}
-                    </Button>
-                  </div>
+                </div>
+                <div className="flex-1 flex gap-2  mt-4 ">
+                  <Button
+                    className="flex-1 h-16"
+                    isLoading={issub}
+                    onPress={add}
+                  >
+                    {t("addToCart")}
+                  </Button>
+                  <Button
+                    className=" h-16 flex-1"
+                    color="primary"
+                    isLoading={issub}
+                    onPress={handleBuyNow}
+                  >
+                    {t("buyNow")}
+                  </Button>
                 </div>
               </div>
             </div>

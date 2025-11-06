@@ -73,7 +73,7 @@ function ProductItem({ product, texts }: ProductItemProps) {
                 key={item.serviceId}
                 className="px-2 py-0.5 text-xs rounded-md bg-white text-gray-700 border border-gray-200"
               >
-                {item.serviceName}
+                {item.serviceName}*{item.quantity}
               </span>
             ))}
           </div>

@@ -4,8 +4,10 @@ import { Button, Card } from "@heroui/react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import { AiFillCheckCircle, AiFillCloseCircle } from "react-icons/ai";
+import { useTranslations } from "next-intl";
 
 import { payNotice } from "@/services/wallet";
+import { useGlobalStore } from "@/store";
 
 function formatTime(ts: string) {
   if (!ts) return "";
@@ -16,6 +18,9 @@ function formatTime(ts: string) {
 }
 
 export default function PaymentResultPage() {
+  const t = useTranslations("PaymentResultPage");
+  const { currency } = useGlobalStore();
+
   const searchParams = useSearchParams();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -51,7 +56,7 @@ export default function PaymentResultPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-[70vh] text-lg">
-        正在确认支付结果...
+        {t("loading")}
       </div>
     );
   }
@@ -67,38 +72,52 @@ export default function PaymentResultPage() {
           {isSuccess ? (
             <>
               <AiFillCheckCircle className="text-green-500 w-20 h-20" />
-              <h1 className="text-2xl font-bold text-green-600">支付成功</h1>
+              <h1 className="text-2xl font-bold text-green-600">
+                {t("successTitle")}
+              </h1>
               <div className="text-gray-600 text-center space-y-2">
-                <p>交易号：{payOrderId}</p>
                 <p>
-                  支付金额：
-                  {searchParams.get("currency") === "USD" ? "$" : "￥"}
+                  {t("transactionId")}
+                  {payOrderId}
+                </p>
+                <p>
+                  {t("amount")}
+                  {currency.symbol}
                   {amount}
                 </p>
-                <p>支付时间：{formatTime(paySuccTime)}</p>
+                <p>
+                  {t("time")}
+                  {formatTime(paySuccTime)}
+                </p>
               </div>
-              <p className="text-gray-500 text-center">
-                我们已收到您的付款，订单正在处理中。
-              </p>
+              <p className="text-gray-500 text-center">{t("successMessage")}</p>
             </>
           ) : (
             <>
               <AiFillCloseCircle className="text-red-500 w-20 h-20" />
-              <h1 className="text-2xl font-bold text-red-600">支付失败</h1>
+              <h1 className="text-2xl font-bold text-red-600">
+                {t("failTitle")}
+              </h1>
               <div className="text-gray-600 text-center space-y-2">
-                <p>订单号：{payOrderId}</p>
+                <p>
+                  {t("orderId")}
+                  {payOrderId}
+                </p>
                 {amount && (
                   <p>
-                    支付金额：
-                    {searchParams.get("currency") === "USD" ? "$" : "￥"}
+                    {t("amount")}
+                    {currency.symbol}
                     {amount}
                   </p>
                 )}
-                {paySuccTime && <p>支付时间：{formatTime(paySuccTime)}</p>}
+                {paySuccTime && (
+                  <p>
+                    {t("time")}
+                    {formatTime(paySuccTime)}
+                  </p>
+                )}
               </div>
-              <p className="text-gray-500 text-center">
-                支付未完成，请检查订单或重新尝试付款。
-              </p>
+              <p className="text-gray-500 text-center">{t("failMessage")}</p>
             </>
           )}
 
@@ -107,9 +126,9 @@ export default function PaymentResultPage() {
               color="primary"
               onPress={() => router.push(`/dashboard/order`)}
             >
-              查看订单
+              {t("viewOrder")}
             </Button>
-            <Button onPress={() => router.push("/")}>返回首页</Button>
+            <Button onPress={() => router.push("/")}>{t("backHome")}</Button>
           </div>
         </div>
       </Card>

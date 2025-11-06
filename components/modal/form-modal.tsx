@@ -8,6 +8,7 @@ import {
   addToast,
 } from "@heroui/react";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 import FormItemRenderer, { FieldConfig } from "../form/formItem-renderer";
 
@@ -34,11 +35,11 @@ const FormModal = ({
   formData,
   onChange,
   onSave,
-  confirmText = "保存",
-  cancelText = "取消",
+  confirmText,
+  cancelText,
 }: FormModalProps) => {
   const [loading, setLoading] = useState(false);
-
+  const t = useTranslations("Components.Modal");
   const handleSave = async () => {
     const missingFields = fields
       .filter((f) => f.required && !formData[f.name])
@@ -93,10 +94,10 @@ const FormModal = ({
               variant="flat"
               onPress={() => onOpenChange(false)}
             >
-              {cancelText}
+              {cancelText ?? t("cancel")}
             </Button>
             <Button color="primary" isLoading={loading} onPress={handleSave}>
-              {confirmText}
+              {confirmText ?? t("confirm")}
             </Button>
           </ModalFooter>
         </>

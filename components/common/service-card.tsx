@@ -1,5 +1,6 @@
 "use client";
-import { Card, Image } from "@heroui/react";
+import { Card } from "@heroui/react";
+import { Image } from "antd";
 
 interface ServiceCardProps {
   id: string;
@@ -31,16 +32,16 @@ export default function ServiceCard({
         {/* 服务图片 */}
         <Image
           alt={serviceName}
-          className="w-14 h-14 object-cover rounded-md border border-gray-200"
+          className=" object-cover rounded-md  border-gray-200"
+          height={80}
           src={sample}
+          width={80}
         />
 
         {/* 服务信息 */}
         <div className="flex flex-col flex-1">
           <span className="text-base font-medium">{serviceName}</span>
-          <span className="text-primary font-semibold mt-1">
-            ¥{price.toFixed(2)}
-          </span>
+          <span className="text-primary font-semibold mt-1">¥{price}</span>
         </div>
       </div>
     </Card>

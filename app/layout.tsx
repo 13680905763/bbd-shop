@@ -7,6 +7,7 @@ import { getLocale, getMessages } from "next-intl/server";
 
 import { Providers } from "./providers";
 
+import ChatBox from "@/components/common/chatbox";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -54,6 +55,7 @@ export default async function RootLayout({
             {children}
           </Providers>
         </NextIntlClientProvider>
+        <ChatBox />
       </body>
     </html>
   );

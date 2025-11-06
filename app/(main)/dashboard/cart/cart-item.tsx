@@ -67,6 +67,7 @@ export default function CartItem({
             <Image
               alt="Product"
               height={90}
+              referrerPolicy="no-referrer"
               src={product.skuPicUrl || product?.picUrl}
               width={90}
             />

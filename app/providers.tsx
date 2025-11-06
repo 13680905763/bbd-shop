@@ -28,8 +28,6 @@ declare module "@react-types/shared" {
 export function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
 
-  // useInitLocaleCurrency();
-
   return (
     // <SessionProvider>
     <GoogleOAuthProvider clientId="545953191162-n0elu4ilreo1hdlptkgublu7bjegpp0u.apps.googleusercontent.com">

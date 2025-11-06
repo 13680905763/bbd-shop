@@ -1,6 +1,7 @@
 "use client";
 
 import { Autocomplete, AutocompleteItem, Avatar } from "@heroui/react";
+import { useTranslations } from "next-intl";
 
 import {
   useCountries,
@@ -25,6 +26,7 @@ interface Props {
 }
 
 export default function AreaSelector({ value, onChange }: Props) {
+  const t = useTranslations("Common.AreaSelector");
   const { data: countries = [] } = useCountries();
   const { data: states = [] } = useProvinces(value.countryId);
   const { data: cities = [] } = useCities(value.stateId);
@@ -46,8 +48,8 @@ export default function AreaSelector({ value, onChange }: Props) {
     <div className="flex flex-col gap-4">
       <Autocomplete
         isRequired={true}
-        label="国家"
-        placeholder="选择国家"
+        label={t("country.label")}
+        placeholder={t("country.placeholder")}
         selectedKey={String(value.countryId) || null}
         variant="bordered"
         onSelectionChange={(code) =>
@@ -63,8 +65,8 @@ export default function AreaSelector({ value, onChange }: Props) {
 
       <Autocomplete
         isRequired={true}
-        label="省份"
-        placeholder="选择省份"
+        label={t("state.label")}
+        placeholder={t("state.placeholder")}
         selectedKey={String(value.stateId) || null}
         variant="bordered"
         onSelectionChange={(code) => {
@@ -81,8 +83,8 @@ export default function AreaSelector({ value, onChange }: Props) {
       {cities.length > 0 ? (
         <Autocomplete
           isRequired={true}
-          label="城市"
-          placeholder="选择城市"
+          label={t("city.label")}
+          placeholder={t("city.placeholder")}
           selectedKey={String(value.city) || null}
           variant="bordered"
           onSelectionChange={(code) =>

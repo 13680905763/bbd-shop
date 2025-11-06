@@ -16,7 +16,7 @@ export const useProvinces = (countryId?: string) => {
   return useQuery({
     queryKey: ["provinces", countryId],
     queryFn: () => getProvinces(countryId as string),
-    enabled: !!countryId, // 只有 countryId 存在才请求
+    enabled: !!countryId && countryId !== "null", // 只有 countryId 存在才请求
     staleTime: 5 * 60 * 1000,
   });
 };
@@ -26,7 +26,7 @@ export const useCities = (stateId?: string) => {
   return useQuery({
     queryKey: ["cities", stateId],
     queryFn: () => getCities(stateId as string),
-    enabled: !!stateId,
+    enabled: !!stateId && stateId !== "null",
     staleTime: 5 * 60 * 1000,
   });
 };

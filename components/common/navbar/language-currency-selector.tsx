@@ -23,10 +23,18 @@ export default function LanguageCurrencySelector() {
 
       await fetchConfig(); // 等待异步执行完成
       console.log("currencies", currencies);
+      // await setUserLocale(language);
     };
 
     init();
   }, []);
+
+  // useEffect(() => {
+  //   console.log("language", language);
+  // }, [language]);
+  // useEffect(() => {
+  //   console.log("currencies", currencies);
+  // }, [currencies]);
 
   const [tempLanguage, setTempLanguage] = useState(language); // 临时选择
   const [tempCurrency, setTempCurrency] = useState({ ...currency });
@@ -40,7 +48,7 @@ export default function LanguageCurrencySelector() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      // console.log("保存选择", tempLocale, tempCurrency);
+      console.log("保存选择", tempLanguage, tempCurrency);
       // 1. 更新 store
       setLanguage(tempLanguage);
       setCurrency({ ...tempCurrency });

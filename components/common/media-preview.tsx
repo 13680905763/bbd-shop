@@ -88,14 +88,22 @@ const MediaPreviewGroup: React.FC<MediaPreviewGroupProps> = ({
 
       {/* 弹窗 */}
       {previewVisible && currentItem && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4"
+          role="button"
+          onClick={() => setPreviewVisible(false)} // 点击空白处关闭
+        >
           <FaTimes
             className="absolute top-4 right-4 text-white text-2xl cursor-pointer"
             onClick={() => setPreviewVisible(false)}
           />
 
           {/* 内容容器 */}
-          <div className="relative inline-flex items-center">
+          <div
+            className="relative inline-flex items-center"
+            role="button"
+            onClick={(e) => e.stopPropagation()} // 阻止冒泡，不让点击内容触发关闭
+          >
             {/* 左右按钮贴内容两边 */}
             <FaArrowLeft
               className="absolute left-[-100px] text-white text-3xl cursor-pointer"

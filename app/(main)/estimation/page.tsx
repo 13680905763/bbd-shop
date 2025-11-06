@@ -81,8 +81,10 @@ export default function EstimationPage() {
       const res = await searchWarehouseRoutesList(formData);
 
       setRoutes(res || []);
+      console.log("666");
     } catch (err) {
-      console.error(err);
+      setRoutes([]);
+      // console.error(err);
     }
   };
 

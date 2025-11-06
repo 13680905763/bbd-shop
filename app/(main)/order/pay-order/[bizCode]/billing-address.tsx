@@ -45,7 +45,11 @@ export default function BillingAddress({ billingAddress }: any) {
 
     try {
       if (modalType === "add") {
-        await addAddress({ ...currentRowData, addressType: 2 }); // 新增接口
+        await addAddress({
+          ...currentRowData,
+          addressType: 2,
+          defaultAddress: 1,
+        }); // 新增接口
       } else if (modalType === "edit") {
         await updateAddress({
           ...filteredData,

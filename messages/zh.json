@@ -175,6 +175,10 @@
                     "label": "设为默认地址"
                 }
             ]
+        },
+        "RechargeModal": {
+            "title": "充值",
+            "placeholder": "请输入充值金额"
         }
     },
     "LoginPage": {
@@ -339,18 +343,6 @@
                         "label": "用户名"
                     },
                     {
-                        "key": "familyName",
-                        "type": "input",
-                        "name": "familyName",
-                        "label": "姓氏"
-                    },
-                    {
-                        "key": "givenName",
-                        "type": "input",
-                        "name": "givenName",
-                        "label": "名字"
-                    },
-                    {
                         "key": "mobile",
                         "type": "input",
                         "name": "mobile",
@@ -396,42 +388,48 @@
                         "type": "input",
                         "name": "recipient",
                         "label": "收件人",
-                        "placeholder": "输入收件人姓名"
+                        "placeholder": "输入收件人姓名",
+                        "required": true
                     },
                     {
                         "key": "phone",
                         "type": "input",
                         "name": "phone",
                         "label": "电话",
-                        "placeholder": "输入电话号码"
+                        "placeholder": "输入电话号码",
+                        "required": true
                     },
                     {
                         "key": "area",
                         "type": "area",
                         "name": "area",
                         "label": "地区",
-                        "placeholder": "选择地区"
+                        "placeholder": "选择地区",
+                        "required": true
                     },
                     {
                         "key": "address",
                         "type": "input",
                         "name": "address",
                         "label": "地址",
-                        "placeholder": "输入完整地址"
+                        "placeholder": "输入完整地址",
+                        "required": true
                     },
                     {
                         "key": "doorNo",
                         "type": "input",
                         "name": "doorNo",
                         "label": "门牌号",
-                        "placeholder": "输入门牌号"
+                        "placeholder": "输入门牌号",
+                        "required": true
                     },
                     {
                         "key": "postcode",
                         "type": "input",
                         "name": "postcode",
                         "label": "邮编",
-                        "placeholder": "输入邮政编码"
+                        "placeholder": "输入邮政编码",
+                        "required": true
                     },
                     {
                         "key": "defaultAddress",
@@ -742,6 +740,7 @@
             "batchPay": "批量支付",
             "texts": {
                 "packageNumberLabel": "包裹编号",
+                "shippingCode": "查询号：",
                 "productImageAlt": "商品图片",
                 "sizeLabel": "尺寸",
                 "weightLabel": "重量",
@@ -955,6 +954,8 @@
         ]
     },
     "Goods": {
+        "agreeTerms": "请勾选同意协议",
+        "selectSku": "请选择商品规格",
         "purchaseRecord": "购买记录",
         "sales": "销量",
         "weight": "重量 (克)",
@@ -1015,5 +1016,34 @@
         "customsFee": "关税",
         "shippingLimit": "运输限制",
         "routeFeature": "路线特点"
+    },
+    "PaymentResultPage": {
+        "loading": "正在确认支付结果...",
+        "successTitle": "支付成功",
+        "successMessage": "我们已收到您的付款，订单正在处理中。",
+        "failTitle": "支付失败",
+        "failMessage": "支付未完成，请检查订单或重新尝试付款。",
+        "transactionId": "交易号：",
+        "orderId": "订单号：",
+        "amount": "支付金额：",
+        "time": "支付时间：",
+        "viewOrder": "查看订单",
+        "backHome": "返回首页"
+    },
+    "Common": {
+        "AreaSelector": {
+            "country": {
+                "label": "国家1123",
+                "placeholder": "选择国家"
+            },
+            "state": {
+                "label": "省份",
+                "placeholder": "选择省份"
+            },
+            "city": {
+                "label": "城市",
+                "placeholder": "选择城市"
+            }
+        }
     }
 }

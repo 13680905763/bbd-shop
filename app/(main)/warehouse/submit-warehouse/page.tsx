@@ -1,7 +1,9 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { addToast, Button, Checkbox, Textarea } from "@heroui/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import WarehouseCard from "./warehouse-card";
 import { AddAddressCard } from "./add-address-card";
@@ -99,11 +101,13 @@ export default function SubmitOrder() {
   const searchParam = useSearchParams();
   const router = useRouter();
   const key = searchParam.get("key") as string;
+  const t = useTranslations("Dashboard.Page");
 
   const [submitting, setSubmitting] = useState(false);
   const [isCheck, setIsCheck] = useState(false);
   const [services, setServices] = useState<any[]>([]);
   const [routesData, setRoutesData] = useState<any[]>([]);
+  const [routesMessage, setRoutesMessage] = useState<string>("");
   const [orderData, setOrderData] = useState<any>(null);
 
   const { data, isLoading, isError } = useWarehousePreview(key);
@@ -125,21 +129,31 @@ export default function SubmitOrder() {
 
   useEffect(() => {
     getWarehouseServicesList().then((res) => setServices(res || []));
-    getWarehouseRoutesList().then((res) => setRoutesData(res || []));
+    // getWarehouseRoutesList().then((res) => setRoutesData(res || []));
   }, []);
   useEffect(() => {
-    console.log(
-      "切换了地址",
-      data?.packageItemList.map((item: any) => item?.categoryId),
-      addressData?.find((item) => item.id == selectedAddressId)?.countryId,
-    );
+    console.log("selectedAddressId", selectedAddressId, !selectedAddressId);
+    if (!selectedAddressId) {
+      getWarehouseRoutesList().then((res) => setRoutesData(res || []));
+    }
+  }, [selectedAddressId]);
+  useEffect(() => {
+    const countryId = addressData?.find(
+      (item) => item.id == selectedAddressId,
+    )?.countryId;
+
+    if (!countryId) return;
     getWarehouseRoutesListByCC({
       categoryIds: data?.packageItemList.map((item: any) => item?.categoryId),
-      countryId: addressData?.find((item) => item.id == selectedAddressId)
-        ?.countryId,
+      countryId,
     }).then((res) => {
-      console.log("res", res);
-      setRoutesData(res || []);
+      console.log("res", res, typeof res != "string", res?.length);
+      if (typeof res != "string" && res?.length) {
+        setRoutesData(res || []);
+      } else {
+        setRoutesData([]);
+        setRoutesMessage(res);
+      }
     });
   }, [selectedAddressId]);
   // 切换服务选择
@@ -249,20 +263,19 @@ export default function SubmitOrder() {
           {/* 地址 */}
           <div>
             <div className="text-title">Shipping Address</div>
-            <div className="grid grid-cols-2 gap-4">
-              {addressData?.length === 0 ? (
-                <AddAddressCard onAdd={handleAdd} />
-              ) : (
-                addressData?.map((addr) => (
-                  <AddressCard
-                    key={addr.id}
-                    data={addr}
-                    isSelected={selectedAddressId === String(addr.id)}
-                    onEdit={() => handleEdit(addr)}
-                    onSelect={(id) => setSelectedAddressId(String(id))}
-                  />
-                ))
-              )}
+            <div className="grid grid-cols-3 gap-4">
+              {addressData?.length === 0
+                ? null
+                : addressData?.map((addr) => (
+                    <AddressCard
+                      key={addr.id}
+                      data={addr}
+                      isSelected={selectedAddressId === String(addr.id)}
+                      onEdit={() => handleEdit(addr)}
+                      onSelect={(id: string | null) => setSelectedAddressId(id)}
+                    />
+                  ))}
+              <AddAddressCard onAdd={handleAdd} />
             </div>
           </div>
 
@@ -303,6 +316,11 @@ export default function SubmitOrder() {
                   onSelect={(id) => setSelectedRouteId(String(id))}
                 />
               ))}
+              {routesData?.length < 1 && (
+                <div className="flex flex-col items-center justify-center h-[20vh] text-gray-500">
+                  <p className="text-lg mb-2">{routesMessage}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -337,10 +355,14 @@ export default function SubmitOrder() {
         </div>
 
         <FormModal
-          fields={fieldsaddress}
+          fields={t.raw("AddressTab.fields")}
           formData={currentRowData}
           isOpen={modalType === "add" || modalType === "edit"}
-          title={modalType === "add" ? "添加地址" : "编辑地址"}
+          title={
+            modalType === "add"
+              ? t.raw("AddressTab.texts.title.add")
+              : t.raw("AddressTab.texts.title.edit")
+          }
           onChange={setCurrentRowData}
           onOpenChange={(open) => {
             if (!open) setModalType(null);

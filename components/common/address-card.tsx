@@ -17,7 +17,7 @@ interface BackendAddress {
 interface AddressCardProps {
   data?: BackendAddress;
   onEdit?: (id: string) => void;
-  onSelect?: (id: string) => void;
+  onSelect?: (id: string | null) => void;
   isSelected?: boolean;
 }
 
@@ -51,7 +51,17 @@ export default function AddressCard({
         isSelected ? "border-primary border-2 bg-orange-50" : "border-gray-200"
       } hover:shadow-md cursor-pointer`}
       shadow="none"
-      onClick={() => id && onSelect?.(id)}
+      onClick={() => {
+        if (id && isSelected) {
+          console.log(666);
+
+          onSelect?.(null);
+        } else if (id) {
+          console.log(777);
+
+          onSelect?.(id);
+        }
+      }}
     >
       <div className="flex justify-between items-start">
         <div className="flex flex-col gap-1">

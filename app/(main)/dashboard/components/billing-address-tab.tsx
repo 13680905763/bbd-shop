@@ -21,7 +21,6 @@ const initAddress = {
   city: "",
   addressType: "",
   postcode: "",
-  // defaultAddress: 0,
   doorNo: "",
 };
 

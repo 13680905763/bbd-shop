@@ -341,7 +341,7 @@ export default function OrderPage() {
                   <input
                     className="w-16 px-2 py-1 border rounded text-sm"
                     max={product.canRefundQty}
-                    min={0}
+                    min={1}
                     type="number"
                     value={product.refundQuantity}
                     onChange={(e) => {

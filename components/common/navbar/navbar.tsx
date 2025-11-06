@@ -46,6 +46,8 @@ export const Navbar = () => {
         if (!res) {
           console.log("清空userStore");
           clearUser();
+        } else {
+          useUserStore.getState().setUser(res);
         }
         // ✅ 如果返回正常用户信息则不做处理
       } catch (err: any) {

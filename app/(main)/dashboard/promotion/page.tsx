@@ -12,9 +12,11 @@ import { useTranslations } from "next-intl";
 
 import { describeText, price, subtitle } from "@/components/primitives";
 import { getExperience, getPromotionConfig } from "@/services";
+import { useGlobalStore } from "@/store";
 
 export default function PromotionPage() {
   const t: any = useTranslations("Dashboard.Promotion.page");
+  const { currency } = useGlobalStore();
 
   const [experience, setExperience] = useState<any>(null);
   const [experienceList, setExperienceList] = useState(null);
@@ -83,7 +85,7 @@ export default function PromotionPage() {
         <div className={subtitle()}>{t("myAlliance.title")}</div>
         <div className="flex justify-center items-center bg-[#ffeee1] rounded-lg p-5 gap-5">
           <div className="flex-1 flex justify-center flex-col items-center gap-2">
-            <div className={price()}>$0</div>
+            <div className={price()}>{currency.symbol}0</div>
             <div className={describeText({ weight: "normal" })}>
               {t("myAlliance.totalReward")}
             </div>

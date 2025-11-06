@@ -1,17 +1,17 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   addToast,
   Button,
   Checkbox,
   Divider,
-  Image,
   Textarea,
   useDisclosure,
 } from "@heroui/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FaCamera } from "react-icons/fa";
 import { useTranslations } from "next-intl";
+import { Image } from "antd";
 
 import OrderItem from "./order-item";
 
@@ -22,11 +22,15 @@ import { useOrderPreview } from "@/hook";
 import {
   createOrderByCart,
   createOrderByProduct,
+  getServicesList,
   updateOrderPreviewCart,
   updateOrderPreviewProduct,
 } from "@/services";
-import { useGlobalStore, useServicesStore } from "@/store";
+import { useGlobalStore } from "@/store";
 import { createOrderPreviewKeyByProductParams } from "@/types";
+import { queryClient } from "@/lib/react-query";
+import Stepper from "@/components/stepper";
+import { safeMul } from "@/utils/number";
 
 export default function SubmitOrder() {
   const t = useTranslations("SubmitOrder");
@@ -44,7 +48,7 @@ export default function SubmitOrder() {
   const [submitting, setSubmitting] = useState(false);
   const [ischeck, setIscheck] = useState(false);
 
-  const services = useServicesStore((state) => state.services);
+  const [servicesList, setServicesList] = useState([]);
 
   // 本地状态：存储克隆的服务列表，用于单商品
   const [localServices, setLocalServices] = useState<any[]>([]);
@@ -57,11 +61,25 @@ export default function SubmitOrder() {
 
   // 当前服务详情对象
   const [currentService, setCurrentService] = useState<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (data) setOrderData(data);
   }, [data]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await getServicesList();
 
+        setServicesList(res);
+      } catch (err) {
+        console.error("获取服务列表失败:", err);
+      } finally {
+      }
+    };
+
+    fetchData();
+  }, []);
   // 打开商品服务列表弹窗
   const openServiceModal = (cartId: string, skuId: string) => {
     // console.log("services", services, cartId);
@@ -79,16 +97,34 @@ export default function SubmitOrder() {
         .find((item: any) => {
           return item?.sku?.propId_valueId == skuId;
         })
-        ?.orderServiceList?.map((item: any) => item.id) || [];
+        ?.orderServiceList?.map((item: any) => {
+          return {
+            id: item?.id,
+            quantity: item?.quantity || 1,
+            remark: item?.remark || "",
+          };
+        }) || [];
+
+    console.log("hanldeSer", hanldeSer);
 
     // 克隆服务，初始化 isCheck、remark
     setLocalServices(
-      services.map((s: any) => {
+      servicesList.map((s: any) => {
+        console.log(
+          "hanldeSer.find((id: any) => id == s.id)",
+          hanldeSer.find((item: any) => item.id == s.id),
+        );
+
         return {
           ...s,
-          isCheck: hanldeSer.find((id: any) => id == s.id) ? true : false,
-          // isCheck: false,
+          isCheck: hanldeSer.find((item: any) => item.id == s.id)
+            ? true
+            : false,
+          // remark: hanldeSer.find((id: any) => id == s.id).remark || "",
           remark: "",
+          quantity:
+            hanldeSer.find((item: any) => item.id == s.id)?.quantity || 1,
+          // quantity: 1,
         };
       }),
     );
@@ -98,6 +134,8 @@ export default function SubmitOrder() {
   // 打开某个服务详情
   const openServiceDetail = (serviceId: string) => {
     const service = localServices.find((s) => s.id === serviceId);
+
+    console.log("service", service);
 
     if (!service) return;
     setCurrentService(service);
@@ -116,7 +154,12 @@ export default function SubmitOrder() {
     setLocalServices((prev) =>
       prev.map((s) =>
         s.id === currentService.id
-          ? { ...s, remark: currentService.remark, isCheck: true }
+          ? {
+              ...s,
+              remark: currentService?.remark,
+              isCheck: true,
+              quantity: currentService?.quantity,
+            }
           : s,
       ),
     );
@@ -140,7 +183,11 @@ export default function SubmitOrder() {
 
     const checkedServices = localServices
       .filter((s) => s.isCheck)
-      .map((s) => ({ serviceId: s.id, remark: s.remark }));
+      .map((s) => ({
+        serviceId: s.id,
+        remark: s.remark,
+        quantity: s.quantity,
+      }));
 
     console.log("checkedServices", checkedServices);
 
@@ -181,15 +228,21 @@ export default function SubmitOrder() {
       if (type === "cart") {
         const bizCode = await createOrderByCart(orderData?.param);
 
+        await queryClient.removeQueries({ queryKey: ["cartList"] });
+        await queryClient.invalidateQueries({ queryKey: ["cartList"] }); // 手动刷新
         router.push("/order/pay-order/" + bizCode);
       } else {
         const bizCode = await createOrderByProduct(
           orderData?.param as createOrderPreviewKeyByProductParams,
         );
 
+        await queryClient.removeQueries({ queryKey: ["cartList"] });
+        await queryClient.invalidateQueries({ queryKey: ["cartList"] }); // 手动刷新
+
         router.push("/order/pay-order/" + bizCode);
       }
     } finally {
+      console.log("手动刷新");
       setSubmitting(false);
     }
   };
@@ -324,10 +377,12 @@ export default function SubmitOrder() {
                   )}
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[12px] text-gray-500">x1</span>
+                  <span className="text-[12px] text-gray-500">
+                    x{service.quantity}
+                  </span>
                   <span className="text-sm font-semibold text-red-500">
                     {currency.symbol}
-                    {service.price}
+                    {safeMul(service.quantity, service.price)}
                   </span>
                   <Button
                     className="text-[11px] px-2 h-6"
@@ -348,6 +403,7 @@ export default function SubmitOrder() {
       {/* 服务详情弹窗 */}
       {currentService && (
         <CommonModal
+          isDismissable={false}
           isOpen={isServiceDetailOpen}
           showCancel={currentService.id != 1}
           title={currentService.serviceName}
@@ -367,19 +423,29 @@ export default function SubmitOrder() {
               </div>
 
               {/* 示例（id != 1 时才展示） */}
-              {currentService.sample && (
+              {currentService.sample.length > 0 && (
                 <div className="space-y-2">
                   <h3 className="text-sm font-medium text-gray-900">
                     {t("sample")}
                   </h3>
-                  <Image
-                    alt="sample"
-                    className="border border-gray-200"
-                    height={80}
-                    radius="md"
-                    src={currentService.sample}
-                    width={80}
-                  />
+                  <div
+                    ref={containerRef}
+                    className="relative"
+                    style={{ width: "100%", overflow: "hidden" }}
+                  >
+                    <Image.PreviewGroup
+                      preview={{
+                        getContainer: () =>
+                          containerRef.current || document.body, // 让预览挂在这个 div 内
+                      }}
+                    >
+                      <div className="grid grid-cols-4 gap-2">
+                        {currentService.sample.map((url: string) => (
+                          <Image key={url} height={80} src={url} width={80} />
+                        ))}
+                      </div>
+                    </Image.PreviewGroup>
+                  </div>
                 </div>
               )}
             </div>
@@ -388,10 +454,25 @@ export default function SubmitOrder() {
             {currentService.id != 1 && (
               <div className="flex items-center justify-between border-t pt-3">
                 <span className="text-sm text-gray-700">{t("serviceFee")}</span>
-                <span className="text-lg font-semibold text-rose-600">
-                  {currency.symbol}
-                  {currentService.price}
-                </span>
+                <div className="flex gap-2">
+                  <span className="text-lg font-semibold text-rose-600">
+                    {currency.symbol}
+                    {currentService.price}
+                  </span>
+                  {currentService?.stacked == 1 ? (
+                    <Stepper
+                      value={currentService?.quantity}
+                      onChange={(quantity) => {
+                        console.log("quantity", quantity);
+
+                        setCurrentService({
+                          ...currentService,
+                          quantity: quantity,
+                        });
+                      }}
+                    />
+                  ) : null}
+                </div>
               </div>
             )}
 

@@ -175,6 +175,10 @@
                     "label": "Définir comme adresse par défaut"
                 }
             ]
+        },
+        "RechargeModal": {
+            "title": "Recharger",
+            "placeholder": "Entrez le montant à recharger"
         }
     },
     "LoginPage": {
@@ -339,18 +343,6 @@
                         "label": "Nom d'utilisateur"
                     },
                     {
-                        "key": "familyName",
-                        "type": "input",
-                        "name": "familyName",
-                        "label": "Nom de Famille"
-                    },
-                    {
-                        "key": "givenName",
-                        "type": "input",
-                        "name": "givenName",
-                        "label": "Prénom"
-                    },
-                    {
                         "key": "mobile",
                         "type": "input",
                         "name": "mobile",
@@ -396,14 +388,16 @@
                         "type": "input",
                         "name": "recipient",
                         "label": "Destinataire",
-                        "placeholder": "Entrez le nom du destinataire"
+                        "placeholder": "Entrez le nom du destinataire",
+                        "required": true
                     },
                     {
                         "key": "phone",
                         "type": "input",
                         "name": "phone",
                         "label": "Téléphone",
-                        "placeholder": "Entrez le numéro de téléphone"
+                        "placeholder": "Entrez le numéro de téléphone",
+                        "required": true
                     },
                     {
                         "key": "area",
@@ -417,21 +411,24 @@
                         "type": "input",
                         "name": "address",
                         "label": "Adresse",
-                        "placeholder": "Entrez l'adresse complète"
+                        "placeholder": "Entrez l'adresse complète",
+                        "required": true
                     },
                     {
                         "key": "doorNo",
                         "type": "input",
                         "name": "doorNo",
                         "label": "N° de Porte",
-                        "placeholder": "Entrez le numéro de porte"
+                        "placeholder": "Entrez le numéro de porte",
+                        "required": true
                     },
                     {
                         "key": "postcode",
                         "type": "input",
                         "name": "postcode",
                         "label": "Code Postal",
-                        "placeholder": "Entrez le code postal"
+                        "placeholder": "Entrez le code postal",
+                        "required": true
                     },
                     {
                         "key": "defaultAddress",
@@ -733,6 +730,7 @@
             "batchPay": "Paiement en Lot",
             "texts": {
                 "packageNumberLabel": "Numéro de Colis",
+                "shippingCode": "Numéro de suivi:",
                 "productImageAlt": "Image du Produit",
                 "sizeLabel": "Taille",
                 "weightLabel": "Poids",
@@ -855,18 +853,28 @@
         "tooltipTip": "En raison de la conversion de devises, il peut y avoir une petite différence de 0.01 ou 0.02",
         "fields": [
             {
-                "key": "recipient",
+                "key": "familyName",
                 "type": "input",
-                "name": "recipient",
-                "label": "Destinataire",
-                "placeholder": "Entrez le nom du destinataire"
+                "name": "familyName",
+                "label": "Nom de famille",
+                "placeholder": "Entrez le nom de famille",
+                "required": true
+            },
+            {
+                "key": "givenName",
+                "type": "input",
+                "name": "givenName",
+                "label": "Prénom",
+                "placeholder": "Entrez le prénom",
+                "required": true
             },
             {
                 "key": "phone",
                 "type": "input",
                 "name": "phone",
                 "label": "Téléphone",
-                "placeholder": "Entrez le numéro de téléphone"
+                "placeholder": "Entrez le numéro de téléphone",
+                "required": true
             },
             {
                 "key": "area",
@@ -880,31 +888,30 @@
                 "type": "input",
                 "name": "address",
                 "label": "Adresse",
-                "placeholder": "Entrez l'adresse complète"
+                "placeholder": "Entrez l'adresse complète",
+                "required": true
             },
             {
                 "key": "doorNo",
                 "type": "input",
                 "name": "doorNo",
                 "label": "N° de Porte",
-                "placeholder": "Entrez le numéro de porte"
+                "placeholder": "Entrez le numéro de porte",
+                "required": true
             },
             {
                 "key": "postcode",
                 "type": "input",
                 "name": "postcode",
                 "label": "Code Postal",
-                "placeholder": "Entrez le code postal"
-            },
-            {
-                "key": "defaultAddress",
-                "type": "checkbox",
-                "name": "defaultAddress",
-                "label": "Définir comme adresse par défaut"
+                "placeholder": "Entrez le code postal",
+                "required": true
             }
         ]
     },
     "Goods": {
+        "agreeTerms": "Veuillez accepter les conditions d'utilisation",
+        "selectSku": "Veuillez sélectionner une spécification du produit",
         "purchaseRecord": "Historique d'Achat",
         "sales": "Ventes",
         "weight": "Poids (g)",
@@ -965,5 +972,34 @@
         "customsFee": "Frais de Douane",
         "shippingLimit": "Limite d'Expédition",
         "routeFeature": "Caractéristique de la Route"
+    },
+    "PaymentResultPage": {
+        "loading": "Vérification du résultat du paiement...",
+        "successTitle": "Paiement réussi",
+        "successMessage": "Nous avons reçu votre paiement. Votre commande est en cours de traitement.",
+        "failTitle": "Échec du paiement",
+        "failMessage": "Le paiement n’a pas été effectué. Veuillez vérifier votre commande ou réessayer.",
+        "transactionId": "ID de transaction :",
+        "orderId": "ID de commande :",
+        "amount": "Montant :",
+        "time": "Heure du paiement :",
+        "viewOrder": "Voir la commande",
+        "backHome": "Retour à l'accueil"
+    },
+    "Common": {
+        "AreaSelector": {
+            "country": {
+                "label": "Pays",
+                "placeholder": "Sélectionnez un pays"
+            },
+            "state": {
+                "label": "Province / État",
+                "placeholder": "Sélectionnez une province"
+            },
+            "city": {
+                "label": "Ville",
+                "placeholder": "Sélectionnez une ville"
+            }
+        }
     }
 }

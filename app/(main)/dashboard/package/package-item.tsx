@@ -1,20 +1,24 @@
 "use client";
 import { useRef } from "react";
 import { Button, Checkbox, Image } from "@heroui/react";
+import { FiSearch } from "react-icons/fi";
 
 import MediaPreviewGroup, {
   MediaItem,
 } from "@/components/common/media-preview";
+import { useGlobalStore } from "@/store";
 
 export default function PackageItem({
   order,
   onPayOrderRedirect,
+  handlePackageSubmitItem,
   activeTab,
   selected,
   onChange,
   texts, // texts 从 props 传入
 }: any) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { currency } = useGlobalStore();
 
   const isDragging = useRef(false);
   const startX = useRef(0);
@@ -117,10 +121,12 @@ export default function PackageItem({
 
           <div className="flex flex-col justify-center p-2 flex-[0_0_150px]">
             <span className="text-gray-500">
-              {texts.serviceFeeLabel}: {order?.totalServiceFee}
+              {texts.serviceFeeLabel}: {currency.symbol}
+              {order?.totalServiceFee || 0}
             </span>
             <span className="font-semibold text-gray-800">
-              {texts.totalFeeLabel}: {order?.totalFee}
+              {texts.totalFeeLabel}: {currency.symbol}
+              {order?.totalFee}
             </span>
           </div>
 
@@ -144,7 +150,32 @@ export default function PackageItem({
                 <div className="text-[#f0700c] font-medium">
                   {order?.status}
                 </div>
-                <div className="">{order?.shipping?.shippingCode}</div>
+                {order?.statusCode == 203 && (
+                  <button
+                    className="text-[#f0700c]"
+                    onClick={() =>
+                      handlePackageSubmitItem(order?.packingPackageCode)
+                    }
+                  >
+                    {texts.payButton}
+                  </button>
+                )}
+                {order?.shipping?.shippingCode && (
+                  <div className="mt-3 flex items-start gap-2  text-sm text-gray-700">
+                    <div className="flex flex-col">
+                      <span className="text-gray-500">
+                        <FiSearch
+                          className="inline-block text-gray-500"
+                          size={14}
+                        />
+                        {texts.shippingCode}
+                      </span>
+                      <span className="font-medium text-gray-900 break-all">
+                        {order.shipping.shippingCode}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

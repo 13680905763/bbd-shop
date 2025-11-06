@@ -90,7 +90,7 @@ export default function OrderItem({
               <div className="flex justify-center flex-[0_0_150px]">
                 <p>
                   {currency.symbol}
-                  {safeMul(product.price, product.quantity).toFixed(2)}
+                  {safeMul(product.price, product.quantity)}
                 </p>
               </div>
             </div>

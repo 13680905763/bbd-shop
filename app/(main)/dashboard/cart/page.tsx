@@ -220,6 +220,8 @@ export default function CartPage() {
       setSelected(init);
     }
   }, [data]);
+  console.log("isLoading", isLoading);
+
   if (isLoading) return <FullscreenLoader />;
   if (isError) return <div>出错了</div>;
   // 判断购物车是否为空

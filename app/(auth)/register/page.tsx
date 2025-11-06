@@ -72,7 +72,7 @@ export default function RegisterPage() {
           activationCode: code,
         });
         await handleAuthSuccess();
-        router.push("/");
+        router.push("/dashboard");
       } catch {}
     }
   };

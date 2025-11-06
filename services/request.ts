@@ -6,7 +6,7 @@ import { useGlobalStore } from "@/store";
 
 export const request = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "/api",
-  timeout: 300000,
+  timeout: 500000,
   headers: {
     "Content-Type": "application/json",
   },
@@ -41,8 +41,11 @@ request.interceptors.response.use(
     // console.log("res", res);
 
     const showToast = (response.config as any)?.showToast ?? false; // 默认不显示提示
+    const isSuccess = (response.config as any)?.isSuccess ?? true; // 默认不显示提示
 
     if (!res.success) {
+      console.log("接口报错");
+
       if (showToast) {
         addToast({
           title: res.msg || "请求失败",
@@ -50,11 +53,16 @@ request.interceptors.response.use(
           color: "danger",
         });
       }
+      if (!isSuccess) {
+        console.log("接口666");
+
+        return res.msg;
+      }
 
       return Promise.reject(new Error(res.msg || "请求失败"));
     }
 
-    if (showToast) {
+    if (showToast && isSuccess) {
       addToast({
         title: res.msg || "请求成功",
         timeout: 1000,
@@ -90,10 +98,20 @@ request.interceptors.response.use(
 // 封装一个带可选参数的请求方法
 export const requestWithOption = <T = any>(
   config: AxiosRequestConfig,
-  options?: { showToast?: boolean },
+  options?: { showToast?: boolean; isSuccess?: boolean },
 ) => {
+  // 设置默认值
+  const mergedOptions = {
+    showToast: options?.showToast ?? false,
+    isSuccess: options?.isSuccess ?? true, // 默认 true，可传 false
+  };
+
   return request({
     ...config,
-    ...(options ? { showToast: options.showToast } : {}),
-  } as AxiosRequestConfig & { showToast?: boolean }) as Promise<T>;
+    showToast: mergedOptions.showToast,
+    isSuccess: mergedOptions.isSuccess,
+  } as AxiosRequestConfig & {
+    showToast?: boolean;
+    isSuccess?: boolean;
+  }) as Promise<T>;
 };
