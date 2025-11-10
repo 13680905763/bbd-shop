@@ -737,6 +737,7 @@
             "noPackages": "No packages available",
             "selectAll": "Select All",
             "batchPay": "Batch Payment",
+            "noTracking": "No Tracking Info",
             "texts": {
                 "packageNumberLabel": "Package Number",
                 "shippingCode": "Tracking number:",
@@ -747,7 +748,29 @@
                 "totalFeeLabel": "Total Fee",
                 "pendingPaymentStatus": "Pending Payment",
                 "payButton": "Pay",
-                "cancelButton": "Cancel"
+                "cancelButton": "Cancel",
+                "payCancelFee": "Pay Cancellation Fee",
+                "requestRefund": "Request Cancellation",
+                "withdrawRequest": "Withdraw Request"
+            },
+            "refundModal": {
+                "title": "Cancel",
+                "cancelCard": {
+                    "title": "Confirm Cancellation",
+                    "subtitle": "Cancel this order",
+                    "submittingTitle": "Cancelling...",
+                    "submittingSubtitle": "Please wait",
+                    "serviceFee": "Service Fee",
+                    "packingFee": "Packing Fee",
+                    "totalFee": "Total Fee"
+                },
+                "changeRouteCard": {
+                    "title": "Change Route",
+                    "subtitle": "Select a new shipping route"
+                }
+            },
+            "withdrawModal": {
+                "content": "Are you sure to withdraw the cancellation request?"
             }
         },
         "Promotion": {

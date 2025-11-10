@@ -233,7 +233,8 @@ export default function GoodsPage() {
 
     try {
       await addCart(data);
-      queryClient.invalidateQueries({ queryKey: ["cartList"] }); // 手动刷新
+      await queryClient.removeQueries({ queryKey: ["cartList"] });
+      await queryClient.invalidateQueries({ queryKey: ["cartList"] }); // 手动刷新
     } catch {
     } finally {
       setissub(false);

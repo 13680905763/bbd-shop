@@ -1,5 +1,13 @@
 "use client";
-import { Button, Checkbox, Tab, Tabs } from "@heroui/react";
+import {
+  Button,
+  Card,
+  CardBody,
+  Checkbox,
+  Tab,
+  Tabs,
+  Image,
+} from "@heroui/react";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -147,6 +155,27 @@ export default function OrderPage() {
     queryClient.invalidateQueries({ queryKey: ["orderList"] });
     setRefundConfig(null);
   };
+  const handleSelect = (index: number, checked: boolean) => {
+    const newProducts = refundConfig?.order.products.map((p: any, i: number) =>
+      i === index ? { ...p, selected: checked } : p,
+    );
+
+    setRefundConfig({
+      ...refundConfig,
+      order: { ...refundConfig?.order, products: newProducts },
+    });
+  };
+
+  const handleQtyChange = (index: number, value: number) => {
+    const newProducts = refundConfig?.order.products.map((p: any, i: number) =>
+      i === index ? { ...p, refundQuantity: value } : p,
+    );
+
+    setRefundConfig({
+      ...refundConfig,
+      order: { ...refundConfig?.order, products: newProducts },
+    });
+  };
 
   const EmptyOrder = () => (
     <div className="flex flex-col items-center justify-center h-[60vh] text-gray-500">
@@ -283,84 +312,102 @@ export default function OrderPage() {
           onConfirm={handleRefundSubmit}
           onOpenChange={() => setRefundConfig(null)}
         >
-          {refundConfig?.order?.products.map((product: any, index: number) => (
-            <div
-              key={index}
-              className="flex items-center justify-between p-3 mb-2 border rounded-md bg-white shadow-sm"
-            >
-              {/* 左侧：勾选 + 商品信息 */}
-              <div className="flex items-center gap-3">
-                <input
-                  checked={product.selected || false}
-                  className="w-4 h-4"
-                  type="checkbox"
-                  onChange={(e) => {
-                    const newProducts = refundConfig.order.products.map(
-                      (p: any, i: number) =>
-                        i === index ? { ...p, selected: e.target.checked } : p,
-                    );
+          <div className="space-y-3">
+            {refundConfig?.order?.products.map(
+              (product: any, index: number) => (
+                <Card
+                  key={index}
+                  className={`border rounded-lg shadow-sm transition-all duration-150 ${
+                    product.selected
+                      ? "border-primary bg-primary/5"
+                      : "border-gray-200 bg-white"
+                  }`}
+                  isPressable={false}
+                >
+                  <CardBody className="flex flex-col sm:flex-row justify-between p-4 gap-4">
+                    {/* 左侧：选择框 + 商品信息 */}
+                    <div className="flex items-center gap-3 flex-1">
+                      <Checkbox
+                        className="mt-1"
+                        isDisabled={
+                          product.isRefunded || product.canRefundQty === 0
+                        } // ✅ 禁止点击：已退款 或 可退为0
+                        isSelected={product.selected || false}
+                        size="sm"
+                        onValueChange={(checked) =>
+                          handleSelect(index, checked)
+                        }
+                      />
 
-                    setRefundConfig({
-                      ...refundConfig,
-                      order: { ...refundConfig.order, products: newProducts },
-                    });
-                  }}
-                />
-                <div className="w-[60px] h-[60px] flex-shrink-0">
-                  <img
-                    alt={product.productTitle}
-                    className="w-full h-full object-cover rounded"
-                    src={product.skuPicUrl || product?.picUrl}
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-medium text-gray-800 line-clamp-2">
-                    {product.productTitle}
-                  </span>
-                  <span className="text-gray-500 text-sm">
-                    {product?.sku?.propName_valueName || "-"}
-                  </span>
-                  {product?.remark && (
-                    <span className="text-gray-400 text-xs">
-                      {product.remark}
-                    </span>
-                  )}
-                </div>
-              </div>
+                      <div className="w-[70px] h-[70px] flex-shrink-0">
+                        <Image
+                          alt={product.productTitle}
+                          className="w-full h-full object-cover rounded-md"
+                          height={70}
+                          src={
+                            product.skuPicUrl ||
+                            product.picUrl ||
+                            "/placeholder.png"
+                          }
+                          width={70}
+                        />
+                      </div>
 
-              {/* 右侧：价格、数量 */}
-              <div className="flex flex-col items-end gap-1">
-                <span className="text-gray-700 text-sm font-medium">
-                  {product.price}
-                </span>
-                <span className="text-gray-500 text-sm">
-                  x{product.quantity}
-                </span>
+                      <div className="flex flex-col flex-1 min-w-0">
+                        <span className="font-medium text-gray-900 text-sm line-clamp-2">
+                          {product.productTitle}
+                        </span>
+                        <span className="text-gray-500 text-xs mt-0.5">
+                          {product?.sku?.propName_valueName || "-"}
+                        </span>
+                        {product?.remark && (
+                          <span className="text-gray-400 text-xs mt-0.5">
+                            {product.remark}
+                          </span>
+                        )}
+                        {product.canRefundQty === 0 && (
+                          <span className="text-red-400 text-xs mt-0.5">
+                            不可退
+                          </span>
+                        )}
+                      </div>
+                    </div>
 
-                <div className="flex gap-2 mt-1">
-                  <input
-                    className="w-16 px-2 py-1 border rounded text-sm"
-                    max={product.canRefundQty}
-                    min={1}
-                    type="number"
-                    value={product.refundQuantity}
-                    onChange={(e) => {
-                      const value = Number(e.target.value);
-                      const newProducts = refundConfig.order.products.map(
-                        (p: any, i: number) =>
-                          i === index ? { ...p, refundQuantity: value } : p,
-                      );
+                    {/* 右侧：价格、数量输入 */}
+                    <div className="flex flex-col items-end justify-center gap-1">
+                      <span className="text-gray-900 font-semibold text-sm">
+                        ¥{product.price}
+                      </span>
+                      <span className="text-gray-500 text-xs">
+                        x{product.quantity}
+                      </span>
 
-                      setRefundConfig({
-                        ...refundConfig,
-                        order: { ...refundConfig.order, products: newProducts },
-                      });
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
+                      <div className="flex items-center gap-1 mt-1">
+                        <input
+                          className="w-16 px-2 py-1 border rounded text-sm text-center focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-gray-100"
+                          disabled={
+                            !product.selected ||
+                            product.isRefunded ||
+                            product.canRefundQty === 0
+                          } // ✅ 禁止输入
+                          max={product.canRefundQty}
+                          min={1}
+                          type="number"
+                          value={product.refundQuantity}
+                          onChange={(e) =>
+                            handleQtyChange(index, Number(e.target.value))
+                          }
+                        />
+                        <span className="text-gray-400 text-xs">
+                          可退 {product.canRefundQty}
+                        </span>
+                      </div>
+                    </div>
+                  </CardBody>
+                </Card>
+              ),
+            )}
+          </div>
         </CommonModal>
       )}
     </div>

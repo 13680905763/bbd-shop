@@ -738,6 +738,7 @@
             "noPackages": "暂无包裹",
             "selectAll": "全选",
             "batchPay": "批量支付",
+            "noTracking": "暂无运单",
             "texts": {
                 "packageNumberLabel": "包裹编号",
                 "shippingCode": "查询号：",
@@ -748,7 +749,29 @@
                 "totalFeeLabel": "总费用",
                 "pendingPaymentStatus": "待支付",
                 "payButton": "支付",
-                "cancelButton": "取消"
+                "cancelButton": "取消",
+                "payCancelFee": "支付取消手续费",
+                "requestRefund": "申请取消",
+                "withdrawRequest": "撤回申请"
+            },
+            "refundModal": {
+                "title": "取消",
+                "cancelCard": {
+                    "title": "确认取消",
+                    "subtitle": "取消该订单",
+                    "submittingTitle": "正在取消...",
+                    "submittingSubtitle": "请稍候",
+                    "serviceFee": "服务费",
+                    "packingFee": "打包费",
+                    "totalFee": "总费用"
+                },
+                "changeRouteCard": {
+                    "title": "更换路线",
+                    "subtitle": "重新选择发货路线"
+                }
+            },
+            "withdrawModal": {
+                "content": "确认撤销取消包裹申请嘛？"
             }
         },
         "Promotion": {
@@ -1033,7 +1056,7 @@
     "Common": {
         "AreaSelector": {
             "country": {
-                "label": "国家1123",
+                "label": "国家",
                 "placeholder": "选择国家"
             },
             "state": {

@@ -16,5 +16,6 @@ export function usePackageList(
         statusCode: statusCode,
       }),
     placeholderData: keepPreviousData,
+    refetchOnWindowFocus: false, // ⚠️ 禁止切回 Tab 时自动请求
   });
 }

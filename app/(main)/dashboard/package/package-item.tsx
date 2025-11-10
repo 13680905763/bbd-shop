@@ -1,6 +1,6 @@
 "use client";
 import { useRef } from "react";
-import { Button, Checkbox, Image } from "@heroui/react";
+import { Checkbox, Image } from "@heroui/react";
 import { FiSearch } from "react-icons/fi";
 
 import MediaPreviewGroup, {
@@ -15,6 +15,8 @@ export default function PackageItem({
   activeTab,
   selected,
   onChange,
+  onRequestRefund,
+  onRequestWithdraw,
   texts, // texts 从 props 传入
 }: any) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -131,7 +133,7 @@ export default function PackageItem({
           </div>
 
           <div className="flex flex-col gap-2 p-2 flex-[0_0_150px]">
-            {order?.status === texts.pendingPaymentStatus ? (
+            {/* {order?.status === texts.pendingPaymentStatus ? (
               <>
                 <Button
                   color="primary"
@@ -139,45 +141,82 @@ export default function PackageItem({
                   size="sm"
                   onPress={() => onPayOrderRedirect(order?.packingPackageCode)}
                 >
-                  {texts.payButton}
+                  {texts.payButton}123
                 </Button>
                 <Button className="button-default" radius="none" size="sm">
-                  {texts.cancelButton}
+                  {texts.cancelButton}321
                 </Button>
               </>
-            ) : (
-              <div>
-                <div className="text-[#f0700c] font-medium">
-                  {order?.status}
-                </div>
-                {order?.statusCode == 203 && (
-                  <button
-                    className="text-[#f0700c]"
-                    onClick={() =>
-                      handlePackageSubmitItem(order?.packingPackageCode)
-                    }
-                  >
-                    {texts.payButton}
-                  </button>
-                )}
-                {order?.shipping?.shippingCode && (
-                  <div className="mt-3 flex items-start gap-2  text-sm text-gray-700">
-                    <div className="flex flex-col">
-                      <span className="text-gray-500">
-                        <FiSearch
-                          className="inline-block text-gray-500"
-                          size={14}
-                        />
-                        {texts.shippingCode}
-                      </span>
-                      <span className="font-medium text-gray-900 break-all">
-                        {order.shipping.shippingCode}
-                      </span>
-                    </div>
+            ) : */}
+            {/* ( */}
+            <div className="space-y-2 flex flex-col">
+              {/* 状态展示 */}
+              <div className="text-[#f0700c] font-medium">{order?.status}</div>
+
+              {/* 状态：待支付 */}
+              {order?.statusCode == 203 && (
+                <button
+                  className="px-3 py-1 rounded-lg text-white bg-blue-500 hover:bg-blue-600 transition-colors text-sm font-medium shadow-sm"
+                  onClick={() =>
+                    handlePackageSubmitItem(order?.packingPackageCode)
+                  }
+                >
+                  {texts.payButton}
+                </button>
+              )}
+
+              {/* 状态：支付取消手续费 */}
+              {order?.statusCode == 209 && (
+                <button
+                  className="px-3 py-1 rounded-lg text-white bg-orange-500 hover:bg-orange-600 transition-colors text-sm font-medium shadow-sm"
+                  onClick={() =>
+                    handlePackageSubmitItem(order?.packingPackageCode)
+                  }
+                >
+                  {texts.payCancelFee}
+                </button>
+              )}
+
+              {/* 状态：申请取消 */}
+              {order?.cancelFlag && (
+                <button
+                  className="px-3 py-1 rounded-lg text-white bg-red-500 hover:bg-red-600 transition-colors text-sm font-medium shadow-sm"
+                  onClick={onRequestRefund}
+                >
+                  {texts.requestRefund}
+                </button>
+              )}
+
+              {/* 状态：撤回申请 */}
+              {order?.withdrawFlag && (
+                <button
+                  className="px-3 py-1 rounded-lg text-white bg-green-500 hover:bg-green-600 transition-colors text-sm font-medium shadow-sm"
+                  onClick={onRequestWithdraw}
+                >
+                  {texts.withdrawRequest}
+                </button>
+              )}
+
+              {/* 物流信息 */}
+              {order?.shipping?.shippingCode && (
+                <div className="mt-3 flex items-center gap-2 text-sm text-gray-700">
+                  <div className="flex flex-col flex-1">
+                    <span className="text-gray-500">
+                      <FiSearch
+                        className="inline-block text-gray-500 mr-1"
+                        size={14}
+                      />
+                      {texts.shippingCode || "运单号"}
+                    </span>
+                    <span className="font-medium text-gray-900 break-all">
+                      {order.shipping.shippingCode}
+                    </span>
                   </div>
-                )}
-              </div>
-            )}
+                </div>
+              )}
+            </div>
+
+            {/* )} */}
           </div>
         </div>
 

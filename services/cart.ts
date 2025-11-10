@@ -70,7 +70,16 @@ export const addCart = (
   );
 };
 export const updateCart = (data: any): Promise<string> => {
-  return request.post("/customer/cart/update", data);
+  return requestWithOption(
+    {
+      url: "/customer/cart/update",
+      method: "POST",
+      data,
+    },
+    {
+      showToast: true,
+    },
+  );
 };
 export const getCartList = (): Promise<CartListResponse> => {
   return request.get("/customer/cart/shop");

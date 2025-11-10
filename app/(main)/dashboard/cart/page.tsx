@@ -9,7 +9,6 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 
 import CartItem from "./cart-item";
@@ -25,12 +24,12 @@ import CommonModal from "@/components/modal/common-modal";
 import FullscreenLoader from "@/components/common/fullscreen-loader";
 import OrderProgress from "@/components/common/order-progress";
 import { useGlobalStore } from "@/store";
+import { queryClient } from "@/lib/react-query";
 
 export default function CartPage() {
   const t = useTranslations("Dashboard.CartPage");
   const { currency } = useGlobalStore();
-  const { data, isLoading, isError } = useCartList();
-  const queryClient = useQueryClient();
+  const { data, isLoading, isError, isFetching } = useCartList();
 
   const [selected, setSelected] = useState<{
     [shopId: string]: { [productId: string]: boolean };
@@ -93,17 +92,18 @@ export default function CartPage() {
   };
   const handleProductQuantity = async (productId: string, quantity: number) => {
     try {
-      const tip = await updateCart([
+      await updateCart([
         {
           id: productId,
           quantity,
         },
       ]);
 
-      addToast({ title: tip, timeout: 1000, color: "success" });
+      console.log("6661");
+      console.log("666");
+      await queryClient.invalidateQueries({ queryKey: ["cartList"] }); // 手动刷新
     } catch (e) {
     } finally {
-      queryClient.invalidateQueries({ queryKey: ["cartList"] }); // 手动刷新
     }
   };
   const handleProductRemark = (productId: string, remark: string) => {
@@ -222,7 +222,7 @@ export default function CartPage() {
   }, [data]);
   console.log("isLoading", isLoading);
 
-  if (isLoading) return <FullscreenLoader />;
+  if (isLoading || isFetching) return <FullscreenLoader />;
   if (isError) return <div>出错了</div>;
   // 判断购物车是否为空
   const isCartEmpty =

@@ -728,6 +728,7 @@
             "noPackages": "Aucun colis disponible",
             "selectAll": "Tout Sélectionner",
             "batchPay": "Paiement en Lot",
+            "noTracking": "Aucun suivi disponible",
             "texts": {
                 "packageNumberLabel": "Numéro de Colis",
                 "shippingCode": "Numéro de suivi:",
@@ -738,7 +739,29 @@
                 "totalFeeLabel": "Frais Totaux",
                 "pendingPaymentStatus": "Paiement en Attente",
                 "payButton": "Payer",
-                "cancelButton": "Annuler"
+                "cancelButton": "Annuler",
+                "payCancelFee": "Payer les frais d'annulation",
+                "requestRefund": "Demander l'annulation",
+                "withdrawRequest": "Retirer la demande"
+            },
+            "refundModal": {
+                "title": "Annuler",
+                "cancelCard": {
+                    "title": "Confirmer l'annulation",
+                    "subtitle": "Annuler cette commande",
+                    "submittingTitle": "Annulation en cours...",
+                    "submittingSubtitle": "Veuillez patienter",
+                    "serviceFee": "Frais de service",
+                    "packingFee": "Frais d'emballage",
+                    "totalFee": "Frais totaux"
+                },
+                "changeRouteCard": {
+                    "title": "Changer de route",
+                    "subtitle": "Sélectionner un nouvel itinéraire d'expédition"
+                }
+            },
+            "withdrawModal": {
+                "content": "Voulez-vous vraiment retirer la demande d'annulation ?"
             }
         },
         "Promotion": {
