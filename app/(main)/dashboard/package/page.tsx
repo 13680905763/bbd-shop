@@ -53,7 +53,6 @@ const tabKeyToStatusCode: Record<string, string> = {
 export default function WarehousePage() {
   const t = useTranslations("Dashboard.PackagePage");
   const { currency } = useGlobalStore();
-
   const [activeTab, setActiveTab] =
     useState<keyof typeof tabKeyToStatusCode>("all");
   const [page, setPage] = useState<number>(1);
@@ -76,6 +75,8 @@ export default function WarehousePage() {
 
   const [refundConfig, setRefundConfig] = useState<any>(null);
   const [withdrawConfig, setWithdrawConfig] = useState<any>(null);
+
+  console.log("activeTab", activeTab);
 
   const onPayOrderRedirect = (bizCode: string) => {
     router.push(`/warehouse/pay-order/${bizCode}`);
@@ -162,6 +163,14 @@ export default function WarehousePage() {
     footer?: React.ReactNode;
   }) => {
     if (!packList?.length) return <EmptyPackage />;
+    if (isFetching)
+      return (
+        <div className="flex flex-col items-center justify-center h-[60vh] text-gray-500">
+          <div className="text-lg mb-2">
+            <Spinner />
+          </div>
+        </div>
+      );
 
     return (
       <>
@@ -257,7 +266,7 @@ export default function WarehousePage() {
     }
   };
 
-  if (isFetching || isSubLoading) return <FullscreenLoader />;
+  if (isLoading || isSubLoading) return <FullscreenLoader />;
 
   return (
     <div className="flex w-full flex-col">
@@ -281,6 +290,7 @@ export default function WarehousePage() {
           setActiveTab(k);
           setPage(1);
           setPageSize(k === "submit" ? 100 : 10);
+          router.push(`/dashboard/package?tab=${key}`);
         }}
       >
         <Tab key="all" title={t("all")}>

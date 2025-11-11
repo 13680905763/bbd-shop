@@ -7,6 +7,7 @@ import {
   Tab,
   Tabs,
   Image,
+  Spinner,
 } from "@heroui/react";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -22,7 +23,6 @@ import { batchPayOrder, OrderRefund, putOrderCancel } from "@/services";
 import ConfirmModal from "@/components/modal/confirm-modal";
 import { queryClient } from "@/lib/react-query";
 import CommonModal from "@/components/modal/common-modal";
-import { useGlobalStore } from "@/store";
 
 const tabKeyToStatusCode: Record<string, string> = {
   all: "",
@@ -36,7 +36,6 @@ export default function OrderPage() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const router = useRouter();
-  const { currency } = useGlobalStore();
 
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   // === 新增两个 state 分开控制 ===
@@ -50,7 +49,7 @@ export default function OrderPage() {
     order: any;
   } | null>(null);
 
-  const { data, isLoading } = useOrderList(
+  const { data, isLoading, isFetching } = useOrderList(
     page,
     pageSize,
     tabKeyToStatusCode[activeTab],
@@ -190,6 +189,14 @@ export default function OrderPage() {
     orders: any[];
     footer?: React.ReactNode;
   }) => {
+    if (isFetching)
+      return (
+        <div className="flex flex-col items-center justify-center h-[60vh] text-gray-500">
+          <div className="text-lg mb-2">
+            <Spinner />
+          </div>
+        </div>
+      );
     if (!orders?.length) return <EmptyOrder />;
 
     return (

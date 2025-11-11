@@ -19,12 +19,12 @@ export default function PaginationBar({
   onPageChange,
   onPageSizeChange,
 }: Props) {
-  console.log("total", total, Math.ceil(Number(total) / Number(pageSize)));
-  console.log(
-    "total",
-    typeof total,
-    typeof Math.ceil(Number(total) / Number(pageSize)),
-  );
+  // console.log("total", total, Math.ceil(Number(total) / Number(pageSize)));
+  // console.log(
+  //   "total",
+  //   typeof total,
+  //   typeof Math.ceil(Number(total) / Number(pageSize)),
+  // );
 
   return (
     <div className="flex flex-wrap gap-4 items-center justify-center w-full">

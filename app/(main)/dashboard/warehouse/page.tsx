@@ -1,5 +1,5 @@
 "use client";
-import { Button, Checkbox, Tab, Tabs } from "@heroui/react";
+import { Button, Checkbox, Spinner, Tab, Tabs } from "@heroui/react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -34,11 +34,15 @@ export default function WarehousePage() {
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
 
-  const { data, isLoading } = useWarehouseList(
+  const { data, isLoading, isFetching } = useWarehouseList(
     page,
     pageSize,
     tabKeyToStatusCode[activeTab],
-  ) as { data?: WarehouseListResponse; isLoading: boolean };
+  ) as {
+    data?: WarehouseListResponse;
+    isLoading: boolean;
+    isFetching: boolean;
+  };
 
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const router = useRouter();
@@ -99,6 +103,14 @@ export default function WarehousePage() {
   /** Tab 内容组件 */
   const WarehouseTabContent = ({ footer }: { footer?: React.ReactNode }) => {
     if (!data?.records?.length) return <EmptyWarehouse />;
+    if (isFetching)
+      return (
+        <div className="flex flex-col items-center justify-center h-[60vh] text-gray-500">
+          <div className="text-lg mb-2">
+            <Spinner />
+          </div>
+        </div>
+      );
 
     return (
       <>
