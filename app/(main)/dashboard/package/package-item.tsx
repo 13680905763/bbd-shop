@@ -17,6 +17,8 @@ export default function PackageItem({
   onChange,
   onRequestRefund,
   onRequestWithdraw,
+  onRequestChange,
+  onRequestLine,
   texts, // texts 从 props 传入
 }: any) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -104,7 +106,7 @@ export default function PackageItem({
             ))}
           </div>
 
-          <div className="flex flex-col justify-center p-2 text-gray-700 flex-[0_0_150px]">
+          <div className="flex flex-col justify-center p-2 text-gray-700 flex-[0_0_180px]">
             <span>
               {texts.sizeLabel}: {order?.length}*{order?.width}*{order?.height}{" "}
               cm
@@ -117,8 +119,30 @@ export default function PackageItem({
             </span>
           </div>
 
-          <div className="flex flex-col justify-center p-2 text-gray-700 flex-[0_0_10px]">
-            <span>{order?.shipping?.methodCode}</span>
+          <div className="flex flex-col justify-center p-2 text-gray-700 flex-[0_0_200px]">
+            <p>{order?.shipping?.methodCode}</p>
+            <p>{order?.shipping?.templateName}</p>
+            {/* 物流信息 */}
+            {order?.shipping?.shippingCode && (
+              <div className="mt-3 flex items-center gap-2 text-sm text-gray-700">
+                <div className="flex flex-col flex-1">
+                  <span
+                    className="text-gray-500"
+                    role="button"
+                    onClick={onRequestLine}
+                  >
+                    <FiSearch
+                      className="inline-block text-gray-500 mr-1"
+                      size={14}
+                    />
+                    {texts.shippingCode || "运单号"}
+                  </span>
+                  <span className="font-medium text-gray-900 break-all">
+                    {order.shipping.shippingCode}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col justify-center p-2 flex-[0_0_150px]">
@@ -156,7 +180,7 @@ export default function PackageItem({
               {/* 状态：待支付 */}
               {order?.statusCode == 203 && (
                 <button
-                  className="px-3 py-1 rounded-lg text-white bg-blue-500 hover:bg-blue-600 transition-colors text-sm font-medium shadow-sm"
+                  className="px-3 py-1 rounded-lg text-white bg-[#f0700c] hover:bg-[#d8650b]  transition-colors text-sm font-medium shadow-sm"
                   onClick={() =>
                     handlePackageSubmitItem(order?.packingPackageCode)
                   }
@@ -168,7 +192,7 @@ export default function PackageItem({
               {/* 状态：支付取消手续费 */}
               {order?.statusCode == 209 && (
                 <button
-                  className="px-3 py-1 rounded-lg text-white bg-orange-500 hover:bg-orange-600 transition-colors text-sm font-medium shadow-sm"
+                  className="px-3 py-1 rounded-lg text-white bg-red-500 hover:bg-red-600 transition-colors text-sm font-medium shadow-sm"
                   onClick={() =>
                     handlePackageSubmitItem(order?.packingPackageCode)
                   }
@@ -196,23 +220,14 @@ export default function PackageItem({
                   {texts.withdrawRequest}
                 </button>
               )}
-
-              {/* 物流信息 */}
-              {order?.shipping?.shippingCode && (
-                <div className="mt-3 flex items-center gap-2 text-sm text-gray-700">
-                  <div className="flex flex-col flex-1">
-                    <span className="text-gray-500">
-                      <FiSearch
-                        className="inline-block text-gray-500 mr-1"
-                        size={14}
-                      />
-                      {texts.shippingCode || "运单号"}
-                    </span>
-                    <span className="font-medium text-gray-900 break-all">
-                      {order.shipping.shippingCode}
-                    </span>
-                  </div>
-                </div>
+              {/* 状态：更换路线 */}
+              {order?.changeFlag && (
+                <button
+                  className="px-3 py-1 rounded-lg text-white bg-purple-500 hover:bg-purple-600 transition-colors text-sm font-medium shadow-sm"
+                  onClick={onRequestChange}
+                >
+                  {texts.changeBtn}
+                </button>
               )}
             </div>
 

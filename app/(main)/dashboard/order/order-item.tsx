@@ -8,10 +8,11 @@ import { useGlobalStore } from "@/store";
 type ProductItemProps = {
   product: any;
   isLastProduct: boolean;
+  revokeRefund?: any;
   texts: any;
 };
 
-function ProductItem({ product, texts }: ProductItemProps) {
+function ProductItem({ product, texts, revokeRefund }: ProductItemProps) {
   const router = useRouter();
   const { currency } = useGlobalStore();
 
@@ -43,11 +44,23 @@ function ProductItem({ product, texts }: ProductItemProps) {
             <div className="line-clamp-2 font-bold">
               {product?.productTitle}
             </div>
-            <div className="text-gray-500 text-sm">
-              {product?.sku?.propName_valueName}
+            <div className="text-gray-500 text-sm line-clamp-2">
+              {product?.propAndValue?.propName_valueName}
             </div>
             <div className="text-gray-500">{product?.remark}</div>
-            <div className="text-red-500">{product?.refundStatus}</div>
+            {product?.withdrawRefundFlag && (
+              <>
+                <div className="text-red-500">
+                  {product?.refundStatus} *{product?.applyRefundQty}
+                </div>
+                <button
+                  className="text-blue-500"
+                  onClick={() => revokeRefund(product?.refundId)}
+                >
+                  {texts.withdrawRequest}
+                </button>
+              </>
+            )}
           </div>
         </div>
 
@@ -58,7 +71,7 @@ function ProductItem({ product, texts }: ProductItemProps) {
           </p>
         </div>
         <div>
-          <p className="text-gray-500 text-sm">x{product.quantity}</p>
+          <p className="text-gray-500 text-sm">x{product.purchaseQuantity}</p>
         </div>
       </div>
 
@@ -91,6 +104,7 @@ export default function OrderItem({
   onChange,
   selected,
   onRequestRefund,
+  revokeRefund,
   texts,
 }: any) {
   const { currency } = useGlobalStore();
@@ -117,29 +131,57 @@ export default function OrderItem({
               key={product.sourceSkuId}
               isLastProduct={index === order?.products.length - 1}
               product={product}
+              revokeRefund={revokeRefund}
               texts={texts}
             />
           ))}
         </div>
 
-        <div className="flex grow-0 shrink-0 basis-[120px] justify-center items-center">
-          <p>
-            {currency.symbol}
-            {order?.totalFee}
-          </p>
+        <div className="flex flex-col justify-center p-2 flex-[0_0_150px]">
+          <span className="text-gray-500 text-sm leading-5">
+            {texts.serviceFee}: {currency.symbol}
+            {order?.serviceFee || 0}
+          </span>
+
+          <span className="text-gray-500 text-sm leading-5">
+            {texts.shippingFee}: {currency.symbol}
+            {order?.postFee || 0}
+          </span>
+
+          <span className="text-gray-500 text-sm leading-5">
+            {texts.productFee}: {currency.symbol}
+            {order?.productFee || 0}
+          </span>
+
+          {/* <span className="text-gray-500 text-sm leading-5">
+    {texts.discountFee}: {currency.symbol}{order?.discountFee || 0}
+  </span> */}
+
+          <span className="text-gray-500 text-sm leading-5">
+            {texts.refundAmount}: {currency.symbol}
+            {order?.refundAmount || 0}
+          </span>
+
+          <span className="font-semibold text-gray-800 text-sm leading-6">
+            {texts.totalFee}: {currency.symbol}
+            {order?.totalFee || 0}
+          </span>
         </div>
 
         <div className="grow-0 shrink-0 basis-[180px] flex flex-col gap-2 justify-center items-center">
-          {order?.statusCode === 101 ? (
+          {order?.canCancelFlag ? (
             <>
+              {/* 支付按钮（主题橙色） */}
               <button
-                className="text-[#f0700c]"
+                className="px-3 py-1 rounded-lg text-white bg-[#f0700c] hover:bg-[#d8650b] transition-colors text-sm font-medium shadow-sm"
                 onClick={() => onPayOrderRedirect(order?.orderCode)}
               >
                 {texts.payment}
               </button>
+
+              {/* 取消订单按钮（主题橙色） */}
               <button
-                className="text-[#f0700c]"
+                className="px-3 py-1 rounded-lg text-white bg-red-500 hover:bg-red-600 transition-colors text-sm font-medium shadow-sm"
                 onClick={() => onCancelOrder(order?.id)}
               >
                 {texts.cancel}
@@ -147,15 +189,18 @@ export default function OrderItem({
             </>
           ) : (
             <>
-              <div className="text-[#f0700c]">{order?.status}</div>
-              {order?.statusCode === 102 ? (
+              {/* 状态文字 */}
+              <div className="text-[#f0700c] font-medium">{order?.status}</div>
+
+              {/* 申请退款按钮（绿色按钮） */}
+              {order?.canRefundFlag && (
                 <button
-                  className="text-[#f0700c]"
-                  onClick={() => onRequestRefund()} // ✅ 这里加上
+                  className="px-3 py-1 rounded-lg text-white bg-red-500 hover:bg-red-600 transition-colors text-sm font-medium shadow-sm"
+                  onClick={() => onRequestRefund()}
                 >
                   {texts.refund}
                 </button>
-              ) : null}
+              )}
             </>
           )}
         </div>

@@ -41,7 +41,7 @@ export default function OrderItem({
       {/* 商品列表 */}
       <div className="flex flex-col gap-4 p-4">
         {order.products.map((product: any) => (
-          <div key={product?.sku?.propName_valueName}>
+          <div key={product?.propAndValue?.propName_valueName}>
             <div className="flex">
               <div className="flex flex-1">
                 <div className="flex grow-0 shrink-0 basis-[400px] gap-2">
@@ -60,7 +60,7 @@ export default function OrderItem({
                       {product?.productTitle}
                     </div>
                     <div className="text-gray-500 text-sm">
-                      {product?.sku?.propName_valueName}
+                      {product?.propAndValue?.propName_valueName}
                     </div>
                   </div>
                 </div>

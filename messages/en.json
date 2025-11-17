@@ -703,17 +703,28 @@
             "noOrders": "No orders yet",
             "cancelTitle": "Cancel Order",
             "cancelContent": "Are you sure you want to cancel this order?",
+            "withdrawTitle": "Withdraw",
+            "withdrawContent": "Are you sure you want to withdraw the current request?",
             "refundTitle": "Request Refund",
             "refundContent": "Are you sure you want to request a refund for this order?",
             "selectAll": "Select All",
             "batchPay": "Batch Payment",
+            "refundable": "Refundable",
+            "unrefundable": "Non-refundable",
             "texts": {
                 "orderNumber": "Order No:",
                 "createTime": "Created At:",
                 "payment": "Payment",
                 "cancel": "Cancel",
                 "refund": "Refund",
-                "valueAddedService": "Value-added Service"
+                "withdrawRequest": "Withdraw Request",
+                "valueAddedService": "Value-added Service",
+                "serviceFee": "Service Fee:",
+                "shippingFee": "Shipping Fee:",
+                "productFee": "Product Cost:",
+                "totalFee": "Total Cost:",
+                "discountFee": "Discount:",
+                "refundAmount": "RefundAmount:"
             }
         },
         "WarehousePage": {
@@ -731,16 +742,16 @@
         },
         "PackagePage": {
             "all": "All",
-            "pay": "To Pay",
+            "pay": "Pending Payment",
             "shipping": "In Transit",
             "receivde": "Received",
-            "noPackages": "No packages available",
+            "noPackages": "No packages",
             "selectAll": "Select All",
             "batchPay": "Batch Payment",
-            "noTracking": "No Tracking Info",
+            "noTracking": "No tracking number",
             "texts": {
                 "packageNumberLabel": "Package Number",
-                "shippingCode": "Tracking number:",
+                "shippingCode": "Tracking Number:",
                 "productImageAlt": "Product Image",
                 "sizeLabel": "Size",
                 "weightLabel": "Weight",
@@ -749,9 +760,10 @@
                 "pendingPaymentStatus": "Pending Payment",
                 "payButton": "Pay",
                 "cancelButton": "Cancel",
-                "payCancelFee": "Pay Cancellation Fee",
+                "payCancelFee": "Payment Cancellation Fee",
                 "requestRefund": "Request Cancellation",
-                "withdrawRequest": "Withdraw Request"
+                "withdrawRequest": "Withdraw Request",
+                "changeBtn": "Change Route"
             },
             "refundModal": {
                 "title": "Cancel",
@@ -766,11 +778,23 @@
                 },
                 "changeRouteCard": {
                     "title": "Change Route",
-                    "subtitle": "Select a new shipping route"
+                    "subtitle": "Re-select shipping route"
                 }
             },
             "withdrawModal": {
                 "content": "Are you sure to withdraw the cancellation request?"
+            },
+            "changeModal": {
+                "title": "Change Route"
+            },
+            "lineModal": {
+                "title": "Tracking Information",
+                "mainWaybillTitle": "Main Waybill Timeline",
+                "subWaybillTitle": "Sub Waybill:",
+                "waybillNumber": "Waybill Number:",
+                "currentStatus": "Current Status:",
+                "location": "Location:",
+                "mainTimeline": "Main Waybill Timeline:"
             }
         },
         "Promotion": {
@@ -1037,7 +1061,8 @@
         "additionalWeightFee": "Additional Weight Fee",
         "customsFee": "Customs Fee",
         "shippingLimit": "Shipping Limit",
-        "routeFeature": "Route Feature"
+        "routeFeature": "Route Feature",
+        "category": "Goods Category"
     },
     "PaymentResultPage": {
         "loading": "Verifying payment result...",

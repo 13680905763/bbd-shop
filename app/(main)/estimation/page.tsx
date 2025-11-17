@@ -22,7 +22,7 @@ import {
 import { useTranslations } from "next-intl";
 
 import { describeText, title } from "@/components/primitives";
-import { searchWarehouseRoutesList } from "@/services";
+import { getCategory, searchWarehouseRoutesList } from "@/services";
 import { useCountries } from "@/hook";
 import { useGlobalStore } from "@/store";
 
@@ -30,6 +30,8 @@ export default function EstimationPage() {
   const t = useTranslations("EstimationPage");
   const { currency } = useGlobalStore();
   const { data: countries = [] } = useCountries();
+  const [categoryOptions, setCategoryOptions] = useState<any[]>([]);
+  const [routesMessage, setRoutesMessage] = useState<string>("");
 
   console.log("currency", currency);
 
@@ -38,12 +40,24 @@ export default function EstimationPage() {
   // ✅ 受控表单数据
   const [formData, setFormData] = useState({
     countryId: 0, // 改成 number 类型
+    categoryId: "", // 改成 number 类型
     weight: "",
     length: "",
     width: "",
     height: "",
   });
+  /** 拉取数据 */
+  const fetchData = async () => {
+    try {
+      const res: any = await getCategory();
 
+      setCategoryOptions(res);
+    } catch {}
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
   const handleChange = (key: string, value: any) => {
     console.log("key", key, value);
 
@@ -80,8 +94,13 @@ export default function EstimationPage() {
     try {
       const res = await searchWarehouseRoutesList(formData);
 
+      if (typeof res != "string" && res?.length) {
+        setRoutes(res || []);
+      } else {
+        setRoutes([]);
+        setRoutesMessage(res);
+      }
       setRoutes(res || []);
-      console.log("666");
     } catch (err) {
       setRoutes([]);
       // console.error(err);
@@ -130,21 +149,34 @@ export default function EstimationPage() {
                   </AutocompleteItem>
                 )}
               </Autocomplete>
-
-              <Input
+              <Autocomplete
                 isRequired
                 className="flex-1"
-                label={t("weight")}
-                name="weight"
-                type="number"
-                value={formData.weight}
-                onChange={(e) => handleChange("weight", e.target.value)}
-              />
+                defaultItems={categoryOptions}
+                label={t("category")}
+                name="categoryId"
+                selectedKey={String(formData.categoryId)}
+                onSelectionChange={(key) => handleChange("categoryId", key)}
+              >
+                {(category: any) => (
+                  <AutocompleteItem key={category.id}>
+                    {category.categoryName}
+                  </AutocompleteItem>
+                )}
+              </Autocomplete>
             </div>
 
             <Spacer y={2} />
             <div className="flex gap-8 w-full">
               <div className="flex-1 flex gap-8">
+                <Input
+                  className="flex-1"
+                  label={t("weight")}
+                  name="weight"
+                  type="number"
+                  value={formData.weight}
+                  onChange={(e) => handleChange("weight", e.target.value)}
+                />
                 <Input
                   className="flex-1"
                   label={t("length")}
@@ -267,6 +299,11 @@ export default function EstimationPage() {
               </AccordionItem>
             ))}
           </Accordion>
+        </div>
+      )}
+      {routes?.length < 1 && (
+        <div className="flex flex-col items-center justify-center h-[20vh] text-gray-500">
+          <p className="text-lg mb-2">{routesMessage}</p>
         </div>
       )}
     </div>

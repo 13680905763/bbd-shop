@@ -1,5 +1,6 @@
 "use client";
 import {
+  addToast,
   Button,
   Card,
   CardBody,
@@ -21,14 +22,18 @@ import { usePackageList } from "@/hook";
 import FullscreenLoader from "@/components/common/fullscreen-loader";
 import {
   batchPayPackage,
+  changePayPackage,
+  changePrePayPackage,
   refundPayPackage,
   refundPrePayPackage,
+  routePackage,
   withdrawPayPackage,
 } from "@/services";
 import CommonModal from "@/components/modal/common-modal";
 import ConfirmModal from "@/components/modal/confirm-modal";
 import { queryClient } from "@/lib/react-query";
 import { useGlobalStore } from "@/store";
+import RouteCard from "@/components/common/route-card";
 
 // 仓库包裹类型
 interface WarehouseRecord {
@@ -75,8 +80,10 @@ export default function WarehousePage() {
 
   const [refundConfig, setRefundConfig] = useState<any>(null);
   const [withdrawConfig, setWithdrawConfig] = useState<any>(null);
+  const [changeConfig, setChangeConfig] = useState<any>(null);
+  const [lineConfig, setLineConfig] = useState<any>(null);
 
-  console.log("activeTab", activeTab);
+  console.log("refundConfig", refundConfig);
 
   const onPayOrderRedirect = (bizCode: string) => {
     router.push(`/warehouse/pay-order/${bizCode}`);
@@ -128,6 +135,8 @@ export default function WarehousePage() {
       const bizCode = await batchPayPackage({ packageSet: [selectedIds] });
 
       if (bizCode) {
+        console.log("push route", bizCode);
+
         router.push(`/order/pay-order/${bizCode}`);
       }
     } catch {
@@ -197,6 +206,12 @@ export default function WarehousePage() {
                   : undefined
               }
               onPayOrderRedirect={onPayOrderRedirect}
+              onRequestChange={() => {
+                onRequestChange({ ...order });
+              }}
+              onRequestLine={() => {
+                onRequestLine({ ...order });
+              }}
               onRequestRefund={() => {
                 onRequestRefund(order);
               }}
@@ -223,10 +238,47 @@ export default function WarehousePage() {
   };
 
   const onRequestRefund = async (order: any): Promise<void> => {
+    console.log("order", order);
+
     const res = await refundPrePayPackage(order.id);
 
-    setRefundConfig({ ...res });
+    setRefundConfig({ ...res, order: order });
   };
+  const onRequestChange = async (order: any): Promise<void> => {
+    const res = await changePrePayPackage(order.id);
+
+    console.log("changeres", res);
+
+    setChangeConfig(
+      res.map((item: any) => {
+        return {
+          ...item,
+          checked: item?.id == order?.shipping?.templateId ? true : false,
+          packageId: order?.id,
+        };
+      }),
+    );
+  };
+  const onRequestLine = async (order: any): Promise<void> => {
+    if (!order?.shipping?.shippingCode) {
+      addToast({
+        title: "当前物流无运输轨迹",
+        timeout: 1000,
+        color: "danger",
+      });
+
+      return;
+    }
+    const res = await routePackage({
+      serverCode: order?.shipping?.serverCode,
+      shippingCode: order?.shipping?.shippingCode,
+    });
+
+    console.log("onRequestLine", res);
+
+    setLineConfig({ ...res });
+  };
+
   // 提交退款逻辑
   // 提交退款逻辑
   const handleRefundSubmit = async (type: "cancel" | "refund") => {
@@ -266,7 +318,7 @@ export default function WarehousePage() {
     }
   };
 
-  if (isLoading || isSubLoading) return <FullscreenLoader />;
+  if (isLoading) return <FullscreenLoader />;
 
   return (
     <div className="flex w-full flex-col">
@@ -400,21 +452,186 @@ export default function WarehousePage() {
             </Card>
 
             {/* 更换路线 */}
-            <Card
-              isPressable
-              className="w-48 h-40 border border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all duration-200"
-              // onPress={() => handleRefundSubmit("changeRoute")}
-            >
-              <CardBody className="flex flex-col items-center justify-center text-center">
-                <IoSwapHorizontalOutline className="text-blue-500 w-8 h-8" />
-                <p className="text-lg font-semibold text-blue-600">
-                  {t("refundModal.changeRouteCard.title")}
-                </p>
-                <p className="text-sm text-gray-500">
-                  {t("refundModal.changeRouteCard.subtitle")}
-                </p>
-              </CardBody>
-            </Card>
+            {refundConfig?.order?.changeFlag && (
+              <Card
+                isPressable
+                className="w-48 h-auto border border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all duration-200"
+                onPress={async () => {
+                  await onRequestChange(refundConfig?.order);
+                  setRefundConfig(null);
+                }}
+              >
+                <CardBody className="flex flex-col items-center justify-center text-center">
+                  <IoSwapHorizontalOutline className="text-blue-500 w-8 h-8" />
+                  <p className="text-lg font-semibold text-blue-600">
+                    {t("refundModal.changeRouteCard.title")}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {t("refundModal.changeRouteCard.subtitle")}
+                  </p>
+                </CardBody>
+              </Card>
+            )}
+          </div>
+        </CommonModal>
+      )}
+      {changeConfig && (
+        <CommonModal
+          isOpen={!!changeConfig}
+          size={"4xl"}
+          title={t("changeModal.title")}
+          onConfirm={async () => {
+            const selected = changeConfig.find((i: any) => i.checked);
+
+            if (!selected) return;
+
+            try {
+              const payload = {
+                id: selected.packageId,
+                templateId: selected.id,
+              };
+
+              const res = await changePayPackage(payload);
+
+              await queryClient.invalidateQueries({
+                queryKey: ["packageList"],
+              });
+
+              console.log("res", res);
+            } catch (error) {
+              console.error("Failed to change pay package:", error);
+            }
+          }}
+          onOpenChange={() => setChangeConfig(null)}
+        >
+          {/* 路线 */}
+          <div>
+            <div className="text-title">Delivery Route</div>
+            <div className="flex flex-col gap-4">
+              {changeConfig?.map((route: any) => (
+                <RouteCard
+                  key={route.id}
+                  data={route}
+                  isSelected={route?.checked}
+                  onSelect={(id) =>
+                    setChangeConfig(
+                      changeConfig.map((item: any) => {
+                        return {
+                          ...item,
+                          checked: id == item?.id ? true : false,
+                        };
+                      }),
+                    )
+                  }
+                />
+              ))}
+            </div>
+          </div>
+        </CommonModal>
+      )}
+      {lineConfig && (
+        <CommonModal
+          footer={<div />}
+          isOpen={!!lineConfig}
+          size="4xl"
+          title={t("lineModal.title")}
+          onOpenChange={() => setLineConfig(null)}
+        >
+          {/* 滚动区域 */}
+          <div className="max-h-[70vh] overflow-y-auto pr-2 space-y-8">
+            {/* ========== 主运单基本信息 ========== */}
+            <div className="rounded-xl border p-4 bg-gray-50 space-y-2">
+              <p className="text-sm text-gray-600">
+                {t("lineModal.waybillNumber")}
+                <span className="font-medium text-gray-800">
+                  {lineConfig?.trackingNumber}
+                </span>
+              </p>
+              <p className="text-sm text-gray-600">
+                {t("lineModal.currentStatus")}
+                <span className="font-medium text-blue-600">
+                  {lineConfig?.statusName}
+                </span>
+              </p>
+            </div>
+
+            {/* ========== 主运单时间线 ========== */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">
+                {t("lineModal.mainTimeline")}
+              </h3>
+
+              <div className="relative pl-6">
+                {/* 竖线 */}
+                <div className="absolute left-2 top-0 bottom-0 w-[2px] bg-gray-200" />
+
+                {lineConfig?.trackItems?.map((item: any, index: number) => (
+                  <div key={index} className="relative mb-6 flex items-start">
+                    {/* 时间线圆点 */}
+                    <div className="absolute left-0 mt-1 h-3 w-3 rounded-full bg-blue-500 shadow" />
+
+                    <div className="ml-6">
+                      <p className="text-sm font-medium text-gray-800">
+                        {item.content}
+                      </p>
+
+                      {item.location && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          {t("lineModal.location")}
+                          {item.location}
+                        </p>
+                      )}
+
+                      <p className="text-xs text-gray-400 mt-1">{item.time}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ========== 多个子运单（如果存在） ========== */}
+            {Array.isArray(lineConfig?.subOrderList) &&
+              lineConfig.subOrderList.length > 0 &&
+              lineConfig.subOrderList.map((sub: any) => (
+                <div key={sub}>
+                  <h3 className="text-lg font-semibold mb-4">
+                    {t("lineModal.subWaybillTitle")}
+                    {sub}
+                  </h3>
+
+                  <div className="relative pl-6">
+                    <div className="absolute left-2 top-0 bottom-0 w-[2px] bg-gray-200" />
+
+                    {lineConfig.subOrderTrackItems?.[sub]?.map(
+                      (item: any, idx: number) => (
+                        <div
+                          key={idx}
+                          className="relative mb-6 flex items-start"
+                        >
+                          <div className="absolute left-0 mt-1 h-3 w-3 rounded-full bg-green-500 shadow" />
+
+                          <div className="ml-6">
+                            <p className="text-sm font-medium text-gray-800">
+                              {item.content}
+                            </p>
+
+                            {item.location && (
+                              <p className="text-xs text-gray-500 mt-1">
+                                {t("lineModal.location")}
+                                {item.location}
+                              </p>
+                            )}
+
+                            <p className="text-xs text-gray-400 mt-1">
+                              {item.time}
+                            </p>
+                          </div>
+                        </div>
+                      ),
+                    )}
+                  </div>
+                </div>
+              ))}
           </div>
         </CommonModal>
       )}

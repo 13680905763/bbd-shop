@@ -19,10 +19,16 @@ import Progress from "@/components/common/order-progress";
 import PaginationBar from "@/components/common/pagination-bar";
 import { useOrderList } from "@/hook";
 import FullscreenLoader from "@/components/common/fullscreen-loader";
-import { batchPayOrder, OrderRefund, putOrderCancel } from "@/services";
+import {
+  batchPayOrder,
+  OrderRefund,
+  putOrderCancel,
+  putOrderRevoke,
+} from "@/services";
 import ConfirmModal from "@/components/modal/confirm-modal";
 import { queryClient } from "@/lib/react-query";
 import CommonModal from "@/components/modal/common-modal";
+import { useGlobalStore } from "@/store";
 
 const tabKeyToStatusCode: Record<string, string> = {
   all: "",
@@ -32,6 +38,8 @@ const tabKeyToStatusCode: Record<string, string> = {
 
 export default function OrderPage() {
   const t = useTranslations("Dashboard.OrderPage");
+  const { currency } = useGlobalStore();
+
   const [activeTab, setActiveTab] = useState("all");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -40,6 +48,11 @@ export default function OrderPage() {
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   // === 新增两个 state 分开控制 ===
   const [cancelConfig, setCancelConfig] = useState<{
+    title: string;
+    content: string;
+    onConfirm: () => Promise<void>;
+  } | null>(null);
+  const [revokeConfig, setRevokeConfig] = useState<{
     title: string;
     content: string;
     onConfirm: () => Promise<void>;
@@ -95,6 +108,10 @@ export default function OrderPage() {
     await putOrderCancel({ id: orderId });
     queryClient.invalidateQueries({ queryKey: ["orderList"] });
   };
+  const onRevokeOrder = async (refundId: string): Promise<void> => {
+    await putOrderRevoke(refundId);
+    queryClient.invalidateQueries({ queryKey: ["orderList"] });
+  };
 
   const onRequestRefund = async (order: any): Promise<void> => {
     const productsWithRefund = order.products.map((p: any) => ({
@@ -129,7 +146,7 @@ export default function OrderPage() {
 
     // 只提交被勾选的商品
     const selectedProducts = refundConfig.order.products
-      .filter((p: any) => p.selected)
+      .filter((p: any) => p.selected && p.refundQuantity)
       .map((p: any) => ({
         sourceProductId: p.sourceProductId,
         sourceSkuId: p.sourceSkuId,
@@ -207,6 +224,17 @@ export default function OrderPage() {
               key={order.id}
               activeTab={activeTab}
               order={order}
+              revokeRefund={(refundId: any) => {
+                console.log("refundId", refundId);
+
+                setRevokeConfig({
+                  title: t("withdrawTitle"),
+                  content: t("withdrawContent"),
+                  onConfirm: async () => {
+                    await onRevokeOrder(refundId);
+                  },
+                });
+              }}
               selected={!!selected[order.orderCode]}
               texts={t.raw("texts")}
               onCancelOrder={() =>
@@ -312,6 +340,18 @@ export default function OrderPage() {
           onOpenChange={() => setCancelConfig(null)}
         />
       )}
+      {revokeConfig && (
+        <ConfirmModal
+          content={revokeConfig.content}
+          isOpen={!!revokeConfig}
+          title={revokeConfig.title}
+          onConfirm={async () => {
+            await revokeConfig.onConfirm();
+            setRevokeConfig(null);
+          }}
+          onOpenChange={() => setRevokeConfig(null)}
+        />
+      )}
       {refundConfig && (
         <CommonModal
           isOpen={!!refundConfig}
@@ -364,17 +404,17 @@ export default function OrderPage() {
                         <span className="font-medium text-gray-900 text-sm line-clamp-2">
                           {product.productTitle}
                         </span>
-                        <span className="text-gray-500 text-xs mt-0.5">
-                          {product?.sku?.propName_valueName || "-"}
+                        <span className="text-gray-500 text-xs mt-0.5 line-clamp-2">
+                          {product?.propAndValue?.propName_valueName || "-"}
                         </span>
-                        {product?.remark && (
+                        {/* {product?.remark && (
                           <span className="text-gray-400 text-xs mt-0.5">
                             {product.remark}
                           </span>
-                        )}
+                        )} */}
                         {product.canRefundQty === 0 && (
                           <span className="text-red-400 text-xs mt-0.5">
-                            不可退
+                            {t("unrefundable")}
                           </span>
                         )}
                       </div>
@@ -383,10 +423,11 @@ export default function OrderPage() {
                     {/* 右侧：价格、数量输入 */}
                     <div className="flex flex-col items-end justify-center gap-1">
                       <span className="text-gray-900 font-semibold text-sm">
-                        ¥{product.price}
+                        {currency.symbol}
+                        {product.price}
                       </span>
                       <span className="text-gray-500 text-xs">
-                        x{product.quantity}
+                        x{product.purchaseQuantity}
                       </span>
 
                       <div className="flex items-center gap-1 mt-1">
@@ -406,7 +447,7 @@ export default function OrderPage() {
                           }
                         />
                         <span className="text-gray-400 text-xs">
-                          可退 {product.canRefundQty}
+                          {t("refundable")} {product.canRefundQty}
                         </span>
                       </div>
                     </div>

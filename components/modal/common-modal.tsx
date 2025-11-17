@@ -84,7 +84,9 @@ export default function CommonModal({
       <ModalContent>
         <>
           {title && <ModalHeader>{title}</ModalHeader>}
-          <ModalBody>{children}</ModalBody>
+          <ModalBody className="max-h-[70vh] overflow-y-auto">
+            {children}
+          </ModalBody>
           <ModalFooter>
             {footer ? (
               footer

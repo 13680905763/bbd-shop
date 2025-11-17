@@ -1,6 +1,8 @@
 "use client";
 import { Avatar, Card } from "@heroui/react";
 
+import { useGlobalStore } from "@/store";
+
 interface BackendRoute {
   id?: string;
   templateName?: string; // 模板名
@@ -26,6 +28,8 @@ export default function RouteCard({
   isSelected,
   onSelect,
 }: RouteCardProps) {
+  const { currency } = useGlobalStore();
+
   if (!data) return null;
 
   const {
@@ -68,7 +72,10 @@ export default function RouteCard({
         {/* 价格 */}
         <div className="flex flex-col items-center justify-center w-[120px] ">
           <div className="text-gray-500 text-sm">Price</div>
-          <div className="text-lg font-bold">{price}</div>
+          <div className="text-lg font-bold">
+            {currency.symbol}
+            {price}
+          </div>
         </div>
 
         {/* 时间 */}

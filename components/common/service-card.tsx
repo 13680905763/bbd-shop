@@ -2,6 +2,8 @@
 import { Card } from "@heroui/react";
 import { Image } from "antd";
 
+import { useGlobalStore } from "@/store";
+
 interface ServiceCardProps {
   id: string;
   name: string;
@@ -19,6 +21,8 @@ export default function ServiceCard({
   isSelected,
   onSelect,
 }: any) {
+  const { currency } = useGlobalStore();
+
   return (
     <Card
       isPressable
@@ -41,7 +45,10 @@ export default function ServiceCard({
         {/* 服务信息 */}
         <div className="flex flex-col flex-1">
           <span className="text-base font-medium">{serviceName}</span>
-          <span className="text-primary font-semibold mt-1">¥{price}</span>
+          <span className="text-primary font-semibold mt-1">
+            {currency.symbol}
+            {price}
+          </span>
         </div>
       </div>
     </Card>

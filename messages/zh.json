@@ -704,17 +704,28 @@
             "noOrders": "暂无订单",
             "cancelTitle": "取消订单",
             "cancelContent": "确定要取消此订单吗？",
+            "withdrawTitle": "撤销",
+            "withdrawContent": "确认撤销当前申请？",
             "refundTitle": "申请退款",
             "refundContent": "确定要为此订单申请退款吗？",
             "selectAll": "全选",
             "batchPay": "批量支付",
+            "refundable": "可退",
+            "unrefundable": "不可退",
             "texts": {
                 "orderNumber": "订单号:",
                 "createTime": "创建时间:",
                 "payment": "支付",
                 "cancel": "取消",
                 "refund": "退款",
-                "valueAddedService": "增值服务"
+                "valueAddedService": "增值服务",
+                "withdrawRequest": "撤回申请",
+                "serviceFee": "服务费：",
+                "shippingFee": "运费：",
+                "productFee": "商品费用：",
+                "totalFee": "总费用：",
+                "discountFee": "折扣费：",
+                "refundAmount": "退款金额："
             }
         },
         "WarehousePage": {
@@ -752,7 +763,8 @@
                 "cancelButton": "取消",
                 "payCancelFee": "支付取消手续费",
                 "requestRefund": "申请取消",
-                "withdrawRequest": "撤回申请"
+                "withdrawRequest": "撤回申请",
+                "changeBtn": "更换路线"
             },
             "refundModal": {
                 "title": "取消",
@@ -772,6 +784,18 @@
             },
             "withdrawModal": {
                 "content": "确认撤销取消包裹申请嘛？"
+            },
+            "changeModal": {
+                "title": "更换路线"
+            },
+            "lineModal": {
+                "title": "物流轨迹",
+                "mainWaybillTitle": "主运单轨迹",
+                "subWaybillTitle": "子运单：",
+                "waybillNumber": "运单号：",
+                "currentStatus": "当前状态：",
+                "location": "地点：",
+                "mainTimeline": "主运单轨迹："
             }
         },
         "Promotion": {
@@ -1038,7 +1062,8 @@
         "additionalWeightFee": "续重费用",
         "customsFee": "关税",
         "shippingLimit": "运输限制",
-        "routeFeature": "路线特点"
+        "routeFeature": "路线特点",
+        "category": "货物类别"
     },
     "PaymentResultPage": {
         "loading": "正在确认支付结果...",

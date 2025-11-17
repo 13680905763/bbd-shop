@@ -694,17 +694,28 @@
             "noOrders": "Aucune commande pour le moment",
             "cancelTitle": "Annuler la Commande",
             "cancelContent": "Êtes-vous sûr de vouloir annuler cette commande ?",
+            "withdrawTitle": "Retirer",
+            "withdrawContent": "Êtes-vous sûr de vouloir retirer la demande en cours ?",
             "refundTitle": "Demander un Remboursement",
             "refundContent": "Êtes-vous sûr de vouloir demander un remboursement pour cette commande ?",
             "selectAll": "Tout Sélectionner",
             "batchPay": "Paiement en Lot",
+            "refundable": "Remboursable",
+            "unrefundable": "Non remboursable",
             "texts": {
                 "orderNumber": "N° de Commande :",
                 "createTime": "Créée le :",
                 "payment": "Paiement",
                 "cancel": "Annuler",
                 "refund": "Remboursement",
-                "valueAddedService": "Service à Valeur Ajoutée"
+                "withdrawRequest": "Retirer la demande",
+                "valueAddedService": "Service à Valeur Ajoutée",
+                "serviceFee": "Frais de service :",
+                "shippingFee": "Frais d'expédition :",
+                "productFee": "Coût des produits :",
+                "totalFee": "Coût total :",
+                "discountFee": "Réduction :",
+                "refundAmount": "Montant du remboursement :"
             }
         },
         "WarehousePage": {
@@ -722,27 +733,28 @@
         },
         "PackagePage": {
             "all": "Tous",
-            "pay": "À Payer",
-            "shipping": "En Transit",
+            "pay": "En attente de paiement",
+            "shipping": "En transit",
             "receivde": "Reçu",
-            "noPackages": "Aucun colis disponible",
-            "selectAll": "Tout Sélectionner",
-            "batchPay": "Paiement en Lot",
-            "noTracking": "Aucun suivi disponible",
+            "noPackages": "Aucun colis",
+            "selectAll": "Tout sélectionner",
+            "batchPay": "Paiement groupé",
+            "noTracking": "Aucun numéro de suivi",
             "texts": {
-                "packageNumberLabel": "Numéro de Colis",
-                "shippingCode": "Numéro de suivi:",
-                "productImageAlt": "Image du Produit",
+                "packageNumberLabel": "Numéro de colis",
+                "shippingCode": "Numéro de suivi :",
+                "productImageAlt": "Image du produit",
                 "sizeLabel": "Taille",
                 "weightLabel": "Poids",
-                "serviceFeeLabel": "Frais de Service",
-                "totalFeeLabel": "Frais Totaux",
-                "pendingPaymentStatus": "Paiement en Attente",
+                "serviceFeeLabel": "Frais de service",
+                "totalFeeLabel": "Frais totaux",
+                "pendingPaymentStatus": "En attente de paiement",
                 "payButton": "Payer",
                 "cancelButton": "Annuler",
-                "payCancelFee": "Payer les frais d'annulation",
+                "payCancelFee": "Frais d'annulation de paiement",
                 "requestRefund": "Demander l'annulation",
-                "withdrawRequest": "Retirer la demande"
+                "withdrawRequest": "Retirer la demande",
+                "changeBtn": "Changer d'itinéraire"
             },
             "refundModal": {
                 "title": "Annuler",
@@ -756,12 +768,24 @@
                     "totalFee": "Frais totaux"
                 },
                 "changeRouteCard": {
-                    "title": "Changer de route",
-                    "subtitle": "Sélectionner un nouvel itinéraire d'expédition"
+                    "title": "Changer d'itinéraire",
+                    "subtitle": "Re-sélectionner le mode de livraison"
                 }
             },
             "withdrawModal": {
-                "content": "Voulez-vous vraiment retirer la demande d'annulation ?"
+                "content": "Êtes-vous sûr de retirer la demande d'annulation ?"
+            },
+            "changeModal": {
+                "title": "Changer d'itinéraire"
+            },
+            "lineModal": {
+                "title": "Suivi du colis",
+                "mainWaybillTitle": "Chronologie du colis principal",
+                "subWaybillTitle": "Colis secondaire :",
+                "waybillNumber": "Numéro de colis :",
+                "currentStatus": "Statut actuel :",
+                "location": "Lieu :",
+                "mainTimeline": "Chronologie du colis principal :"
             }
         },
         "Promotion": {
@@ -994,7 +1018,8 @@
         "additionalWeightFee": "Frais Poids Supplémentaire",
         "customsFee": "Frais de Douane",
         "shippingLimit": "Limite d'Expédition",
-        "routeFeature": "Caractéristique de la Route"
+        "routeFeature": "Caractéristique de la Route",
+        "category": "Catégorie de marchandises"
     },
     "PaymentResultPage": {
         "loading": "Vérification du résultat du paiement...",

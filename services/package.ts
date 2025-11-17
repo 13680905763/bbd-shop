@@ -32,3 +32,18 @@ export const withdrawPayPackage = (id: string): Promise<any> => {
     { showToast: true },
   );
 };
+/** 包裹更换路线预览 */
+
+export const changePrePayPackage = (id: string): Promise<any> => {
+  return request.get(`/waybill/change/line/fee?id=${id}`);
+};
+/** 包裹更换路线提交 */
+
+export const changePayPackage = (data: any): Promise<any> => {
+  return request.post(`/waybill/change/line`, data);
+};
+/** 包裹物流查询 */
+
+export const routePackage = (params: any): Promise<any> => {
+  return request.get(`/track`, { params });
+};

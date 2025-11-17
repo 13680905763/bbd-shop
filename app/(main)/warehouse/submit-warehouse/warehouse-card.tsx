@@ -1,7 +1,11 @@
 "use client";
 import { Image } from "@heroui/react";
 
+import { useGlobalStore } from "@/store";
+
 export default function WarehouseCard({ warehouse }: any) {
+  const { currency } = useGlobalStore();
+
   const { orderProduct: product } = warehouse;
 
   // console.log(warehouse, product, warehouse.orderProduct);
@@ -35,7 +39,10 @@ export default function WarehouseCard({ warehouse }: any) {
 
           <div className="flex gap-4 grow-0 shrink-0 basis-[100px]">
             <p>x{product.quantity}</p>
-            <p>{product.price}</p>
+            <p>
+              {currency.symbol}
+              {product.price}
+            </p>
           </div>
           <div className="flex grow-0 shrink-0 basis-[100px]">
             <p>
