@@ -31,6 +31,7 @@ export default function PaymentResultPage() {
   const paySuccTime = searchParams.get("paySuccTime") || "";
   const resultCode = searchParams.get("resultCode"); // 内部
   const status = searchParams.get("status"); // onpay
+  const payMethodCode = searchParams.get("payMethodCode"); // onpay
 
   // 支付是否成功
   const isSuccess = useMemo(() => {
@@ -43,7 +44,9 @@ export default function PaymentResultPage() {
   useEffect(() => {
     async function notifyBackend() {
       try {
-        await payNotice(searchParams.toString());
+        if (payMethodCode != "WALLET") {
+          await payNotice(searchParams.toString());
+        }
       } catch (err) {
         console.error("通知后端支付状态失败", err);
       } finally {

@@ -1,5 +1,6 @@
 import { Button, Form } from "@heroui/react";
 import React, { ReactNode } from "react";
+import { useTranslations } from "next-intl";
 
 import FormItemRenderer, { FieldConfig } from "./formItem-renderer";
 
@@ -18,10 +19,12 @@ export default function CommonForm<T extends Record<string, any>>({
   formData,
   onChange,
   onSubmit,
-  confirmText = "保存",
+  confirmText,
   children,
   isLoading,
 }: CommonFormProps<T>) {
+  const t = useTranslations("Components.button");
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit?.(formData); // ✅ 直接用状态
@@ -37,7 +40,7 @@ export default function CommonForm<T extends Record<string, any>>({
 
       <div className="my-2 flex w-full flex-col gap-2">
         <Button color="primary" isLoading={isLoading} type="submit">
-          {confirmText}
+          {confirmText ?? t("save")}
         </Button>
         {children}
       </div>

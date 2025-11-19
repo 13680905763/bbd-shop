@@ -67,7 +67,7 @@ function ProductItem({ product, warehouse, texts }: ProductItemProps) {
 
       <div className="flex gap-2 justify-center flex-col py-2">
         {product?.orderServiceList?.map((service: any) => (
-          <div key={service.serviceId} className="mb-4 flex gap-2">
+          <div key={service.id} className="mb-4 flex gap-2">
             <div className="text-[#acacac] text-sm mb-2">
               {service.serviceName}
             </div>

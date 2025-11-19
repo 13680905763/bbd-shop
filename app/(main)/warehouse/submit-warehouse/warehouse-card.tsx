@@ -21,7 +21,7 @@ export default function WarehouseCard({ warehouse }: any) {
                   <Image
                     alt="Product"
                     height={90}
-                    src={product?.picUrl}
+                    src={product?.skuPicUrl || product?.picUrl}
                     width={90}
                   />
                 </div>

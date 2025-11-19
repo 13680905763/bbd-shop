@@ -40,7 +40,7 @@
         "Links": [
             {
                 "key": "link1",
-                "href": "https://discord.gg/yKNsV43Ddn",
+                "href": "https://discord.gg/N34Q27Vts8",
                 "src": "/images/page/tab1.png"
             },
             {
@@ -179,6 +179,9 @@
         "RechargeModal": {
             "title": "充值",
             "placeholder": "请输入充值金额"
+        },
+        "button": {
+            "save": "保存"
         }
     },
     "LoginPage": {
@@ -712,6 +715,7 @@
             "batchPay": "批量支付",
             "refundable": "可退",
             "unrefundable": "不可退",
+            "remarkPlaceholder": "请输入退款原因",
             "texts": {
                 "orderNumber": "订单号:",
                 "createTime": "创建时间:",

@@ -47,7 +47,7 @@ export default function RouteCard({
   // console.log("data", data);
 
   const name = templateName || methodName;
-  const price = ` ${billTypeCode == "VOLUME" ? firstVolumeFee.toFixed(2) : firstWeightFee.toFixed(2)}`;
+  const price = ` ${billTypeCode == "VOLUME" ? firstVolumeFee : firstWeightFee}`;
   const time =
     shippingLine.minDays && shippingLine.maxDays
       ? `${shippingLine.minDays}-${shippingLine.maxDays} days`

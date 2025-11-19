@@ -117,7 +117,9 @@ export default function SubmitOrder() {
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
     null,
   );
-  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [selectedServices, setSelectedServices] = useState<
+    { id: string; quantity: number }[]
+  >([]);
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
   const [remark, setRemark] = useState("");
   const [currentRowData, setCurrentRowData] = useState<any>(initAddress);
@@ -156,12 +158,28 @@ export default function SubmitOrder() {
       }
     });
   }, [selectedAddressId]);
-  // 切换服务选择
   const toggleService = (id: string) => {
+    setSelectedServices((prev) => {
+      const exists = prev.find((item) => item.id === id);
+
+      if (exists) {
+        // 取消选择
+        return prev.filter((item) => item.id !== id);
+      }
+
+      // 新增：默认数量 1
+      return [...prev, { id, quantity: 1 }];
+    });
+  };
+  const handleCountChange = (id: string, nextCount: number) => {
     setSelectedServices((prev) =>
-      prev.includes(id) ? prev.filter((sid) => sid !== id) : [...prev, id],
+      prev.map((item) =>
+        item.id === id ? { ...item, quantity: nextCount } : item,
+      ),
     );
   };
+
+  console.log("selectedServices", selectedServices);
 
   const handleCartSubmit = async () => {
     if (!isCheck) {
@@ -191,8 +209,9 @@ export default function SubmitOrder() {
 
     try {
       const payload = {
-        serviceList: selectedServices.map((sid) => ({
-          serviceId: sid,
+        serviceList: selectedServices.map((service) => ({
+          serviceId: service?.id,
+          // quantity: service?.quantity,
           remark: "",
         })),
         templateId: selectedRouteId,
@@ -293,14 +312,22 @@ export default function SubmitOrder() {
           <div>
             <div className="text-title">Packaging Method</div>
             <div className="grid grid-cols-4 gap-4">
-              {services?.map((svc) => (
-                <ServiceCard
-                  key={svc.id}
-                  {...svc}
-                  isSelected={selectedServices.includes(String(svc.id))}
-                  onSelect={() => toggleService(String(svc.id))}
-                />
-              ))}
+              {services?.map((svc) => {
+                const selectedItem = selectedServices.find(
+                  (item) => item.id === String(svc.id),
+                );
+
+                return (
+                  <ServiceCard
+                    key={svc.id}
+                    {...svc}
+                    initialCount={selectedItem?.quantity ?? 1}
+                    isSelected={!!selectedItem}
+                    onCountChange={handleCountChange}
+                    onSelect={() => toggleService(String(svc.id))}
+                  />
+                );
+              })}
             </div>
           </div>
 

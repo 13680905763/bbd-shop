@@ -40,7 +40,7 @@
         "Links": [
             {
                 "key": "link1",
-                "href": "https://discord.gg/yKNsV43Ddn",
+                "href": "https://discord.gg/N34Q27Vts8",
                 "src": "/images/page/tab1.png"
             },
             {
@@ -179,6 +179,9 @@
         "RechargeModal": {
             "title": "Recharger",
             "placeholder": "Entrez le montant à recharger"
+        },
+        "button": {
+            "save": "Enregistrer"
         }
     },
     "LoginPage": {
@@ -702,6 +705,7 @@
             "batchPay": "Paiement en Lot",
             "refundable": "Remboursable",
             "unrefundable": "Non remboursable",
+            "remarkPlaceholder": "Veuillez saisir la raison du remboursement",
             "texts": {
                 "orderNumber": "N° de Commande :",
                 "createTime": "Créée le :",

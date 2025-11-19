@@ -40,7 +40,7 @@
         "Links": [
             {
                 "key": "link1",
-                "href": "https://discord.gg/yKNsV43Ddn",
+                "href": "https://discord.gg/N34Q27Vts8",
                 "src": "/images/page/tab1.png"
             },
             {
@@ -179,6 +179,9 @@
         "RechargeModal": {
             "title": "Recharge",
             "placeholder": "Enter the recharge amount"
+        },
+        "button": {
+            "save": "Save"
         }
     },
     "LoginPage": {
@@ -711,6 +714,7 @@
             "batchPay": "Batch Payment",
             "refundable": "Refundable",
             "unrefundable": "Non-refundable",
+            "remarkPlaceholder": "Please enter the refund reason",
             "texts": {
                 "orderNumber": "Order No:",
                 "createTime": "Created At:",
