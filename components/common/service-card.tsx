@@ -15,6 +15,7 @@ export default function ServiceCard({
   onSelect,
   initialCount = 1,
   onCountChange,
+  stacked,
 }: any) {
   const { currency } = useGlobalStore();
   const [count, setCount] = useState(initialCount);
@@ -63,32 +64,34 @@ export default function ServiceCard({
             </span>
 
             {/* 数量 Stepper（右侧） */}
-            <div
-              className="flex items-center bg-gray-100 rounded-lg overflow-hidden flex-shrink-0"
-              role="button"
-              onClick={(e) => e.stopPropagation()} // 避免点 + - 触发选中卡片
-            >
-              {/* 减号 */}
-              <button
-                className="w-7 h-7 flex items-center justify-center text-gray-600 hover:bg-gray-200"
-                onClick={() => updateCount(count - 1)}
+            {stacked == 1 && (
+              <div
+                className="flex items-center bg-gray-100 rounded-lg overflow-hidden flex-shrink-0"
+                role="button"
+                onClick={(e) => e.stopPropagation()} // 避免点 + - 触发选中卡片
               >
-                -
-              </button>
+                {/* 减号 */}
+                <button
+                  className="w-7 h-7 flex items-center justify-center text-gray-600 hover:bg-gray-200"
+                  onClick={() => updateCount(count - 1)}
+                >
+                  -
+                </button>
 
-              {/* 数量显示 */}
-              <span className="px-2 min-w-[24px] text-center text-gray-900 text-sm">
-                {count}
-              </span>
+                {/* 数量显示 */}
+                <span className="px-2 min-w-[24px] text-center text-gray-900 text-sm">
+                  {count}
+                </span>
 
-              {/* 加号 */}
-              <button
-                className="w-7 h-7 flex items-center justify-center text-gray-600 hover:bg-gray-200"
-                onClick={() => updateCount(count + 1)}
-              >
-                +
-              </button>
-            </div>
+                {/* 加号 */}
+                <button
+                  className="w-7 h-7 flex items-center justify-center text-gray-600 hover:bg-gray-200"
+                  onClick={() => updateCount(count + 1)}
+                >
+                  +
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

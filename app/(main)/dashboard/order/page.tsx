@@ -6,13 +6,19 @@ import {
   Checkbox,
   Tab,
   Tabs,
-  Image,
   Spinner,
   Textarea,
   addToast,
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
 } from "@heroui/react";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Image } from "antd";
 import { useTranslations } from "next-intl";
 
 import OrderItem from "./order-item";
@@ -23,6 +29,7 @@ import { useOrderList } from "@/hook";
 import FullscreenLoader from "@/components/common/fullscreen-loader";
 import {
   batchPayOrder,
+  getRefundList,
   OrderRefund,
   putOrderCancel,
   putOrderRevoke,
@@ -41,10 +48,13 @@ const tabKeyToStatusCode: Record<string, string> = {
 export default function OrderPage() {
   const t = useTranslations("Dashboard.OrderPage");
   const { currency } = useGlobalStore();
-
   const [activeTab, setActiveTab] = useState("all");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [pager, setPager] = useState(1);
+  const [pageSizer, setPageSizer] = useState(10);
+  const [totalr, setTotalr] = useState(10);
+  const [refundList, setRefundList] = useState([]);
   const router = useRouter();
 
   const [selected, setSelected] = useState<Record<string, boolean>>({});
@@ -76,6 +86,21 @@ export default function OrderPage() {
     .map(([key]) => key);
   const allSelected =
     allIds.length > 0 && allIds.every((orderCode) => selected[orderCode]);
+
+  const fetchData = async () => {
+    try {
+      const res = await getRefundList({
+        current: pager,
+        size: pageSizer,
+      });
+
+      setRefundList(res.records);
+      setTotalr(res?.total);
+    } catch (err) {
+      console.error("获取服务列表失败:", err);
+    } finally {
+    }
+  };
 
   // 初始化选中状态（仅首次）
   useEffect(() => {
@@ -158,18 +183,13 @@ export default function OrderPage() {
 
     if (selectedProducts.length === 0) {
       addToast({
-        title: "请选择要退款的商品",
+        title: "Please select the item to be refunded",
         timeout: 1000,
         color: "danger",
       });
 
       return;
     }
-    console.log("555", {
-      orderId: refundConfig.order.id,
-      skuList: selectedProducts,
-    });
-
     await OrderRefund({
       orderId: refundConfig.order.id,
       skuList: selectedProducts,
@@ -209,6 +229,10 @@ export default function OrderPage() {
       order: { ...refundConfig?.order, products: newProducts },
     });
   };
+
+  useEffect(() => {
+    fetchData();
+  }, [pager, pageSizer]);
   const EmptyOrder = () => (
     <div className="flex flex-col items-center justify-center h-[60vh] text-gray-500">
       <p className="text-lg mb-2">{t("noOrders")}</p>
@@ -242,7 +266,6 @@ export default function OrderPage() {
               order={order}
               revokeRefund={(refundId: any) => {
                 console.log("refundId", refundId);
-
                 setRevokeConfig({
                   title: t("withdrawTitle"),
                   content: t("withdrawContent"),
@@ -287,6 +310,73 @@ export default function OrderPage() {
       </>
     );
   };
+  const renderCell = ({
+    item,
+    columnKey,
+    currency,
+  }: {
+    item: any;
+    columnKey: string;
+    currency?: any;
+  }) => {
+    const value = item[columnKey];
+
+    // 商品标题
+    if (columnKey === "productTitle") {
+      return (
+        <div className="text-base text-gray-800 leading-snug line-clamp-2">
+          {value}
+        </div>
+      );
+    }
+
+    // SKU属性
+    if (columnKey === "propAndValue") {
+      return (
+        <div className="text-sm text-gray-500 leading-snug line-clamp-2">
+          {value?.propName_valueName}
+        </div>
+      );
+    }
+    // 金额统一格式
+    if (columnKey === "refundAmount") {
+      return `${currency?.symbol}${Number(value).toFixed(2)}`;
+    }
+
+    // 图片列
+    if (columnKey === "picUrl") {
+      const imgSrc = item.skuUrl || value;
+
+      return (
+        <Image
+          alt="商品图片"
+          height={50}
+          referrerPolicy="no-referrer"
+          src={imgSrc}
+          width={50}
+        />
+      );
+    }
+
+    // 时间格式化
+    if (columnKey === "createTime" || columnKey === "updateTime") {
+      return value ? value.replace("T", " ").slice(0, 19) : "--";
+    }
+
+    return value || "--";
+  };
+  const columns = [
+    { key: "orderCode", label: t("refundTable.orderCode") },
+    { key: "picUrl", label: t("refundTable.picUrl") },
+    { key: "productTitle", label: t("refundTable.productTitle") },
+    { key: "propAndValue", label: "sku" },
+    { key: "refundAmount", label: t("refundTable.refundAmount") },
+    { key: "applyRemark", label: t("refundTable.applyRemark") },
+    { key: "handleRemark", label: t("refundTable.handleRemark") },
+    { key: "status", label: t("refundTable.status") },
+    // { key: "createTime", label: t("refundTable.createTime") },
+    { key: "updateTime", label: t("refundTable.updateTime") },
+  ];
 
   if (isLoading) return <FullscreenLoader />;
 
@@ -306,8 +396,12 @@ export default function OrderPage() {
         color="primary"
         variant="underlined"
         onSelectionChange={(key) => {
-          setActiveTab(String(key));
-          setPage(1);
+          if (key != "refund") {
+            setActiveTab(String(key));
+            setPage(1);
+          } else {
+            setPager(1);
+          }
         }}
       >
         <Tab key="all" title={t("all")}>
@@ -341,6 +435,60 @@ export default function OrderPage() {
 
         <Tab key="paid" title={t("paid")}>
           <OrderTabContent orders={data?.records || []} />
+        </Tab>
+        <Tab key="refund" title={t("refund")}>
+          <Table
+            isHeaderSticky
+            removeWrapper
+            classNames={{
+              wrapper:
+                "p-0 rounded-none border border-default-200 min-w-[900px]",
+              thead: "bg-default-50",
+              th: "text-default-600 font-medium !rounded-none text-sm",
+              tr: "border-b last:border-b-0",
+              td: "text-sm text-default-700",
+            }}
+            radius="none"
+            shadow="none"
+          >
+            <TableHeader columns={columns}>
+              {(column: any) => (
+                <TableColumn key={column.key}>{column.label}</TableColumn>
+              )}
+            </TableHeader>
+
+            <TableBody
+              emptyContent={t("refundTable.emptyContent")}
+              isLoading={isLoading}
+              items={refundList}
+              loadingContent={<Spinner />}
+            >
+              {(item: any) => (
+                <TableRow key={item.id}>
+                  {(columnKey: any) => (
+                    <TableCell className="text-sm text-default-700 break-words whitespace-normal">
+                      {renderCell({
+                        item,
+                        columnKey,
+                        currency,
+                      })}
+                    </TableCell>
+                  )}
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+          <div className="mt-10 sticky bottom-0 border-t bg-white z-10 p-4 card-cart">
+            {(totalr as number) > 0 && (
+              <PaginationBar
+                page={pager}
+                pageSize={pageSizer}
+                total={totalr as number}
+                onPageChange={setPager}
+                onPageSizeChange={setPageSizer}
+              />
+            )}
+          </div>
         </Tab>
       </Tabs>
 

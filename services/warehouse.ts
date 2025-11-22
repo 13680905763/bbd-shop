@@ -32,6 +32,9 @@ export const searchWarehouseRoutesList = (data: any): Promise<any> => {
   );
 };
 
-export const createWaybill = (data: any): Promise<any> =>
-  request.post("/waybill/submit", data);
-/** 创建立即购买订单 */
+export const createWaybill = (data: any): Promise<any> => {
+  return requestWithOption(
+    { url: "/waybill/submit", method: "POST", data },
+    { showToast: true },
+  );
+};

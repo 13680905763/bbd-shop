@@ -23,66 +23,8 @@ import ServiceCard from "@/components/common/service-card";
 import RouteCard from "@/components/common/route-card";
 import FullscreenLoader from "@/components/common/fullscreen-loader";
 import FormModal from "@/components/modal/form-modal";
-import { FieldConfig } from "@/components/form/formItem-renderer";
 import { queryClient } from "@/lib/react-query";
-const fieldsaddress: FieldConfig[] = [
-  {
-    key: "recipient",
-    type: "input",
-    name: "recipient",
-    label: "收件人",
-    placeholder: "请输入收件人姓名",
-  },
-  {
-    key: "phone",
 
-    type: "input",
-    name: "phone",
-    label: "联系方式",
-    placeholder: "请输入联系方式",
-  },
-  {
-    key: "area",
-
-    type: "area",
-    name: "area",
-    label: "area",
-    placeholder: "area",
-  },
-
-  {
-    key: "address",
-
-    type: "input",
-    name: "address",
-    label: "详细地址",
-    placeholder: "请输入您详细地址",
-  },
-  {
-    key: "doorNo",
-
-    type: "input",
-    name: "doorNo",
-    label: "门牌号",
-    placeholder: "请输入您的门牌号",
-  },
-  {
-    key: "postcode",
-
-    type: "input",
-    name: "postcode",
-    label: "邮编",
-    placeholder: "请输入邮编",
-  },
-
-  {
-    key: "defaultAddress",
-
-    type: "checkbox",
-    name: "defaultAddress",
-    label: "设为默认地址",
-  },
-];
 const initAddress = {
   recipient: "",
   phone: "",
@@ -153,6 +95,7 @@ export default function SubmitOrder() {
       if (typeof res != "string" && res?.length) {
         setRoutesData(res || []);
       } else {
+        setSelectedRouteId("");
         setRoutesData([]);
         setRoutesMessage(res);
       }
@@ -211,7 +154,7 @@ export default function SubmitOrder() {
       const payload = {
         serviceList: selectedServices.map((service) => ({
           serviceId: service?.id,
-          // quantity: service?.quantity,
+          quantity: service?.quantity,
           remark: "",
         })),
         templateId: selectedRouteId,
@@ -225,7 +168,7 @@ export default function SubmitOrder() {
       // 调接口
       await createWaybill(payload);
 
-      addToast({ title: "提交成功", timeout: 1500, color: "success" });
+      // addToast({ title: "提交成功", timeout: 1500, color: "success" });
       router.push(`/dashboard/package`);
     } catch (err) {
       console.error("提交失败", err);

@@ -126,3 +126,7 @@ export const putOrderRevoke = (id: string): Promise<any> => {
     { showToast: true },
   );
 };
+/** 撤销列表 */
+export const getRefundList = (data = {}): Promise<any> => {
+  return request.post("/order-refund/list", data);
+};

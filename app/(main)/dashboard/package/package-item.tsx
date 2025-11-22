@@ -239,7 +239,7 @@ export default function PackageItem({
           {order.serviceList.map((service: any) => (
             <div key={service.serviceId} className="mb-4 flex gap-2">
               <div className="text-gray-400 text-sm mb-2">
-                {service.serviceName}
+                {service.serviceName}*{service.quantity}
               </div>
               <MediaPreviewGroup fileList={service.fileList as MediaItem[]} />
             </div>
