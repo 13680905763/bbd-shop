@@ -40,7 +40,7 @@ export default function RechargeModal({
         currencyCode: currency.label,
       });
 
-      router.push(`/order/pay-order/${bizCode}`);
+      router.push(`/payment/${bizCode}`);
       //   onOpenChange(false);
       setAmount(""); // reset after confirm
     }

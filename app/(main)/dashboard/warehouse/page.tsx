@@ -74,7 +74,7 @@ export default function WarehousePage() {
       packageSet: selectedIds,
     });
 
-    router.push("/warehouse/submit-warehouse?key=" + key);
+    router.push("/submit/warehouse?key=" + key);
   };
 
   useEffect(() => {

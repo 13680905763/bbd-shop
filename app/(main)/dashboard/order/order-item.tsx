@@ -1,5 +1,5 @@
 "use client";
-import { Checkbox, Image } from "@heroui/react";
+import { Button, Checkbox, Image } from "@heroui/react";
 import { useRouter } from "next/navigation";
 
 import SourceIcon from "@/components/common/source-icon";
@@ -172,20 +172,35 @@ export default function OrderItem({
           {order?.canCancelFlag ? (
             <>
               {/* 支付按钮（主题橙色） */}
-              <button
+              {/* <button
                 className="px-3 py-1 rounded-lg text-white bg-[#f0700c] hover:bg-[#d8650b] transition-colors text-sm font-medium shadow-sm"
                 onClick={() => onPayOrderRedirect(order?.orderCode)}
               >
                 {texts.payment}
-              </button>
-
+              </button> */}
+              <Button
+                color="primary"
+                radius="sm"
+                size="sm"
+                onPress={() => onPayOrderRedirect(order?.orderCode)}
+              >
+                {texts.payment}
+              </Button>
+              <Button
+                radius="sm"
+                size="sm"
+                variant="flat"
+                onPress={() => onCancelOrder(order?.id)}
+              >
+                {texts.cancel}
+              </Button>
               {/* 取消订单按钮（主题橙色） */}
-              <button
+              {/* <button
                 className="px-3 py-1 rounded-lg text-white bg-red-500 hover:bg-red-600 transition-colors text-sm font-medium shadow-sm"
                 onClick={() => onCancelOrder(order?.id)}
               >
                 {texts.cancel}
-              </button>
+              </button> */}
             </>
           ) : (
             <>
@@ -193,13 +208,23 @@ export default function OrderItem({
               <div className="text-[#f0700c] font-medium">{order?.status}</div>
 
               {/* 申请退款按钮（绿色按钮） */}
+
               {order?.canRefundFlag && (
-                <button
-                  className="px-3 py-1 rounded-lg text-white bg-red-500 hover:bg-red-600 transition-colors text-sm font-medium shadow-sm"
-                  onClick={() => onRequestRefund()}
+                // <button
+                //   className="px-3 py-1 rounded-lg text-white bg-red-500 hover:bg-red-600 transition-colors text-sm font-medium shadow-sm"
+                //   onClick={() => onRequestRefund()}
+                // >
+                //   {texts.refund}
+                // </button>
+                <Button
+                  color="danger"
+                  radius="sm"
+                  size="sm"
+                  variant="flat"
+                  onPress={() => onRequestRefund()}
                 >
                   {texts.refund}
-                </button>
+                </Button>
               )}
             </>
           )}

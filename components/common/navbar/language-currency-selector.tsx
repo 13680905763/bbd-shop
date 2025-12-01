@@ -1,40 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Popover, PopoverTrigger, PopoverContent, Button } from "@heroui/react";
+import { useTranslations } from "next-intl";
 
 import { languages } from "@/i18n/config";
 import { useGlobalStore } from "@/store";
 import { setUserLocale } from "@/i18n/service";
 
 export default function LanguageCurrencySelector() {
-  const {
-    language,
-    setLanguage,
-    currency,
-    setCurrency,
-    fetchConfig,
-    currencies,
-  } = useGlobalStore();
+  const t = useTranslations("Components.Navbar");
 
-  useEffect(() => {
-    const init = async () => {
-      console.log("初始化 store");
-
-      await fetchConfig(); // 等待异步执行完成
-      console.log("currencies", currencies);
-      // await setUserLocale(language);
-    };
-
-    init();
-  }, []);
-
-  // useEffect(() => {
-  //   console.log("language", language);
-  // }, [language]);
-  // useEffect(() => {
-  //   console.log("currencies", currencies);
-  // }, [currencies]);
+  const { language, setLanguage, currency, setCurrency, currencies } =
+    useGlobalStore();
 
   const [tempLanguage, setTempLanguage] = useState(language); // 临时选择
   const [tempCurrency, setTempCurrency] = useState({ ...currency });
@@ -42,19 +20,13 @@ export default function LanguageCurrencySelector() {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchConfig();
-  }, []);
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      console.log("保存选择", tempLanguage, tempCurrency);
+      // console.log("保存选择", tempLanguage, tempCurrency);
       // 1. 更新 store
       setLanguage(tempLanguage);
       setCurrency({ ...tempCurrency });
-      // 2. 写 localStorage
-      localStorage.setItem("language", tempLanguage);
-      localStorage.setItem("currency", JSON.stringify(tempCurrency));
       // 保存语言
       await setUserLocale(tempLanguage);
       // await setUserCurrency(tempCurrency);
@@ -98,7 +70,9 @@ export default function LanguageCurrencySelector() {
         <div className="p-4 min-w-[240px]">
           {/* 语言选择 */}
           <div className="mb-6">
-            <p className="text-sm font-semibold text-gray-700">语言</p>
+            <p className="text-sm font-semibold text-gray-700">
+              {t("language")}
+            </p>
             <div className="grid grid-cols-2 gap-3 mt-3">
               {languages.map((l) => (
                 <Button
@@ -117,7 +91,9 @@ export default function LanguageCurrencySelector() {
 
           {/* 货币选择 */}
           <div className="mb-6">
-            <p className="text-sm font-semibold text-gray-700">货币</p>
+            <p className="text-sm font-semibold text-gray-700">
+              {t("currency")}
+            </p>
             <div className="grid grid-cols-2 gap-3 mt-3">
               {currencies.map((c: any) => (
                 <Button
@@ -143,7 +119,7 @@ export default function LanguageCurrencySelector() {
             size="md"
             onPress={handleSubmit}
           >
-            提交
+            {t("submit")}
           </Button>
         </div>
       </PopoverContent>

@@ -88,6 +88,9 @@
     },
     "Components": {
         "Navbar": {
+            "language": "Language",
+            "currency": "Currency",
+            "submit": "Submit",
             "texts": {
                 "User": {
                     "register": "Register",
@@ -757,16 +760,49 @@
                 "valueAddedService": "Value-added Service"
             }
         },
-        "PackagePage": {
-            "all": "All",
-            "pay": "Pending Payment",
-            "shipping": "In Transit",
-            "receivde": "Received",
+        "package": {
+            "tabs": {
+                "all": "All",
+                "pay": "Pending Payment",
+                "shipping": "In Transit",
+                "receivded": "Receivded"
+            },
             "noPackages": "No packages",
             "selectAll": "Select All",
             "batchPay": "Batch Payment",
             "noTracking": "No tracking number",
-            "texts": {
+            "withdrawTitle": "Withdraw Application",
+            "withdrawContent": "Are you sure you want to withdraw this application?",
+            "receiptTitle": "Confirm Receipt",
+            "receiptContent": "Confirm receipt of this item?",
+            "refundTitle": "Request Refund",
+            "cancelModal": {
+                "title": "Cancel",
+                "cancelCard": {
+                    "title": "Confirm Cancellation",
+                    "subtitle": "Cancel this order",
+                    "submittingTitle": "Cancelling...",
+                    "submittingSubtitle": "Please wait",
+                    "serviceFee": "Service Fee",
+                    "packingFee": "Packing Fee",
+                    "totalFee": "Total Fee"
+                },
+                "changeRouteCard": {
+                    "title": "Change Route",
+                    "subtitle": "Reselect shipping route"
+                }
+            },
+            "changeTitle": "Change Route",
+            "lineModal": {
+                "title": "Shipping Tracking",
+                "mainWaybillTitle": "Main Waybill Tracking",
+                "subWaybillTitle": "Sub Waybill:",
+                "waybillNumber": "Waybill Number:",
+                "currentStatus": "Current Status:",
+                "location": "Location:",
+                "mainTimeline": "Main Waybill Timeline:"
+            },
+            "packageItem": {
                 "packageNumberLabel": "Package Number",
                 "shippingCode": "Tracking Number:",
                 "productImageAlt": "Product Image",
@@ -780,38 +816,8 @@
                 "payCancelFee": "Payment Cancellation Fee",
                 "requestRefund": "Request Cancellation",
                 "withdrawRequest": "Withdraw Request",
-                "changeBtn": "Change Route"
-            },
-            "refundModal": {
-                "title": "Cancel",
-                "cancelCard": {
-                    "title": "Confirm Cancellation",
-                    "subtitle": "Cancel this order",
-                    "submittingTitle": "Cancelling...",
-                    "submittingSubtitle": "Please wait",
-                    "serviceFee": "Service Fee",
-                    "packingFee": "Packing Fee",
-                    "totalFee": "Total Fee"
-                },
-                "changeRouteCard": {
-                    "title": "Change Route",
-                    "subtitle": "Re-select shipping route"
-                }
-            },
-            "withdrawModal": {
-                "content": "Are you sure to withdraw the cancellation request?"
-            },
-            "changeModal": {
-                "title": "Change Route"
-            },
-            "lineModal": {
-                "title": "Tracking Information",
-                "mainWaybillTitle": "Main Waybill Timeline",
-                "subWaybillTitle": "Sub Waybill:",
-                "waybillNumber": "Waybill Number:",
-                "currentStatus": "Current Status:",
-                "location": "Location:",
-                "mainTimeline": "Main Waybill Timeline:"
+                "changeBtn": "Change Route",
+                "receipt": "Receipt"
             }
         },
         "Promotion": {
@@ -955,6 +961,8 @@
         "addBillingAddress": "Please add billing address",
         "loadFailed": "Loading failed",
         "payAmount": "Amount Payable",
+        "orderAmount": "Order Amount",
+        "fixedCost": "Fixed Cost",
         "handlingFee": "Handling Fee",
         "submitOrder": "Submit Order",
         "tooltipTip": "Due to currency conversion, there may be a small difference of 0.01 or 0.02",
@@ -1095,7 +1103,7 @@
         "category": "Goods Category"
     },
     "PaymentResultPage": {
-        "loading": "Verifying payment result...",
+        "loading": "Verifying payment result",
         "successTitle": "Payment Successful",
         "successMessage": "We have received your payment. Your order is being processed.",
         "failTitle": "Payment Failed",

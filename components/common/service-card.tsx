@@ -2,7 +2,6 @@
 
 import { Card } from "@heroui/react";
 import { Image } from "antd";
-import { useState } from "react";
 
 import { useGlobalStore } from "@/store";
 
@@ -13,19 +12,11 @@ export default function ServiceCard({
   price,
   isSelected,
   onSelect,
-  initialCount = 1,
   onCountChange,
   stacked,
+  quantity,
 }: any) {
   const { currency } = useGlobalStore();
-  const [count, setCount] = useState(initialCount);
-
-  const updateCount = (v: number) => {
-    const next = Math.max(1, v);
-
-    setCount(next);
-    onCountChange?.(id, next);
-  };
 
   return (
     <Card
@@ -73,20 +64,20 @@ export default function ServiceCard({
                 {/* 减号 */}
                 <button
                   className="w-7 h-7 flex items-center justify-center text-gray-600 hover:bg-gray-200"
-                  onClick={() => updateCount(count - 1)}
+                  onClick={() => onCountChange?.(id, Math.max(1, quantity - 1))}
                 >
                   -
                 </button>
 
                 {/* 数量显示 */}
                 <span className="px-2 min-w-[24px] text-center text-gray-900 text-sm">
-                  {count}
+                  {quantity}
                 </span>
 
                 {/* 加号 */}
                 <button
                   className="w-7 h-7 flex items-center justify-center text-gray-600 hover:bg-gray-200"
-                  onClick={() => updateCount(count + 1)}
+                  onClick={() => onCountChange?.(id, quantity + 1)}
                 >
                   +
                 </button>

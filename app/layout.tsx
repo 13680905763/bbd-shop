@@ -33,11 +33,11 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const locale = await getLocale();
+  const initialLocale = await getLocale();
   const messages = await getMessages();
 
   return (
-    <html suppressHydrationWarning lang={locale}>
+    <html suppressHydrationWarning lang={initialLocale}>
       <head>
         <Script
           src="https://accounts.google.com/gsi/client"
@@ -51,7 +51,10 @@ export default async function RootLayout({
         )}
       >
         <NextIntlClientProvider messages={messages}>
-          <Providers themeProps={{ attribute: "class", defaultTheme: "light" }}>
+          <Providers
+            initialLocale={initialLocale}
+            themeProps={{ attribute: "class", defaultTheme: "light" }}
+          >
             {children}
           </Providers>
         </NextIntlClientProvider>

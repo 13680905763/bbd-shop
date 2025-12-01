@@ -3,7 +3,6 @@
 import { Button, Divider, Image } from "@heroui/react";
 
 import SourceIcon from "@/components/common/source-icon";
-import { safeMul } from "@/utils/number";
 import { useGlobalStore } from "@/store";
 
 interface OrderItemProps {
@@ -87,12 +86,12 @@ export default function OrderItem({
                 <p>x{product.quantity}</p>
               </div>
               {/* 小计 */}
-              <div className="flex justify-center flex-[0_0_150px]">
+              {/* <div className="flex justify-center flex-[0_0_150px]">
                 <p>
                   {currency.symbol}
                   {safeMul(product.price, product.quantity)}
                 </p>
-              </div>
+              </div> */}
             </div>
 
             {/* 增值服务 */}

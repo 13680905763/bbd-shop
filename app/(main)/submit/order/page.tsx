@@ -230,7 +230,7 @@ export default function SubmitOrder() {
 
         await queryClient.removeQueries({ queryKey: ["cartList"] });
         await queryClient.invalidateQueries({ queryKey: ["cartList"] }); // 手动刷新
-        router.push("/order/pay-order/" + bizCode);
+        router.push("/payment/" + bizCode);
       } else {
         const bizCode = await createOrderByProduct(
           orderData?.param as createOrderPreviewKeyByProductParams,
@@ -239,7 +239,7 @@ export default function SubmitOrder() {
         await queryClient.removeQueries({ queryKey: ["cartList"] });
         await queryClient.invalidateQueries({ queryKey: ["cartList"] }); // 手动刷新
 
-        router.push("/order/pay-order/" + bizCode);
+        router.push("/payment/" + bizCode);
       }
     } finally {
       console.log("手动刷新");
@@ -272,7 +272,7 @@ export default function SubmitOrder() {
           <span className="flex-[0_0_200px] text-center">{t("remark")}</span>
           <span className="flex-[0_0_130px] text-center">{t("price")}</span>
           <span className="flex-[0_0_150px] text-center">{t("quantity")}</span>
-          <span className="flex-[0_0_150px] text-center">{t("subtotal")}</span>
+          {/* <span className="flex-[0_0_150px] text-center">{t("subtotal")}</span> */}
         </div>
 
         {orderData?.orderList?.map((order: any) => (

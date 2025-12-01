@@ -18,3 +18,7 @@ export const payNotice = (param: any): Promise<any> => {
 };
 export const getScorelList = (current: number, size: number): Promise<any> =>
   request.get(`/customer/wallet/detail/page?current=${current}&size=${size}`);
+
+export const payPaypel = (param: any): Promise<any> => {
+  return request.get("/paypal/return/redirect?" + param);
+};

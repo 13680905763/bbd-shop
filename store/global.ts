@@ -8,31 +8,24 @@ interface GlobalState {
   language: string;
   currency: any;
   languages: { label: string; value: string }[];
-  currencies: { label: string; value: string; symbol: string }[];
+  currencies: { label: string; value: string; symbol: string; rate: number }[];
   setLanguage: (language: string) => void;
   setCurrency: (currency: any) => void;
   fetchConfig: () => Promise<void>;
 }
 
 export const useGlobalStore = create<GlobalState>((set) => ({
-  // ⚠️ 不在顶层直接读 localStorage
-  language: "en",
-  currency: { label: "CNY", value: "CNY", symbol: "¥" },
+  language: "zh",
+  currency: { label: "CNY", value: "CNY", symbol: "¥", rate: 1 },
   languages: [],
   currencies: [],
 
   setLanguage: (language) => {
     set({ language });
-    if (typeof window !== "undefined") {
-      localStorage.setItem("language", language);
-    }
   },
 
   setCurrency: (currency) => {
     set({ currency });
-    if (typeof window !== "undefined") {
-      localStorage.setItem("currency", JSON.stringify(currency));
-    }
   },
 
   fetchConfig: async () => {
@@ -43,29 +36,8 @@ export const useGlobalStore = create<GlobalState>((set) => ({
         label: item?.currency,
         value: item?.currency,
         symbol: item?.symbol,
+        rate: item?.rate,
       })),
     });
   },
 }));
-
-// ✅ 这个 effect 只在浏览器执行，用来从 localStorage 恢复数据
-if (typeof window !== "undefined") {
-  const storedLang = localStorage.getItem("language");
-  const storedCurrency = localStorage.getItem("currency");
-
-  console.log("storedLang", storedLang);
-
-  if (storedLang) {
-    useGlobalStore.setState({ language: storedLang });
-  }
-
-  if (storedCurrency) {
-    try {
-      useGlobalStore.setState({
-        currency: JSON.parse(storedCurrency),
-      });
-    } catch (err) {
-      console.warn("解析 currency 失败", err);
-    }
-  }
-}

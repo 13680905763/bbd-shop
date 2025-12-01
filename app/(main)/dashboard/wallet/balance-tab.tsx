@@ -18,8 +18,8 @@ import FormModal from "@/components/modal/form-modal";
 import { FieldConfig } from "@/components/form/formItem-renderer";
 import RechargeModal from "@/components/modal/recharge.modal";
 import { useGlobalStore, useWalletStore } from "@/store";
-import { useWalletDetailList } from "@/hook";
-import { getWalletInfo } from "@/services/wallet";
+import { getWalletDetailList, getWalletInfo } from "@/services/wallet";
+import PaginationBar from "@/components/common/pagination-bar";
 
 interface BalanceTabProps {
   tableColumns: any[];
@@ -42,29 +42,39 @@ export default function BalanceTab({
   const wallet = useWalletStore((state) => state.wallet);
   const { currency } = useGlobalStore();
 
-  const { data, isLoading } = useWalletDetailList();
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(10);
 
-  const walletDetailList =
-    data?.pages?.flatMap((page: any) => page?.records) ?? [];
+  const [walletRecords, setWalletRecords] = useState([]);
 
   const [isOpenRecharge, setIsOpenRecharge] = useState(false);
   const [isOpenWithdrawal, setIsOpenWithdrawal] = useState(false);
   const [formData, setFormData] = useState({});
+
+  /** ✅ fetchData  */
+  const fetchData = async () => {
+    try {
+      const res: any = await getWalletDetailList(page, pageSize);
+      const wallet = await getWalletInfo();
+
+      console.log("res", res);
+      useWalletStore.getState().setWallet(wallet);
+      setWalletRecords(res?.records || []);
+      setTotal(res?.pages || []);
+    } catch {
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSave = async () => {
     console.log("保存提现数据:", formData);
   };
 
   useEffect(() => {
-    const fetchWallet = async () => {
-      try {
-        const wallet = await getWalletInfo();
-
-        useWalletStore.getState().setWallet(wallet);
-      } catch {}
-    };
-
-    fetchWallet();
+    fetchData();
   }, []);
 
   return (
@@ -103,6 +113,21 @@ export default function BalanceTab({
       <div className="font-bold my-4">{texts.tableTitle}</div>
       <Table
         isHeaderSticky
+        bottomContent={
+          <>
+            {!loading && (
+              <div className=" sticky bottom-0 border-t bg-white z-10 p-4 ">
+                <PaginationBar
+                  page={page}
+                  pageSize={pageSize}
+                  total={total as number}
+                  onPageChange={setPage}
+                  onPageSizeChange={setPageSize}
+                />
+              </div>
+            )}
+          </>
+        }
         classNames={{
           wrapper: "p-0 rounded-none border-1",
           tr: "border-b-1 last:border-b-0 !shadow-none",
@@ -118,8 +143,8 @@ export default function BalanceTab({
         </TableHeader>
         <TableBody
           emptyContent={texts.noData}
-          isLoading={isLoading}
-          items={walletDetailList}
+          isLoading={loading}
+          items={walletRecords}
           loadingContent={<Spinner />}
         >
           {(item: any) => (

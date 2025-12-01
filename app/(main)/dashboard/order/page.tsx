@@ -124,11 +124,11 @@ export default function OrderPage() {
   const handleOrderSubmit = async () => {
     const bizCode = await batchPayOrder({ orderCodeSet: selectedIds });
 
-    router.push(`/order/pay-order/${bizCode}`);
+    router.push(`/payment/${bizCode}`);
   };
 
   const onPayOrderRedirect = (bizCode: string) => {
-    router.push(`/order/pay-order/${bizCode}`);
+    router.push(`/payment/${bizCode}`);
   };
 
   const onCancelOrder = async (orderId: string): Promise<void> => {

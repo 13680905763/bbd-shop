@@ -1,7 +1,8 @@
 "use client";
 import { useRef } from "react";
-import { Checkbox, Image } from "@heroui/react";
+import { Button, Checkbox, Image } from "@heroui/react";
 import { FiSearch } from "react-icons/fi";
+import { useTranslations } from "next-intl";
 
 import MediaPreviewGroup, {
   MediaItem,
@@ -9,18 +10,19 @@ import MediaPreviewGroup, {
 import { useGlobalStore } from "@/store";
 
 export default function PackageItem({
-  order,
-  onPayOrderRedirect,
-  handlePackageSubmitItem,
+  pack,
+  onPayPackageRedirect,
   activeTab,
   selected,
   onChange,
-  onRequestRefund,
-  onRequestWithdraw,
-  onRequestChange,
-  onRequestLine,
-  texts, // texts 从 props 传入
+  onRevokePackage,
+  onCancelPackage,
+  onChangePackageLine,
+  onLine,
+  onReceiptPackage,
 }: any) {
+  const t = useTranslations("Dashboard.package.packageItem");
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const { currency } = useGlobalStore();
 
@@ -73,8 +75,8 @@ export default function PackageItem({
         {activeTab === "pay" ? (
           <Checkbox isSelected={selected} onChange={onChange} />
         ) : null}
-        {texts.packageNumberLabel}:
-        <span className="font-semibold">{order?.packingPackageCode}</span>
+        {t("packageNumberLabel")}:
+        <span className="font-semibold">{pack?.packingPackageCode}</span>
       </div>
 
       <div className="flex flex-col">
@@ -88,10 +90,10 @@ export default function PackageItem({
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUpOrLeave}
           >
-            {order?.packageItemList?.map((item: any) => (
+            {pack?.packageItemList?.map((item: any) => (
               <div key={item.id} className="flex-shrink-0">
                 <Image
-                  alt={texts.productImageAlt}
+                  alt={t("productImageAlt")}
                   className="object-cover border border-gray-200 rounded-sm"
                   draggable={false}
                   height={120}
@@ -108,37 +110,36 @@ export default function PackageItem({
 
           <div className="flex flex-col justify-center p-2 text-gray-700 flex-[0_0_180px]">
             <span>
-              {texts.sizeLabel}: {order?.length}*{order?.width}*{order?.height}{" "}
-              cm
+              {t("sizeLabel")}: {pack?.length}*{pack?.width}*{pack?.height} cm
             </span>
           </div>
 
           <div className="flex flex-col justify-center p-2 text-gray-700 flex-[0_0_150px]">
             <span>
-              {texts.weightLabel}: {order?.weight} g
+              {t("weightLabel")}: {pack?.weight} g
             </span>
           </div>
 
           <div className="flex flex-col justify-center p-2 text-gray-700 flex-[0_0_200px]">
-            <p>{order?.shipping?.methodCode}</p>
-            <p>{order?.shipping?.templateName}</p>
+            <p>{pack?.shipping?.methodCode}</p>
+            <p>{pack?.shipping?.templateName}</p>
             {/* 物流信息 */}
-            {order?.shipping?.shippingCode && (
+            {pack?.shipping?.shippingCode && (
               <div className="mt-3 flex items-center gap-2 text-sm text-gray-700">
                 <div className="flex flex-col flex-1">
                   <span
                     className="text-gray-500"
                     role="button"
-                    onClick={onRequestLine}
+                    onClick={onLine}
                   >
                     <FiSearch
                       className="inline-block text-gray-500 mr-1"
                       size={14}
                     />
-                    {texts.shippingCode || "运单号"}
+                    {t("shippingCode")}
                   </span>
                   <span className="font-medium text-gray-900 break-all">
-                    {order.shipping.shippingCode}
+                    {pack.shipping.shippingCode}
                   </span>
                 </div>
               </div>
@@ -147,96 +148,83 @@ export default function PackageItem({
 
           <div className="flex flex-col justify-center p-2 flex-[0_0_150px]">
             <span className="text-gray-500">
-              {texts.serviceFeeLabel}: {currency.symbol}
-              {order?.totalServiceFee || 0}
+              {t("serviceFeeLabel")}: {currency.symbol}
+              {pack?.totalServiceFee || 0}
             </span>
             <span className="font-semibold text-gray-800">
-              {texts.totalFeeLabel}: {currency.symbol}
-              {order?.totalFee}
+              {t("totalFeeLabel")}: {currency.symbol}
+              {pack?.totalFee}
             </span>
           </div>
 
           <div className="flex flex-col gap-2 p-2 flex-[0_0_150px]">
-            {/* {order?.status === texts.pendingPaymentStatus ? (
-              <>
-                <Button
-                  color="primary"
-                  radius="none"
-                  size="sm"
-                  onPress={() => onPayOrderRedirect(order?.packingPackageCode)}
-                >
-                  {texts.payButton}123
-                </Button>
-                <Button className="button-default" radius="none" size="sm">
-                  {texts.cancelButton}321
-                </Button>
-              </>
-            ) : */}
-            {/* ( */}
             <div className="space-y-2 flex flex-col">
               {/* 状态展示 */}
-              <div className="text-[#f0700c] font-medium">{order?.status}</div>
-
-              {/* 状态：待支付 */}
-              {order?.statusCode == 203 && (
-                <button
-                  className="px-3 py-1 rounded-lg text-white bg-[#f0700c] hover:bg-[#d8650b]  transition-colors text-sm font-medium shadow-sm"
-                  onClick={() =>
-                    handlePackageSubmitItem(order?.packingPackageCode)
-                  }
-                >
-                  {texts.payButton}
-                </button>
-              )}
-
-              {/* 状态：支付取消手续费 */}
-              {order?.statusCode == 209 && (
-                <button
-                  className="px-3 py-1 rounded-lg text-white bg-red-500 hover:bg-red-600 transition-colors text-sm font-medium shadow-sm"
-                  onClick={() =>
-                    handlePackageSubmitItem(order?.packingPackageCode)
-                  }
-                >
-                  {texts.payCancelFee}
-                </button>
-              )}
-
-              {/* 状态：申请取消 */}
-              {order?.cancelFlag && (
-                <button
-                  className="px-3 py-1 rounded-lg text-white bg-red-500 hover:bg-red-600 transition-colors text-sm font-medium shadow-sm"
-                  onClick={onRequestRefund}
-                >
-                  {texts.requestRefund}
-                </button>
-              )}
-
-              {/* 状态：撤回申请 */}
-              {order?.withdrawFlag && (
-                <button
-                  className="px-3 py-1 rounded-lg text-white bg-green-500 hover:bg-green-600 transition-colors text-sm font-medium shadow-sm"
-                  onClick={onRequestWithdraw}
-                >
-                  {texts.withdrawRequest}
-                </button>
-              )}
+              <div className="text-[#f0700c] font-medium">{pack?.status}</div>
               {/* 状态：更换路线 */}
-              {order?.changeFlag && (
-                <button
-                  className="px-3 py-1 rounded-lg text-white bg-purple-500 hover:bg-purple-600 transition-colors text-sm font-medium shadow-sm"
-                  onClick={onRequestChange}
+              {pack?.changeFlag && (
+                <Button
+                  color="success"
+                  radius="sm"
+                  size="sm"
+                  variant="flat"
+                  onPress={onChangePackageLine}
                 >
-                  {texts.changeBtn}
-                </button>
+                  {t("changeBtn")}
+                </Button>
+              )}
+              {/* 状态：申请取消 */}
+              {pack?.cancelFlag && (
+                <Button
+                  radius="sm"
+                  size="sm"
+                  variant="flat"
+                  onPress={onCancelPackage}
+                >
+                  {t("requestRefund")}
+                </Button>
+              )}
+
+              {pack?.withdrawFlag && (
+                <Button
+                  color="danger"
+                  radius="sm"
+                  size="sm"
+                  variant="flat"
+                  onPress={onRevokePackage}
+                >
+                  {t("withdrawRequest")}
+                </Button>
+              )}
+
+              {/* 状态：待付款 */}
+              {(pack?.statusCode == 203 || pack?.statusCode == 209) && (
+                <Button
+                  color="primary"
+                  radius="sm"
+                  size="sm"
+                  onPress={onPayPackageRedirect}
+                >
+                  {pack?.statusCode == 203 ? t("payButton") : t("payCancelFee")}
+                </Button>
+              )}
+              {/* 状态：确认签收 */}
+              {pack?.signFlag && (
+                <Button
+                  color="primary"
+                  radius="sm"
+                  size="sm"
+                  onPress={onReceiptPackage}
+                >
+                  receipt
+                </Button>
               )}
             </div>
-
-            {/* )} */}
           </div>
         </div>
 
         <div className="flex gap-2 justify-center flex-col py-2">
-          {order.serviceList.map((service: any) => (
+          {pack.serviceList.map((service: any) => (
             <div key={service.serviceId} className="mb-4 flex gap-2">
               <div className="text-gray-400 text-sm mb-2">
                 {service.serviceName}*{service.quantity}

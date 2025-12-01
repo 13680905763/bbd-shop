@@ -14,19 +14,13 @@ interface BackendAddress {
   defaultAddress?: number;
 }
 
-interface AddressCardProps {
-  data?: BackendAddress;
-  onEdit?: (id: string) => void;
-  onSelect?: (id: string | null) => void;
-  isSelected?: boolean;
-}
-
 export default function AddressCard({
   data,
   onEdit,
   onSelect,
   isSelected,
-}: AddressCardProps) {
+  isDisabled,
+}: any) {
   if (!data) return null;
 
   const {
@@ -50,12 +44,12 @@ export default function AddressCard({
       className={`flex-1 p-4 rounded-2xl border transition ${
         isSelected ? "border-primary border-2 bg-orange-50" : "border-gray-200"
       } hover:shadow-md cursor-pointer`}
+      isDisabled={isDisabled}
       shadow="none"
       onClick={() => {
+        if (isDisabled) return; // ✅ 手动阻止
         if (id && isSelected) {
-          console.log(666);
-
-          onSelect?.(null);
+          // onSelect?.(null);
         } else if (id) {
           console.log(777);
 

@@ -5,7 +5,6 @@ import {
   Button,
   Checkbox,
   Divider,
-  Image,
   Skeleton,
   Textarea,
 } from "@heroui/react";
@@ -13,6 +12,7 @@ import { useParams, useRouter } from "next/navigation";
 import { GrPowerReset } from "react-icons/gr";
 import { IoIosLink } from "react-icons/io";
 import { useTranslations } from "next-intl";
+import { Image } from "antd";
 
 import {
   commonCard,
@@ -32,7 +32,6 @@ import SourceIcon from "@/components/common/source-icon";
 import CommonModal from "@/components/modal/common-modal";
 import { useGlobalStore } from "@/store";
 import { safeMul } from "@/utils/number";
-
 interface Sku {
   skuID: string;
   stock: number;
@@ -146,15 +145,6 @@ export default function GoodsPage() {
   const [currentImg, setCurrentImg] = useState<string>();
   const router = useRouter();
 
-  // useEffect(() => {
-  //   const init = async () => {
-  //     console.log("初始化 store");
-
-  //     await fetchConfig(); // 等待异步执行完成
-  //   };
-
-  //   init();
-  // }, []);
   const handleBuyNow = async () => {
     if (issub) return;
     if (!isCheck) {
@@ -192,7 +182,7 @@ export default function GoodsPage() {
 
       console.log(res);
 
-      router.push("/order/submit-order?type=product&key=" + key);
+      router.push("/submit/order?type=product&key=" + key);
     } catch (err: any) {
     } finally {
       setissub(false);
@@ -419,44 +409,60 @@ export default function GoodsPage() {
               <div className="w-[100%] flex gap-2">
                 <Image
                   alt="123"
-                  className=" object-fill "
-                  radius="sm"
+                  preview={false}
                   referrerPolicy="no-referrer"
                   src={currentImg}
                   width="100%"
                 />
               </div>
 
-              <div className="flex mt-2 gap-2 flex-wrap justify-start">
+              <div className="mt-2 grid grid-cols-5 justify-between">
                 {goodsInfo?.productInfo?.imgList?.map((src: string) => (
-                  <button
+                  <Image
                     key={src}
-                    className=" "
+                    alt="123"
+                    className={`  ${currentImg === src ? "border-[#f0700c] border-2" : ""} cursor-pointer`}
+                    height={100}
+                    preview={false}
+                    referrerPolicy="no-referrer"
+                    src={src}
+                    width={100}
                     onClick={() => setCurrentImg(src)}
-                  >
-                    <Image
-                      key={src}
-                      alt="123"
-                      className={` w-[80px] h-[80px] ${currentImg === src ? "border-[#f0700c] border-3" : ""}`}
-                      radius="sm"
-                      referrerPolicy="no-referrer"
-                      src={src}
-                    />
-                  </button>
+                  />
                 ))}
               </div>
-              <h3 className={subtitle()}>{t("purchaseRecord")}</h3>
+              {goodsInfo?.productInfo?.qcList?.length && (
+                <div>
+                  <h3 className={subtitle()}>QC</h3>
+                  <div className="grid grid-cols-5 justify-between">
+                    <Image.PreviewGroup
+                      preview={{
+                        getContainer: () => document.body, // 让预览挂在这个 div 内
+                      }}
+                    >
+                      {goodsInfo.productInfo.qcList.map((url: string) => (
+                        <Image key={url} height={100} src={url} width={100} />
+                      ))}
+                    </Image.PreviewGroup>
+                    {/* {goodsInfo?.productInfo?.qcList?.map(
+                      (src: string, index: number) => {
+                        return (
+                          <Image
+                            key={index}
+                            alt="123"
+                            className=" object-fill w-[100px] h-[100px]"
+                            radius="none"
+                            referrerPolicy="no-referrer"
+                            src={src}
+                          />
+                        );
+                      },
+                    )} */}
+                  </div>
+                </div>
+              )}
+              {/* <h3 className={subtitle()}>{t("purchaseRecord")}</h3> */}
 
-              <div className="card-grey my-2 flex ">
-                <div className="flex-1 text-gray-base gap-2 flex flex-col">
-                  <div>{t("sales")} 0</div>
-                  <div>{t("weight")} --</div>
-                </div>
-                <div className="flex-1 text-gray-base gap-2 flex flex-col">
-                  <div>{t("avgDelivery")} --days</div>
-                  <div>{t("size")} --</div>
-                </div>
-              </div>
               <div>
                 <h3 className={subtitle()}>{t("productDetails")}</h3>
                 <div>
@@ -467,10 +473,9 @@ export default function GoodsPage() {
                           key={index}
                           alt="123"
                           className=" object-fill "
-                          radius="none"
+                          preview={false}
                           referrerPolicy="no-referrer"
                           src={src}
-                          width="100%"
                         />
                       );
                     },
@@ -567,10 +572,11 @@ export default function GoodsPage() {
                                       {spec.imageUrl ? (
                                         <Image
                                           alt="avatar"
-                                          className="w-8 h-8 object-cover"
-                                          radius="none"
+                                          height={32}
+                                          preview={false}
                                           referrerPolicy="no-referrer"
                                           src={spec.imageUrl}
+                                          width={32}
                                         />
                                       ) : null}
                                       {spec.valueName}

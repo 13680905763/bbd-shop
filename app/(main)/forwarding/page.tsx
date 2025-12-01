@@ -97,7 +97,7 @@ export default function ForwardingPage() {
       console.log("创建成功:", bizCode);
 
       if (bizCode) {
-        router.push("/order/pay-order/" + bizCode);
+        router.push("/payment/" + bizCode);
       } else {
         router.push("/dashboard/order");
       }

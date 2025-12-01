@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { addToast, Button, Checkbox, Textarea } from "@heroui/react";
+import { addToast, Button, Checkbox, Spinner, Textarea } from "@heroui/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
-import WarehouseCard from "./warehouse-card";
 import { AddAddressCard } from "./add-address-card";
+import WarehouseCard from "./warehouse-card";
 
 import Progress from "@/components/common/order-progress";
 import { useAddressList, useWarehousePreview } from "@/hook";
@@ -47,10 +47,14 @@ export default function SubmitOrder() {
 
   const [submitting, setSubmitting] = useState(false);
   const [isCheck, setIsCheck] = useState(false);
-  const [services, setServices] = useState<any[]>([]);
-  const [routesData, setRoutesData] = useState<any[]>([]);
+  // 附加服务相关
+  const [loadingService, setLoadingService] = useState(true);
+  const [servicesList, setServicesList] = useState<any[]>([]);
+
+  // 路由路线相关
+  const [loadingRoute, setLoadingRoute] = useState(true);
+  const [routesList, setRoutesList] = useState<any[]>([]);
   const [routesMessage, setRoutesMessage] = useState<string>("");
-  const [orderData, setOrderData] = useState<any>(null);
 
   const { data, isLoading, isError } = useWarehousePreview(key);
   const { data: addressData } = useAddressList();
@@ -67,39 +71,54 @@ export default function SubmitOrder() {
   const [currentRowData, setCurrentRowData] = useState<any>(initAddress);
   const [modalType, setModalType] = useState<ModalType>(null);
 
+  // 初始化加载 附加服务 所有路由路线
   useEffect(() => {
-    setOrderData(data);
-  }, [data]);
+    const fetchData = async () => {
+      try {
+        // 两个请求并行
+        const [serviceRes, routeRes] = await Promise.all([
+          getWarehouseServicesList(),
+          getWarehouseRoutesList(),
+        ]);
 
-  useEffect(() => {
-    getWarehouseServicesList().then((res) => setServices(res || []));
-    // getWarehouseRoutesList().then((res) => setRoutesData(res || []));
+        setServicesList(serviceRes || []);
+        setRoutesList(routeRes || []);
+      } catch {
+        // 遇到异常时至少保证不挂
+        setServicesList([]);
+        setRoutesList([]);
+      } finally {
+        setLoadingService(false);
+        setLoadingRoute(false);
+      }
+    };
+
+    fetchData();
   }, []);
-  useEffect(() => {
-    console.log("selectedAddressId", selectedAddressId, !selectedAddressId);
-    if (!selectedAddressId) {
-      getWarehouseRoutesList().then((res) => setRoutesData(res || []));
-    }
-  }, [selectedAddressId]);
   useEffect(() => {
     const countryId = addressData?.find(
       (item) => item.id == selectedAddressId,
     )?.countryId;
 
     if (!countryId) return;
+    setLoadingRoute(true);
     getWarehouseRoutesListByCC({
       categoryIds: data?.packageItemList.map((item: any) => item?.categoryId),
       countryId,
-    }).then((res) => {
-      console.log("res", res, typeof res != "string", res?.length);
-      if (typeof res != "string" && res?.length) {
-        setRoutesData(res || []);
-      } else {
-        setSelectedRouteId("");
-        setRoutesData([]);
-        setRoutesMessage(res);
-      }
-    });
+    })
+      .then((res) => {
+        console.log("res", res, typeof res != "string", res?.length);
+        if (typeof res != "string" && res?.length) {
+          setRoutesList(res || []);
+        } else {
+          setSelectedRouteId("");
+          setRoutesList([]);
+          setRoutesMessage(res);
+        }
+      })
+      .finally(() => {
+        setLoadingRoute(false);
+      });
   }, [selectedAddressId]);
   const toggleService = (id: string) => {
     setSelectedServices((prev) => {
@@ -212,7 +231,7 @@ export default function SubmitOrder() {
     }
   };
 
-  if (isLoading) return <FullscreenLoader />;
+  if (isLoading || loadingService) return <FullscreenLoader />;
   if (isError) return <div>出错了</div>;
 
   return (
@@ -232,6 +251,7 @@ export default function SubmitOrder() {
                     <AddressCard
                       key={addr.id}
                       data={addr}
+                      isDisabled={loadingRoute}
                       isSelected={selectedAddressId === String(addr.id)}
                       onEdit={() => handleEdit(addr)}
                       onSelect={(id: string | null) => setSelectedAddressId(id)}
@@ -255,7 +275,7 @@ export default function SubmitOrder() {
           <div>
             <div className="text-title">Packaging Method</div>
             <div className="grid grid-cols-4 gap-4">
-              {services?.map((svc) => {
+              {servicesList?.map((svc) => {
                 const selectedItem = selectedServices.find(
                   (item) => item.id === String(svc.id),
                 );
@@ -264,8 +284,11 @@ export default function SubmitOrder() {
                   <ServiceCard
                     key={svc.id}
                     {...svc}
-                    initialCount={selectedItem?.quantity ?? 1}
                     isSelected={!!selectedItem}
+                    quantity={
+                      selectedServices.find((s) => s.id === svc.id)?.quantity ||
+                      1
+                    }
                     onCountChange={handleCountChange}
                     onSelect={() => toggleService(String(svc.id))}
                   />
@@ -277,21 +300,29 @@ export default function SubmitOrder() {
           {/* 路线 */}
           <div>
             <div className="text-title">Delivery Route</div>
-            <div className="flex flex-col gap-4">
-              {routesData?.map((route) => (
-                <RouteCard
-                  key={route.id}
-                  data={route}
-                  isSelected={selectedRouteId === String(route.id)}
-                  onSelect={(id) => setSelectedRouteId(String(id))}
-                />
-              ))}
-              {routesData?.length < 1 && (
-                <div className="flex flex-col items-center justify-center h-[20vh] text-gray-500">
-                  <p className="text-lg mb-2">{routesMessage}</p>
-                </div>
-              )}
-            </div>
+
+            {/* 如果在加载，优先显示 loading */}
+            {loadingRoute ? (
+              <div className="flex h-[20vh] items-center justify-center">
+                <Spinner />
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4">
+                {routesList?.map((route) => (
+                  <RouteCard
+                    key={route.id}
+                    data={route}
+                    isSelected={selectedRouteId === String(route.id)}
+                    onSelect={(id) => setSelectedRouteId(String(id))}
+                  />
+                ))}
+                {routesList?.length < 1 && (
+                  <div className="flex flex-col items-center justify-center h-[20vh] text-gray-500">
+                    <p className="text-lg mb-2">{routesMessage}</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 

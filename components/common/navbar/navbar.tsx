@@ -38,7 +38,7 @@ export const Navbar = () => {
 
   useEffect(() => {
     // 获取一次用户信息
-    console.log("nav加载");
+    // console.log("nav加载");
     (async () => {
       try {
         const res = await getUserInfo();

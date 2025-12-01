@@ -1,30 +1,34 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 
-import { languages, defaultLocale } from "./config";
+import { languages } from "./config";
 
 const COOKIE_LOCALE = "NEXT_LOCALE";
 
-// =====================
-// 语言方法
-// =====================
 export async function getUserLocale() {
   const cookieStore = await cookies();
   const locale = cookieStore.get(COOKIE_LOCALE)?.value;
 
-  if (locale && languages.some((l) => l.value === locale)) return locale;
-  console.log("return locale", locale);
+  console.log("服务端 getUserLocale cookie", locale);
 
-  return defaultLocale;
+  if (locale && languages.some((l) => l.value === locale)) return locale;
+  const headerStore = await headers();
+  const acceptLanguage = headerStore.get("accept-language") || "";
+  const parsedLocale = acceptLanguage?.split(",")[0].split("-")[0] || "";
+
+  console.log("服务端 getUserLocale 请求头", parsedLocale);
+
+  return languages.some((l) => l.value === parsedLocale) ? parsedLocale : "en";
 }
 
-export async function setUserLocale(language: string) {
+export async function setUserLocale(locale: string) {
   const cookieStore = await cookies();
 
   cookieStore.set({
     name: COOKIE_LOCALE,
-    value: language,
+    value: locale,
     path: "/",
+    maxAge: 60 * 60 * 24 * 365 * 5, // 5 年
   });
 }

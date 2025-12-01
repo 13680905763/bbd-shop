@@ -88,6 +88,9 @@
     },
     "Components": {
         "Navbar": {
+            "language": "Langue",
+            "currency": "Devise",
+            "submit": "Valider",
             "texts": {
                 "User": {
                     "register": "S'inscrire",
@@ -912,7 +915,9 @@
         "addBillingAddress": "Veuillez ajouter une adresse de facturation",
         "loadFailed": "Échec du chargement",
         "payAmount": "Montant à Payer",
-        "handlingFee": "Frais de Traitement",
+        "orderAmount": "Montant de la commande",
+        "fixedCost": "Coût fixe",
+        "handlingFee": "Frais de traitement",
         "submitOrder": "Soumettre la Commande",
         "tooltipTip": "En raison de la conversion de devises, il peut y avoir une petite différence de 0.01 ou 0.02",
         "fields": [
@@ -1052,7 +1057,7 @@
         "category": "Catégorie de marchandises"
     },
     "PaymentResultPage": {
-        "loading": "Vérification du résultat du paiement...",
+        "loading": "Vérification du résultat du paiement",
         "successTitle": "Paiement réussi",
         "successMessage": "Nous avons reçu votre paiement. Votre commande est en cours de traitement.",
         "failTitle": "Échec du paiement",

@@ -127,6 +127,7 @@ export default function SubmitOrder() {
   );
 
   const [submitting, setSubmitting] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
   const [isRechargeOpen, setIsRechargeOpen] = useState(false);
   const [paymentId, setPaymentId] = useState("");
 
@@ -163,6 +164,7 @@ export default function SubmitOrder() {
       }
     } catch (err) {
       console.error(err);
+      setIsDisabled(true);
     } finally {
       setSubmitting(false);
     }
@@ -222,7 +224,11 @@ export default function SubmitOrder() {
       <RadioGroup
         classNames={{ base: "w-full" }}
         value={paymentId}
-        onValueChange={setPaymentId}
+        onValueChange={(v) => {
+          console.log("v", v);
+          setIsDisabled(false);
+          setPaymentId(v);
+        }}
       >
         {sortedData.map((item: any) => (
           <div
@@ -252,17 +258,42 @@ export default function SubmitOrder() {
       </RadioGroup>
 
       <div className="flex justify-end items-center p-4 gap-4 sticky bottom-0 bg-white z-10">
-        <div className="text-[#3d3d3d] text-sm flex items-center gap-1">
-          {t("payAmount")}
-          <Tooltip
-            className="bg-[#262626] text-white p-2 max-w-screen-sm"
-            content={t("tooltipTip")}
-          >
-            <HiQuestionMarkCircle />
-          </Tooltip>
-          ： {currency.symbol}
-          {currentPayMethod?.payAmount} {t("handlingFee")}：{currency.symbol}
-          {currentPayMethod?.handlingFee}
+        <div className="text-[#3d3d3d] text-sm flex flex-col gap-1">
+          {/* 支付总额标题 + Tooltip */}
+          <div className="flex items-center gap-1">
+            <span>{t("payAmount")}</span>
+            <Tooltip
+              className="bg-[#262626] text-white p-2 max-w-xs"
+              content={t("tooltipTip")}
+            >
+              <HiQuestionMarkCircle className="w-4 h-4 cursor-pointer text-gray-500" />
+            </Tooltip>
+          </div>
+
+          {/* 金额明细 */}
+          <div className="flex flex-wrap gap-2">
+            <span>
+              {t("orderAmount")}:{" "}
+              <strong>
+                {currency.symbol}
+                {currentPayMethod?.orderAmount}
+              </strong>
+            </span>
+            <span>
+              {t("fixedCost")}:{" "}
+              <strong>
+                {currency.symbol}
+                {currentPayMethod?.fixedCost}
+              </strong>
+            </span>
+            <span>
+              {t("handlingFee")}:{" "}
+              <strong>
+                {currency.symbol}
+                {currentPayMethod?.handlingFee}
+              </strong>
+            </span>
+          </div>
         </div>
         <p className="text-price-xl">
           {currency.symbol}
@@ -271,6 +302,7 @@ export default function SubmitOrder() {
         <Button
           className="w-[300px]"
           color="primary"
+          isDisabled={isDisabled}
           isLoading={submitting}
           size="lg"
           onPress={handleCreatePayOrder}

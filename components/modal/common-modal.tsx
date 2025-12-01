@@ -48,7 +48,7 @@ export default function CommonModal({
   confirmText,
   cancelText,
   size = "md",
-  isDismissable = true,
+  isDismissable = false,
   isKeyboardDismissDisabled = false,
 }: CommonModalProps) {
   const t = useTranslations("Components.Modal"); // Common 是语言包的 namespace

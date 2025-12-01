@@ -59,7 +59,7 @@ export default function CartPage() {
         previewList,
       });
 
-      router.push("/order/submit-order?type=cart&key=" + key);
+      router.push("/submit/order?type=cart&key=" + key);
     } else {
       addToast({
         title: "请先选择商品",

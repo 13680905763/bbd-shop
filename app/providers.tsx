@@ -9,12 +9,15 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ToastProvider } from "@heroui/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 import { queryClient } from "@/lib/react-query";
+import { useGlobalStore } from "@/store";
 
 export interface ProvidersProps {
   children: React.ReactNode;
   themeProps?: ThemeProviderProps;
+  initialLocale?: any;
 }
 
 declare module "@react-types/shared" {
@@ -25,8 +28,24 @@ declare module "@react-types/shared" {
   }
 }
 
-export function Providers({ children, themeProps }: ProvidersProps) {
+export function Providers({
+  children,
+  themeProps,
+  initialLocale,
+}: ProvidersProps) {
   const router = useRouter();
+  const { fetchConfig, setLanguage } = useGlobalStore();
+
+  useEffect(() => {
+    const init = async () => {
+      console.log("初始化 store 服务端拿到", initialLocale);
+      await fetchConfig(); // 等待异步执行完成
+      await setLanguage(initialLocale);
+      console.log("初始化 store 语言货币完成");
+    };
+
+    init();
+  }, []);
 
   return (
     // <SessionProvider>

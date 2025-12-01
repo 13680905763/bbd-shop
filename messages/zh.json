@@ -88,6 +88,9 @@
     },
     "Components": {
         "Navbar": {
+            "language": "语言",
+            "currency": "货币",
+            "submit": "提交",
             "texts": {
                 "User": {
                     "register": "注册",
@@ -407,8 +410,7 @@
                         "type": "area",
                         "name": "area",
                         "label": "地区",
-                        "placeholder": "选择地区",
-                        "required": true
+                        "placeholder": "选择地区"
                     },
                     {
                         "key": "address",
@@ -956,6 +958,8 @@
         "addBillingAddress": "请添加账单地址",
         "loadFailed": "加载失败",
         "payAmount": "应付金额",
+        "orderAmount": "订单费用",
+        "fixedCost": "固定费用",
         "handlingFee": "手续费",
         "submitOrder": "提交订单",
         "tooltipTip": "由于货币转换，可能会有0.01或0.02的小额差异",
@@ -1096,7 +1100,7 @@
         "category": "货物类别"
     },
     "PaymentResultPage": {
-        "loading": "正在确认支付结果...",
+        "loading": "正在确认支付结果",
         "successTitle": "支付成功",
         "successMessage": "我们已收到您的付款，订单正在处理中。",
         "failTitle": "支付失败",
