@@ -114,10 +114,55 @@
                     "href": "/estimation"
                 },
                 {
+                    "label": "帮助中心",
+                    "href": "/help"
+                },
+                {
                     "label": "促销活动",
                     "href": "/dashboard/promotion"
                 }
             ]
+        },
+        "footer": {
+            "desc": "BBD简化了购物，让你可以从中国购买，存储商品，并轻松地在全球范围内发货。",
+            "copyright": "© 2025 BBDbuy.com 版权所有",
+            "categories": {
+                "daigouGuide": {
+                    "title": "代购指南",
+                    "beginnerGuide": "新手指南",
+                    "serviceFee": "服务费",
+                    "returnRefund": "退货和退款"
+                },
+                "payment": {
+                    "title": "支付",
+                    "topup": "充值",
+                    "internationalCreditCard": "国际信用卡",
+                    "wireTransfer": "电汇"
+                },
+                "delivery": {
+                    "title": "配送",
+                    "restrictions": "邮寄限制",
+                    "customsTaxes": "海关和税收"
+                },
+                "afterSale": {
+                    "title": "售后服务",
+                    "storagePeriod": "产品储存期",
+                    "afterSalePolicy": "售后政策",
+                    "insuranceCompensation": "保险与赔偿"
+                },
+                "workingHours": {
+                    "title": "工作时间",
+                    "weekday": "星期一 - 星期五 9:00AM - 4:00PM",
+                    "saturday": "星期六 10:00AM - 2:00PM",
+                    "sunday": "星期日 休息"
+                }
+            },
+            "other": {
+                "about": "关于 bbdbuy",
+                "contact": "联系我们",
+                "terms": "服务条款",
+                "privacy": "隐私政策"
+            }
         },
         "OrderProgress": {
             "steps": [
@@ -760,61 +805,64 @@
                 "valueAddedService": "增值服务"
             }
         },
-        "PackagePage": {
-            "all": "全部",
-            "pay": "待支付",
-            "shipping": "运输中",
-            "receivde": "已收货",
+        "package": {
+            "tabs": {
+                "all": "全部",
+                "pay": "待付款",
+                "shipping": "运输中",
+                "receivded": "已收货"
+            },
             "noPackages": "暂无包裹",
             "selectAll": "全选",
-            "batchPay": "批量支付",
-            "noTracking": "暂无运单",
-            "texts": {
+            "batchPay": "批量付款",
+            "noTracking": "暂无跟踪号",
+            "withdrawTitle": "撤销申请",
+            "withdrawContent": "确定要撤销此申请吗？",
+            "receiptTitle": "确认收货",
+            "receiptContent": "确认收到此商品？",
+            "refundTitle": "申请退款",
+            "cancelModal": {
+                "title": "取消",
+                "cancelCard": {
+                    "title": "确认取消",
+                    "subtitle": "取消此订单",
+                    "submittingTitle": "取消中...",
+                    "submittingSubtitle": "请稍候",
+                    "serviceFee": "服务费",
+                    "packingFee": "包装费",
+                    "totalFee": "总费用"
+                },
+                "changeRouteCard": {
+                    "title": "更换路线",
+                    "subtitle": "重新选择运输路线"
+                }
+            },
+            "changeTitle": "更换路线",
+            "lineModal": {
+                "title": "物流跟踪",
+                "mainWaybillTitle": "主运单跟踪",
+                "subWaybillTitle": "子运单：",
+                "waybillNumber": "运单号：",
+                "currentStatus": "当前状态：",
+                "location": "位置：",
+                "mainTimeline": "主运单时间线："
+            },
+            "packageItem": {
                 "packageNumberLabel": "包裹编号",
-                "shippingCode": "查询号：",
+                "shippingCode": "追踪号码：",
                 "productImageAlt": "商品图片",
                 "sizeLabel": "尺寸",
                 "weightLabel": "重量",
                 "serviceFeeLabel": "服务费",
                 "totalFeeLabel": "总费用",
-                "pendingPaymentStatus": "待支付",
-                "payButton": "支付",
+                "pendingPaymentStatus": "待付款",
+                "payButton": "付款",
                 "cancelButton": "取消",
-                "payCancelFee": "支付取消手续费",
+                "payCancelFee": "付款取消费用",
                 "requestRefund": "申请取消",
-                "withdrawRequest": "撤回申请",
-                "changeBtn": "更换路线"
-            },
-            "refundModal": {
-                "title": "取消",
-                "cancelCard": {
-                    "title": "确认取消",
-                    "subtitle": "取消该订单",
-                    "submittingTitle": "正在取消...",
-                    "submittingSubtitle": "请稍候",
-                    "serviceFee": "服务费",
-                    "packingFee": "打包费",
-                    "totalFee": "总费用"
-                },
-                "changeRouteCard": {
-                    "title": "更换路线",
-                    "subtitle": "重新选择发货路线"
-                }
-            },
-            "withdrawModal": {
-                "content": "确认撤销取消包裹申请嘛？"
-            },
-            "changeModal": {
-                "title": "更换路线"
-            },
-            "lineModal": {
-                "title": "物流轨迹",
-                "mainWaybillTitle": "主运单轨迹",
-                "subWaybillTitle": "子运单：",
-                "waybillNumber": "运单号：",
-                "currentStatus": "当前状态：",
-                "location": "地点：",
-                "mainTimeline": "主运单轨迹："
+                "withdrawRequest": "撤销请求",
+                "changeBtn": "更换路线",
+                "receipt": "收货"
             }
         },
         "Promotion": {
@@ -1125,6 +1173,221 @@
             "city": {
                 "label": "城市",
                 "placeholder": "选择城市"
+            }
+        }
+    },
+    "faq": {
+        "daigouGuide": "代购指南",
+        "beginnerGuide": "新手指南",
+        "serviceFee": "服务费说明",
+        "returnRefund": "退货和退款",
+        "payment": "支付",
+        "recharge": "充值",
+        "internationalCreditCard": "国际信用卡充值",
+        "wireTransfer": "电汇充值",
+        "delivery": "配送",
+        "shippingRestrictions": "邮寄限制",
+        "customsTaxes": "海关与税收",
+        "afterSale": "售后服务",
+        "storagePeriod": "仓储时效说明",
+        "afterSalePolicy": "售后政策标准",
+        "insuranceCompensation": "保险与赔偿标准",
+        "other": "其他",
+        "about": "关于 bbdbuy",
+        "contact": "联系我们",
+        "terms": "服务条款",
+        "privacy": "隐私政策"
+    },
+    "help": {
+        "daigouGuide": {
+            "beginnerGuide": {
+                "title": "新手指南：如何通过 bbdbuy 代购商品",
+                "steps": {
+                    "1": {
+                        "title": "步骤 1：挑选商品",
+                        "content": [
+                            "方式 1：在淘宝/天猫/1688 平台找到想要购买的商品，复制链接后，在搜索框粘贴商品网址链接。",
+                            "方式 2：在 bbdbuy 搜索框输入商品名称，从推荐的淘宝、天猫、京东商品中挑选。",
+                            "方式 3：使用图片搜索功能查找同款商品。",
+                            "提示：如果您将商品链接复制到平台并跳转到 DIY 订单页面，该商品需要手动购买，填写详细信息后点击“立即购买”或“加入购物车”。"
+                        ]
+                    },
+                    "2": {
+                        "title": "步骤 2：提交订单",
+                        "content": [
+                            "方式 1：bbdbuy 可支持 99% 淘宝/天猫/1688 商品信息抓取，可直接选择商品颜色、尺寸、数量，点击“加入购物车”或“立即购买”。",
+                            "方式 2：从购物车中选择商品，点击“下单结算”按钮提交订单。"
+                        ]
+                    },
+                    "3": {
+                        "title": "步骤 3：支付订单",
+                        "content": [
+                            "提交订单，选择支付方式，支付商品及中国大陆运费金额。",
+                            "提示：支持多币种支付（RMB & 外币），填写寄送国及购买需求，勾选增值服务后提交订单。"
+                        ]
+                    },
+                    "4": {
+                        "title": "步骤 4：采购帮助代购",
+                        "content": [
+                            "bbdbuy 采购团队会联系卖家并购买您下单的商品。",
+                            "提示：订单状态变化：待采购—已订购—已发货—已签收—已到货—已入库。在此期间可通过“订单咨询”与代理商沟通。"
+                        ]
+                    },
+                    "5": {
+                        "title": "步骤 5：质检和存储",
+                        "content": [
+                            "商品入库后，bbdbuy 指定仓库会进行严格验货、称重拍照，提供三张免费照片，享受 90 天免费仓储，可购买延长存储。",
+                            "提示：超过 180 天累计存储（含延期）将自动销毁。可随时提交包裹或购买更多商品合并寄送。"
+                        ]
+                    },
+                    "6": {
+                        "title": "步骤 6：提交包裹",
+                        "content": [
+                            "在“仓库”选择商品，点击提交包裹，填写海外收货人地址，选择配送方式。",
+                            "提示：部分商品受邮寄限制，只显示可用物流线路。可选择增值服务（气泡片、真空袋、拉伸膜、加固、保险等）。"
+                        ]
+                    },
+                    "7": {
+                        "title": "步骤 7：支付国际运费押金",
+                        "content": [
+                            "选择支付方式，支付国际运费押金，包括报关费、仓库操作费及增值服务费。",
+                            "提示：可选择分开寄送或集中寄送，系统会根据重量、体积、目的地重新计算运费，多退少补。"
+                        ]
+                    },
+                    "8": {
+                        "title": "步骤 8：bbdbuy 发货",
+                        "content": [
+                            "支付完成后，仓库团队打包并称重测量，使用可靠国际物流发货，可在“包裹详情”追踪状态。",
+                            "提示：包裹状态变化：待处理—处理中—出库中—已出库—已打包—已称重—已打印运单—已验证—已交接—已发货—确认收货。"
+                        ]
+                    },
+                    "9": {
+                        "title": "步骤 9：确认收货和奖励",
+                        "content": [
+                            "收到包裹后确认收货，账户将获得积分，可兑换商品或解锁奖励。",
+                            "提示：积分达到 500 时，可查看可兑换商品。遇到问题请联系在线客服。"
+                        ]
+                    }
+                }
+            },
+            "serviceFee": {
+                "title": "代购服务如何收费？",
+                "sections": [
+                    {
+                        "title": "bbdbuy 代购服务说明",
+                        "list": [
+                            "普通平台免费代购：除商品价格和卖家规定的国内运费外，bbdbuy 对普通购物平台订单不收取任何代购手续费。",
+                            "特殊平台服务费：特殊平台代购服务费 10 元/AI，适用平台包含闲鱼、拍拍、转转、抖音、小红书、有赞等。"
+                        ]
+                    },
+                    {
+                        "title": "代购总费用计算方式",
+                        "content": "代购总费用 = 商品费用 + 国际运费",
+                        "details": [
+                            "商品费用：商品价格 + 国内运费（卖家 → bbdbuy 仓库）",
+                            "国际运费构成：基本运费、报关费（10-30 元）、仓库操作费（8 元）、增值服务费（可选）"
+                        ]
+                    }
+                ]
+            },
+            "returnRefund": {
+                "title": "bbdbuy「5天退/换货」服务说明",
+                "sections": [
+                    {
+                        "title": "一、什么是 5 天退/换货保证？",
+                        "content": "5 天退/换货服务是部分第三方平台卖家提供的售后保障。用户在产品签收 7 天内（即产品入库后 5 天内）可根据规则申请退货或换货。"
+                    },
+                    {
+                        "title": "二、产品是否符合退/换货保证？",
+                        "eligible": [
+                            "卖家支持退货服务",
+                            "商品处于可销售状态",
+                            "商品入库不超过 5 天",
+                            "退货运费由用户承担（即使原订单包邮）"
+                        ],
+                        "ineligible": [
+                            [
+                                "定制商品",
+                                "如定制衣物，须与卖家协商"
+                            ],
+                            [
+                                "去除标签/配件",
+                                "如已剪吊牌衣物、缺少原包装"
+                            ],
+                            [
+                                "二手商品",
+                                "全部不支持退换"
+                            ],
+                            [
+                                "海外商品",
+                                "非中国大陆采购商品不支持"
+                            ],
+                            [
+                                "内衣类",
+                                "包含内衣、袜子、打底裤"
+                            ],
+                            [
+                                "成人用品",
+                                "不可退换"
+                            ],
+                            [
+                                "食品与大宗书籍",
+                                "如饼干、糖果、15 本以上书籍等"
+                            ],
+                            [
+                                "打开包装的商品",
+                                "须满足“特殊标准”要求"
+                            ]
+                        ]
+                    },
+                    {
+                        "title": "三、如何申请退/换货？",
+                        "content": "在订单状态变为“已入库”后 5 天（120 小时）内，通过页面申请。超过期限将无法受理。"
+                    },
+                    {
+                        "title": "四、退/换货费用说明",
+                        "fees": [
+                            [
+                                "无条件退货",
+                                "卖家首次发货运费 + 仓库退货运费 + 5 元服务费"
+                            ],
+                            [
+                                "无条件换货",
+                                "卖家首次发货运费 + 仓库退货运费 + 卖家重新发货运费 + 5 元服务费"
+                            ]
+                        ],
+                        "note": "即使商品原订单包邮，退货仍需补回首次发货运费。"
+                    },
+                    {
+                        "title": "五、责任方与费用承担",
+                        "responsibility": [
+                            [
+                                "顾客",
+                                "不想要/买错/预算问题",
+                                "顾客承担来回运费 + 服务费"
+                            ],
+                            [
+                                "卖家",
+                                "发错货、产品有质量问题",
+                                "卖家承担费用（特殊情况除外）"
+                            ],
+                            [
+                                "其他",
+                                "国内运输破损等",
+                                "视具体情况协商处理"
+                            ]
+                        ]
+                    },
+                    {
+                        "title": "六、注意事项和常见问题解答",
+                        "list": [
+                            "退/换货总金额以您实际支付的产品价格为准。",
+                            "只有在卖家同意的情况下，我们才能为您办理退/换货。",
+                            "申请后，请确保账户余额充足，支付退货运费及服务费。",
+                            "部分商品有特殊退货包装要求，不符合将无法退换。"
+                        ]
+                    }
+                ]
             }
         }
     }

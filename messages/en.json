@@ -114,10 +114,55 @@
                     "href": "/estimation"
                 },
                 {
+                    "label": "Help",
+                    "href": "/help"
+                },
+                {
                     "label": "Promotion",
                     "href": "/dashboard/promotion"
                 }
             ]
+        },
+        "footer": {
+            "desc": "BBD simplifies shopping, allowing you to purchase from China, store goods, and ship worldwide with ease.",
+            "copyright": "© 2025 BBDbuy.com All rights reserved",
+            "categories": {
+                "daigouGuide": {
+                    "title": "Shopping Guide",
+                    "beginnerGuide": "Beginner Guide",
+                    "serviceFee": "Service Fee",
+                    "returnRefund": "Return & Refund"
+                },
+                "payment": {
+                    "title": "Payment",
+                    "topup": "Top-up",
+                    "internationalCreditCard": "International Credit Card",
+                    "wireTransfer": "Wire Transfer"
+                },
+                "delivery": {
+                    "title": "Delivery",
+                    "restrictions": "Shipping Restrictions",
+                    "customsTaxes": "Customs & Taxes"
+                },
+                "afterSale": {
+                    "title": "After-sales Service",
+                    "storagePeriod": "Storage Period",
+                    "afterSalePolicy": "After-sales Policy",
+                    "insuranceCompensation": "Insurance & Compensation"
+                },
+                "workingHours": {
+                    "title": "Working Hours",
+                    "weekday": "Monday - Friday 9:00AM - 4:00PM",
+                    "saturday": "Saturday 10:00AM - 2:00PM",
+                    "sunday": "Sunday Closed"
+                }
+            },
+            "other": {
+                "about": "About bbdbuy",
+                "contact": "Contact Us",
+                "terms": "Terms of Service",
+                "privacy": "Privacy Policy"
+            }
         },
         "OrderProgress": {
             "steps": [
@@ -1128,6 +1173,221 @@
             "city": {
                 "label": "City",
                 "placeholder": "Select a city"
+            }
+        }
+    },
+    "faq": {
+        "daigouGuide": "Shopping Agent Guide",
+        "beginnerGuide": "Beginner's Guide",
+        "serviceFee": "Service Fee Details",
+        "returnRefund": "Returns & Refunds",
+        "payment": "Payment",
+        "recharge": "Top-up",
+        "internationalCreditCard": "International Credit Card Top-up",
+        "wireTransfer": "Wire Transfer",
+        "delivery": "Delivery",
+        "shippingRestrictions": "Shipping Restrictions",
+        "customsTaxes": "Customs & Taxes",
+        "afterSale": "After-Sales Service",
+        "storagePeriod": "Storage Period Explanation",
+        "afterSalePolicy": "After-Sales Policy",
+        "insuranceCompensation": "Insurance & Compensation",
+        "other": "Others",
+        "about": "About bbdbuy",
+        "contact": "Contact Us",
+        "terms": "Terms of Service",
+        "privacy": "Privacy Policy"
+    },
+    "help": {
+        "daigouGuide": {
+            "beginnerGuide": {
+                "title": "Beginner Guide: How to Purchase Products via bbdbuy",
+                "steps": {
+                    "1": {
+                        "title": "Step 1: Choose Products",
+                        "content": [
+                            "Method 1: Find the product you want on Taobao/Tmall/1688, copy the product link, and paste it into the search bar.",
+                            "Method 2: Enter the product name into the bbdbuy search bar and choose from recommended items from Taobao, Tmall, or JD.",
+                            "Method 3: Use the image search feature to find similar products.",
+                            "Tip: If you paste a product link and it opens the DIY order page, the product requires manual purchase. Fill in the required details and click “Buy Now” or “Add to Cart”."
+                        ]
+                    },
+                    "2": {
+                        "title": "Step 2: Submit Order",
+                        "content": [
+                            "Method 1: bbdbuy supports auto-fetching of 99% of product information from Taobao/Tmall/1688. Select color, size, and quantity, then click “Add to Cart” or “Buy Now”.",
+                            "Method 2: Select products from your cart and click “Checkout” to submit your order."
+                        ]
+                    },
+                    "3": {
+                        "title": "Step 3: Pay for the Order",
+                        "content": [
+                            "Submit the order, choose your payment method, and pay for the product and domestic shipping fees within China.",
+                            "Tip: Supports multiple currencies (RMB & foreign currencies). Fill in the destination country and purchase requirements, select optional value-added services, and submit the order."
+                        ]
+                    },
+                    "4": {
+                        "title": "Step 4: Purchasing by bbdbuy",
+                        "content": [
+                            "The bbdbuy purchasing team will contact the seller and buy the product you ordered.",
+                            "Tip: Order status flow: Pending Purchase — Ordered — Shipped — Delivered — Arrived — Warehoused. During this period, you can communicate with the agent via “Order Inquiry”."
+                        ]
+                    },
+                    "5": {
+                        "title": "Step 5: Inspection and Storage",
+                        "content": [
+                            "Once the product arrives at the warehouse, bbdbuy will conduct strict inspection, weighing, and photography. Three free photos will be provided. Enjoy 90 days of free storage and optional extended storage.",
+                            "Tip: Items stored for more than 180 days (including extensions) will be automatically discarded. You may submit packages or purchase additional items for consolidation at any time."
+                        ]
+                    },
+                    "6": {
+                        "title": "Step 6: Submit Parcel",
+                        "content": [
+                            "In the 'Warehouse' page, select your items, click Submit Parcel, fill in the international shipping address, and choose a delivery method.",
+                            "Tip: Some items may have shipping restrictions and only eligible shipping routes will be shown. Optional services include bubble wrap, vacuum bags, stretch film, reinforcement, insurance, etc."
+                        ]
+                    },
+                    "7": {
+                        "title": "Step 7: Pay International Shipping Deposit",
+                        "content": [
+                            "Choose a payment method and pay the international shipping deposit, which includes customs fees, warehouse handling fees, and optional value-added services.",
+                            "Tip: You may choose to ship items separately or together. The system will recalculate shipping costs based on weight, volume, and destination. Any difference will be refunded or charged accordingly."
+                        ]
+                    },
+                    "8": {
+                        "title": "Step 8: bbdbuy Ships the Parcel",
+                        "content": [
+                            "After payment, the warehouse team packs, weighs, and measures the parcel and ships it via reliable international logistics. You can track progress in the Package Details page.",
+                            "Tip: Parcel status flow: Pending — Processing — Outbound Pending — Outbound — Packed — Weighed — Label Printed — Verified — Handed Over — Shipped — Delivered."
+                        ]
+                    },
+                    "9": {
+                        "title": "Step 9: Confirm Receipt & Rewards",
+                        "content": [
+                            "After receiving your package, confirm receipt. Your account will earn reward points, which can be redeemed for products or unlock rewards.",
+                            "Tip: Once you reach 500 points, redeemable products become available. For help, contact customer service."
+                        ]
+                    }
+                }
+            },
+            "serviceFee": {
+                "title": "How Are bbdbuy Service Fees Charged?",
+                "sections": [
+                    {
+                        "title": "bbdbuy Purchasing Service Description",
+                        "list": [
+                            "Free purchasing service for general platforms: bbdbuy does not charge any purchasing fee for orders from general shopping platforms (only product price + domestic shipping apply).",
+                            "Special platform service fee: A 10 RMB fee per item applies for special platforms such as Xianyu, Paipai, Zhuanzhuan, Douyin, Xiaohongshu, Youzan, etc."
+                        ]
+                    },
+                    {
+                        "title": "How Total Purchasing Cost is Calculated",
+                        "content": "Total Cost = Product Cost + International Shipping Fee",
+                        "details": [
+                            "Product cost: product price + domestic shipping (seller → bbdbuy warehouse)",
+                            "International shipping includes: basic freight, customs fee (10–30 RMB), warehouse handling fee (8 RMB), optional value-added services"
+                        ]
+                    }
+                ]
+            },
+            "returnRefund": {
+                "title": "bbdbuy 5-Day Return/Exchange Service",
+                "sections": [
+                    {
+                        "title": "1. What Is the 5-Day Return/Exchange Guarantee?",
+                        "content": "The 5-day return/exchange guarantee is a service provided by some third-party sellers. You may apply for return/exchange within 7 days of delivery (i.e., within 5 days after the item enters the warehouse)."
+                    },
+                    {
+                        "title": "2. Is My Product Eligible for Return/Exchange?",
+                        "eligible": [
+                            "Seller supports returns",
+                            "Item remains in resellable condition",
+                            "Item has been in warehouse for no more than 5 days",
+                            "Return shipping fee is borne by the user (even if the original order offered free shipping)"
+                        ],
+                        "ineligible": [
+                            [
+                                "Customized products",
+                                "e.g. customized clothing, requires negotiation with seller"
+                            ],
+                            [
+                                "Items with removed tags or accessories",
+                                "e.g. clothing without hang tags, missing packaging"
+                            ],
+                            [
+                                "Second-hand items",
+                                "Not eligible for return/exchange"
+                            ],
+                            [
+                                "Overseas products",
+                                "Non-mainland purchases are not eligible"
+                            ],
+                            [
+                                "Underwear",
+                                "Includes underwear, socks, leggings"
+                            ],
+                            [
+                                "Adult products",
+                                "Not eligible"
+                            ],
+                            [
+                                "Food & bulk books",
+                                "e.g. snacks, candy, more than 15 books"
+                            ],
+                            [
+                                "Opened items",
+                                "Must meet special standards or will not be accepted"
+                            ]
+                        ]
+                    },
+                    {
+                        "title": "3. How to Apply for a Return/Exchange?",
+                        "content": "You may apply within 5 days (120 hours) after the item status becomes 'Warehoused'. Requests submitted after the deadline will not be accepted."
+                    },
+                    {
+                        "title": "4. Return/Exchange Fee Explanation",
+                        "fees": [
+                            [
+                                "Unconditional Return",
+                                "Seller’s first shipping cost + warehouse return shipping fee + 5 RMB service fee"
+                            ],
+                            [
+                                "Unconditional Exchange",
+                                "Seller’s first shipping cost + warehouse return shipping fee + seller’s resend shipping cost + 5 RMB service fee"
+                            ]
+                        ],
+                        "note": "Even if the original order included free shipping, the first shipping cost must be reimbursed."
+                    },
+                    {
+                        "title": "5. Responsibility & Fee Allocation",
+                        "responsibility": [
+                            [
+                                "Customer",
+                                "Doesn't want / Wrong item / Budget issue",
+                                "Customer bears shipping both ways + service fee"
+                            ],
+                            [
+                                "Seller",
+                                "Wrong item or quality issue",
+                                "Seller bears costs (exceptions apply)"
+                            ],
+                            [
+                                "Other",
+                                "Damage during domestic shipping",
+                                "Handled per situation"
+                            ]
+                        ]
+                    },
+                    {
+                        "title": "6. Notes & FAQ",
+                        "list": [
+                            "Refund amount is based on the actual amount paid.",
+                            "We can only process return/exchange if the seller agrees.",
+                            "Ensure sufficient account balance to pay return shipping and service fees.",
+                            "Some items require special return packaging; failure to meet requirements may result in rejection."
+                        ]
+                    }
+                ]
             }
         }
     }

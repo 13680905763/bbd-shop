@@ -114,10 +114,55 @@
                     "href": "/estimation"
                 },
                 {
+                    "label": "Centre d'aide",
+                    "href": "/help"
+                },
+                {
                     "label": "Promotion",
                     "href": "/dashboard/promotion"
                 }
             ]
+        },
+        "footer": {
+            "desc": "BBD simplifie vos achats : achetez en Chine, stockez vos articles et expédiez-les facilement dans le monde entier.",
+            "copyright": "© 2025 BBDbuy.com Tous droits réservés",
+            "categories": {
+                "daigouGuide": {
+                    "title": "Guide d'achat",
+                    "beginnerGuide": "Guide pour débutants",
+                    "serviceFee": "Frais de service",
+                    "returnRefund": "Retours & Remboursements"
+                },
+                "payment": {
+                    "title": "Paiement",
+                    "topup": "Recharger",
+                    "internationalCreditCard": "Carte de crédit internationale",
+                    "wireTransfer": "Virement bancaire"
+                },
+                "delivery": {
+                    "title": "Livraison",
+                    "restrictions": "Restrictions d'expédition",
+                    "customsTaxes": "Douanes & Taxes"
+                },
+                "afterSale": {
+                    "title": "Service après-vente",
+                    "storagePeriod": "Durée de stockage",
+                    "afterSalePolicy": "Politique après-vente",
+                    "insuranceCompensation": "Assurance & Indemnisation"
+                },
+                "workingHours": {
+                    "title": "Heures d'ouverture",
+                    "weekday": "Lundi - Vendredi 9h00 - 16h00",
+                    "saturday": "Samedi 10h00 - 14h00",
+                    "sunday": "Dimanche Fermé"
+                }
+            },
+            "other": {
+                "about": "À propos de bbdbuy",
+                "contact": "Nous contacter",
+                "terms": "Conditions d'utilisation",
+                "privacy": "Politique de confidentialité"
+            }
         },
         "OrderProgress": {
             "steps": [
@@ -751,32 +796,23 @@
                 "valueAddedService": "Service à Valeur Ajoutée"
             }
         },
-        "PackagePage": {
-            "all": "Tous",
-            "pay": "En attente de paiement",
-            "shipping": "En transit",
-            "receivde": "Reçu",
+        "package": {
+            "tabs": {
+                "all": "Tous",
+                "pay": "Paiement en attente",
+                "shipping": "En transit",
+                "receivded": "Reçu"
+            },
             "noPackages": "Aucun colis",
             "selectAll": "Tout sélectionner",
             "batchPay": "Paiement groupé",
-            "noTracking": "Aucun numéro de suivi",
-            "texts": {
-                "packageNumberLabel": "Numéro de colis",
-                "shippingCode": "Numéro de suivi :",
-                "productImageAlt": "Image du produit",
-                "sizeLabel": "Taille",
-                "weightLabel": "Poids",
-                "serviceFeeLabel": "Frais de service",
-                "totalFeeLabel": "Frais totaux",
-                "pendingPaymentStatus": "En attente de paiement",
-                "payButton": "Payer",
-                "cancelButton": "Annuler",
-                "payCancelFee": "Frais d'annulation de paiement",
-                "requestRefund": "Demander l'annulation",
-                "withdrawRequest": "Retirer la demande",
-                "changeBtn": "Changer d'itinéraire"
-            },
-            "refundModal": {
+            "noTracking": "Pas de numéro de suivi",
+            "withdrawTitle": "Retirer la demande",
+            "withdrawContent": "Êtes-vous sûr de vouloir retirer cette demande ?",
+            "receiptTitle": "Confirmer la réception",
+            "receiptContent": "Confirmer la réception de cet article ?",
+            "refundTitle": "Demander un remboursement",
+            "cancelModal": {
                 "title": "Annuler",
                 "cancelCard": {
                     "title": "Confirmer l'annulation",
@@ -789,23 +825,35 @@
                 },
                 "changeRouteCard": {
                     "title": "Changer d'itinéraire",
-                    "subtitle": "Re-sélectionner le mode de livraison"
+                    "subtitle": "Resélectionner l'itinéraire d'expédition"
                 }
             },
-            "withdrawModal": {
-                "content": "Êtes-vous sûr de retirer la demande d'annulation ?"
-            },
-            "changeModal": {
-                "title": "Changer d'itinéraire"
-            },
+            "changeTitle": "Changer d'itinéraire",
             "lineModal": {
-                "title": "Suivi du colis",
-                "mainWaybillTitle": "Chronologie du colis principal",
-                "subWaybillTitle": "Colis secondaire :",
-                "waybillNumber": "Numéro de colis :",
+                "title": "Suivi de l'expédition",
+                "mainWaybillTitle": "Suivi de la lettre de voiture principale",
+                "subWaybillTitle": "Sous-lettre de voiture :",
+                "waybillNumber": "Numéro de lettre de voiture :",
                 "currentStatus": "Statut actuel :",
-                "location": "Lieu :",
-                "mainTimeline": "Chronologie du colis principal :"
+                "location": "Localisation :",
+                "mainTimeline": "Chronologie de la lettre de voiture principale :"
+            },
+            "packageItem": {
+                "packageNumberLabel": "Numéro de colis",
+                "shippingCode": "Numéro de suivi :",
+                "productImageAlt": "Image du produit",
+                "sizeLabel": "Taille",
+                "weightLabel": "Poids",
+                "serviceFeeLabel": "Frais de service",
+                "totalFeeLabel": "Frais totaux",
+                "pendingPaymentStatus": "Paiement en attente",
+                "payButton": "Payer",
+                "cancelButton": "Annuler",
+                "payCancelFee": "Frais d'annulation de paiement",
+                "requestRefund": "Demander l'annulation",
+                "withdrawRequest": "Retirer la demande",
+                "changeBtn": "Changer d'itinéraire",
+                "receipt": "Réception"
             }
         },
         "Promotion": {
@@ -1082,6 +1130,221 @@
             "city": {
                 "label": "Ville",
                 "placeholder": "Sélectionnez une ville"
+            }
+        }
+    },
+    "faq": {
+        "daigouGuide": "Guide d'achat via agent",
+        "beginnerGuide": "Guide du débutant",
+        "serviceFee": "Détails des frais de service",
+        "returnRefund": "Retours et remboursements",
+        "payment": "Paiement",
+        "recharge": "Recharger",
+        "internationalCreditCard": "Recharge par carte de crédit internationale",
+        "wireTransfer": "Virement bancaire",
+        "delivery": "Livraison",
+        "shippingRestrictions": "Restrictions d'expédition",
+        "customsTaxes": "Douanes et taxes",
+        "afterSale": "Service après-vente",
+        "storagePeriod": "Délai d’entreposage",
+        "afterSalePolicy": "Politique après-vente",
+        "insuranceCompensation": "Assurance et indemnisation",
+        "other": "Autres",
+        "about": "À propos de bbdbuy",
+        "contact": "Nous contacter",
+        "terms": "Conditions d'utilisation",
+        "privacy": "Politique de confidentialité"
+    },
+    "help": {
+        "daigouGuide": {
+            "beginnerGuide": {
+                "title": "Guide du Débutant : Comment acheter des produits via bbdbuy",
+                "steps": {
+                    "1": {
+                        "title": "Étape 1 : Choisir un produit",
+                        "content": [
+                            "Méthode 1 : Trouvez le produit souhaité sur Taobao/Tmall/1688, copiez le lien du produit et collez-le dans la barre de recherche.",
+                            "Méthode 2 : Saisissez le nom du produit dans la barre de recherche bbdbuy et choisissez parmi les recommandations de Taobao, Tmall ou JD.",
+                            "Méthode 3 : Utilisez la recherche par image pour trouver des articles similaires.",
+                            "Astuce : Si vous collez un lien et que vous êtes redirigé vers la page de commande DIY, l’article doit être acheté manuellement. Remplissez les informations requises puis cliquez sur « Acheter maintenant » ou « Ajouter au panier »."
+                        ]
+                    },
+                    "2": {
+                        "title": "Étape 2 : Soumettre la commande",
+                        "content": [
+                            "Méthode 1 : bbdbuy peut récupérer automatiquement 99 % des informations produits de Taobao/Tmall/1688. Sélectionnez la couleur, la taille et la quantité, puis cliquez sur « Ajouter au panier » ou « Acheter maintenant ».",
+                            "Méthode 2 : Sélectionnez les produits dans votre panier et cliquez sur « Passer la commande »."
+                        ]
+                    },
+                    "3": {
+                        "title": "Étape 3 : Payer la commande",
+                        "content": [
+                            "Soumettez votre commande, choisissez le mode de paiement et réglez le prix du produit ainsi que les frais d’expédition domestique en Chine.",
+                            "Astuce : Prend en charge plusieurs devises (RMB & devises étrangères). Saisissez le pays de destination et vos besoins d’achat, sélectionnez les services optionnels, puis soumettez la commande."
+                        ]
+                    },
+                    "4": {
+                        "title": "Étape 4 : Achat par bbdbuy",
+                        "content": [
+                            "L’équipe d’achat bbdbuy contactera le vendeur et achètera le produit pour vous.",
+                            "Astuce : Statuts possibles : En attente d’achat — Commandé — Expédié — Reçu — Arrivé — Stocké. Vous pouvez communiquer via « Consultation de commande »."
+                        ]
+                    },
+                    "5": {
+                        "title": "Étape 5 : Contrôle qualité et stockage",
+                        "content": [
+                            "Une fois arrivé, le produit est inspecté, pesé et photographié. Trois photos gratuites sont fournies. Stockage gratuit jusqu’à 90 jours, avec possibilité d’extension.",
+                            "Astuce : Au-delà de 180 jours (extensions incluses), les articles seront automatiquement détruits. Vous pouvez soumettre un colis ou regrouper d’autres achats à tout moment."
+                        ]
+                    },
+                    "6": {
+                        "title": "Étape 6 : Soumettre un colis",
+                        "content": [
+                            "Dans l’onglet « Entrepôt », sélectionnez vos articles, cliquez sur Soumettre le colis, saisissez l’adresse internationale et choisissez une méthode d’expédition.",
+                            "Astuce : Certains articles sont soumis à des restrictions d’envoi et seules les lignes logistiques admissibles seront affichées. Services disponibles : papier bulle, sacs sous vide, film étirable, renforcement, assurance, etc."
+                        ]
+                    },
+                    "7": {
+                        "title": "Étape 7 : Payer l’acompte de livraison internationale",
+                        "content": [
+                            "Choisissez le mode de paiement et réglez l’acompte couvrant les frais de douane, frais de traitement et services optionnels.",
+                            "Astuce : Envoi séparé ou groupé possible. Le système recalculera les frais selon le poids, le volume et la destination. Trop-perçu remboursé ou ajustement facturé."
+                        ]
+                    },
+                    "8": {
+                        "title": "Étape 8 : Expédition par bbdbuy",
+                        "content": [
+                            "Après le paiement, l’équipe de l’entrepôt emballe, pèse et mesure le colis puis l’expédie via un service logistique international fiable. Suivi disponible dans les détails du colis.",
+                            "Astuce : Statuts : En attente — En traitement — Préparation départ — Sorti — Emballé — Pesé — Étiquette imprimée — Vérifié — Transféré — Expédié — Livré."
+                        ]
+                    },
+                    "9": {
+                        "title": "Étape 9 : Confirmer la réception & Récompenses",
+                        "content": [
+                            "Après réception, confirmez la livraison. Votre compte recevra des points échangeables contre des produits ou récompenses.",
+                            "Astuce : Dès 500 points, les produits échangeables deviennent disponibles. En cas de problème, contactez le service client."
+                        ]
+                    }
+                }
+            },
+            "serviceFee": {
+                "title": "Comment sont facturés les services bbdbuy ?",
+                "sections": [
+                    {
+                        "title": "Description du service d’achat bbdbuy",
+                        "list": [
+                            "Achat gratuit sur les plateformes ordinaires : Aucun frais de service n’est facturé pour les commandes des plateformes classiques (hors prix du produit + frais domestiques).",
+                            "Frais pour plateformes spéciales : 10 RMB par article pour Xianyu, Paipai, Zhuanzhuan, Douyin, Xiaohongshu, Youzan, etc."
+                        ]
+                    },
+                    {
+                        "title": "Calcul du coût total",
+                        "content": "Coût total = Prix du produit + Frais d’expédition internationale",
+                        "details": [
+                            "Prix du produit : prix + livraison domestique (vendeur → entrepôt bbdbuy)",
+                            "Frais d’expédition internationale : frais de base, frais de douane (10–30 RMB), frais de traitement (8 RMB), services optionnels"
+                        ]
+                    }
+                ]
+            },
+            "returnRefund": {
+                "title": "Service de retour/échange 5 jours bbdbuy",
+                "sections": [
+                    {
+                        "title": "1. Qu’est-ce que la garantie de retour/échange 5 jours ?",
+                        "content": "Service offert par certains vendeurs tiers. Le retour/échange peut être demandé dans les 7 jours suivant la livraison (soit 5 jours après entrée en entrepôt)."
+                    },
+                    {
+                        "title": "2. Mon produit est-il éligible ?",
+                        "eligible": [
+                            "Le vendeur accepte les retours",
+                            "L’article est en état revendable",
+                            "Stocké depuis moins de 5 jours",
+                            "Les frais de retour sont à la charge du client (même si livraison initiale gratuite)"
+                        ],
+                        "ineligible": [
+                            [
+                                "Produits personnalisés",
+                                "ex. vêtements personnalisés"
+                            ],
+                            [
+                                "Articles sans étiquette/accessoires",
+                                "ex. étiquette coupée, emballage manquant"
+                            ],
+                            [
+                                "Articles d’occasion",
+                                "Tous non éligibles"
+                            ],
+                            [
+                                "Produits étrangers",
+                                "Achats hors Chine continentale non éligibles"
+                            ],
+                            [
+                                "Sous-vêtements",
+                                "Inclut chaussettes, leggings, etc."
+                            ],
+                            [
+                                "Produits adultes",
+                                "Non éligible"
+                            ],
+                            [
+                                "Nourriture & livres en gros",
+                                "ex. plus de 15 livres"
+                            ],
+                            [
+                                "Articles ouverts",
+                                "Doivent répondre à des exigences spéciales"
+                            ]
+                        ]
+                    },
+                    {
+                        "title": "3. Comment demander un retour/échange ?",
+                        "content": "Demande possible dans les 5 jours (120h) suivant le statut « Stocké ». Passé ce délai, elle ne sera pas acceptée."
+                    },
+                    {
+                        "title": "4. Frais de retour/échange",
+                        "fees": [
+                            [
+                                "Retour sans condition",
+                                "Frais de première expédition + frais retour + 5 RMB de service"
+                            ],
+                            [
+                                "Échange sans condition",
+                                "Première expédition + frais retour + réexpédition vendeur + 5 RMB de service"
+                            ]
+                        ],
+                        "note": "Même si la commande initiale était en livraison gratuite, les frais d’envoi doivent être remboursés."
+                    },
+                    {
+                        "title": "5. Responsabilité & frais",
+                        "responsibility": [
+                            [
+                                "Client",
+                                "Ne veut plus / erreur / budget",
+                                "Frais aller-retour + service à sa charge"
+                            ],
+                            [
+                                "Vendeur",
+                                "Erreur d’envoi / défaut",
+                                "À la charge du vendeur"
+                            ],
+                            [
+                                "Autre",
+                                "Dommages durant transport domestique",
+                                "Selon cas"
+                            ]
+                        ]
+                    },
+                    {
+                        "title": "6. Remarques & FAQ",
+                        "list": [
+                            "Le montant remboursé correspond au montant réellement payé.",
+                            "Le retour/échange dépend de l’accord du vendeur.",
+                            "Solde suffisant requis pour régler les frais associés.",
+                            "Certains produits nécessitent un emballage spécial ; sans cela, le retour peut être refusé."
+                        ]
+                    }
+                ]
             }
         }
     }
