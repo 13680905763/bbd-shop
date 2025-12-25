@@ -5,16 +5,9 @@ import { useRouter } from "next/navigation";
 import SourceIcon from "@/components/common/source-icon";
 import { useGlobalStore } from "@/store";
 
-type ProductItemProps = {
-  product: any;
-  isLastProduct: boolean;
-  revokeRefund?: any;
-  texts: any;
-};
-
-function ProductItem({ product, texts, revokeRefund }: ProductItemProps) {
-  const router = useRouter();
+function ProductItem({ product, texts, revokeRefund }: any) {
   const { currency } = useGlobalStore();
+  const router = useRouter();
 
   return (
     <div className="flex flex-col gap-1 border-b p-2 px-4">
@@ -98,7 +91,6 @@ function ProductItem({ product, texts, revokeRefund }: ProductItemProps) {
 
 export default function OrderItem({
   order,
-  onPayOrderRedirect,
   onCancelOrder,
   activeTab,
   onChange,
@@ -108,6 +100,7 @@ export default function OrderItem({
   texts,
 }: any) {
   const { currency } = useGlobalStore();
+  const router = useRouter();
 
   return (
     <div className="card-cart">
@@ -182,7 +175,9 @@ export default function OrderItem({
                 color="primary"
                 radius="sm"
                 size="sm"
-                onPress={() => onPayOrderRedirect(order?.orderCode)}
+                onPress={() => {
+                  router.push(`/payment/${order?.orderCode}`);
+                }}
               >
                 {texts.payment}
               </Button>

@@ -33,7 +33,7 @@ export default function LoginPage() {
     },
     {
       key: "password",
-      type: "input",
+      type: "password",
       name: "password",
       size: "lg",
       placeholder: t("fields.password.placeholder"),

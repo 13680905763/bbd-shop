@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 
 import { languages } from "@/i18n/config";
 import { useGlobalStore } from "@/store";
-import { setUserLocale } from "@/i18n/service";
+import { setUserCurrency, setUserLocale } from "@/i18n/service";
 
 export default function LanguageCurrencySelector() {
   const t = useTranslations("Components.Navbar");
@@ -23,13 +23,12 @@ export default function LanguageCurrencySelector() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      // console.log("保存选择", tempLanguage, tempCurrency);
       // 1. 更新 store
       setLanguage(tempLanguage);
       setCurrency({ ...tempCurrency });
       // 保存语言
       await setUserLocale(tempLanguage);
-      // await setUserCurrency(tempCurrency);
+      await setUserCurrency({ ...tempCurrency });
 
       // 关闭弹窗
       setIsOpen(false);

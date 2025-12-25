@@ -32,6 +32,7 @@ import SourceIcon from "@/components/common/source-icon";
 import CommonModal from "@/components/modal/common-modal";
 import { useGlobalStore } from "@/store";
 import { safeMul } from "@/utils/number";
+import ConfirmModal from "@/components/modal/confirm-modal";
 interface Sku {
   skuID: string;
   stock: number;
@@ -137,6 +138,7 @@ export default function GoodsPage() {
   const [remark, setRemark] = useState<string>();
   const [quantity, setQuantity] = useState<number>(1);
   const [isOpen1, setIsOpen1] = useState(false);
+  const [isOpen2, setIsOpen2] = useState(false);
   const [goodsInfo, setGoodsInfo] = useState<any>();
   const [pathMap, setPathMap] = useState<any>(null);
   const [isLoading, setisLoading] = useState<any>(false);
@@ -148,11 +150,12 @@ export default function GoodsPage() {
   const handleBuyNow = async () => {
     if (issub) return;
     if (!isCheck) {
-      addToast({
-        title: t("agreeTerms"),
-        color: "danger",
-        timeout: 1000,
-      });
+      // addToast({
+      //   title: t("agreeTerms"),
+      //   color: "danger",
+      //   timeout: 1000,
+      // });
+      setIsOpen2(true);
 
       return;
     }
@@ -191,11 +194,7 @@ export default function GoodsPage() {
   const add = async () => {
     if (issub) return;
     if (!isCheck) {
-      addToast({
-        title: t("agreeTerms"),
-        color: "danger",
-        timeout: 1000,
-      });
+      setIsOpen2(true);
 
       return;
     }
@@ -668,6 +667,16 @@ export default function GoodsPage() {
           </div>
         </div>
       </CommonModal>
+
+      <ConfirmModal
+        content={t("disclaimerDescription")} // 弹窗正文
+        isOpen={isOpen2} // 根据状态控制显示
+        title={t("agreeTerms")} // 弹窗标题
+        onConfirm={async () => {
+          setIsCheck(true);
+        }}
+        onOpenChange={setIsOpen2}
+      />
     </div>
   );
 }

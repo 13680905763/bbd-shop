@@ -388,9 +388,9 @@
                 },
                 "fields": [
                     {
-                        "key": "name",
+                        "key": "nickName",
                         "type": "input",
-                        "name": "name",
+                        "name": "nickName",
                         "label": "Nom d'utilisateur"
                     },
                     {

@@ -15,8 +15,8 @@ interface GlobalState {
 }
 
 export const useGlobalStore = create<GlobalState>((set) => ({
-  language: "zh",
-  currency: { label: "CNY", value: "CNY", symbol: "¥", rate: 1 },
+  language: "",
+  currency: {},
   languages: [],
   currencies: [],
 
@@ -31,6 +31,8 @@ export const useGlobalStore = create<GlobalState>((set) => ({
   fetchConfig: async () => {
     const res: any = await getCurrency();
 
+    const initcurrency = res.find((item: any) => item?.currency == "USD");
+
     set({
       currencies: res.map((item: any) => ({
         label: item?.currency,
@@ -38,6 +40,12 @@ export const useGlobalStore = create<GlobalState>((set) => ({
         symbol: item?.symbol,
         rate: item?.rate,
       })),
+      currency: {
+        label: initcurrency?.currency,
+        value: initcurrency?.currency,
+        symbol: initcurrency?.symbol,
+        rate: initcurrency?.rate,
+      },
     });
   },
 }));

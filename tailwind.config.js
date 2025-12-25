@@ -33,7 +33,7 @@ const config = {
 
       },
     },
-  }), require('@tailwindcss/line-clamp'), require('tailwind-scrollbar-hide')],
+  }), require('@tailwindcss/line-clamp'), require('tailwind-scrollbar-hide'), require('@tailwindcss/typography')],
 }
 
 module.exports = config;

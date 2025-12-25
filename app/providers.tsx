@@ -13,11 +13,13 @@ import { useEffect } from "react";
 
 import { queryClient } from "@/lib/react-query";
 import { useGlobalStore } from "@/store";
+import FullscreenLoader from "@/components/common/fullscreen-loader";
 
 export interface ProvidersProps {
   children: React.ReactNode;
   themeProps?: ThemeProviderProps;
   initialLocale?: any;
+  initialCurrency?: any;
 }
 
 declare module "@react-types/shared" {
@@ -32,20 +34,25 @@ export function Providers({
   children,
   themeProps,
   initialLocale,
+  initialCurrency,
 }: ProvidersProps) {
   const router = useRouter();
-  const { fetchConfig, setLanguage } = useGlobalStore();
+  const { fetchConfig, setLanguage, setCurrency } = useGlobalStore();
+  const [ready, setReady] = React.useState(false);
 
   useEffect(() => {
     const init = async () => {
-      console.log("初始化 store 服务端拿到", initialLocale);
+      console.log("初始化 store 服务端拿到", initialLocale, initialCurrency);
       await fetchConfig(); // 等待异步执行完成
       await setLanguage(initialLocale);
+      if (initialCurrency) await setCurrency(initialCurrency);
       console.log("初始化 store 语言货币完成");
+      setReady(true);
     };
 
     init();
   }, []);
+  if (!ready) return <FullscreenLoader />; // or loader
 
   return (
     // <SessionProvider>

@@ -12,6 +12,7 @@ export interface UserInfo {
   email: string;
   avatarUrl?: string;
   vipLevel?: number;
+  nickName?: string;
 }
 
 interface BalanceButtonProps {
@@ -66,7 +67,7 @@ const UserBalanceCard = ({
       <div className="flex flex-1 items-center gap-6">
         <Avatar className="w-20 h-20 text-large" src={userInfo?.avatarUrl} />
         <div className="flex-1">
-          <p className="text-title-2xl">{userInfo?.name}</p>
+          <p className="text-title-2xl">{userInfo?.nickName}</p>
           <p>{userInfo?.email}</p>
           <Chip color="primary" size="sm">
             {text.vip(userInfo?.vipLevel ?? 1)}

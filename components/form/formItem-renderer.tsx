@@ -6,6 +6,8 @@ import {
   Checkbox,
   DatePicker,
 } from "@heroui/react";
+import { useState } from "react";
+import { HiEye, HiEyeOff } from "react-icons/hi";
 
 import AreaSelector from "./area-selector";
 
@@ -17,7 +19,7 @@ export interface FieldOption {
 
 export interface FieldConfig {
   key: string; // 用于 React 元素 key
-  type: "input" | "select" | "checkbox" | "date" | "area";
+  type: "input" | "password" | "select" | "checkbox" | "date" | "area";
   name: string; // 用于 formData
   label?: string;
   placeholder?: string;
@@ -41,6 +43,9 @@ export default function FormItemRenderer<T extends Record<string, any>>({
   const handleChange = (name: string, value: any) => {
     onChange({ ...formData, [name]: value });
   };
+  const [isVisible, setIsVisible] = useState(false);
+
+  const toggleVisibility = () => setIsVisible(!isVisible);
 
   return (
     <>
@@ -69,6 +74,35 @@ export default function FormItemRenderer<T extends Record<string, any>>({
                 placeholder={placeholder}
                 size={size}
                 startContent={startContent}
+                value={value}
+                variant="bordered"
+                onValueChange={(val) => handleChange(name, val)}
+              />
+            );
+          case "password":
+            return (
+              <Input
+                key={key} // 用 key
+                endContent={
+                  <button
+                    aria-label="toggle password visibility"
+                    className="focus:outline-solid outline-transparent"
+                    type="button"
+                    onClick={toggleVisibility}
+                  >
+                    {isVisible ? (
+                      <HiEye className="text-2xl text-default-400 pointer-events-none" />
+                    ) : (
+                      <HiEyeOff className="text-2xl text-default-400 pointer-events-none" />
+                    )}
+                  </button>
+                }
+                isRequired={required}
+                label={label}
+                placeholder={placeholder}
+                size={size}
+                startContent={startContent}
+                type={isVisible ? "text" : "password"}
                 value={value}
                 variant="bordered"
                 onValueChange={(val) => handleChange(name, val)}

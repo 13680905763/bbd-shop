@@ -144,7 +144,7 @@ export default function HelpCenter() {
 
 function ArticleRenderer({ component: Component }: any) {
   return (
-    <div className="prose prose-neutral max-w-none">
+    <div className="prose prose-neutral max-w-none prose-a:text-primary hover:prose-a:text-primary/80 prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl">
       <Component />
     </div>
   );

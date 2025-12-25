@@ -9,6 +9,7 @@ import { Providers } from "./providers";
 
 import ChatBox from "@/components/common/chatbox";
 import { siteConfig } from "@/config/site";
+import { getUserCurrency } from "@/i18n/service";
 
 export const metadata: Metadata = {
   title: {
@@ -34,6 +35,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const initialLocale = await getLocale();
+  const initialCurrency = await getUserCurrency();
   const messages = await getMessages();
 
   return (
@@ -52,6 +54,7 @@ export default async function RootLayout({
       >
         <NextIntlClientProvider messages={messages}>
           <Providers
+            initialCurrency={initialCurrency}
             initialLocale={initialLocale}
             themeProps={{ attribute: "class", defaultTheme: "light" }}
           >

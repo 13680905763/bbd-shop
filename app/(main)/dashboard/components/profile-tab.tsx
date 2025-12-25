@@ -16,7 +16,7 @@ export default function ProfileTab({
   const [avatarUrl, setAvatarUrl] = useState(defaultformData?.avatarUrl);
   const [formData, setFormData] = useState({
     id: defaultformData?.id,
-    name: defaultformData?.name || "",
+    nickName: defaultformData?.nickName || "",
     // familyName: defaultformData?.familyName || "",
     // givenName: defaultformData?.givenName || "",
     mobile: defaultformData?.mobile || "",

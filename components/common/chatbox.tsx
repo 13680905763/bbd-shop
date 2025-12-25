@@ -55,7 +55,7 @@ export default function ChatWidget() {
   /** 初始化 WebSocket */
   useEffect(() => {
     // 如果用户未登录，直接关闭现有连接
-    if (!user?.id) {
+    if (!user?.id || !isOpen) {
       console.log("🚪 用户未登录，关闭 WebSocket");
       if (socketRef.current) {
         socketRef.current.close();
@@ -188,7 +188,7 @@ export default function ChatWidget() {
       socket?.close();
       socketRef.current = null;
     };
-  }, [user?.id]);
+  }, [user?.id, isOpen]);
 
   /** 发送消息 */
   const sendMessage = (msgText: string, type: Message["type"] = "TEXT") => {

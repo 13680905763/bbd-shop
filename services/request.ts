@@ -22,6 +22,8 @@ request.interceptors.request.use(
   (config) => {
     const { language, currency } = useGlobalStore.getState();
 
+    // console.log("接口请求配置语言货币", language, currency);
+
     config.headers["X-Language"] = language;
     config.headers["X-Currency"] = currency.value;
     // config.headers["X-Language"] = "en";

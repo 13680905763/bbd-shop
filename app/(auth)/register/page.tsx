@@ -40,7 +40,7 @@ export default function RegisterPage() {
     },
     {
       key: "password",
-      type: "input",
+      type: "password",
       name: "password",
       size: "lg",
       placeholder: t("fields.password.placeholder"),

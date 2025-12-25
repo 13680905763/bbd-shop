@@ -47,6 +47,9 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-icons": "^5.5.0",
+    "react-markdown": "^10.1.0",
+    "rehype-raw": "^7.0.0",
+    "remark-gfm": "^4.0.1",
     "root": "git+https://github.com/tanstack/react-query.git",
     "swr": "^2.3.3",
     "tailwind-scrollbar-hide": "^2.0.0",
@@ -55,6 +58,7 @@
   "devDependencies": {
     "@next/eslint-plugin-next": "15.0.4",
     "@react-types/shared": "3.25.0",
+    "@tailwindcss/typography": "^0.5.19",
     "@types/node": "20.5.7",
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
