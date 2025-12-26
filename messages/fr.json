@@ -230,6 +230,14 @@
         },
         "button": {
             "save": "Enregistrer"
+        },
+        "ChatBox": {
+            "loginFirst": "Veuillez vous connecter d'abord",
+            "onlineSupport": "Support en ligne",
+            "inputPlaceholder": "Entrez votre message...",
+            "send": "Envoyer",
+            "connectionLost": "Connexion perdue, veuillez réessayer plus tard",
+            "imageSendFail": "Échec de l'envoi de l'image"
         }
     },
     "LoginPage": {
@@ -714,7 +722,7 @@
             "unreadMessages": "Non lus",
             "noData": "Aucune donnée"
         },
-        "CartPage": {
+        "cart": {
             "title": "Tous les Produits ({count})",
             "empty": {
                 "title": "Votre panier est vide",
@@ -730,7 +738,7 @@
             "confirmDeleteContent": "Êtes-vous sûr de vouloir supprimer cet article ?",
             "remarkTitle": "Remarque",
             "remarkPlaceholder": "Veuillez entrer une remarque",
-            "item": {
+            "productItem": {
                 "remark": "Remarque",
                 "noRemark": "Aucune remarque",
                 "unitPrice": "Prix Unitaire",
@@ -945,6 +953,9 @@
         "sample": "Échantillon",
         "serviceFee": "Frais de Service",
         "remarkPlaceholder": "Veuillez entrer une remarque (optionnel)",
+        "agreeTerms": "Veuillez accepter les conditions d'utilisation",
+        "disclaimerDescription": "Tous les produits d'achat affichés sur BBDbuy proviennent de plateformes tierces, et ne sont pas vendus directement par BBDbuy. BBDbuy ne assume aucune responsabilité pour toute violation de propriété intellectuelle ou problème de droits d'auteur. Utiliser les services d'achat de BBDbuy signifie que vous acceptez ces risques.",
+        "agreeDisclaimer": "J'ai lu et accepté l'avertissement de BBDbuy",
         "OrderItem": {
             "valueAddedService": "Service à Valeur Ajoutée",
             "noService": "Aucun service",
@@ -1030,6 +1041,11 @@
         "agreeTerms": "Veuillez accepter les conditions d'utilisation",
         "selectSku": "Veuillez sélectionner une spécification du produit",
         "purchaseRecord": "Historique d'Achat",
+        "singleItemSalesTitle": "Ventes à l'unité",
+        "avgArrivalTime": "Temps d'arrivée moyen",
+        "salesVolume": "Ventes de produits",
+        "weightWithUnit": "Poids (g)",
+        "volumeWithUnit": "Volume (cm)",
         "sales": "Ventes",
         "weight": "Poids (g)",
         "avgDelivery": "Délai de Livraison Moyen",

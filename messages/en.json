@@ -230,6 +230,14 @@
         },
         "button": {
             "save": "Save"
+        },
+        "ChatBox": {
+            "loginFirst": "Please login first",
+            "onlineSupport": "Online Support",
+            "inputPlaceholder": "Enter message...",
+            "send": "Send",
+            "connectionLost": "Connection lost, please try again later",
+            "imageSendFail": "Image send failed"
         }
     },
     "LoginPage": {
@@ -723,7 +731,7 @@
             "unreadMessages": "Unread",
             "noData": "No data"
         },
-        "CartPage": {
+        "cart": {
             "title": "All Products ({count})",
             "empty": {
                 "title": "Your cart is empty",
@@ -739,7 +747,7 @@
             "confirmDeleteContent": "Are you sure you want to delete this item?",
             "remarkTitle": "Remark",
             "remarkPlaceholder": "Please enter a remark",
-            "item": {
+            "productItem": {
                 "remark": "Remark",
                 "noRemark": "No remark",
                 "unitPrice": "Unit Price",
@@ -988,6 +996,9 @@
         "sample": "Sample",
         "serviceFee": "Service Fee",
         "remarkPlaceholder": "Please enter a remark (optional)",
+        "agreeTerms": "Please agree to the terms",
+        "disclaimerDescription": "All purchasing products displayed on BBDbuy are from third-party platforms, not sold directly by BBDbuy. BBDbuy does not take responsibility for any intellectual property infringement or copyright issues. Using BBDbuy purchasing services means you accept these risks.",
+        "agreeDisclaimer": "I have read and agree to BBDbuy's disclaimer",
         "OrderItem": {
             "valueAddedService": "Value Added Service",
             "noService": "No service",
@@ -1073,6 +1084,11 @@
         "agreeTerms": "Please agree to the terms",
         "selectSku": "Please select a product specification",
         "purchaseRecord": "Purchase Record",
+        "singleItemSalesTitle": "Single Item Sales",
+        "avgArrivalTime": "Avg Arrival Time",
+        "salesVolume": "Product Sales",
+        "weightWithUnit": "Weight (g)",
+        "volumeWithUnit": "Volume (cm)",
         "sales": "Sales",
         "weight": "Weight (g)",
         "avgDelivery": "Average Delivery Time",

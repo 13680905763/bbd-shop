@@ -33,98 +33,37 @@ import CommonModal from "@/components/modal/common-modal";
 import { useGlobalStore } from "@/store";
 import { safeMul } from "@/utils/number";
 import ConfirmModal from "@/components/modal/confirm-modal";
-interface Sku {
-  skuID: string;
-  stock: number;
-  propId_valueId: string;
-  // 其他可能的SKU属性...
-}
+import { generateDynamicSkuPathDict } from "@/lib/sku-helper";
 
-interface ProductInfo {
-  skuList: Sku[];
-  skuPropMap: Record<string, string>; // 属性ID到属性名的映射
-  skuPropValueMap: Record<string, string>; // 属性值ID到属性值名的映射
-}
+const getSelectedValues = (specs: any) => {
+  const arr: any = [];
 
-type SkuPathDict = Record<string, string[]>; // 组合路径到SKU ID数组的映射
+  specs.forEach((spec: any) => {
+    const selectedVal = spec.propValueList.find((item: any) => item.selected);
 
-/**
- * 生成动态SKU路径字典
- * @param productInfo 产品信息对象
- * @returns 返回SKU路径字典，键为属性组合字符串，值为对应的SKU ID数组
- */
-function generateDynamicSkuPathDict(productInfo: ProductInfo): SkuPathDict {
-  const dict: SkuPathDict = {};
-  const { skuList, skuPropMap, skuPropValueMap } = productInfo;
-
-  skuList.forEach((sku) => {
-    if (sku.stock <= 0) return;
-
-    // 解析所有属性
-    const props = sku.propId_valueId.split(";");
-    const propertyMap: Record<string, string> = {};
-
-    // 提取属性名和值
-    props.forEach((prop) => {
-      const parts = prop.split(":");
-
-      if (parts.length !== 2) return; // 跳过格式不正确的属性
-
-      const [propName, propValue] = parts;
-
-      // 确保属性名和值在映射表中存在
-      if (skuPropMap[propName] && skuPropValueMap[propValue]) {
-        // propertyMap["k" + propName] = propValue;
-        propertyMap["k" + propName] = prop;
-      }
-    });
-
-    // 获取所有属性名并按字母排序确保一致性
-    const propNames = Object.keys(propertyMap);
-
-    // 生成所有可能的组合键
-    const allCombinations = getAllCombinations(propNames, propertyMap);
-
-    // 将SKU ID添加到所有相关组合中
-    allCombinations.forEach((combination) => {
-      if (!dict[combination]) {
-        dict[combination] = [];
-      }
-      dict[combination].push(sku?.skuID);
-    });
+    arr.push(selectedVal ? `${spec.propId}:${selectedVal.valueID}` : undefined);
   });
-  console.log("dict", dict);
 
-  return dict;
-}
+  return arr;
+};
 
-/**
- * 生成所有可能的属性组合
- * @param propNames 属性名数组
- * @param propertyMap 属性名到属性值的映射
- * @returns 返回所有可能的属性组合字符串数组
- */
-function getAllCombinations(
-  propNames: string[],
-  propertyMap: Record<string, string>,
-): string[] {
-  const combinations: string[] = [];
-  const n = propNames.length;
-  const total = 1 << n; // 2^n 种可能性
+const _getSelectedImg = (specs: any, skuPropImageMap: any) => {
+  let url: string = "";
 
-  for (let mask = 1; mask < total; mask++) {
-    const current: string[] = [];
+  specs.forEach((spec: any) => {
+    const selectedVal = spec.propValueList.find((item: any) => item.selected);
 
-    for (let i = 0; i < n; i++) {
-      if (mask & (1 << i)) {
-        current.push(propertyMap[propNames[i]]);
-      }
+    if (
+      selectedVal?.valueID &&
+      skuPropImageMap &&
+      skuPropImageMap[selectedVal.valueID]
+    ) {
+      url = skuPropImageMap[selectedVal.valueID];
     }
-    combinations.push(current.join("-"));
-  }
+  });
 
-  return combinations;
-}
+  return url;
+};
 
 export default function GoodsPage() {
   const t = useTranslations("Goods");
@@ -147,17 +86,12 @@ export default function GoodsPage() {
   const [currentImg, setCurrentImg] = useState<string>();
   const router = useRouter();
 
-  const handleBuyNow = async () => {
-    if (issub) return;
+  const validateSkuSelection = () => {
+    if (issub) return false;
     if (!isCheck) {
-      // addToast({
-      //   title: t("agreeTerms"),
-      //   color: "danger",
-      //   timeout: 1000,
-      // });
       setIsOpen2(true);
 
-      return;
+      return false;
     }
     if (!currentSku) {
       addToast({
@@ -166,8 +100,15 @@ export default function GoodsPage() {
         timeout: 1000,
       });
 
-      return;
+      return false;
     }
+
+    return true;
+  };
+
+  const handleBuyNow = async () => {
+    if (!validateSkuSelection()) return;
+
     setissub(true);
 
     try {
@@ -192,21 +133,8 @@ export default function GoodsPage() {
     }
   };
   const add = async () => {
-    if (issub) return;
-    if (!isCheck) {
-      setIsOpen2(true);
+    if (!validateSkuSelection()) return;
 
-      return;
-    }
-    if (!currentSku) {
-      addToast({
-        title: t("selectSku"),
-        color: "danger",
-        timeout: 1000,
-      });
-
-      return;
-    }
     setissub(true);
 
     const data = {
@@ -246,41 +174,11 @@ export default function GoodsPage() {
         });
       }
     });
-    undateDisabledStatus(cloned);
+    updateDisabledStatus(cloned);
   };
-  const getSelectedValues = (specs: any) => {
-    const arr: any = [];
 
-    specs.forEach((spec: any) => {
-      const selectedVal = spec.propValueList.find((item: any) => item.selected);
-
-      arr.push(
-        selectedVal ? `${spec.propId}:${selectedVal.valueID}` : undefined,
-      );
-    });
-
-    return arr;
-  };
-  const getSelectedImg = (specs: any) => {
-    let url: string = "";
-
-    specs.forEach((spec: any) => {
-      const selectedVal = spec.propValueList.find((item: any) => item.selected);
-
-      console.log("selectedVal", selectedVal?.valueID);
-      if (
-        selectedVal?.valueID &&
-        goodsInfo?.productInfo.skuPropImageMap[selectedVal.valueID]
-      ) {
-        url = goodsInfo?.productInfo.skuPropImageMap[selectedVal.valueID];
-      }
-    });
-    // console.log("url", url);
-
-    return url;
-  };
   // 更新选中状态
-  const undateDisabledStatus = (cloned: any) => {
+  const updateDisabledStatus = (cloned: any) => {
     cloned?.productInfo.skuPropList.forEach((spec: any, index: number) => {
       const selectedValues = getSelectedValues(cloned.productInfo.skuPropList);
 
@@ -305,7 +203,10 @@ export default function GoodsPage() {
     const selectedValues = getSelectedValues(
       goodsInfo?.productInfo.skuPropList,
     );
-    const selectedUrl = getSelectedImg(goodsInfo?.productInfo.skuPropList);
+    const selectedUrl = _getSelectedImg(
+      goodsInfo?.productInfo.skuPropList,
+      goodsInfo?.productInfo?.skuPropImageMap,
+    );
 
     console.log("sku", selectedValues);
     console.log("url", selectedUrl);
@@ -326,6 +227,42 @@ export default function GoodsPage() {
       return currentSku;
     }
   }, [goodsInfo]); // 依赖 cart，当 cart 变化时才重新计算
+
+  // Calculate display values for sales, weight, etc.
+  const displayValues = useMemo(() => {
+    const defaultSales = goodsInfo?.productInfo?.sales || "--";
+    const daysToArrival = goodsInfo?.productInfo?.daysToArrival || "--";
+
+    let weight  = "--";
+    let size = "--";
+
+    // Attempt to find specific SKU info from skuVmMap if available
+    if (goodsInfo?.productInfo?.skuVmMap) {
+      // Priority: Current SKU -> First available SKU in map -> Default
+      const skuId = currentSku?.skuID;
+      const skuData = skuId ? goodsInfo.productInfo.skuVmMap[skuId] : null;
+      
+      // Fallback to first item in skuVmMap if current not found, or just keep default
+      const firstSkuKey = Object.keys(goodsInfo.productInfo.skuVmMap)[0];
+      const fallbackData = firstSkuKey ? goodsInfo.productInfo.skuVmMap[firstSkuKey] : null;
+
+      const activeData = skuData || fallbackData;
+
+      if (activeData) {
+        if (activeData.weight) weight = activeData.weight;
+        if (activeData.length && activeData.width && activeData.height) {
+          size = `${activeData.length}x${activeData.width}x${activeData.height}`;
+        }
+      }
+    }
+
+    return {
+      sales: defaultSales,
+      daysToArrival,
+      weight,
+      size
+    };
+  }, [goodsInfo, currentSku]);
 
   useEffect(() => {
     setisLoading(true);
@@ -460,7 +397,6 @@ export default function GoodsPage() {
                   </div>
                 </div>
               )}
-              {/* <h3 className={subtitle()}>{t("purchaseRecord")}</h3> */}
 
               <div>
                 <h3 className={subtitle()}>{t("productDetails")}</h3>
@@ -606,6 +542,31 @@ export default function GoodsPage() {
                       onChange={(e) => setRemark(e.target.value)}
                     />
                   </div>
+                  <div className="mb-4">
+                    <div className={subtitle()}>{t("singleItemSalesTitle")}</div>
+                    <div className="flex gap-4">
+                      <div className="flex-1 bg-gray-50 p-3 rounded-lg text-center">
+                        <div className="text-gray-500 text-sm mb-1">{t("avgArrivalTime")}</div>
+                        <div className="font-semibold">{displayValues.daysToArrival} days</div>
+                      </div>
+                      <div className="flex-1 bg-gray-50 p-3 rounded-lg text-center">
+                        <div className="text-gray-500 text-sm mb-1">{t("salesVolume")}</div>
+                        <div className="font-semibold">{displayValues.sales}</div>
+                      </div>
+                      <div className="flex-1 bg-gray-50 p-3 rounded-lg text-center">
+                        <div className="text-gray-500 text-sm mb-1">{t("weightWithUnit")}</div>
+                        <div className="font-semibold">{displayValues.weight}</div>
+                      </div>
+                      <div className="flex-1 bg-gray-50 p-3 rounded-lg text-center">
+                        <div className="text-gray-500 text-sm mb-1">
+                          {t("volumeWithUnit")}
+                        </div>
+                        <div className="font-semibold">{displayValues.size}</div>
+                      </div>
+                    </div>
+                  </div>
+
+
                   <div className={commonCard({ type: "grey" })}>
                     <div className={subtitle()}>{t("disclaimer")}</div>
                     <div className="text-sm">

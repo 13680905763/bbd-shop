@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
-  addToast,
   Button,
   Checkbox,
   Divider,
@@ -31,6 +30,7 @@ import { createOrderPreviewKeyByProductParams } from "@/types";
 import { queryClient } from "@/lib/react-query";
 import Stepper from "@/components/stepper";
 import { safeMul } from "@/utils/number";
+import ConfirmModal from "@/components/modal/confirm-modal";
 
 export default function SubmitOrder() {
   const t = useTranslations("SubmitOrder");
@@ -47,6 +47,7 @@ export default function SubmitOrder() {
 
   const [submitting, setSubmitting] = useState(false);
   const [ischeck, setIscheck] = useState(false);
+  const [isOpen2, setIsOpen2] = useState(false);
 
   const [servicesList, setServicesList] = useState([]);
 
@@ -217,9 +218,9 @@ export default function SubmitOrder() {
 
   const handleSubmitOrder = async () => {
     if (!ischeck) {
-      addToast({ title: "请勾选免责声明", timeout: 1000, color: "warning" });
+      setIsOpen2(true);
 
-      return;
+      return false;
     }
     if (submitting) return;
     setSubmitting(true);
@@ -494,6 +495,15 @@ export default function SubmitOrder() {
           </div>
         </CommonModal>
       )}
+      <ConfirmModal
+        content={t("disclaimerDescription")} // 弹窗正文
+        isOpen={isOpen2} // 根据状态控制显示
+        title={t("agreeTerms")} // 弹窗标题
+        onConfirm={async () => {
+          setIscheck(true);
+        }}
+        onOpenChange={setIsOpen2}
+      />
     </div>
   );
 }

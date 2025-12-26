@@ -59,9 +59,9 @@ export default async function RootLayout({
             themeProps={{ attribute: "class", defaultTheme: "light" }}
           >
             {children}
+            <ChatBox />
           </Providers>
         </NextIntlClientProvider>
-        <ChatBox />
       </body>
     </html>
   );

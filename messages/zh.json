@@ -230,6 +230,14 @@
         },
         "button": {
             "save": "保存"
+        },
+        "ChatBox": {
+            "loginFirst": "请先登录",
+            "onlineSupport": "在线客服",
+            "inputPlaceholder": "请输入消息...",
+            "send": "发送",
+            "connectionLost": "连接断开，请稍后重试",
+            "imageSendFail": "图片发送失败"
         }
     },
     "LoginPage": {
@@ -723,7 +731,7 @@
             "unreadMessages": "未读",
             "noData": "暂无数据"
         },
-        "CartPage": {
+        "cart": {
             "title": "全部商品 ({count})",
             "empty": {
                 "title": "您的购物车是空的",
@@ -739,7 +747,7 @@
             "confirmDeleteContent": "确定要删除此商品吗？",
             "remarkTitle": "备注",
             "remarkPlaceholder": "请输入备注",
-            "item": {
+            "productItem": {
                 "remark": "备注",
                 "noRemark": "无备注",
                 "unitPrice": "单价",
@@ -988,6 +996,9 @@
         "sample": "样品",
         "serviceFee": "服务费",
         "remarkPlaceholder": "请输入备注（可选）",
+        "agreeTerms": "请勾选同意协议",
+        "disclaimerDescription": "BBDbuy上显示的所有代购商品均来自第三方平台，非BBDbuy直接销售。BBDbuy不对任何知识产权侵权或版权问题负责。使用BBDbuy代购服务即表示您接受这些风险。",
+        "agreeDisclaimer": "我已阅读并同意BBDbuy的免责声明",
         "OrderItem": {
             "valueAddedService": "增值服务",
             "noService": "无服务",
@@ -1073,6 +1084,11 @@
         "agreeTerms": "请勾选同意协议",
         "selectSku": "请选择商品规格",
         "purchaseRecord": "购买记录",
+        "singleItemSalesTitle": "单个商品销量",
+        "avgArrivalTime": "平均到达仓库时间",
+        "salesVolume": "商品销量",
+        "weightWithUnit": "重量(g)",
+        "volumeWithUnit": "体积 (cm)",
         "sales": "销量",
         "weight": "重量 (克)",
         "avgDelivery": "平均发货时间",
