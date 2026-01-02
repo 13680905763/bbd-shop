@@ -1,18 +1,18 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { Tabs, Tab } from "@heroui/react";
 import { useTranslations } from "next-intl";
 
-import AddressTab from "./components/address-tab";
-import ProfileTab from "./components/profile-tab";
-import { SecurityTab } from "./components/security-tab";
-import BillingAddressTab from "./components/billing-address-tab";
+import {
+  ProfileTab,
+  AddressTab,
+  SecurityTab,
+  UserBalanceCard,
+  BillingAddressTab,
+} from "./components";
 
-import UserBalanceCard, { UserInfo } from "@/components/wallet-card";
 import { useUserStore, useWalletStore } from "@/store";
-import { useBillingAddress } from "@/hook";
-import { getWalletInfo } from "@/services/wallet";
-import { FieldConfig } from "@/components/form/formItem-renderer";
+import { useBillingAddress, useWalletInfo } from "@/hook";
 
 interface TabConfig {
   key: string;
@@ -20,64 +20,47 @@ interface TabConfig {
 }
 
 export default function DashBoard() {
+  const t = useTranslations("dashboard.page");
   const user = useUserStore((state) => state.user);
   const wallet = useWalletStore((state) => state.wallet);
 
-  const t = useTranslations("Dashboard.Page");
-
   useBillingAddress();
-
-  useEffect(() => {
-    const fetchWallet = async () => {
-      try {
-        const wallet = await getWalletInfo();
-
-        useWalletStore.getState().setWallet(wallet);
-      } catch {}
-    };
-
-    fetchWallet();
-  }, []);
+  useWalletInfo();
 
   // 动态生成 Tabs 配置
-  const tabLabels = t.raw("Tabs") as { key: string; label: string }[];
-  const tabsConfig: TabConfig[] = tabLabels.map((tab) => {
+  const tabs = [
+    {
+      key: "profile",
+      label: t("tabs.profile"),
+    },
+    {
+      key: "address",
+      label: t("tabs.address"),
+    },
+    {
+      key: "security",
+      label: t("tabs.security"),
+    },
+    {
+      key: "billingAddress",
+      label: t("tabs.billingAddress"),
+    },
+  ];
+  const tabsConfig: TabConfig[] = tabs.map((tab) => {
     let component: React.ReactNode = null;
 
     switch (tab.key) {
       case "profile":
-        component = (
-          <ProfileTab
-            defaultformData={user as UserInfo}
-            profileFields={t.raw("ProfileTab.fields")}
-            texts={t.raw("ProfileTab.texts")}
-          />
-        );
+        component = <ProfileTab defaultformData={user} />;
         break;
       case "address":
-        component = (
-          <AddressTab
-            fields={t.raw("AddressTab.fields") as FieldConfig[]}
-            tableColumns={t.raw("AddressTab.tableColumns") as any}
-            texts={t.raw("AddressTab.texts")}
-          />
-        );
+        component = <AddressTab />;
         break;
       case "security":
-        component = (
-          <SecurityTab
-            fields={t.raw("SecurityTab.fields") as FieldConfig[]}
-            texts={t.raw("SecurityTab.texts")}
-          />
-        );
+        component = <SecurityTab />;
         break;
       case "billingAddress":
-        component = (
-          <BillingAddressTab
-            fields={t.raw("BillingAddressTab.fields") as FieldConfig[]}
-            texts={t.raw("BillingAddressTab.texts")}
-          />
-        );
+        component = <BillingAddressTab />;
         break;
     }
 
@@ -87,14 +70,9 @@ export default function DashBoard() {
   return (
     <div className="flex flex-col gap-6 bg-[#f8f8f8] -mx-5">
       <UserBalanceCard
-        availabalBalance={wallet?.availabalBalance ?? 0}
-        score={user?.myPoints as number}
-        text={{
-          balance: t("texts.UserBalanceCard.balance"),
-          score: t("texts.UserBalanceCard.score"),
-          vip: (level) => `VIP${user?.vipLv}`,
-        }}
-        userInfo={user as UserInfo}
+        availabalBalance={wallet?.availabalBalance}
+        score={user?.myPoints}
+        userInfo={user}
       />
 
       <div className="bg-[#fff] rounded-lg flex-1">
@@ -110,7 +88,7 @@ export default function DashBoard() {
             color="primary"
             variant="underlined"
           >
-            {tabLabels.map((tab) => (
+            {tabs.map((tab) => (
               <Tab
                 key={tab.key}
                 title={

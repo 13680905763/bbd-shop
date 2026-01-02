@@ -6,7 +6,7 @@ import CommonModal from "@/components/modal/common-modal";
 import { useGlobalStore } from "@/store";
 
 export default function RefundModal({ order, onSubmit, onCancel }: any) {
-  const t = useTranslations("Dashboard.OrderPage");
+  const t = useTranslations("dashboard.order");
   const { currency } = useGlobalStore();
   const [products, setProducts] = useState<any[]>([]);
 
@@ -26,7 +26,7 @@ export default function RefundModal({ order, onSubmit, onCancel }: any) {
     <CommonModal
       isOpen={!!order}
       title={t("refundTitle")}
-      onConfirm={() => onSubmit(products)}
+      onConfirm={async () => onSubmit(products)}
       onOpenChange={onCancel}
     >
       <div className="space-y-3">

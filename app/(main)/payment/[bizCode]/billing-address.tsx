@@ -4,33 +4,18 @@ import React from "react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { useTranslations } from "next-intl";
 
-import FormModal from "@/components/modal/form-modal";
-import { addAddress, updateAddress } from "@/services";
 import { AddressItem } from "@/types";
-import { queryClient } from "@/lib/react-query";
+import BillingAddressModal from "@/components/modal/billing-address-modal";
 
 type ModalType = "add" | "edit" | null;
-const initAddress = {
-  familyName: "",
-  givenName: "",
-  phone: "",
-  countryId: "",
-  stateId: "",
-  city: "",
-  addressType: "",
-  postcode: "",
-  doorNo: "",
-};
 
 export default function BillingAddress({ billingAddress }: any) {
-  console.log("billingAddress", billingAddress);
   const t = useTranslations("PayOrder");
 
   const [modalType, setModalType] = useState<ModalType>(null);
-  const [currentRowData, setCurrentRowData] = useState<any>(initAddress);
+  const [currentRowData, setCurrentRowData] = useState<any>(null);
 
   const handleAdd = () => {
-    setCurrentRowData(initAddress);
     setModalType("add");
   };
 
@@ -38,37 +23,8 @@ export default function BillingAddress({ billingAddress }: any) {
     setModalType("edit");
   };
 
-  // 地址保存时处理
-  const handleSave = async () => {
-    const { createTime, updateTime, customerId, ...filteredData } =
-      currentRowData;
-
-    try {
-      if (modalType === "add") {
-        await addAddress({
-          ...currentRowData,
-          addressType: 2,
-          defaultAddress: 1,
-        }); // 新增接口
-      } else if (modalType === "edit") {
-        await updateAddress({
-          ...filteredData,
-          city: filteredData?.city || filteredData?.state,
-        }); // 编辑接口
-      }
-      setModalType(null);
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      console.log(123);
-
-      queryClient.invalidateQueries({ queryKey: ["billingAddress"] }); // 手动刷新
-    }
-  };
-
   useEffect(() => {
     setCurrentRowData(billingAddress);
-    console.log("currentRowData", currentRowData);
   }, [billingAddress]);
 
   return (
@@ -93,7 +49,6 @@ export default function BillingAddress({ billingAddress }: any) {
             onClick={handleEdit}
           >
             <AiOutlineEdit className="w-4 h-4" />
-            <span>编辑</span>
           </button>
         </div>
       ) : (
@@ -101,23 +56,16 @@ export default function BillingAddress({ billingAddress }: any) {
           className="p-6 border-2 border-dashed border-[#5e5e5e] w-full"
           onClick={handleAdd}
         >
-          <p className="flex items-center gap-2 justify-center">
-            <span>+</span>
-            <span>添加账单地址</span>
-          </p>
+          <p className="flex items-center gap-2 justify-center text-xl">+</p>
         </button>
       )}
-
-      <FormModal
-        fields={t.raw("fields")}
-        formData={currentRowData}
+      <BillingAddressModal
+        defaultData={currentRowData}
         isOpen={modalType === "add" || modalType === "edit"}
-        title={modalType === "add" ? "添加地址" : "编辑地址"}
-        onChange={setCurrentRowData}
+        type={modalType === "add" ? "add" : "edit"}
         onOpenChange={(open) => {
           if (!open) setModalType(null);
         }}
-        onSave={handleSave}
       />
     </>
   );

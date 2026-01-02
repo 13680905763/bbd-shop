@@ -16,7 +16,7 @@ import { useTranslations } from "next-intl";
 import { getPromotionBonusList } from "@/services";
 
 export default function PromotionBonusPage() {
-  const t: any = useTranslations("Dashboard.Promotion.bonus");
+  const t: any = useTranslations("dashboard.Promotion.bonus");
 
   const [bonusList, setBonusList] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);

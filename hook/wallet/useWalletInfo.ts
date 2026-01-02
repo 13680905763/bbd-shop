@@ -15,7 +15,7 @@ export const useWalletInfo = (enabled: boolean = false) => {
 
       return data;
     },
-    staleTime: 5 * 60 * 1000, // 缓存 5 分钟
+    staleTime: 0, // 缓存 5 分钟
     enabled,
   });
 };

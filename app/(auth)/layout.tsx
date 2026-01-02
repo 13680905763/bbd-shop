@@ -1,12 +1,13 @@
 "use client";
-import { Divider } from "@heroui/react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Button, Divider } from "@heroui/react";
+import { usePathname, useRouter } from "next/navigation";
 import { IoCaretBackCircleOutline } from "react-icons/io5";
 import NextLink from "next/link";
-import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
+import { useTranslations } from "next-intl";
 
-import { Logo } from "@/components/icons";
-import { loginWithGoogle } from "@/services";
+import { GoogleIcon, Logo } from "@/components/icons";
+import { loginWithGoogleNew } from "@/services";
 import { handleAuthSuccess } from "@/lib/auth-handler";
 
 export default function AuthLayout({
@@ -14,22 +15,23 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const t = useTranslations("auth");
+
   const pathname = usePathname();
   const router = useRouter();
-  const searchParams = useSearchParams();
 
-  const handleLoginWithGoogle = async (
-    credentialResponse: CredentialResponse,
-  ) => {
-    const credential = credentialResponse.credential;
+  const handleGoogleLogin = useGoogleLogin({
+    flow: "auth-code",
+    scope: "email profile openid",
+    onSuccess: async (codeResponse) => {
+      try {
+        await loginWithGoogleNew(codeResponse.code);
 
-    try {
-      await loginWithGoogle(credential as string);
-
-      await handleAuthSuccess();
-      router.push("/");
-    } catch {}
-  };
+        await handleAuthSuccess();
+        router.push("/");
+      } catch {}
+    },
+  });
 
   return (
     <main className=" flex h-[100vh]">
@@ -43,8 +45,10 @@ export default function AuthLayout({
           <Logo width={170} />
 
           <div className="rounded-lg bg-[#ffeee1] p-2 my-4 ">
-            <div>公告</div>
-            <div>劳动节 ，不耽误 --- 助您活力满满</div>
+            <div className="font-bold text-[#f0700c]">
+              {t("oneStopService")}
+            </div>
+            <div className="">{t("slogan")}</div>
           </div>
 
           {children}
@@ -53,7 +57,14 @@ export default function AuthLayout({
             <>
               <Divider className="my-4" />
 
-              <GoogleLogin onSuccess={handleLoginWithGoogle} />
+              <Button
+                className="w-full bg-white border-1 border-default-200"
+                startContent={<GoogleIcon />}
+                variant="flat"
+                onPress={() => handleGoogleLogin()}
+              >
+                Google
+              </Button>
             </>
           )}
         </div>

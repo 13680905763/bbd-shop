@@ -1,291 +1,279 @@
 {
-    "Home": {
-        "texts": {
-            "Slogan": {
-                "line1": "Simplifiez Vos",
-                "line2": "Achats Avec BBD"
-            },
-            "Search": {
-                "placeholder": "Entrez le nom du produit / lien",
-                "button": "Rechercher"
-            },
-            "Announcement": {
-                "label": "Annonce",
-                "message": "🎉 Profitez de 12% de réduction sur tous les articles pour une durée limitée !"
-            },
-            "ServiceTitle": "Service d'Achats Tout-en-Un"
+    "auth": {
+        "oneStopService": "Service tout-en-un",
+        "slogan": "Achetez facilement en Chine, expédiez professionnellement dans le monde entier",
+        "login": {
+            "title": "Bienvenue de retour",
+            "confirmText": "Se connecter",
+            "forgetPassword": "Mot de passe oublié ?",
+            "register": "S'inscrire",
+            "fields": {
+                "email": {
+                    "errorMessage": "L'email est requis",
+                    "placeholder": "Entrez votre email"
+                },
+                "password": {
+                    "errorMessage": "Le mot de passe est requis",
+                    "placeholder": "Entrez votre mot de passe"
+                }
+            }
         },
-        "Steps": [
-            {
-                "key": "step1",
-                "title": "Passer Commande",
-                "desc": "Collez le lien du produit pour soumettre la commande"
-            },
-            {
-                "key": "step2",
-                "title": "QC & Stockage",
-                "desc": "Recevez 3-5 photos de contrôle qualité et 90 jours de stockage gratuit"
-            },
-            {
-                "key": "step3",
-                "title": "Emballage",
-                "desc": "Emballage et inspection de votre commande"
-            },
-            {
-                "key": "step4",
-                "title": "Expédition Mondiale",
-                "desc": "Choisissez parmi 150+ options d'expédition mondiale"
+        "register": {
+            "title": "Inscription",
+            "confirmText": "S'inscrire",
+            "alreadyHaveAccount": "Vous avez déjà un compte ?",
+            "login": "Se connecter",
+            "otpTitle": "Vérifiez votre email",
+            "agreementRequired": "Veuillez accepter les conditions",
+            "otpDescription": "Nous avons envoyé un code de vérification à {email}, veuillez entrer le code pour compléter la vérification.",
+            "fields": {
+                "email": {
+                    "errorMessage": "L'email est requis",
+                    "placeholder": "Entrez votre email"
+                },
+                "password": {
+                    "errorMessage": "Le mot de passe est requis",
+                    "placeholder": "Créez un mot de passe"
+                },
+                "inviteCode": {
+                    "placeholder": "Code d'invitation (facultatif)"
+                },
+                "isChecked": {
+                    "label": "J'ai lu et j'accepte les conditions générales du site"
+                }
             }
-        ],
-        "Links": [
-            {
-                "key": "link1",
-                "href": "https://discord.gg/N34Q27Vts8",
-                "src": "/images/page/tab1.png"
-            },
-            {
-                "key": "link2",
-                "href": "/dashboard",
-                "src": "/images/page/tab2.png"
-            },
-            {
-                "key": "link3",
-                "href": "/estimation",
-                "src": "/images/page/tab3.png"
-            },
-            {
-                "key": "link4",
-                "href": "/register",
-                "src": "/images/page/tab4.png"
-            }
-        ],
-        "Services": [
-            {
-                "key": "service1",
-                "title": "Passer Votre Commande",
-                "describe": "Faites vos achats en toute simplicité pour n'importe quel produit de Chine, disponible en ligne et hors ligne. Pour passer commande, collez simplement le lien du produit désiré. Profitez de notre service fluide et complet qui vous guide de la navigation à l'achat en toute facilité.",
-                "src": "/images/page/icon01.png"
-            },
-            {
-                "key": "service2",
-                "title": "Livraison à Notre Entrepôt",
-                "describe": "Achetez auprès de divers vendeurs via notre service, et nous consolidons efficacement vos achats. Tous les articles seront expédiés vers l'entrepôt BBDbuy en Chine, rationalisant le processus pour votre commodité.",
-                "src": "/images/page/icon02.png"
-            },
-            {
-                "key": "service3",
-                "title": "Processus d'Assurance Qualité",
-                "describe": "Une fois vos produits arrivés à l'entrepôt BBDbuy, ils subissent un Contrôle Qualité approfondi. Notre équipe examine méticuleusement chaque article pour tout défaut, garantissant l'exactitude de la taille, de la couleur, etc. Avec BBDbuy, profitez de la tranquillité d'esprit, sachant que notre service après-vente dédié est engagé pour votre satisfaction.",
-                "src": "/images/page/icon03.png"
-            },
-            {
-                "key": "service4",
-                "title": "Expédition Mondiale Simplifiée",
-                "describe": "Sélectionnez des produits de votre inventaire d'entrepôt et regroupez-les facilement en un seul colis. Avec les services d'expédition mondiale fiables de BBDbuy, vos achats peuvent être livrés directement à votre porte. Profitez de la commodité d'une expédition de classe mondiale à portée de main.",
-                "src": "/images/page/icon04.png"
-            }
-        ]
+        }
     },
-    "Components": {
-        "Navbar": {
-            "language": "Langue",
-            "currency": "Devise",
-            "submit": "Valider",
-            "texts": {
-                "User": {
-                    "register": "S'inscrire",
-                    "login": "Connexion",
-                    "account": "Mon Compte",
-                    "orders": "Mes Commandes",
-                    "logout": "Déconnexion"
-                }
+    "home": {
+        "line1": "Simplifiez Votre",
+        "line2": "Expérience d'Achat, Choisissez BBD",
+        "serviceTitle": "Service d'Achat Tout-en-Un",
+        "announcement": {
+            "label": "Annonce",
+            "message": "🎉 BBD - Mise à Jour Majeure - Bienvenue aux Nouveaux et Anciens Utilisateurs !"
+        },
+        "steps": {
+            "step1": {
+                "title": "Passer Commande",
+                "describe": "Collez le lien du produit pour soumettre la commande"
             },
-            "Links": [
-                {
-                    "label": "Accueil",
-                    "href": "/"
+            "step2": {
+                "title": "Inspection Qualité & Stockage",
+                "describe": "Recevez 3-5 photos d'inspection qualité et 90 jours de stockage gratuit"
+            },
+            "step3": {
+                "title": "Emballage",
+                "describe": "Emballage et vérification de votre commande"
+            },
+            "step4": {
+                "title": "Expédition Mondiale",
+                "describe": "Choisissez parmi plus de 150 options d'expédition mondiale"
+            }
+        },
+        "services": {
+            "service1": {
+                "title": "Service de Commande",
+                "describe": "Achetez facilement n'importe quel produit de Chine, en ligne et hors ligne. Pour passer commande, il suffit de coller le lien du produit souhaité. Profitez de notre service de bout en bout sans faille, de la navigation à l'achat, réalisé sans effort."
+            },
+            "service2": {
+                "title": "Livraison à Notre Entrepôt",
+                "describe": "Achetez auprès de plusieurs vendeurs grâce à notre service, et nous consoliderons efficacement vos achats. Tous les articles seront expédiés vers l'entrepôt BBDbuy en Chine, simplifiant le processus pour vous."
+            },
+            "service3": {
+                "title": "Processus d'Assurance Qualité",
+                "describe": "Après l'arrivée de vos produits à l'entrepôt BBDbuy, ils subissent des contrôles qualité stricts. Notre équipe inspecte soigneusement chaque article pour détecter les défauts, garantissant l'exactitude de la taille, de la couleur, etc. Avec BBDbuy, soyez assuré que notre service après-vente dédié s'engage pour votre satisfaction."
+            },
+            "service4": {
+                "title": "Expédition Mondiale Pratique",
+                "describe": "Sélectionnez des produits dans l'inventaire de l'entrepôt et combinez-les facilement en un seul colis. Avec le service d'expédition mondiale fiable de BBDbuy, vous pouvez faire livrer vos achats directement à votre porte. Profitez de la commodité d'une expédition de classe mondiale."
+            }
+        }
+    },
+    "components": {
+        "navbar": {
+            "selector": {
+                "language": "Langue",
+                "currency": "Devise",
+                "submit": "Soumettre"
+            },
+            "dropdown": {
+                "register": "S'inscrire",
+                "login": "Se connecter",
+                "account": "Mon Compte",
+                "orders": "Mes Commandes",
+                "logout": "Se déconnecter"
+            },
+            "links": {
+                "home": {
+                    "label": "Accueil"
                 },
-                {
-                    "label": "Réexpédition",
-                    "href": "/forwarding"
+                "forwarding": {
+                    "label": "Expédition"
                 },
-                {
-                    "label": "Estimation",
-                    "href": "/estimation"
+                "estimation": {
+                    "label": "Estimation de livraison"
                 },
-                {
-                    "label": "Centre d'aide",
-                    "href": "/help"
+                "help": {
+                    "label": "Centre d'Aide"
                 },
-                {
-                    "label": "Promotion",
-                    "href": "/dashboard/promotion"
+                "promotion": {
+                    "label": "Programme d'Affiliation"
                 }
-            ]
+            }
         },
         "footer": {
-            "desc": "BBD simplifie vos achats : achetez en Chine, stockez vos articles et expédiez-les facilement dans le monde entier.",
+            "desc": "BBD simplifie les achats, vous permettant d'acheter en Chine, stocker des produits et expédier dans le monde entier facilement.",
             "copyright": "© 2025 BBDbuy.com Tous droits réservés",
             "categories": {
                 "daigouGuide": {
-                    "title": "Guide d'achat",
-                    "beginnerGuide": "Guide pour débutants",
-                    "serviceFee": "Frais de service",
+                    "title": "Guide d'Achat",
+                    "beginnerGuide": "Guide du Débutant",
+                    "serviceFee": "Frais de Service",
                     "returnRefund": "Retours & Remboursements"
                 },
                 "payment": {
                     "title": "Paiement",
                     "topup": "Recharger",
-                    "internationalCreditCard": "Carte de crédit internationale",
-                    "wireTransfer": "Virement bancaire"
+                    "internationalCreditCard": "Carte de Crédit Internationale",
+                    "wireTransfer": "Virement Bancaire"
                 },
                 "delivery": {
                     "title": "Livraison",
-                    "restrictions": "Restrictions d'expédition",
-                    "customsTaxes": "Douanes & Taxes"
+                    "restrictions": "Restrictions d'Expédition",
+                    "customsTaxes": "Douane & Taxes"
                 },
                 "afterSale": {
-                    "title": "Service après-vente",
-                    "storagePeriod": "Durée de stockage",
-                    "afterSalePolicy": "Politique après-vente",
-                    "insuranceCompensation": "Assurance & Indemnisation"
+                    "title": "Service Après-Vente",
+                    "storagePeriod": "Période de Stockage",
+                    "afterSalePolicy": "Politique Après-Vente",
+                    "insuranceCompensation": "Assurance & Compensation"
                 },
                 "workingHours": {
-                    "title": "Heures d'ouverture",
-                    "weekday": "Lundi - Vendredi 9h00 - 16h00",
-                    "saturday": "Samedi 10h00 - 14h00",
+                    "title": "Heures d'Ouverture",
+                    "weekday": "Lundi - Vendredi 9:00 - 16:00",
+                    "saturday": "Samedi 10:00 - 14:00",
                     "sunday": "Dimanche Fermé"
                 }
             },
             "other": {
-                "about": "À propos de bbdbuy",
-                "contact": "Nous contacter",
-                "terms": "Conditions d'utilisation",
-                "privacy": "Politique de confidentialité"
+                "about": "À propos de BBDbuy",
+                "contact": "Contactez-nous",
+                "terms": "Conditions de Service",
+                "privacy": "Politique de Confidentialité"
             }
         },
-        "OrderProgress": {
-            "steps": [
-                "Sélectionner Produit",
-                "Payer Commande",
-                "QC & Entrepôt",
-                "Emballage",
-                "Recevoir Colis"
-            ]
+        "progress": {
+            "step1": "Sélectionner les Produits",
+            "step2": "Payer la Commande",
+            "step3": "Inspection Qualité & Stockage",
+            "step4": "Emballage",
+            "step5": "Réception des Marchandises"
         },
-        "Modal": {
+        "modal": {
             "confirm": "Confirmer",
             "cancel": "Annuler",
-            "confirmModalTitle": "Confirmation d'Opération"
-        },
-        "Addressfields": {
-            "fields": [
-                {
-                    "key": "recipient",
-                    "type": "input",
-                    "name": "recipient",
-                    "label": "Destinataire",
-                    "placeholder": "Entrez le nom du destinataire"
-                },
-                {
-                    "type": "input",
-                    "name": "phone",
-                    "label": "Téléphone",
-                    "placeholder": "Entrez le numéro de téléphone"
-                },
-                {
-                    "type": "area",
-                    "name": "area",
-                    "label": "Région",
-                    "placeholder": "Sélectionnez la région"
-                },
-                {
-                    "type": "input",
-                    "name": "address",
-                    "label": "Adresse",
-                    "placeholder": "Entrez l'adresse complète"
-                },
-                {
-                    "type": "input",
-                    "name": "doorNo",
-                    "label": "N° de Porte",
-                    "placeholder": "Entrez le numéro de porte"
-                },
-                {
-                    "type": "input",
-                    "name": "postcode",
-                    "label": "Code Postal",
-                    "placeholder": "Entrez le code postal"
-                },
-                {
-                    "type": "checkbox",
-                    "name": "defaultAddress",
-                    "label": "Définir comme adresse par défaut"
+            "confirmModalTitle": "Confirmer l'Action",
+            "address": {
+                "addTitle": "Ajouter une Adresse",
+                "editTitle": "Modifier l'Adresse",
+                "fields": {
+                    "recipient": {
+                        "label": "Destinataire",
+                        "placeholder": "Entrez le nom du destinataire",
+                        "errorMessage": "Le destinataire ne peut pas être vide"
+                    },
+                    "phone": {
+                        "label": "Téléphone",
+                        "placeholder": "Entrez le numéro de téléphone",
+                        "errorMessage": "Le téléphone ne peut pas être vide"
+                    },
+                    "area": {
+                        "label": "Région",
+                        "placeholder": "Sélectionnez la région",
+                        "errorMessage": "La région ne peut pas être vide"
+                    },
+                    "address": {
+                        "label": "Adresse",
+                        "placeholder": "Entrez l'adresse complète",
+                        "errorMessage": "L'adresse ne peut pas être vide"
+                    },
+                    "doorNo": {
+                        "label": "Numéro de Porte",
+                        "placeholder": "Entrez le numéro de porte",
+                        "errorMessage": "Le numéro de porte ne peut pas être vide"
+                    },
+                    "postcode": {
+                        "label": "Code Postal",
+                        "placeholder": "Entrez le code postal",
+                        "errorMessage": "Le code postal ne peut pas être vide"
+                    },
+                    "defaultAddress": {
+                        "label": "Définir comme adresse par défaut"
+                    }
                 }
-            ]
+            },
+            "billingAddress": {
+                "addTitle": "Ajouter une Adresse de Facturation",
+                "editTitle": "Modifier l'Adresse de Facturation",
+                "fields": {
+                    "familyName": {
+                        "label": "Nom de Famille",
+                        "placeholder": "Entrez le nom de famille",
+                        "errorMessage": "Le nom de famille ne peut pas être vide"
+                    },
+                    "givenName": {
+                        "label": "Prénom",
+                        "placeholder": "Entrez le prénom",
+                        "errorMessage": "Le prénom ne peut pas être vide"
+                    },
+                    "phone": {
+                        "label": "Téléphone",
+                        "placeholder": "Entrez le numéro de téléphone",
+                        "errorMessage": "Le téléphone ne peut pas être vide"
+                    },
+                    "area": {
+                        "label": "Région",
+                        "placeholder": "Sélectionnez la région",
+                        "errorMessage": "La région ne peut pas être vide"
+                    },
+                    "address": {
+                        "label": "Adresse",
+                        "placeholder": "Entrez l'adresse complète",
+                        "errorMessage": "L'adresse ne peut pas être vide"
+                    },
+                    "doorNo": {
+                        "label": "Numéro de Porte",
+                        "placeholder": "Entrez le numéro de porte",
+                        "errorMessage": "Le numéro de porte ne peut pas être vide"
+                    },
+                    "postcode": {
+                        "label": "Code Postal",
+                        "placeholder": "Entrez le code postal",
+                        "errorMessage": "Le code postal ne peut pas être vide"
+                    },
+                    "defaultAddress": {
+                        "label": "Définir comme adresse par défaut"
+                    }
+                }
+            },
+            "recharge": {
+                "title": "Recharger",
+                "placeholder": "Veuillez saisir le montant"
+            }
         },
-        "RechargeModal": {
-            "title": "Recharger",
-            "placeholder": "Entrez le montant à recharger"
-        },
-        "button": {
+        "form": {
             "save": "Enregistrer"
         },
-        "ChatBox": {
+        "chatbox": {
             "loginFirst": "Veuillez vous connecter d'abord",
-            "onlineSupport": "Support en ligne",
-            "inputPlaceholder": "Entrez votre message...",
+            "onlineSupport": "Support en Ligne",
+            "inputPlaceholder": "Veuillez saisir un message...",
             "send": "Envoyer",
             "connectionLost": "Connexion perdue, veuillez réessayer plus tard",
             "imageSendFail": "Échec de l'envoi de l'image"
         }
     },
-    "LoginPage": {
-        "title": "Content de vous revoir",
-        "confirmText": "Se connecter",
-        "links": {
-            "forgetPassword": "Mot de passe oublié ?",
-            "register": "S'inscrire"
-        },
-        "fields": {
-            "email": {
-                "placeholder": "Veuillez saisir votre email"
-            },
-            "password": {
-                "placeholder": "Veuillez saisir votre mot de passe"
-            }
-        }
-    },
-    "RegisterPage": {
-        "title": "Inscription",
-        "confirmText": "S'inscrire",
-        "fields": {
-            "email": {
-                "placeholder": "Entrez votre email"
-            },
-            "password": {
-                "placeholder": "Mot de passe"
-            },
-            "inviteCode": {
-                "placeholder": "Entrez le code d'invitation, laissez vide si aucun"
-            },
-            "isChecked": {
-                "label": "J'ai lu et accepté les conditions générales du site"
-            }
-        },
-        "errors": {
-            "agreementRequired": "Veuillez accepter les conditions"
-        },
-        "otp": {
-            "title": "Vérifiez votre email",
-            "description": "Nous avons envoyé un code de vérification à {email}, veuillez entrer le code pour terminer la vérification."
-        },
-        "links": {
-            "alreadyHaveAccount": "Vous avez déjà un compte ?",
-            "login": "Connexion"
-        }
-    },
-    "Dashboard": {
+    "dashboard": {
         "LayoutMenu": [
             {
                 "key": "",
@@ -364,237 +352,86 @@
                 ]
             }
         ],
-        "Page": {
-            "texts": {
-                "UserBalanceCard": {
-                    "balance": "Solde",
-                    "score": "Points"
-                }
+        "page": {
+            "userBalanceCard": {
+                "balance": "Solde",
+                "score": "Points"
             },
-            "Tabs": [
-                {
-                    "key": "profile",
-                    "label": "Profil"
-                },
-                {
-                    "key": "address",
-                    "label": "Adresse"
-                },
-                {
-                    "key": "security",
-                    "label": "Sécurité"
-                },
-                {
-                    "key": "billingAddress",
-                    "label": "Adresse de Facturation"
-                }
-            ],
-            "ProfileTab": {
-                "texts": {
-                    "title": "Modifier le Profil",
-                    "edit": "Modifier"
-                },
-                "fields": [
-                    {
-                        "key": "nickName",
-                        "type": "input",
-                        "name": "nickName",
-                        "label": "Nom d'utilisateur"
+            "tabs": {
+                "profile": "Profil",
+                "address": "Adresse",
+                "security": "Sécurité",
+                "billingAddress": "Adresse de Facturation"
+            },
+            "profile": {
+                "title": "Modifier les Informations Personnelles",
+                "edit": "Modifier",
+                "fields": {
+                    "nickName": {
+                        "label": "Surnom",
+                        "errorMessage": "Le surnom ne peut pas être vide",
+                        "placeholder": "Veuillez entrer un surnom"
                     },
-                    {
-                        "key": "mobile",
-                        "type": "input",
-                        "name": "mobile",
-                        "label": "Numéro de Mobile"
+                    "mobile": {
+                        "label": "Mobile",
+                        "errorMessage": "Le numéro de mobile ne peut pas être vide",
+                        "placeholder": "Veuillez entrer le numéro de mobile"
                     }
-                ]
+                }
             },
-            "AddressTab": {
-                "texts": {
-                    "title": {
-                        "add": "Ajouter une Adresse",
-                        "edit": "Modifier l'Adresse",
-                        "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette adresse ?"
-                    },
-                    "buttons": {
-                        "add": "+ Ajouter une Adresse",
-                        "edit": "Modifier",
-                        "delete": "Supprimer"
-                    },
-                    "tableEmpty": "Aucune information d'adresse disponible pour le moment."
-                },
-                "tableColumns": [
-                    {
-                        "key": "recipient",
+            "address": {
+                "add": "+ Ajouter une Adresse",
+                "edit": "Modifier",
+                "delete": "Supprimer",
+                "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette adresse ?",
+                "tableEmpty": "Aucune information d'adresse disponible",
+                "tableColumns": {
+                    "recipient": {
                         "label": "Destinataire"
                     },
-                    {
-                        "key": "phone",
+                    "phone": {
                         "label": "Téléphone"
                     },
-                    {
-                        "key": "address",
+                    "address": {
                         "label": "Détails de l'Adresse"
                     },
-                    {
-                        "key": "actions",
+                    "actions": {
                         "label": "Actions"
                     }
-                ],
-                "fields": [
-                    {
-                        "key": "recipient",
-                        "type": "input",
-                        "name": "recipient",
-                        "label": "Destinataire",
-                        "placeholder": "Entrez le nom du destinataire",
-                        "required": true
-                    },
-                    {
-                        "key": "phone",
-                        "type": "input",
-                        "name": "phone",
-                        "label": "Téléphone",
-                        "placeholder": "Entrez le numéro de téléphone",
-                        "required": true
-                    },
-                    {
-                        "key": "area",
-                        "type": "area",
-                        "name": "area",
-                        "label": "Région",
-                        "placeholder": "Sélectionnez la région"
-                    },
-                    {
-                        "key": "address",
-                        "type": "input",
-                        "name": "address",
-                        "label": "Adresse",
-                        "placeholder": "Entrez l'adresse complète",
-                        "required": true
-                    },
-                    {
-                        "key": "doorNo",
-                        "type": "input",
-                        "name": "doorNo",
-                        "label": "N° de Porte",
-                        "placeholder": "Entrez le numéro de porte",
-                        "required": true
-                    },
-                    {
-                        "key": "postcode",
-                        "type": "input",
-                        "name": "postcode",
-                        "label": "Code Postal",
-                        "placeholder": "Entrez le code postal",
-                        "required": true
-                    },
-                    {
-                        "key": "defaultAddress",
-                        "type": "checkbox",
-                        "name": "defaultAddress",
-                        "label": "Définir comme adresse par défaut"
-                    }
-                ]
+                }
             },
-            "SecurityTab": {
-                "texts": {
-                    "title": "Mot de Passe de Connexion",
-                    "description": "Un mot de passe fort assure la sécurité de votre compte. Nous recommandons de changer votre mot de passe régulièrement. Utilisez un mot de passe avec des lettres et des chiffres, d'au moins 6 caractères.",
-                    "button": "Changer le Mot de Passe",
-                    "modalTitle": "Changer le Mot de Passe"
-                },
-                "fields": [
-                    {
-                        "type": "input",
-                        "key": "oldPassword",
-                        "name": "oldPassword",
+            "security": {
+                "title": "Mot de Passe de Connexion",
+                "description": "Des mots de passe forts protègent la sécurité de votre compte. Nous recommandons de changer votre mot de passe régulièrement. Utilisez des mots de passe contenant des lettres et des chiffres, avec au moins 6 caractères.",
+                "button": "Modifier le Mot de Passe",
+                "modalTitle": "Modifier le Mot de Passe",
+                "toast": "Les deux nouveaux mots de passe saisis ne correspondent pas",
+                "fields": {
+                    "oldPassword": {
                         "label": "Mot de Passe Actuel",
-                        "placeholder": "Entrez le mot de passe actuel"
+                        "placeholder": "Entrez le mot de passe actuel",
+                        "errorMessage": "Le mot de passe actuel ne peut pas être vide"
                     },
-                    {
-                        "type": "input",
-                        "key": "newPassword",
-                        "name": "newPassword",
+                    "newPassword": {
                         "label": "Nouveau Mot de Passe",
-                        "placeholder": "Entrez le nouveau mot de passe"
+                        "placeholder": "Entrez le nouveau mot de passe",
+                        "errorMessage": "Le nouveau mot de passe ne peut pas être vide"
                     },
-                    {
-                        "type": "input",
-                        "key": "confirmPassword",
-                        "name": "confirmPassword",
+                    "confirmPassword": {
                         "label": "Confirmer le Nouveau Mot de Passe",
-                        "placeholder": "Confirmez le nouveau mot de passe"
+                        "placeholder": "Confirmez le nouveau mot de passe",
+                        "errorMessage": "La confirmation du mot de passe ne peut pas être vide"
                     }
-                ]
+                }
             },
-            "BillingAddressTab": {
-                "texts": {
-                    "addButton": "Ajouter une Adresse de Facturation",
-                    "editButton": "Modifier l'Adresse de Facturation",
-                    "deleteButton": "Supprimer l'Adresse de Facturation",
-                    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette adresse ?",
-                    "modalAddTitle": "Ajouter une Adresse",
-                    "modalEditTitle": "Modifier l'Adresse",
-                    "noAddress": "Aucune adresse de facturation disponible."
-                },
-                "fields": [
-                    {
-                        "key": "familyName",
-                        "type": "input",
-                        "name": "familyName",
-                        "label": "Nom de famille",
-                        "placeholder": "Entrez le nom de famille",
-                        "required": true
-                    },
-                    {
-                        "key": "givenName",
-                        "type": "input",
-                        "name": "givenName",
-                        "label": "Prénom",
-                        "placeholder": "Entrez le prénom",
-                        "required": true
-                    },
-                    {
-                        "key": "phone",
-                        "type": "input",
-                        "name": "phone",
-                        "label": "Téléphone",
-                        "placeholder": "Entrez le numéro de téléphone",
-                        "required": true
-                    },
-                    {
-                        "key": "area",
-                        "type": "area",
-                        "name": "area",
-                        "label": "Région",
-                        "placeholder": "Sélectionnez la région"
-                    },
-                    {
-                        "key": "address",
-                        "type": "input",
-                        "name": "address",
-                        "label": "Adresse",
-                        "placeholder": "Entrez l'adresse complète",
-                        "required": true
-                    },
-                    {
-                        "key": "doorNo",
-                        "type": "input",
-                        "name": "doorNo",
-                        "label": "N° de Porte",
-                        "placeholder": "Entrez le numéro de porte",
-                        "required": true
-                    },
-                    {
-                        "key": "postcode",
-                        "type": "input",
-                        "name": "postcode",
-                        "label": "Code Postal",
-                        "placeholder": "Entrez le code postal",
-                        "required": true
-                    }
-                ]
+            "billingAddress": {
+                "addButton": "Ajouter une Adresse de Facturation",
+                "editButton": "Modifier l'Adresse de Facturation",
+                "deleteButton": "Supprimer l'Adresse de Facturation",
+                "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette adresse ?",
+                "modalAddTitle": "Ajouter une Adresse",
+                "modalEditTitle": "Modifier l'Adresse",
+                "noAddress": "Aucune adresse de facturation disponible"
             }
         },
         "WalletPage": {
@@ -693,17 +530,26 @@
             },
             "ScoreTab": {
                 "texts": {
-                    "title": "Solde",
-                    "recharge": "Recharger",
-                    "withdraw": "Retirer",
-                    "tableTitle": "Historique des Transactions",
-                    "noData": "Aucun enregistrement de transaction",
-                    "withdrawModalTitle": "Retirer"
+                    "title": "Points",
+                    "exchangeCoupon": "Échanger des points contre un coupon",
+                    "details": "Détails des points"
                 },
                 "tableColumns": [
                     {
-                        "key": "id",
-                        "label": "Heure de la Transaction"
+                        "key": "bizType",
+                        "label": "Source"
+                    },
+                    {
+                        "key": "amount",
+                        "label": "Quantité"
+                    },
+                    {
+                        "key": "availablePoints",
+                        "label": "Points disponibles"
+                    },
+                    {
+                        "key": "createTime",
+                        "label": "Date"
                     }
                 ]
             }
@@ -746,7 +592,7 @@
                 "delete": "Supprimer"
             }
         },
-        "OrderPage": {
+        "order": {
             "all": "Tous",
             "waitPay": "Impayées",
             "paid": "Payées",
@@ -789,6 +635,11 @@
                 "totalFee": "Coût total :",
                 "discountFee": "Réduction :",
                 "refundAmount": "Montant du remboursement :"
+            },
+            "promptCard": {
+                "title": "Contrôle Qualité & Gestion des Colis",
+                "description": "Veuillez vous rendre sur la page entrepôt pour voir les photos de contrôle qualité et soumettre les colis",
+                "button": "Aller à l'entrepôt"
             }
         },
         "WarehousePage": {
@@ -865,21 +716,55 @@
             }
         },
         "Promotion": {
+            "page": {
+                "process": [
+                    "Partagez votre code de parrainage",
+                    "L'ami que vous avez invité confirme avoir reçu votre code de parrainage",
+                    "Recevez votre commission de parrainage"
+                ],
+                "invite": {
+                    "copyUrl": "Copiez cette URL et utilisez-la pour rediriger les utilisateurs vers la page d'accueil de votre ID de parrainage"
+                },
+                "myAlliance": {
+                    "title": "Mon Alliance",
+                    "totalReward": "Récompense totale",
+                    "record": "Historique",
+                    "withdraw": "Retirer",
+                    "inviteUsers": "Inviter des utilisateurs >",
+                    "withdrawTimes": "Retraits",
+                    "earned": "Gagné >"
+                },
+                "myLevel": {
+                    "title": "Mon Niveau",
+                    "experience": "Mon expérience :",
+                    "bonusRate": "Taux de bonus",
+                    "experienceRange": "Expérience"
+                },
+                "faq": {
+                    "title": "FAQ sur les avantages",
+                    "questions": [
+                        "Qu'est-ce que le programme d'affiliation ?",
+                        "Comment mon bonus est-il calculé ?",
+                        "Comment promouvoir gratuitement ?"
+                    ],
+                    "defaultContent": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                }
+            },
             "user": {
-                "title": "Détails de l'utilisateur",
+                "title": "Détails des utilisateurs",
                 "noData": "Aucun enregistrement de transaction",
                 "tableColumns": [
                     {
                         "key": "name",
-                        "label": "Invité"
+                        "label": "Personne invitée"
                     },
                     {
                         "key": "email",
-                        "label": "Email de l'invité"
+                        "label": "Email de la personne invitée"
                     },
                     {
                         "key": "createTime",
-                        "label": "Heure"
+                        "label": "Date"
                     }
                 ]
             },
@@ -893,15 +778,15 @@
                     },
                     {
                         "key": "amount",
-                        "label": "Quantité"
+                        "label": "Montant"
                     },
                     {
                         "key": "currentBalance",
-                        "label": "Bonus disponible"
+                        "label": "Bonus disponibles"
                     },
                     {
                         "key": "createTime",
-                        "label": "Heure"
+                        "label": "Date"
                     }
                 ]
             },
@@ -911,7 +796,7 @@
                 "tableColumns": [
                     {
                         "key": "email",
-                        "label": "Email de l'invité"
+                        "label": "Email de la personne invitée"
                     },
                     {
                         "key": "experience",
@@ -919,9 +804,26 @@
                     },
                     {
                         "key": "createTime",
-                        "label": "Heure"
+                        "label": "Date"
                     }
                 ]
+            }
+        }
+    },
+    "submit": {
+        "warehouse": {
+            "shippingAddress": "Adresse de Livraison",
+            "commodityList": "Liste des Articles",
+            "packagingMethod": "Méthode d'Emballage",
+            "deliveryRoute": "Itinéraire de Livraison",
+            "leavingMessage": "Laisser un Message",
+            "placeholder": "Si vous avez des exigences particulières, veuillez les noter ici",
+            "submit": "Soumettre le Colis",
+            "agreement": "J'ai lu et j'accepte l'accord d'expédition de colis BBDbuy",
+            "toast": {
+                "agreementRequired": "Veuillez cocher la clause de non-responsabilité",
+                "addressRequired": "Veuillez sélectionner une adresse de livraison",
+                "routeRequired": "Veuillez sélectionner un itinéraire de livraison"
             }
         }
     },
@@ -978,64 +880,7 @@
         "fixedCost": "Coût fixe",
         "handlingFee": "Frais de traitement",
         "submitOrder": "Soumettre la Commande",
-        "tooltipTip": "En raison de la conversion de devises, il peut y avoir une petite différence de 0.01 ou 0.02",
-        "fields": [
-            {
-                "key": "familyName",
-                "type": "input",
-                "name": "familyName",
-                "label": "Nom de famille",
-                "placeholder": "Entrez le nom de famille",
-                "required": true
-            },
-            {
-                "key": "givenName",
-                "type": "input",
-                "name": "givenName",
-                "label": "Prénom",
-                "placeholder": "Entrez le prénom",
-                "required": true
-            },
-            {
-                "key": "phone",
-                "type": "input",
-                "name": "phone",
-                "label": "Téléphone",
-                "placeholder": "Entrez le numéro de téléphone",
-                "required": true
-            },
-            {
-                "key": "area",
-                "type": "area",
-                "name": "area",
-                "label": "Région",
-                "placeholder": "Sélectionnez la région"
-            },
-            {
-                "key": "address",
-                "type": "input",
-                "name": "address",
-                "label": "Adresse",
-                "placeholder": "Entrez l'adresse complète",
-                "required": true
-            },
-            {
-                "key": "doorNo",
-                "type": "input",
-                "name": "doorNo",
-                "label": "N° de Porte",
-                "placeholder": "Entrez le numéro de porte",
-                "required": true
-            },
-            {
-                "key": "postcode",
-                "type": "input",
-                "name": "postcode",
-                "label": "Code Postal",
-                "placeholder": "Entrez le code postal",
-                "required": true
-            }
-        ]
+        "tooltipTip": "En raison de la conversion de devises, il peut y avoir une petite différence de 0.01 ou 0.02"
     },
     "Goods": {
         "agreeTerms": "Veuillez accepter les conditions d'utilisation",
@@ -1068,7 +913,7 @@
         "riskNotice": "Avis de Risque",
         "riskDescription": "Le produit que vous avez soumis peut présenter certains risques d'expédition. Pour la sécurité de vos fonds, nous ne pouvons pas fournir temporairement de services de commande en ligne. Pour plus d'informations, veuillez contacter le service client en ligne !"
     },
-    "ForwardingPage": {
+    "forwarding": {
         "warehouseAddress": "Adresse de l'entrepôt",
         "warehouseFullAddress": "8A-801, Shenghao Technology Building, Zone Industrielle Licheng, Rue Shuikou, Huizhou, Guangdong, Chine",
         "forwardingPackage": "Colis d'expédition",
@@ -1099,7 +944,9 @@
         "remarkPlaceholder": "Entrez une remarque (facultatif)",
         "remark": "Remarque"
     },
-    "EstimationPage": {
+    "estimation": {
+        "errorCountry": "Le pays est requis",
+        "errorCategory": "Le type de marchandise est requis",
         "fillWeightOrSize": "Veuillez entrer le poids ou les dimensions (longueur, largeur, hauteur) !",
         "title": "Estimation d'Expédition",
         "warehouse": "Entrepôt Vers",

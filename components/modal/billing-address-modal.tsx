@@ -17,16 +17,15 @@ export interface AddressModalProps {
 }
 
 const initAddress = {
-  recipient: "",
+  familyName: "",
+  givenName: "",
   phone: "",
   countryId: "",
   stateId: "",
   city: "",
   addressType: "",
   postcode: "",
-  defaultAddress: 0,
   doorNo: "",
-  address: "",
 };
 
 export default function AddressModal({
@@ -35,17 +34,25 @@ export default function AddressModal({
   type,
   defaultData,
 }: AddressModalProps) {
-  const t = useTranslations("components.modal.address");
+  const t = useTranslations("components.modal.billingAddress");
   const queryClient = useQueryClient();
 
-  const addressFields: FieldConfig[] = [
+  const billingAddress: FieldConfig[] = [
     {
       type: "input",
-      name: "recipient",
-      label: t("fields.recipient.label"),
-      placeholder: t("fields.recipient.placeholder"),
+      name: "familyName",
+      label: t("fields.familyName.label"),
+      placeholder: t("fields.familyName.placeholder"),
       required: true,
-      errorMessage: t("fields.recipient.errorMessage"),
+      errorMessage: t("fields.familyName.errorMessage"),
+    },
+    {
+      type: "input",
+      name: "givenName",
+      label: t("fields.givenName.label"),
+      placeholder: t("fields.givenName.placeholder"),
+      required: true,
+      errorMessage: t("fields.givenName.errorMessage"),
     },
     {
       type: "input",
@@ -85,11 +92,6 @@ export default function AddressModal({
       required: true,
       errorMessage: t("fields.postcode.errorMessage"),
     },
-    {
-      type: "checkbox",
-      name: "defaultAddress",
-      label: t("fields.defaultAddress.label"),
-    },
   ];
   const [formData, setFormData] = useState<any>(initAddress);
 
@@ -101,6 +103,32 @@ export default function AddressModal({
     }
   }, [type, defaultData, isOpen]);
 
+  // const handleSave = async () => {
+  //   const { createTime, updateTime, customerId, ...filteredData } =
+  //     currentRowData;
+
+  //   try {
+  //     if (modalType === "add") {
+  //       await addAddress({
+  //         ...currentRowData,
+  //         addressType: 2,
+  //         defaultAddress: 1,
+  //       }); // 新增接口
+  //     } else if (modalType === "edit") {
+  //       await updateAddress({
+  //         ...filteredData,
+  //         city: filteredData?.city || filteredData?.state,
+  //       }); // 编辑接口
+  //     } else if (modalType === "delete") {
+  //       await deleteAddress({ id: currentRowData.id });
+  //     }
+  //     setModalType(null);
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //   } finally {
+  //     queryClient.invalidateQueries({ queryKey: ["billingAddress"] }); // 手动刷新
+  //   }
+  // };
   const handleSave = async (data: any) => {
     const { createTime, updateTime, customerId, ...filteredData } = data;
 
@@ -108,26 +136,25 @@ export default function AddressModal({
       if (type === "add") {
         await addAddress({
           ...data,
-          addressType: 1,
-          defaultAddress: filteredData.defaultAddress ? 1 : 0,
+          addressType: 2,
+          defaultAddress: 1,
         });
       } else if (type === "edit") {
         await updateAddress({
           ...filteredData,
-          defaultAddress: filteredData.defaultAddress ? 1 : 0,
         });
       }
       onOpenChange(false);
 
       return true;
     } finally {
-      queryClient.invalidateQueries({ queryKey: ["addressList"] });
+      queryClient.invalidateQueries({ queryKey: ["billingAddress"] });
     }
   };
 
   return (
     <FormModal
-      fields={addressFields}
+      fields={billingAddress}
       formData={formData}
       isOpen={isOpen}
       title={type === "add" ? t("addTitle") : t("editTitle")}

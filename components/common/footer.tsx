@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { Logo } from "../icons";
 
 export default function Footer() {
-  const t = useTranslations("Components.footer");
+  const t = useTranslations("components.footer");
   const footerItems = [
     {
       title: t("categories.daigouGuide.title"),

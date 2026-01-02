@@ -1,127 +1,125 @@
 {
-    "Home": {
-        "texts": {
-            "Slogan": {
-                "line1": "简化您的",
-                "line2": "购物体验，选择BBD"
-            },
-            "Search": {
-                "placeholder": "输入商品名称/链接",
-                "button": "搜索"
-            },
-            "Announcement": {
-                "label": "公告",
-                "message": "🎉 限时优惠，所有商品享受12%折扣！"
-            },
-            "ServiceTitle": "一站式购物服务"
+    "auth": {
+        "oneStopService": "提供一站式服务",
+        "slogan": "轻松从中国购物，专业运输全球",
+        "login": {
+            "title": "欢迎回来",
+            "confirmText": "登录",
+            "forgetPassword": "忘记密码？",
+            "register": "注册",
+            "fields": {
+                "email": {
+                    "errorMessage": "邮箱不能为空",
+                    "placeholder": "请输入邮箱"
+                },
+                "password": {
+                    "errorMessage": "密码不能为空",
+                    "placeholder": "请输入密码"
+                }
+            }
         },
-        "Steps": [
-            {
-                "key": "step1",
-                "title": "下单",
-                "desc": "粘贴商品链接提交订单"
-            },
-            {
-                "key": "step2",
-                "title": "质检与仓储",
-                "desc": "接收3-5张质检照片和90天免费仓储"
-            },
-            {
-                "key": "step3",
-                "title": "打包",
-                "desc": "打包并检查您的订单"
-            },
-            {
-                "key": "step4",
-                "title": "全球运输",
-                "desc": "从150多种全球运输选项中选择"
+        "register": {
+            "title": "注册",
+            "confirmText": "注册",
+            "alreadyHaveAccount": "已有账户？",
+            "login": "登录",
+            "otpTitle": "验证您的邮箱",
+            "agreementRequired": "请同意协议",
+            "otpDescription": "我们已向{email}发送了验证码，请输入验证码完成验证。",
+            "fields": {
+                "email": {
+                    "errorMessage": "邮箱不能为空",
+                    "placeholder": "输入您的邮箱"
+                },
+                "password": {
+                    "errorMessage": "密码不能为空",
+                    "placeholder": "请输入密码"
+                },
+                "inviteCode": {
+                    "placeholder": "输入邀请码，如果没有请留空"
+                },
+                "isChecked": {
+                    "label": "我已阅读并同意网站条款和条件"
+                }
             }
-        ],
-        "Links": [
-            {
-                "key": "link1",
-                "href": "https://discord.gg/N34Q27Vts8",
-                "src": "/images/page/tab1.png"
-            },
-            {
-                "key": "link2",
-                "href": "/dashboard",
-                "src": "/images/page/tab2.png"
-            },
-            {
-                "key": "link3",
-                "href": "/estimation",
-                "src": "/images/page/tab3.png"
-            },
-            {
-                "key": "link4",
-                "href": "/register",
-                "src": "/images/page/tab4.png"
-            }
-        ],
-        "Services": [
-            {
-                "key": "service1",
-                "title": "下单服务",
-                "describe": "轻松购买来自中国的任何产品，线上线下均可。要下单，只需粘贴您想要的商品链接。享受我们无缝的端到端服务，从浏览到购买轻松完成。",
-                "src": "/images/page/icon01.png"
-            },
-            {
-                "key": "service2",
-                "title": "送货至我们仓库",
-                "describe": "通过我们的服务从多个卖家购物，我们将高效整合您的购买。所有物品将运往中国的BBDbuy仓库，为您简化流程。",
-                "src": "/images/page/icon02.png"
-            },
-            {
-                "key": "service3",
-                "title": "质量保证流程",
-                "describe": "您的产品到达BBDbuy仓库后，将经过严格的质量检查。我们的团队仔细检查每件物品是否有缺陷，确保尺寸、颜色等的准确性。使用BBDbuy，您可以放心，我们 dedicated 的售后服务致力于您的满意。",
-                "src": "/images/page/icon03.png"
-            },
-            {
-                "key": "service4",
-                "title": "便捷全球运输",
-                "describe": "从仓库库存中选择产品，轻松合并到一个包裹中。借助BBDbuy可靠的全球运输服务，您可以将购买的商品直接送到家门口。享受世界级运输的便利。",
-                "src": "/images/page/icon04.png"
-            }
-        ]
+        }
     },
-    "Components": {
-        "Navbar": {
-            "language": "语言",
-            "currency": "货币",
-            "submit": "提交",
-            "texts": {
-                "User": {
-                    "register": "注册",
-                    "login": "登录",
-                    "account": "我的账户",
-                    "orders": "我的订单",
-                    "logout": "退出登录"
-                }
+    "home": {
+        "line1": "简化您的",
+        "line2": "购物体验，选择BBD",
+        "serviceTitle": "一站式购物服务",
+        "announcement": {
+            "label": "公告",
+            "message": "🎉 BBD 全新升级 欢迎新老用户体验！"
+        },
+        "steps": {
+            "step1": {
+                "title": "下单",
+                "describe": "粘贴商品链接提交订单"
             },
-            "Links": [
-                {
-                    "label": "首页",
-                    "href": "/"
+            "step2": {
+                "title": "质检与仓储",
+                "describe": "接收3-5张质检照片和90天免费仓储"
+            },
+            "step3": {
+                "title": "打包",
+                "describe": "打包并检查您的订单"
+            },
+            "step4": {
+                "title": "全球运输",
+                "describe": "从150多种全球运输选项中选择"
+            }
+        },
+        "services": {
+            "service1": {
+                "title": "下单服务",
+                "describe": "轻松购买来自中国的任何产品，线上线下均可。要下单，只需粘贴您想要的商品链接。享受我们无缝的端到端服务，从浏览到购买轻松完成。"
+            },
+            "service2": {
+                "title": "送货至我们仓库",
+                "describe": "通过我们的服务从多个卖家购物，我们将高效整合您的购买。所有物品将运往中国的BBDbuy仓库，为您简化流程。"
+            },
+            "service3": {
+                "title": "质量保证流程",
+                "describe": "您的产品到达BBDbuy仓库后，将经过严格的质量检查。我们的团队仔细检查每件物品是否有缺陷，确保尺寸、颜色等的准确性。使用BBDbuy，您可以放心，我们 dedicated 的售后服务致力于您的满意。"
+            },
+            "service4": {
+                "title": "便捷全球运输",
+                "describe": "从仓库库存中选择产品，轻松合并到一个包裹中。借助BBDbuy可靠的全球运输服务，您可以将购买的商品直接送到家门口。享受世界级运输的便利。"
+            }
+        }
+    },
+    "components": {
+        "navbar": {
+            "selector": {
+                "language": "语言",
+                "currency": "货币",
+                "submit": "提交"
+            },
+            "dropdown": {
+                "register": "注册",
+                "login": "登录",
+                "account": "我的账户",
+                "orders": "我的订单",
+                "logout": "退出登录"
+            },
+            "links": {
+                "home": {
+                    "label": "首页"
                 },
-                {
-                    "label": "代发",
-                    "href": "/forwarding"
+                "forwarding": {
+                    "label": "代发"
                 },
-                {
-                    "label": "运费估算",
-                    "href": "/estimation"
+                "estimation": {
+                    "label": "运费估算"
                 },
-                {
-                    "label": "帮助中心",
-                    "href": "/help"
+                "help": {
+                    "label": "帮助中心"
                 },
-                {
-                    "label": "促销活动",
-                    "href": "/dashboard/promotion"
+                "promotion": {
+                    "label": "邀请联盟"
                 }
-            ]
+            }
         },
         "footer": {
             "desc": "BBD简化了购物，让你可以从中国购买，存储商品，并轻松地在全球范围内发货。",
@@ -164,74 +162,109 @@
                 "privacy": "隐私政策"
             }
         },
-        "OrderProgress": {
-            "steps": [
-                "选择商品",
-                "支付订单",
-                "质检与仓储",
-                "打包",
-                "收货"
-            ]
+        "progress": {
+            "step1": "选择商品",
+            "step2": "支付订单",
+            "step3": "质检与仓储",
+            "step4": "打包",
+            "step5": "收货"
         },
-        "Modal": {
+        "modal": {
             "confirm": "确认",
             "cancel": "取消",
-            "confirmModalTitle": "操作确认"
-        },
-        "Addressfields": {
-            "fields": [
-                {
-                    "key": "recipient",
-                    "type": "input",
-                    "name": "recipient",
-                    "label": "收件人",
-                    "placeholder": "输入收件人姓名"
-                },
-                {
-                    "type": "input",
-                    "name": "phone",
-                    "label": "电话",
-                    "placeholder": "输入电话号码"
-                },
-                {
-                    "type": "area",
-                    "name": "area",
-                    "label": "地区",
-                    "placeholder": "选择地区"
-                },
-                {
-                    "type": "input",
-                    "name": "address",
-                    "label": "地址",
-                    "placeholder": "输入完整地址"
-                },
-                {
-                    "type": "input",
-                    "name": "doorNo",
-                    "label": "门牌号",
-                    "placeholder": "输入门牌号"
-                },
-                {
-                    "type": "input",
-                    "name": "postcode",
-                    "label": "邮编",
-                    "placeholder": "输入邮政编码"
-                },
-                {
-                    "type": "checkbox",
-                    "name": "defaultAddress",
-                    "label": "设为默认地址"
+            "confirmModalTitle": "操作确认",
+            "address": {
+                "addTitle": "添加地址",
+                "editTitle": "编辑地址",
+                "fields": {
+                    "recipient": {
+                        "label": "收件人",
+                        "placeholder": "输入收件人姓名",
+                        "errorMessage": "收件人不能为空"
+                    },
+                    "phone": {
+                        "label": "电话",
+                        "placeholder": "输入电话号码",
+                        "errorMessage": "电话不能为空"
+                    },
+                    "area": {
+                        "label": "地区",
+                        "placeholder": "选择地区",
+                        "errorMessage": "地区不能为空"
+                    },
+                    "address": {
+                        "label": "地址",
+                        "placeholder": "输入完整地址",
+                        "errorMessage": "地址不能为空"
+                    },
+                    "doorNo": {
+                        "label": "门牌号",
+                        "placeholder": "输入门牌号",
+                        "errorMessage": "门牌号不能为空"
+                    },
+                    "postcode": {
+                        "label": "邮编",
+                        "placeholder": "输入邮政编码",
+                        "errorMessage": "邮编不能为空"
+                    },
+                    "defaultAddress": {
+                        "label": "设为默认地址"
+                    }
                 }
-            ]
+            },
+            "billingAddress": {
+                "addTitle": "添加账单地址",
+                "editTitle": "编辑账单地址",
+                "fields": {
+                    "familyName": {
+                        "label": "姓",
+                        "placeholder": "输入姓",
+                        "errorMessage": "姓不能为空"
+                    },
+                    "givenName": {
+                        "label": "名",
+                        "placeholder": "输入名",
+                        "errorMessage": "名不能为空"
+                    },
+                    "phone": {
+                        "label": "电话",
+                        "placeholder": "输入电话号码",
+                        "errorMessage": "电话不能为空"
+                    },
+                    "area": {
+                        "label": "地区",
+                        "placeholder": "选择地区",
+                        "errorMessage": "地区不能为空"
+                    },
+                    "address": {
+                        "label": "地址",
+                        "placeholder": "输入完整地址",
+                        "errorMessage": "地址不能为空"
+                    },
+                    "doorNo": {
+                        "label": "门牌号",
+                        "placeholder": "输入门牌号",
+                        "errorMessage": "门牌号不能为空"
+                    },
+                    "postcode": {
+                        "label": "邮编",
+                        "placeholder": "输入邮政编码",
+                        "errorMessage": "邮编不能为空"
+                    },
+                    "defaultAddress": {
+                        "label": "设为默认地址"
+                    }
+                }
+            },
+            "recharge": {
+                "title": "充值",
+                "placeholder": "请输入充值金额"
+            }
         },
-        "RechargeModal": {
-            "title": "充值",
-            "placeholder": "请输入充值金额"
-        },
-        "button": {
+        "form": {
             "save": "保存"
         },
-        "ChatBox": {
+        "chatbox": {
             "loginFirst": "请先登录",
             "onlineSupport": "在线客服",
             "inputPlaceholder": "请输入消息...",
@@ -240,52 +273,7 @@
             "imageSendFail": "图片发送失败"
         }
     },
-    "LoginPage": {
-        "title": "欢迎回来",
-        "confirmText": "登录",
-        "links": {
-            "forgetPassword": "忘记密码？",
-            "register": "注册"
-        },
-        "fields": {
-            "email": {
-                "placeholder": "请输入邮箱"
-            },
-            "password": {
-                "placeholder": "请输入密码"
-            }
-        }
-    },
-    "RegisterPage": {
-        "title": "注册",
-        "confirmText": "注册",
-        "fields": {
-            "email": {
-                "placeholder": "输入您的邮箱"
-            },
-            "password": {
-                "placeholder": "密码"
-            },
-            "inviteCode": {
-                "placeholder": "输入邀请码，如果没有请留空"
-            },
-            "isChecked": {
-                "label": "我已阅读并同意网站条款和条件"
-            }
-        },
-        "errors": {
-            "agreementRequired": "请同意协议"
-        },
-        "otp": {
-            "title": "验证您的邮箱",
-            "description": "我们已向{email}发送了验证码，请输入验证码完成验证。"
-        },
-        "links": {
-            "alreadyHaveAccount": "已有账户？",
-            "login": "登录"
-        }
-    },
-    "Dashboard": {
+    "dashboard": {
         "LayoutMenu": [
             {
                 "key": "",
@@ -364,237 +352,86 @@
                 ]
             }
         ],
-        "Page": {
-            "texts": {
-                "UserBalanceCard": {
-                    "balance": "余额",
-                    "score": "积分"
-                }
+        "page": {
+            "userBalanceCard": {
+                "balance": "余额",
+                "score": "积分"
             },
-            "Tabs": [
-                {
-                    "key": "profile",
-                    "label": "个人信息"
-                },
-                {
-                    "key": "address",
-                    "label": "地址"
-                },
-                {
-                    "key": "security",
-                    "label": "安全"
-                },
-                {
-                    "key": "billingAddress",
-                    "label": "账单地址"
-                }
-            ],
-            "ProfileTab": {
-                "texts": {
-                    "title": "编辑个人信息",
-                    "edit": "编辑"
-                },
-                "fields": [
-                    {
-                        "key": "nickName",
-                        "type": "input",
-                        "name": "nickName",
-                        "label": "用户名"
+            "tabs": {
+                "profile": "个人信息",
+                "address": "地址",
+                "security": "安全",
+                "billingAddress": "账单地址"
+            },
+            "profile": {
+                "title": "编辑个人信息",
+                "edit": "编辑",
+                "fields": {
+                    "nickName": {
+                        "label": "昵称",
+                        "errorMessage": "昵称不能为空",
+                        "placeholder": "请输入昵称"
                     },
-                    {
-                        "key": "mobile",
-                        "type": "input",
-                        "name": "mobile",
-                        "label": "手机号码"
+                    "mobile": {
+                        "label": "手机",
+                        "errorMessage": "手机不能为空",
+                        "placeholder": "请输入手机"
                     }
-                ]
+                }
             },
-            "AddressTab": {
-                "texts": {
-                    "title": {
-                        "add": "添加地址",
-                        "edit": "编辑地址",
-                        "deleteConfirm": "您确定要删除此地址吗？"
-                    },
-                    "buttons": {
-                        "add": "+ 添加地址",
-                        "edit": "编辑",
-                        "delete": "删除"
-                    },
-                    "tableEmpty": "暂无地址信息"
-                },
-                "tableColumns": [
-                    {
-                        "key": "recipient",
+            "address": {
+                "add": "+ 添加地址",
+                "edit": "编辑",
+                "delete": "删除",
+                "deleteConfirm": "您确定要删除此地址吗？",
+                "tableEmpty": "暂无地址信息",
+                "tableColumns": {
+                    "recipient": {
                         "label": "收件人"
                     },
-                    {
-                        "key": "phone",
+                    "phone": {
                         "label": "电话"
                     },
-                    {
-                        "key": "address",
+                    "address": {
                         "label": "地址详情"
                     },
-                    {
-                        "key": "actions",
+                    "actions": {
                         "label": "操作"
                     }
-                ],
-                "fields": [
-                    {
-                        "key": "recipient",
-                        "type": "input",
-                        "name": "recipient",
-                        "label": "收件人",
-                        "placeholder": "输入收件人姓名",
-                        "required": true
-                    },
-                    {
-                        "key": "phone",
-                        "type": "input",
-                        "name": "phone",
-                        "label": "电话",
-                        "placeholder": "输入电话号码",
-                        "required": true
-                    },
-                    {
-                        "key": "area",
-                        "type": "area",
-                        "name": "area",
-                        "label": "地区",
-                        "placeholder": "选择地区"
-                    },
-                    {
-                        "key": "address",
-                        "type": "input",
-                        "name": "address",
-                        "label": "地址",
-                        "placeholder": "输入完整地址",
-                        "required": true
-                    },
-                    {
-                        "key": "doorNo",
-                        "type": "input",
-                        "name": "doorNo",
-                        "label": "门牌号",
-                        "placeholder": "输入门牌号",
-                        "required": true
-                    },
-                    {
-                        "key": "postcode",
-                        "type": "input",
-                        "name": "postcode",
-                        "label": "邮编",
-                        "placeholder": "输入邮政编码",
-                        "required": true
-                    },
-                    {
-                        "key": "defaultAddress",
-                        "type": "checkbox",
-                        "name": "defaultAddress",
-                        "label": "设为默认地址"
-                    }
-                ]
+                }
             },
-            "SecurityTab": {
-                "texts": {
-                    "title": "登录密码",
-                    "description": "强密码保护您的账户安全。我们建议定期更改密码。使用包含字母和数字的密码，且至少6个字符。",
-                    "button": "修改密码",
-                    "modalTitle": "修改密码"
-                },
-                "fields": [
-                    {
-                        "type": "input",
-                        "key": "oldPassword",
-                        "name": "oldPassword",
+            "security": {
+                "title": "登录密码",
+                "description": "强密码保护您的账户安全。我们建议定期更改密码。使用包含字母和数字的密码，且至少6个字符。",
+                "button": "修改密码",
+                "modalTitle": "修改密码",
+                "toast": "两次输入的新密码不一致",
+                "fields": {
+                    "oldPassword": {
                         "label": "当前密码",
-                        "placeholder": "输入当前密码"
+                        "placeholder": "输入当前密码",
+                        "errorMessage": "当前密码不能为空"
                     },
-                    {
-                        "type": "input",
-                        "key": "newPassword",
-                        "name": "newPassword",
+                    "newPassword": {
                         "label": "新密码",
-                        "placeholder": "输入新密码"
+                        "placeholder": "输入新密码",
+                        "errorMessage": "新密码不能为空"
                     },
-                    {
-                        "type": "input",
-                        "key": "confirmPassword",
-                        "name": "confirmPassword",
+                    "confirmPassword": {
                         "label": "确认新密码",
-                        "placeholder": "确认新密码"
+                        "placeholder": "确认新密码",
+                        "errorMessage": "新密码不能为空"
                     }
-                ]
+                }
             },
-            "BillingAddressTab": {
-                "texts": {
-                    "addButton": "添加账单地址",
-                    "editButton": "编辑账单地址",
-                    "deleteButton": "删除账单地址",
-                    "deleteConfirm": "您确定要删除此地址吗？",
-                    "modalAddTitle": "添加地址",
-                    "modalEditTitle": "编辑地址",
-                    "noAddress": "暂无账单地址"
-                },
-                "fields": [
-                    {
-                        "key": "familyName",
-                        "type": "input",
-                        "name": "familyName",
-                        "label": "姓",
-                        "placeholder": "输入姓",
-                        "required": true
-                    },
-                    {
-                        "key": "givenName",
-                        "type": "input",
-                        "name": "givenName",
-                        "label": "名",
-                        "placeholder": "输入名",
-                        "required": true
-                    },
-                    {
-                        "key": "phone",
-                        "type": "input",
-                        "name": "phone",
-                        "label": "电话",
-                        "placeholder": "输入电话号码",
-                        "required": true
-                    },
-                    {
-                        "key": "area",
-                        "type": "area",
-                        "name": "area",
-                        "label": "地区",
-                        "placeholder": "选择地区"
-                    },
-                    {
-                        "key": "address",
-                        "type": "input",
-                        "name": "address",
-                        "label": "地址",
-                        "placeholder": "输入完整地址",
-                        "required": true
-                    },
-                    {
-                        "key": "doorNo",
-                        "type": "input",
-                        "name": "doorNo",
-                        "label": "门牌号",
-                        "placeholder": "输入门牌号",
-                        "required": true
-                    },
-                    {
-                        "key": "postcode",
-                        "type": "input",
-                        "name": "postcode",
-                        "label": "邮编",
-                        "placeholder": "输入邮政编码",
-                        "required": true
-                    }
-                ]
+            "billingAddress": {
+                "addButton": "添加账单地址",
+                "editButton": "编辑账单地址",
+                "deleteButton": "删除账单地址",
+                "deleteConfirm": "您确定要删除此地址吗？",
+                "modalAddTitle": "添加地址",
+                "modalEditTitle": "编辑地址",
+                "noAddress": "暂无账单地址"
             }
         },
         "WalletPage": {
@@ -755,7 +592,7 @@
                 "delete": "删除"
             }
         },
-        "OrderPage": {
+        "order": {
             "all": "全部",
             "waitPay": "待支付",
             "paid": "已支付",
@@ -798,6 +635,11 @@
                 "totalFee": "总费用：",
                 "discountFee": "折扣费：",
                 "refundAmount": "退款金额："
+            },
+            "promptCard": {
+                "title": "订单QC与包裹管理",
+                "description": "请前往仓库页面查看质检照片和提交包裹",
+                "button": "前往仓库"
             }
         },
         "WarehousePage": {
@@ -968,6 +810,23 @@
             }
         }
     },
+    "submit": {
+        "warehouse": {
+            "shippingAddress": "收货地址",
+            "commodityList": "商品清单",
+            "packagingMethod": "包装方式",
+            "deliveryRoute": "运输路线",
+            "leavingMessage": "留言",
+            "placeholder": "如果您有任何特殊要求，请在此备注",
+            "submit": "提交包裹",
+            "agreement": "我已阅读并同意 bbdbuy 包裹运输协议",
+            "toast": {
+                "agreementRequired": "请勾选免责声明",
+                "addressRequired": "请选择收货地址",
+                "routeRequired": "请选择运输路线"
+            }
+        }
+    },
     "SubmitOrder": {
         "confirmProductInfo": "确认商品信息",
         "product": "商品",
@@ -1021,71 +880,14 @@
         "fixedCost": "固定费用",
         "handlingFee": "手续费",
         "submitOrder": "提交订单",
-        "tooltipTip": "由于货币转换，可能会有0.01或0.02的小额差异",
-        "fields": [
-            {
-                "key": "familyName",
-                "type": "input",
-                "name": "familyName",
-                "label": "姓",
-                "placeholder": "输入姓",
-                "required": true
-            },
-            {
-                "key": "givenName",
-                "type": "input",
-                "name": "givenName",
-                "label": "名",
-                "placeholder": "输入名",
-                "required": true
-            },
-            {
-                "key": "phone",
-                "type": "input",
-                "name": "phone",
-                "label": "电话",
-                "placeholder": "输入电话号码",
-                "required": true
-            },
-            {
-                "key": "area",
-                "type": "area",
-                "name": "area",
-                "label": "地区",
-                "placeholder": "选择地区"
-            },
-            {
-                "key": "address",
-                "type": "input",
-                "name": "address",
-                "label": "地址",
-                "placeholder": "输入完整地址",
-                "required": true
-            },
-            {
-                "key": "doorNo",
-                "type": "input",
-                "name": "doorNo",
-                "label": "门牌号",
-                "placeholder": "输入门牌号",
-                "required": true
-            },
-            {
-                "key": "postcode",
-                "type": "input",
-                "name": "postcode",
-                "label": "邮编",
-                "placeholder": "输入邮政编码",
-                "required": true
-            }
-        ]
+        "tooltipTip": "由于货币转换，可能会有0.01或0.02的小额差异"
     },
     "Goods": {
         "agreeTerms": "请勾选同意协议",
         "selectSku": "请选择商品规格",
         "purchaseRecord": "购买记录",
         "singleItemSalesTitle": "单个商品销量",
-        "avgArrivalTime": "平均到达仓库时间",
+        "avgArrivalTime": "平均到达仓库",
         "salesVolume": "商品销量",
         "weightWithUnit": "重量(g)",
         "volumeWithUnit": "体积 (cm)",
@@ -1111,7 +913,7 @@
         "riskNotice": "风险提示",
         "riskDescription": "您提交的商品可能存在一定的运输风险。为了您的资金安全，我们暂时无法提供在线订购服务。详情请咨询在线客服！"
     },
-    "ForwardingPage": {
+    "forwarding": {
         "warehouseAddress": "仓库地址",
         "warehouseFullAddress": "中国广东省惠州市水口街道荔城工业园胜豪科技大厦8A-801",
         "forwardingPackage": "代发包裹",
@@ -1142,7 +944,9 @@
         "remarkPlaceholder": "请输入备注（可选）",
         "remark": "备注"
     },
-    "EstimationPage": {
+    "estimation": {
+        "errorCountry": "国家不能为空",
+        "errorCategory": "货物类型不能为空",
         "fillWeightOrSize": "请输入重量或尺寸（长、宽、高）！",
         "title": "运费估算",
         "warehouse": "仓库至",

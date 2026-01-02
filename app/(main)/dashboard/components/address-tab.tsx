@@ -9,131 +9,103 @@ import {
   TableRow,
   TableCell,
 } from "@heroui/react";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import React from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 
-import { FieldConfig } from "@/components/form/formItem-renderer";
-import { addAddress, deleteAddress, updateAddress } from "@/services/address";
-import FormModal from "@/components/modal/form-modal";
+import { deleteAddress } from "@/services/address";
 import ConfirmModal from "@/components/modal/confirm-modal";
 import { useAddressList } from "@/hook";
 import FullscreenLoader from "@/components/common/fullscreen-loader";
+import AddressModal from "@/components/modal/address-modal";
 
 type ModalType = "add" | "edit" | "delete" | null;
 
-const initAddress = {
-  recipient: "",
-  phone: "",
-  countryId: "",
-  stateId: "",
-  city: "",
-  addressType: "",
-  postcode: "",
-  defaultAddress: 0,
-  doorNo: "",
-};
+export function AddressTab() {
+  const t = useTranslations("dashboard.page.address");
 
-interface AddressTabProps {
-  texts: {
-    title: { add: string; edit: string; deleteConfirm: string };
-    buttons: { add: string; edit: string; delete: string };
-    tableColumns: { key: string; label: string }[];
-    tableEmpty: string;
-  };
-  fields: FieldConfig[];
-  tableColumns: any;
-}
-
-export default function AddressTab({
-  texts,
-  fields,
-  tableColumns,
-}: AddressTabProps) {
   const [modalType, setModalType] = useState<ModalType>(null);
   const { data, isLoading } = useAddressList();
-  const [currentRowData, setCurrentRowData] = useState<any>(initAddress);
+  const [currentRowData, setCurrentRowData] = useState<any>(null);
   const queryClient = useQueryClient();
 
-  const handleAdd = () => {
-    setCurrentRowData(initAddress);
-    setModalType("add");
-  };
+  const tableColumns = [
+    {
+      key: "recipient",
+      label: t("tableColumns.recipient.label"),
+    },
+    {
+      key: "phone",
+      label: t("tableColumns.phone.label"),
+    },
+    {
+      key: "address",
+      label: t("tableColumns.address.label"),
+    },
+    {
+      key: "actions",
+      label: t("tableColumns.actions.label"),
+    },
+  ];
 
-  const handleEdit = (row: any) => {
-    setCurrentRowData(row);
-    setModalType("edit");
-  };
-
-  const handleDelete = (row: any) => {
-    setCurrentRowData(row);
-    setModalType("delete");
-  };
-
-  const handleSave = async () => {
-    const { createTime, updateTime, customerId, ...filteredData } =
-      currentRowData;
-
+  const handleDelete = async () => {
     try {
-      if (modalType === "add") {
-        await addAddress({
-          ...currentRowData,
-          addressType: 1,
-          defaultAddress: filteredData.defaultAddress ? 1 : 0,
-        });
-      } else if (modalType === "edit") {
-        await updateAddress({
-          ...filteredData,
-          defaultAddress: filteredData.defaultAddress ? 1 : 0,
-          city: filteredData?.city || filteredData?.state,
-        });
-      } else if (modalType === "delete") {
-        await deleteAddress({ id: currentRowData.id });
-      }
+      await deleteAddress({ id: currentRowData.id });
       setModalType(null);
     } finally {
       queryClient.invalidateQueries({ queryKey: ["addressList"] });
     }
   };
 
-  const renderCell = useCallback(
-    (rows: any, columnKey: any) => {
-      const cellValue = rows[columnKey];
+  const renderCell = (rows: any, columnKey: any) => {
+    const cellValue = rows[columnKey];
 
-      if (columnKey === "actions") {
-        return (
-          <div className="relative flex items-center gap-2">
-            <Button
-              color="primary"
-              radius="none"
-              size="sm"
-              onPress={() => handleEdit(rows)}
-            >
-              {texts.buttons.edit}
-            </Button>
-            <Button
-              className="button-default"
-              radius="none"
-              size="sm"
-              onPress={() => handleDelete(rows)}
-            >
-              {texts.buttons.delete}
-            </Button>
-          </div>
-        );
-      }
+    if (columnKey === "actions") {
+      return (
+        <div className="relative flex items-center gap-2">
+          <Button
+            color="primary"
+            radius="none"
+            size="sm"
+            onPress={() => {
+              setCurrentRowData(rows);
+              setModalType("edit");
+            }}
+          >
+            {t("edit")}
+          </Button>
+          <Button
+            className="button-default"
+            radius="none"
+            size="sm"
+            onPress={() => {
+              setCurrentRowData(rows);
+              setModalType("delete");
+            }}
+          >
+            {t("delete")}
+          </Button>
+        </div>
+      );
+    }
 
-      return cellValue;
-    },
-    [texts.buttons],
-  );
+    return cellValue;
+  };
 
   if (isLoading) return <FullscreenLoader />;
 
   return (
     <>
-      <Button color="primary" radius="none" size="sm" onPress={handleAdd}>
-        {texts.buttons.add}
+      <Button
+        color="primary"
+        radius="none"
+        size="sm"
+        onPress={() => {
+          setModalType("add");
+        }}
+      >
+        {t("add")}
       </Button>
       <Spacer y={2} />
 
@@ -152,7 +124,7 @@ export default function AddressTab({
             <TableColumn key={column.key}>{column.label}</TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={texts.tableEmpty} items={data}>
+        <TableBody emptyContent={t("tableEmpty")} items={data}>
           {(item: any) => (
             <TableRow key={item?.id}>
               {(columnKey) => (
@@ -163,23 +135,20 @@ export default function AddressTab({
         </TableBody>
       </Table>
 
-      <FormModal
-        fields={fields}
-        formData={currentRowData}
+      <AddressModal
+        defaultData={currentRowData}
         isOpen={modalType === "add" || modalType === "edit"}
-        title={modalType === "add" ? texts.title.add : texts.title.edit}
-        onChange={setCurrentRowData}
+        type={modalType === "add" ? "add" : "edit"}
         onOpenChange={(open) => {
           if (!open) setModalType(null);
         }}
-        onSave={handleSave}
       />
 
       <ConfirmModal
-        content={texts.title.deleteConfirm}
+        content={t("deleteConfirm")}
         isOpen={modalType === "delete"}
         onConfirm={async () => {
-          handleSave();
+          await handleDelete();
         }}
         onOpenChange={(open) => {
           if (!open) setModalType(null);

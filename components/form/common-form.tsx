@@ -1,5 +1,5 @@
 import { Button, Form } from "@heroui/react";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 import { useTranslations } from "next-intl";
 
 import FormItemRenderer, { FieldConfig } from "./formItem-renderer";
@@ -21,13 +21,18 @@ export default function CommonForm<T extends Record<string, any>>({
   onSubmit,
   confirmText,
   children,
-  isLoading,
 }: CommonFormProps<T>) {
-  const t = useTranslations("Components.button");
+  const t = useTranslations("components.form");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit?.(formData); // ✅ 直接用状态
+    try {
+      setIsLoading(true);
+      await onSubmit?.(formData);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

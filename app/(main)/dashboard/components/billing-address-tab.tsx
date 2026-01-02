@@ -2,88 +2,31 @@
 import { Button } from "@heroui/react";
 import { useEffect, useState } from "react";
 import React from "react";
+import { useTranslations } from "next-intl";
 
-import FormModal from "@/components/modal/form-modal";
 import ConfirmModal from "@/components/modal/confirm-modal";
-import { addAddress, deleteAddress, updateAddress } from "@/services";
+import { deleteAddress } from "@/services";
 import { useBillingAddressStore } from "@/store";
 import { AddressItem } from "@/types";
 import { queryClient } from "@/lib/react-query";
-import { FieldConfig } from "@/components/form/formItem-renderer";
+import BillingAddressModal from "@/components/modal/billing-address-modal";
 
 type ModalType = "add" | "edit" | "delete" | null;
-const initAddress = {
-  familyName: "",
-  givenName: "",
-  phone: "",
-  countryId: "",
-  stateId: "",
-  city: "",
-  addressType: "",
-  postcode: "",
-  doorNo: "",
-};
 
-interface BillingAddressTabProps {
-  texts: {
-    addButton: string;
-    editButton: string;
-    deleteButton: string;
-    deleteConfirm: string;
-    modalAddTitle: string;
-    modalEditTitle: string;
-    noAddress: string;
-  };
-  fields: FieldConfig[];
-}
+export function BillingAddressTab() {
+  const t = useTranslations("dashboard.page.billingAddress");
 
-export default function BillingAddressTab({
-  texts,
-  fields,
-}: BillingAddressTabProps) {
   const billingAddress = useBillingAddressStore(
     (state) => state.billingAddress,
   );
 
   const [modalType, setModalType] = useState<ModalType>(null);
-  const [currentRowData, setCurrentRowData] = useState<any>(initAddress);
+  const [currentRowData, setCurrentRowData] = useState<any>(null);
 
-  const handleAdd = () => {
-    setCurrentRowData(initAddress);
-    setModalType("add");
-  };
-
-  const handleEdit = () => {
-    setModalType("edit");
-  };
-
-  const handleDelete = () => {
-    setModalType("delete");
-  };
-
-  // 地址保存时处理
-  const handleSave = async () => {
-    const { createTime, updateTime, customerId, ...filteredData } =
-      currentRowData;
-
+  const handleDelete = async () => {
     try {
-      if (modalType === "add") {
-        await addAddress({
-          ...currentRowData,
-          addressType: 2,
-          defaultAddress: 1,
-        }); // 新增接口
-      } else if (modalType === "edit") {
-        await updateAddress({
-          ...filteredData,
-          city: filteredData?.city || filteredData?.state,
-        }); // 编辑接口
-      } else if (modalType === "delete") {
-        await deleteAddress({ id: currentRowData.id });
-      }
+      await deleteAddress({ id: currentRowData.id });
       setModalType(null);
-    } catch (error) {
-      console.error("Error:", error);
     } finally {
       queryClient.invalidateQueries({ queryKey: ["billingAddress"] }); // 手动刷新
     }
@@ -114,44 +57,51 @@ export default function BillingAddressTab({
             <Button
               className="button-default"
               radius="sm"
-              onPress={handleDelete}
+              onPress={() => {
+                setModalType("delete");
+              }}
             >
-              {texts.deleteButton}
+              {t("deleteButton")}
             </Button>
-            <Button color="primary" radius="sm" onPress={handleEdit}>
-              {texts.editButton}
+            <Button
+              color="primary"
+              radius="sm"
+              onPress={() => {
+                setModalType("edit");
+              }}
+            >
+              {t("editButton")}
             </Button>
           </div>
         </div>
       ) : (
         <button
           className="p-6 border-2 border-dashed border-[#5e5e5e] w-full"
-          onClick={handleAdd}
+          onClick={() => {
+            setModalType("add");
+          }}
         >
           <p className="flex items-center gap-2 justify-center">
             <span>+</span>
-            <span>{texts.addButton}</span>
+            <span>{t("addButton")}</span>
           </p>
         </button>
       )}
 
-      <FormModal
-        fields={fields}
-        formData={currentRowData}
+      <BillingAddressModal
+        defaultData={currentRowData}
         isOpen={modalType === "add" || modalType === "edit"}
-        title={modalType === "add" ? texts.modalAddTitle : texts.modalEditTitle}
-        onChange={setCurrentRowData}
+        type={modalType === "add" ? "add" : "edit"}
         onOpenChange={(open) => {
           if (!open) setModalType(null);
         }}
-        onSave={handleSave}
       />
 
       <ConfirmModal
-        content={texts.deleteConfirm}
+        content={t("deleteConfirm")}
         isOpen={modalType === "delete"}
         onConfirm={async () => {
-          await handleSave();
+          await handleDelete();
         }}
         onOpenChange={(open) => {
           if (!open) setModalType(null);

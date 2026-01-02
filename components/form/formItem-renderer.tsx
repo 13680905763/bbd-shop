@@ -18,7 +18,7 @@ export interface FieldOption {
 }
 
 export interface FieldConfig {
-  key: string; // 用于 React 元素 key
+  key?: string; // 用于 React 元素 key
   type: "input" | "password" | "select" | "checkbox" | "date" | "area";
   name: string; // 用于 formData
   label?: string;
@@ -27,6 +27,7 @@ export interface FieldConfig {
   required?: boolean;
   options?: FieldOption[];
   startContent?: React.ReactNode;
+  errorMessage?: string;
 }
 
 interface DynamicFormProps<T extends Record<string, any>> {
@@ -59,7 +60,7 @@ export default function FormItemRenderer<T extends Record<string, any>>({
           startContent = "",
           size = "md",
           required = false,
-          key,
+          errorMessage,
         } = field;
 
         const value = formData[name] ?? "";
@@ -68,7 +69,8 @@ export default function FormItemRenderer<T extends Record<string, any>>({
           case "input":
             return (
               <Input
-                key={key} // 用 key
+                key={name} // 用 key
+                errorMessage={errorMessage}
                 isRequired={required}
                 label={label}
                 placeholder={placeholder}
@@ -82,7 +84,7 @@ export default function FormItemRenderer<T extends Record<string, any>>({
           case "password":
             return (
               <Input
-                key={key} // 用 key
+                key={name} // 用 key
                 endContent={
                   <button
                     aria-label="toggle password visibility"
@@ -97,6 +99,7 @@ export default function FormItemRenderer<T extends Record<string, any>>({
                     )}
                   </button>
                 }
+                errorMessage={errorMessage}
                 isRequired={required}
                 label={label}
                 placeholder={placeholder}
@@ -111,7 +114,7 @@ export default function FormItemRenderer<T extends Record<string, any>>({
           case "select":
             return (
               <Autocomplete
-                key={key} // 用 key
+                key={name} // 用 key
                 label={label}
                 placeholder={placeholder}
                 selectedKey={value}
@@ -139,7 +142,7 @@ export default function FormItemRenderer<T extends Record<string, any>>({
           case "checkbox":
             return (
               <Checkbox
-                key={key} // 用 key
+                key={name} // 用 key
                 isSelected={!!value}
                 size={size}
                 onValueChange={(val) => handleChange(name, val)}
@@ -150,7 +153,7 @@ export default function FormItemRenderer<T extends Record<string, any>>({
           case "date":
             return (
               <DatePicker
-                key={key} // 用 key
+                key={name} // 用 key
                 classNames={{ inputWrapper: "focus-within:!border-[#f0700c]" }}
                 label={label}
                 variant="bordered"
@@ -159,7 +162,8 @@ export default function FormItemRenderer<T extends Record<string, any>>({
           case "area":
             return (
               <AreaSelector
-                key={key} // 用 key
+                key={name} // 用 key
+                errorMessage={errorMessage}
                 value={{
                   countryId: formData.countryId ?? "",
                   stateId: formData.stateId ?? "",

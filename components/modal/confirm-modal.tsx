@@ -32,12 +32,12 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   onConfirm,
   footer,
 }) => {
-  const t = useTranslations("Components.Modal"); // Common 是语言包的 namespace
+  const t = useTranslations("components.modal"); // Common 是语言包的 namespace
 
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleConfirm = async () => {
-    setLoading(true);
+    setIsLoading(true);
     try {
       await onConfirm(); // 调用外部传入的逻辑
       onOpenChange(false); // 成功后自动关闭
@@ -45,7 +45,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       console.error("ConfirmModal error:", err);
       // 可加 toast 提示
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -59,6 +59,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             <>
               <Button
                 className="flex-1 button-default"
+                isDisabled={isLoading}
                 variant="light"
                 onPress={() => onOpenChange(false)}
               >
@@ -67,7 +68,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
               <Button
                 className="flex-1"
                 color="primary"
-                isLoading={loading}
+                isLoading={isLoading}
                 onPress={handleConfirm}
               >
                 {confirmText ?? t("confirm")}

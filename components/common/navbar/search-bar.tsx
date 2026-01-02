@@ -72,17 +72,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   const handleSearch = async (e: any) => {
     e.preventDefault();
     const data: any = Object.fromEntries(new FormData(e.currentTarget));
-    let url: URL;
 
-    try {
-      url = new URL(data.url);
-    } catch {
-      addToast({ title: "请输入有效的 URL", timeout: 1000, color: "danger" });
-
-      return;
-    }
-
-    const res: any = await getGoodsId({ url });
+    const res: any = await getGoodsId({ url: data.url });
 
     router.push(`/goods/${res.source}/${res.sourceProductId}`);
     setInputValue("");

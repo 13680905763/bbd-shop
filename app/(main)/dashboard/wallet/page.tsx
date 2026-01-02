@@ -15,7 +15,7 @@ interface TabConfig {
 }
 
 export default function WalletPage() {
-  const t = useTranslations("Dashboard.WalletPage");
+  const t = useTranslations("dashboard.WalletPage");
   const user = useUserStore((state) => state.user);
 
   const searchParams = useSearchParams();

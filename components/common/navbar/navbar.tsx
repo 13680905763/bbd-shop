@@ -12,33 +12,48 @@ import { useTranslations } from "next-intl";
 
 import { SearchBar } from "./search-bar";
 import LanguageCurrencySelector from "./language-currency-selector";
-import { User, UserMenu } from "./user-menu";
+import { UserMenu } from "./user-menu";
 
 import { Logo } from "@/components/icons";
 import { getUserInfo } from "@/services";
 import { useUserStore } from "@/store";
-interface NavLink {
-  key: string;
-  label: string;
-  href: string;
-}
+
 export const Navbar = () => {
-  const t = useTranslations("Components.Navbar");
+  const t = useTranslations("components.navbar");
   const clearUser = useUserStore((state) => state.clearUser);
   const pathname = usePathname(); // 获取当前路径
   const router = useRouter();
 
   const [currentNav, setCurrentNav] = useState(pathname);
 
-  const links = t.raw("Links") as NavLink[];
+  const links = [
+    {
+      label: t("links.home.label"),
+      href: "/",
+    },
+    {
+      label: t("links.forwarding.label"),
+      href: "/forwarding",
+    },
+    {
+      label: t("links.estimation.label"),
+      href: "/estimation",
+    },
+    {
+      label: t("links.help.label"),
+      href: "/help",
+    },
+    {
+      label: t("links.promotion.label"),
+      href: "/dashboard/promotion",
+    },
+  ];
 
   useEffect(() => {
     setCurrentNav(pathname);
   }, [pathname]);
 
   useEffect(() => {
-    // 获取一次用户信息
-    // console.log("nav加载");
     (async () => {
       try {
         const res = await getUserInfo();
@@ -89,7 +104,7 @@ export const Navbar = () => {
         >
           <IoCart className="w-full h-full" />
         </Button>
-        <UserMenu texts={t.raw("texts.User") as User} />
+        <UserMenu />
       </NavbarContent>
     </HeroUINavbar>
   );

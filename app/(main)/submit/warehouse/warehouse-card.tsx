@@ -8,8 +8,6 @@ export default function WarehouseCard({ warehouse }: any) {
 
   const { orderProduct: product } = warehouse;
 
-  // console.log(warehouse, product, warehouse.orderProduct);
-
   return (
     <div className="card-cart overflow-auto ">
       <div className="flex flex-col gap-4 p-4">

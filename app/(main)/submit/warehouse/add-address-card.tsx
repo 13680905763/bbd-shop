@@ -1,49 +1,12 @@
 "use client";
 import { Card } from "@heroui/react";
 import { FiPlus } from "react-icons/fi";
-import { useState } from "react";
-
-import { addAddress } from "@/services";
-import { queryClient } from "@/lib/react-query";
 
 interface AddAddressCardProps {
   onAdd?: () => void;
 }
 
-const initAddress = {
-  recipient: "",
-  phone: "",
-  countryId: "",
-  stateId: "",
-  city: "",
-  addressType: "",
-  postcode: "",
-  defaultAddress: 0,
-  doorNo: "",
-};
-
 export function AddAddressCard({ onAdd }: AddAddressCardProps) {
-  const [currentRowData, setCurrentRowData] = useState<any>(initAddress);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  // 地址保存时处理
-  const handleSave = async () => {
-    const { createTime, updateTime, customerId, ...filteredData } =
-      currentRowData;
-
-    try {
-      await addAddress({
-        ...currentRowData,
-        addressType: 1,
-        defaultAddress: filteredData.defaultAddress ? 1 : 0,
-      }); // 新增接口
-
-      setIsOpen(false);
-    } catch {
-    } finally {
-      queryClient.invalidateQueries({ queryKey: ["addressList"] }); // 手动刷新
-    }
-  };
-
   return (
     <Card
       isPressable

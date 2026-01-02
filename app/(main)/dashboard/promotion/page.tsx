@@ -15,7 +15,7 @@ import { getExperience, getPromotionConfig } from "@/services";
 import { useGlobalStore } from "@/store";
 
 export default function PromotionPage() {
-  const t: any = useTranslations("Dashboard.Promotion.page");
+  const t: any = useTranslations("dashboard.Promotion.page");
   const { currency } = useGlobalStore();
 
   const [experience, setExperience] = useState<any>(null);
@@ -68,7 +68,7 @@ export default function PromotionPage() {
         </div>
         <div className="mt-10 w-full px-40 ">
           <Snippet className="w-full " symbol="">
-            <span>https://bbdbuy.com/register?ref=3582377</span>
+            <span>https://bbdbuy1.com/register?ref=undefind</span>
           </Snippet>
 
           <div className="my-2">

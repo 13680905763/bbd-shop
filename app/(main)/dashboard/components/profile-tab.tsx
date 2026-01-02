@@ -2,23 +2,39 @@
 
 import { useRef, useState } from "react";
 import { Avatar, Spinner } from "@heroui/react";
+import { useTranslations } from "next-intl";
 
 import CommonForm from "@/components/form/common-form";
 import { getUserInfo, updateUserInfo, uploadAvatar } from "@/services"; // 需要你实现 uploadAvatar API
 import { useUserStore } from "@/store";
+import { FieldConfig } from "@/components/form/formItem-renderer";
 
-export default function ProfileTab({
-  defaultformData,
-  texts,
-  profileFields,
-}: any) {
+export function ProfileTab({ defaultformData }: any) {
+  const t = useTranslations("dashboard.page.profile");
+  const profileFields: FieldConfig[] = [
+    {
+      type: "input",
+      name: "nickName",
+      label: t("fields.nickName.label"),
+      errorMessage: t("fields.nickName.errorMessage"),
+      placeholder: t("fields.nickName.placeholder"),
+      required: true,
+    },
+
+    {
+      type: "input",
+      name: "mobile",
+      label: t("fields.mobile.label"),
+      errorMessage: t("fields.nickName.errorMessage"),
+      placeholder: t("fields.nickName.placeholder"),
+      required: true,
+    },
+  ];
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [avatarUrl, setAvatarUrl] = useState(defaultformData?.avatarUrl);
   const [formData, setFormData] = useState({
     id: defaultformData?.id,
     nickName: defaultformData?.nickName || "",
-    // familyName: defaultformData?.familyName || "",
-    // givenName: defaultformData?.givenName || "",
     mobile: defaultformData?.mobile || "",
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -48,12 +64,8 @@ export default function ProfileTab({
     setAvatarLoading(true);
     try {
       // 这里需要你实现 uploadAvatar 接口：把 file 上传到后端并返回新的头像地址
-      const url = await uploadAvatar(file);
+      await uploadAvatar(file);
 
-      setAvatarUrl(url);
-
-      // 更新用户信息
-      await updateUserInfo({ ...formData, avatarUrl: url });
       const user = await getUserInfo();
 
       useUserStore.getState().setUser(user);
@@ -64,17 +76,20 @@ export default function ProfileTab({
 
   return (
     <>
-      <div className="text-xl font-semibold text-title mb-4">{texts.title}</div>
+      <div className="text-xl font-semibold text-title mb-4">{t("title")}</div>
 
       <div className="my-2">
         <button className="relative cursor-pointer" onClick={handleAvatarClick}>
           {avatarLoading ? (
             <Spinner size="lg" />
           ) : (
-            <Avatar className="w-16 h-16 text-large" src={avatarUrl ?? ""} />
+            <Avatar
+              className="w-16 h-16 text-large"
+              src={defaultformData?.avatarUrl ?? ""}
+            />
           )}
           <span className="absolute bottom-0 left-0 bg-black/50 text-white text-xs px-1 rounded">
-            {texts.edit}
+            {t("edit")}
           </span>
         </button>
         <input

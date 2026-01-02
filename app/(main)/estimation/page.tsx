@@ -26,14 +26,14 @@ import { getCategory, searchWarehouseRoutesList } from "@/services";
 import { useCountries } from "@/hook";
 import { useGlobalStore } from "@/store";
 
-export default function EstimationPage() {
-  const t = useTranslations("EstimationPage");
+export default function Estimation() {
+  const t = useTranslations("estimation");
   const { currency } = useGlobalStore();
+  const [isLoading, setIsLoading] = useState(false); // 🔹 loading 状态
+
   const { data: countries = [] } = useCountries();
   const [categoryOptions, setCategoryOptions] = useState<any[]>([]);
   const [routesMessage, setRoutesMessage] = useState<string>("");
-
-  console.log("currency", currency);
 
   const [routes, setRoutes] = useState<any[]>([]);
 
@@ -46,7 +46,6 @@ export default function EstimationPage() {
     width: "",
     height: "",
   });
-  /** 拉取数据 */
   const fetchData = async () => {
     try {
       const res: any = await getCategory();
@@ -59,8 +58,6 @@ export default function EstimationPage() {
     fetchData();
   }, []);
   const handleChange = (key: string, value: any) => {
-    console.log("key", key, value);
-
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
@@ -89,8 +86,8 @@ export default function EstimationPage() {
       return;
     }
 
-    console.log("formData", formData);
-
+    // console.log("formData", formData);
+    setIsLoading(true);
     try {
       const res = await searchWarehouseRoutesList(formData);
 
@@ -103,20 +100,14 @@ export default function EstimationPage() {
       setRoutes(res || []);
     } catch (err) {
       setRoutes([]);
-      // console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    // 初始化加载全部
-    // getWarehouseRoutesList().then((res) => {
-    //   setRoutes(res || []);
-    // });
-  }, []);
-
   return (
     <div>
-      <div className="bg-[url('https://hoobuy.com/_nuxt/estimation_bg.BPnQS2i-.webp')] bg-no-repeat bg-cover h-[180px]" />
+      <div className="bg-[url('/images/estimation.webp')] bg-no-repeat bg-cover h-[180px]" />
       <div className=" bg-[#fff]">
         <div className="text-center container m-auto p-5">
           <h1 className={title({ size: "xs" })}>{t("title")}</h1>
@@ -127,6 +118,7 @@ export default function EstimationPage() {
                 isRequired
                 className="flex-1"
                 defaultItems={countries}
+                errorMessage={t("errorCountry")}
                 label={t("warehouse")}
                 name="countryId"
                 selectedKey={String(formData.countryId)}
@@ -153,6 +145,7 @@ export default function EstimationPage() {
                 isRequired
                 className="flex-1"
                 defaultItems={categoryOptions}
+                errorMessage={t("errorCategory")}
                 label={t("category")}
                 name="categoryId"
                 selectedKey={String(formData.categoryId)}
@@ -208,6 +201,7 @@ export default function EstimationPage() {
             <div className="flex justify-center w-full">
               <Button
                 className="min-w-48"
+                isLoading={isLoading}
                 size="lg"
                 type="submit"
                 variant="bordered"
@@ -265,7 +259,9 @@ export default function EstimationPage() {
                 <Divider />
                 <div className="flex gap-5 pb-8">
                   <div className="flex-1 rounded-sm p-4 ">
-                    <p className="font-semibold mb-2">{t("pricingStandard")}</p>
+                    <p className="font-semibold mb-2">
+                      {t("pricingStandard")}({route.firstWeight}g)
+                    </p>
                     <Table aria-label={t("pricingStandard")}>
                       <TableHeader>
                         <TableColumn>{t("firstWeightFee")}</TableColumn>

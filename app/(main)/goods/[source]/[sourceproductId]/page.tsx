@@ -186,8 +186,6 @@ export default function GoodsPage() {
         selectedValues[index] = `${spec.propId}:${val.valueID}`;
         const key = selectedValues.filter((value: any) => value).join("-");
 
-        console.log("key", key, !!pathMap[key]);
-
         if (pathMap[key]) {
           val.disabled = false;
         } else {
@@ -208,20 +206,17 @@ export default function GoodsPage() {
       goodsInfo?.productInfo?.skuPropImageMap,
     );
 
-    console.log("sku", selectedValues);
-    console.log("url", selectedUrl);
+    console.log("sku", selectedValues.join(";"));
 
     if (selectedUrl) setCurrentImg(selectedUrl);
 
-    const currentSku = goodsInfo?.productInfo.skuList.find((item: any) => {
-      return (
-        selectedValues.filter((i: any) => item?.propId_valueId.includes(i))
-          ?.length == selectedValues.length
-      );
+    const currentSku = goodsInfo.productInfo.skuList.find((item: any) => {
+      if (!item?.propId_valueId) return false;
+
+      return item?.propId_valueId == selectedValues.join(";");
     });
 
     if (currentSku) {
-      // setCurrentImg(currentSku.imgUrl);
       console.log("currentSku", currentSku);
 
       return currentSku;
@@ -233,7 +228,7 @@ export default function GoodsPage() {
     const defaultSales = goodsInfo?.productInfo?.sales || "--";
     const daysToArrival = goodsInfo?.productInfo?.daysToArrival || "--";
 
-    let weight  = "--";
+    let weight = "--";
     let size = "--";
 
     // Attempt to find specific SKU info from skuVmMap if available
@@ -241,10 +236,12 @@ export default function GoodsPage() {
       // Priority: Current SKU -> First available SKU in map -> Default
       const skuId = currentSku?.skuID;
       const skuData = skuId ? goodsInfo.productInfo.skuVmMap[skuId] : null;
-      
+
       // Fallback to first item in skuVmMap if current not found, or just keep default
       const firstSkuKey = Object.keys(goodsInfo.productInfo.skuVmMap)[0];
-      const fallbackData = firstSkuKey ? goodsInfo.productInfo.skuVmMap[firstSkuKey] : null;
+      const fallbackData = firstSkuKey
+        ? goodsInfo.productInfo.skuVmMap[firstSkuKey]
+        : null;
 
       const activeData = skuData || fallbackData;
 
@@ -260,7 +257,7 @@ export default function GoodsPage() {
       sales: defaultSales,
       daysToArrival,
       weight,
-      size
+      size,
     };
   }, [goodsInfo, currentSku]);
 
@@ -325,8 +322,6 @@ export default function GoodsPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastTop]);
 
-  console.log("goodsInfo?.productInfo.price", goodsInfo?.productInfo.price);
-
   return (
     <div className="bg-[#fff] ">
       <div className="flex  container mx-auto  my-[15px] mt-10">
@@ -367,9 +362,40 @@ export default function GoodsPage() {
                   />
                 ))}
               </div>
+              <div className="">
+                <div className={subtitle()}>{t("singleItemSalesTitle")}</div>
+                <div className="flex gap-4">
+                  <div className="flex-1 bg-gray-50 p-3 rounded-lg text-center flex flex-col justify-between">
+                    <div className="text-gray-500 text-sm mb-1">
+                      {t("avgArrivalTime")}
+                    </div>
+                    <div className="font-semibold">
+                      {displayValues.daysToArrival} days
+                    </div>
+                  </div>
+                  <div className="flex-1 bg-gray-50 p-3 rounded-lg text-center flex flex-col justify-between">
+                    <div className="text-gray-500 text-sm mb-1">
+                      {t("salesVolume")}
+                    </div>
+                    <div className="font-semibold">{displayValues.sales}</div>
+                  </div>
+                  <div className="flex-1 bg-gray-50 p-3 rounded-lg text-center flex flex-col justify-between">
+                    <div className="text-gray-500 text-sm mb-1">
+                      {t("weightWithUnit")}
+                    </div>
+                    <div className="font-semibold">{displayValues.weight}</div>
+                  </div>
+                  <div className="flex-1 bg-gray-50 p-3 rounded-lg text-center flex flex-col justify-between">
+                    <div className="text-gray-500 text-sm mb-1">
+                      {t("volumeWithUnit")}
+                    </div>
+                    <div className="font-semibold">{displayValues.size}</div>
+                  </div>
+                </div>
+              </div>
               {goodsInfo?.productInfo?.qcList?.length && (
                 <div>
-                  <h3 className={subtitle()}>QC</h3>
+                  <h3 className={subtitle()}>Product QC</h3>
                   <div className="grid grid-cols-5 justify-between">
                     <Image.PreviewGroup
                       preview={{
@@ -460,9 +486,6 @@ export default function GoodsPage() {
                         ? safeMul(currentSku?.price, quantity)
                         : safeMul(goodsInfo?.productInfo.price, quantity)
                       : null}
-                    {/* {currentSku?.price
-                      ? currentSku?.price * quantity
-                      : goodsInfo?.productInfo.price * quantity} */}
                   </div>
                   <div className={lightFont({ size: "sm" })}>
                     {t("afterPaymentNotice")}
@@ -542,30 +565,6 @@ export default function GoodsPage() {
                       onChange={(e) => setRemark(e.target.value)}
                     />
                   </div>
-                  <div className="mb-4">
-                    <div className={subtitle()}>{t("singleItemSalesTitle")}</div>
-                    <div className="flex gap-4">
-                      <div className="flex-1 bg-gray-50 p-3 rounded-lg text-center">
-                        <div className="text-gray-500 text-sm mb-1">{t("avgArrivalTime")}</div>
-                        <div className="font-semibold">{displayValues.daysToArrival} days</div>
-                      </div>
-                      <div className="flex-1 bg-gray-50 p-3 rounded-lg text-center">
-                        <div className="text-gray-500 text-sm mb-1">{t("salesVolume")}</div>
-                        <div className="font-semibold">{displayValues.sales}</div>
-                      </div>
-                      <div className="flex-1 bg-gray-50 p-3 rounded-lg text-center">
-                        <div className="text-gray-500 text-sm mb-1">{t("weightWithUnit")}</div>
-                        <div className="font-semibold">{displayValues.weight}</div>
-                      </div>
-                      <div className="flex-1 bg-gray-50 p-3 rounded-lg text-center">
-                        <div className="text-gray-500 text-sm mb-1">
-                          {t("volumeWithUnit")}
-                        </div>
-                        <div className="font-semibold">{displayValues.size}</div>
-                      </div>
-                    </div>
-                  </div>
-
 
                   <div className={commonCard({ type: "grey" })}>
                     <div className={subtitle()}>{t("disclaimer")}</div>

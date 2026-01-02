@@ -1,6 +1,7 @@
 import {
   Button,
   getKeyValue,
+  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -13,56 +14,25 @@ import { IoTicketOutline, IoWallet } from "react-icons/io5";
 
 import { getPointsList } from "@/services";
 
-const columns = [
-  {
-    key: "name",
-    label: "AC单号",
-  },
-  {
-    key: "role",
-    label: "类型",
-  },
-  {
-    key: "status",
-    label: "收入/支出",
-  },
-];
-const rows = [
-  {
-    key: "1",
-    name: "Tony Reichert",
-    role: "CEO",
-    status: "Active",
-  },
-  {
-    key: "2",
-    name: "Zoey Lang",
-    role: "Technical Lead",
-    status: "Paused",
-  },
-  {
-    key: "3",
-    name: "Jane Fisher",
-    role: "Senior Developer",
-    status: "Active",
-  },
-  {
-    key: "4",
-    name: "William Howard",
-    role: "Community Manager",
-    status: "Vacation",
-  },
-];
-
 export default function ScoreTab({ user, tableColumns, texts }: any) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
   const [scoreList, setScoreList] = useState([]);
 
-  useEffect(() => {
-    getPointsList().then((res) => {
-      console.log("res", res);
+  const fetchData = async () => {
+    try {
+      const res: any = await getPointsList();
+
       setScoreList(res.records);
-    });
+    } catch {
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
   return (
@@ -103,7 +73,12 @@ export default function ScoreTab({ user, tableColumns, texts }: any) {
             <TableColumn key={column.key}>{column.label}</TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={texts.noData} items={scoreList}>
+        <TableBody
+          emptyContent={texts.noData}
+          isLoading={isLoading}
+          items={scoreList}
+          loadingContent={<Spinner />}
+        >
           {(item: any) => (
             <TableRow key={item?.id}>
               {(columnKey) => (

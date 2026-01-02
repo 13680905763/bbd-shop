@@ -20,7 +20,7 @@ import { useUserStore } from "@/store";
 import { useChat } from "@/hook/chat/useChat";
 
 export default function ChatBox() {
-  const t = useTranslations("Components.ChatBox");
+  const t = useTranslations("components.chatbox");
   const user = useUserStore((state) => state.user);
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");

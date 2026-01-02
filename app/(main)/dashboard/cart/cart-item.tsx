@@ -15,7 +15,7 @@ function ProductItem({
   handleProductQuantity,
   handleProductDelete,
 }: any) {
-  const t = useTranslations("Dashboard.cart.productItem"); // ✅ 命名空间 cart
+  const t = useTranslations("dashboard.cart.productItem"); // ✅ 命名空间 cart
   const { currency } = useGlobalStore();
   const router = useRouter();
 

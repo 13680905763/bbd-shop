@@ -55,7 +55,7 @@ interface ModalState {
   isUpdatingRoute?: boolean;
 }
 export default function WarehousePage() {
-  const t = useTranslations("Dashboard.package");
+  const t = useTranslations("dashboard.package");
   const { currency } = useGlobalStore();
   const [activeTab, setActiveTab] =
     useState<keyof typeof tabKeyToStatusCode>("all");

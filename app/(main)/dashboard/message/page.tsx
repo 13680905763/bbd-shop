@@ -23,7 +23,7 @@ import { getMessageList, readMessage, delMessage } from "@/services";
 type TabKey = "all" | "read" | "unread";
 
 export default function MessagePage() {
-  const t = useTranslations("Dashboard.MessagePage");
+  const t = useTranslations("dashboard.MessagePage");
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -239,6 +239,9 @@ export default function MessagePage() {
         <CommonModal
           isOpen={isOpen}
           title={t("modalTitle")}
+          onConfirm={() => {
+            onOpenChange();
+          }}
           onOpenChange={onOpenChange}
         >
           <div className="max-h-[60vh] overflow-auto px-4 py-2 scrollbar-hide">

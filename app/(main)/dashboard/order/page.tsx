@@ -1,8 +1,17 @@
 "use client";
-import { Button, Checkbox, Tab, Tabs, Spinner, addToast } from "@heroui/react";
+import {
+  Button,
+  Checkbox,
+  Tab,
+  Tabs,
+  Spinner,
+  addToast,
+  Card,
+} from "@heroui/react";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { FaArrowRight } from "react-icons/fa";
 
 import OrderItem from "./order-item";
 import RefundList from "./refund-list";
@@ -44,7 +53,7 @@ function OrderTabContent({
   onPageChange,
   onPageSizeChange,
 }: any) {
-  const t = useTranslations("Dashboard.OrderPage");
+  const t = useTranslations("dashboard.order");
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modal, setModal] = useState<OrderModalState>(null);
@@ -216,10 +225,11 @@ function OrderTabContent({
 }
 
 export default function OrderPage() {
-  const t = useTranslations("Dashboard.OrderPage");
+  const t = useTranslations("dashboard.order");
   const [activeTab, setActiveTab] = useState("all");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const router = useRouter();
 
   const { data, isLoading, isFetching } = useOrderList(
     page,
@@ -234,6 +244,30 @@ export default function OrderPage() {
       <div className="mt-5">
         <Progress currentStep={1} />
       </div>
+      <Card className="w-full p-5 bg-[#ffeee1] ">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <div>
+              <h4 className="font-bold text-gray-800">
+                {t("promptCard.title")}
+              </h4>
+              <p className="text-sm text-gray-600 mt-1">
+                {t("promptCard.description")}
+              </p>
+            </div>
+          </div>
+          <Button
+            color="primary"
+            endContent={<FaArrowRight />}
+            variant="shadow"
+            onPress={() => {
+              router.push("/dashboard/warehouse");
+            }}
+          >
+            {t("promptCard.button")}
+          </Button>
+        </div>
+      </Card>
       <Tabs
         aria-label="Options"
         classNames={{

@@ -9,6 +9,7 @@ import {
   User,
 } from "@heroui/react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { useUserStore } from "@/store";
 import { logoutCustomer } from "@/services";
@@ -20,11 +21,10 @@ export interface User {
   orders: string;
   logout: string;
 }
-interface UserMenuProps {
-  texts: User;
-}
 
-export const UserMenu = ({ texts }: UserMenuProps) => {
+export const UserMenu = () => {
+  const t = useTranslations("components.navbar.dropdown");
+
   const user = useUserStore((state) => state.user);
   const router = useRouter();
 
@@ -46,10 +46,10 @@ export const UserMenu = ({ texts }: UserMenuProps) => {
           className="bg-transparent"
           onPress={() => router.push("/register")}
         >
-          {texts.register}
+          {t("register")}
         </Button>
         <Button color="primary" onPress={() => router.push("/login")}>
-          {texts.login}
+          {t("login")}
         </Button>
       </div>
     );
@@ -68,14 +68,14 @@ export const UserMenu = ({ texts }: UserMenuProps) => {
       </DropdownTrigger>
       <DropdownMenu aria-label="User Actions">
         <DropdownItem key="1" onPress={() => router.push("/dashboard")}>
-          {texts.account}
+          {t("account")}
         </DropdownItem>
         <DropdownItem key="2" onPress={() => router.push("/dashboard/order")}>
-          {texts.orders}
+          {t("orders")}
         </DropdownItem>
         <DropdownItem key="3">
           <button className="w-full text-left" onClick={logout}>
-            {texts.logout}
+            {t("logout")}
           </button>
         </DropdownItem>
       </DropdownMenu>

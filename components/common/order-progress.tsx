@@ -9,8 +9,14 @@ interface OrderProgressProps {
 }
 
 const OrderProgress: React.FC<OrderProgressProps> = ({ currentStep }) => {
-  const t = useTranslations("Components.OrderProgress"); // 从语言包读取步骤
-  const steps = t.raw("steps") as string[];
+  const t = useTranslations("components.progress"); // 从语言包读取步骤
+  const steps = [
+    t("step1"), // "选择商品"
+    t("step2"), // "支付订单"
+    t("step3"), // "质检与仓储"
+    t("step4"), // "打包"
+    t("step5"), // "收货"
+  ];
 
   return (
     <div className="bg-[#ffeee1] h-[116px] rounded-2xl p-4 flex items-center justify-around mb-4 w-full">

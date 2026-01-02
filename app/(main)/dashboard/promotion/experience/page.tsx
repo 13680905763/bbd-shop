@@ -16,7 +16,7 @@ import { useTranslations } from "next-intl";
 import { getExperienceList } from "@/services";
 
 export default function PromotionExperiencePage() {
-  const t: any = useTranslations("Dashboard.Promotion.experience");
+  const t: any = useTranslations("dashboard.Promotion.experience");
 
   const [experienceList, setExperienceList] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);

@@ -21,7 +21,7 @@ export default function PackageItem({
   onLine,
   onReceiptPackage,
 }: any) {
-  const t = useTranslations("Dashboard.package.packageItem");
+  const t = useTranslations("dashboard.package.packageItem");
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const { currency } = useGlobalStore();

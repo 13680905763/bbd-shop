@@ -51,23 +51,22 @@ export default function CommonModal({
   isDismissable = false,
   isKeyboardDismissDisabled = false,
 }: CommonModalProps) {
-  const t = useTranslations("Components.Modal"); // Common 是语言包的 namespace
+  const t = useTranslations("components.modal"); // Common 是语言包的 namespace
 
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleConfirm = async () => {
     if (!onConfirm) return;
     try {
-      setLoading(true);
+      setIsLoading(true);
       await onConfirm(); // 异步操作
-      onOpenChange(false); // 弹窗关闭
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   const handleCancel = () => {
-    if (loading) return; // loading 时禁止关闭
+    if (isLoading) return; // loading 时禁止关闭
     onCancel?.();
     onOpenChange(false);
   };
@@ -94,7 +93,7 @@ export default function CommonModal({
               <>
                 {showCancel && (
                   <Button
-                    isDisabled={loading}
+                    isDisabled={isLoading}
                     variant="flat"
                     onPress={handleCancel}
                   >
@@ -103,7 +102,7 @@ export default function CommonModal({
                 )}
                 <Button
                   color="primary"
-                  isLoading={loading}
+                  isLoading={isLoading}
                   onPress={handleConfirm}
                 >
                   {confirmText ?? t("confirm")}

@@ -20,8 +20,8 @@ import FullscreenLoader from "@/components/common/fullscreen-loader";
 import Stepper from "@/components/stepper";
 import CommonModal from "@/components/modal/common-modal";
 
-export default function ForwardingPage() {
-  const t = useTranslations("ForwardingPage");
+export default function Forwarding() {
+  const t = useTranslations("forwarding");
   const [isLoading, setIsLoading] = useState(false); // 🔹 loading 状态
 
   const { currency } = useGlobalStore();
@@ -30,7 +30,6 @@ export default function ForwardingPage() {
 
   const router = useRouter();
 
-  const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [acceptAgreement, setAcceptAgreement] = useState(false);
   const [loading, setLoading] = useState(false); // 🔥 loading 状态
 
@@ -155,7 +154,7 @@ export default function ForwardingPage() {
     <div>
       {isLoading && <FullscreenLoader />}
       {/* 顶部 Banner */}
-      <div className="bg-[url('https://hoobuy.com/_nuxt/estimation_bg.BPnQS2i-.webp')] bg-no-repeat bg-cover h-[180px]" />
+      <div className="bg-[url('/images/estimation.webp')] bg-no-repeat bg-cover h-[180px]" />
 
       {/* 一个大 Form，包裹左右两边 */}
       <Form
@@ -166,7 +165,7 @@ export default function ForwardingPage() {
         <div className="rounded-lg bg-[#fff] flex-[3] p-8">
           <p className="font-bold mb-5">{t("warehouseAddress")}</p>
           <Snippet className="w-full" symbol="">
-            <span>Bryant-4-Bryant </span>
+            <span>Bryant-4-Bryant</span>
             <span>15916408071</span>
             <span>广东省惠州市惠城区水口荔枝城青创产业园9楼901</span>
           </Snippet>

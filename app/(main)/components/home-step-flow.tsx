@@ -1,23 +1,36 @@
 // /components/home/StepFlow.tsx
 "use client";
 
+import { useTranslations } from "next-intl";
 import React from "react";
 
-export interface Step {
-  title: string;
-  desc: string;
-}
+export default function HomeStepFlow() {
+  const t = useTranslations("home.steps");
+  const steps = [
+    {
+      key: "step1",
+      title: t("step1.title"),
+      describe: t("step1.describe"),
+    },
+    {
+      key: "step2",
+      title: t("step2.title"),
+      describe: t("step2.describe"),
+    },
+    {
+      key: "step3",
+      title: t("step3.title"),
+      describe: t("step3.describe"),
+    },
+    {
+      key: "step4",
+      title: t("step4.title"),
+      describe: t("step4.describe"),
+    },
+  ];
 
-export interface StepFlowProps {
-  steps: Step[];
-  className?: string;
-}
-
-export default function HomeStepFlow({ steps, className }: StepFlowProps) {
   return (
-    <div
-      className={`h-[116px] rounded-2xl p-4 flex items-center justify-around mb-4 w-[70%] bg-white/5 ${className ?? ""}`}
-    >
+    <div className="h-[116px] rounded-2xl p-4 flex items-center justify-around mb-4 w-[70%] bg-white/5 ">
       {steps.map((step, index) => (
         <React.Fragment key={step.title}>
           <div className="flex flex-col items-center text-sm font-bold">
@@ -34,7 +47,7 @@ export default function HomeStepFlow({ steps, className }: StepFlowProps) {
 
             {/* 步骤描述 */}
             <div className="mt-2 text-gray-600 font-medium text-center text-xs">
-              {step.desc}
+              {step.describe}
             </div>
           </div>
 

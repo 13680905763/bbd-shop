@@ -212,7 +212,7 @@ export default function SubmitOrder() {
       }
 
       setOrderData(res);
-      onOpen();
+      onOpenChange();
     } catch {}
   };
 
@@ -336,6 +336,7 @@ export default function SubmitOrder() {
 
       {/* 商品服务列表弹窗 */}
       <CommonModal
+        isDismissable={false}
         isOpen={isOpen}
         title={t("valueAddedService")}
         onConfirm={handleServiceSubmit}

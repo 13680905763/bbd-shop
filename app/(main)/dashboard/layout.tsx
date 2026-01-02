@@ -18,7 +18,7 @@ interface DashBoardLayoutProps {
 
 export default function DashBoardlayout({ children }: DashBoardLayoutProps) {
   const pathname = usePathname();
-  const t = useTranslations("Dashboard");
+  const t = useTranslations("dashboard");
   const [open, setOpen] = useState(true);
 
   const menuItems = t.raw("LayoutMenu") as MenuItem[];

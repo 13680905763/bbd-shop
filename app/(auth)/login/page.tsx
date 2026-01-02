@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import NextLink from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { IoLockClosed, IoPerson } from "react-icons/io5";
 import { useTranslations } from "next-intl";
 
@@ -13,10 +12,8 @@ import { handleAuthSuccess } from "@/lib/auth-handler";
 
 export default function LoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const t = useTranslations("LoginPage");
+  const t = useTranslations("auth.login");
 
-  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
@@ -24,34 +21,31 @@ export default function LoginPage() {
 
   const loginFormFields: FieldConfig[] = [
     {
-      key: "email",
       type: "input",
       name: "email",
       size: "lg",
+      required: true,
+      errorMessage: t("fields.email.errorMessage"),
       placeholder: t("fields.email.placeholder"),
       startContent: <IoPerson />,
     },
     {
-      key: "password",
       type: "password",
       name: "password",
+      required: true,
       size: "lg",
+      errorMessage: t("fields.password.errorMessage"),
       placeholder: t("fields.password.placeholder"),
       startContent: <IoLockClosed />,
     },
   ];
 
   const handleSubmit = async (data: LoginFormData) => {
-    setIsLoading(true);
     try {
       await loginCustomer(data);
       await handleAuthSuccess();
       router.push("/");
-    } catch {
-      // 可以加 toast 提示
-    } finally {
-      setIsLoading(false);
-    }
+    } catch {}
   };
 
   return (
@@ -63,16 +57,16 @@ export default function LoginPage() {
         confirmText={t("confirmText")}
         fields={loginFormFields}
         formData={formData}
-        isLoading={isLoading}
         onChange={setFormData}
         onSubmit={handleSubmit}
       />
       <div className="flex justify-between my-2 text-[#f0700c]">
-        <NextLink href="/forgetPsd">
-          <div>{t("links.forgetPassword")}</div>
-        </NextLink>
+        {/* <NextLink href="/forgetPsd">
+          <div>{t("forgetPassword")}</div>
+        </NextLink> */}
+        <div />
         <button onClick={() => router.push("/register")}>
-          {t("links.register")}
+          {t("register")}
         </button>
       </div>
     </>

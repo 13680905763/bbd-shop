@@ -23,9 +23,10 @@ interface Props {
     city: string;
   };
   onChange: (val: Props["value"]) => void;
+  errorMessage?: string;
 }
 
-export default function AreaSelector({ value, onChange }: Props) {
+export default function AreaSelector({ value, onChange, errorMessage }: Props) {
   const t = useTranslations("Common.AreaSelector");
   const { data: countries = [] } = useCountries();
   const { data: states = [] } = useProvinces(value.countryId);
@@ -43,10 +44,24 @@ export default function AreaSelector({ value, onChange }: Props) {
       {opt.name}
     </AutocompleteItem>
   );
+  const renderItemCity = (opt: Option) => (
+    <AutocompleteItem
+      key={opt.name}
+      startContent={
+        opt.nationalFlag ? (
+          <Avatar alt={opt.name} className="w-6 h-6" src={opt.nationalFlag} />
+        ) : null
+      }
+    >
+      {opt.name}
+    </AutocompleteItem>
+  );
 
   return (
     <div className="flex flex-col gap-4">
       <Autocomplete
+        errorMessage={errorMessage}
+        isInvalid={!!errorMessage}
         isRequired={true}
         label={t("country.label")}
         placeholder={t("country.placeholder")}
@@ -94,7 +109,7 @@ export default function AreaSelector({ value, onChange }: Props) {
             })
           }
         >
-          {cities.map(renderItem)}
+          {cities.map(renderItemCity)}
         </Autocomplete>
       ) : null}
     </div>

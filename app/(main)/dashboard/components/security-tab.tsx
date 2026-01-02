@@ -3,22 +3,15 @@
 import { addToast, Button, Divider } from "@heroui/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import FormModal from "@/components/modal/form-modal";
-import { FieldConfig } from "@/components/form/formItem-renderer";
 import { updatePwd } from "@/services";
+import { FieldConfig } from "@/components/form/formItem-renderer";
 
-interface SecurityTabProps {
-  texts: {
-    title: string;
-    description: string;
-    button: string;
-    modalTitle: string;
-  };
-  fields: FieldConfig[];
-}
+export function SecurityTab() {
+  const t = useTranslations("dashboard.page.security");
 
-export function SecurityTab({ texts, fields }: SecurityTabProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState<any>({
     oldPassword: "",
@@ -28,11 +21,37 @@ export function SecurityTab({ texts, fields }: SecurityTabProps) {
 
   const router = useRouter();
 
+  const securityFields: FieldConfig[] = [
+    {
+      type: "input",
+      name: "oldPassword",
+      label: t("fields.oldPassword.label"),
+      errorMessage: t("fields.oldPassword.errorMessage"),
+      placeholder: t("fields.oldPassword.placeholder"),
+      required: true,
+    },
+    {
+      type: "input",
+      name: "newPassword",
+      label: t("fields.newPassword.label"),
+      errorMessage: t("fields.newPassword.errorMessage"),
+      placeholder: t("fields.newPassword.placeholder"),
+      required: true,
+    },
+    {
+      type: "input",
+      name: "confirmPassword",
+      label: t("fields.confirmPassword.label"),
+      errorMessage: t("fields.confirmPassword.errorMessage"),
+      placeholder: t("fields.confirmPassword.placeholder"),
+      required: true,
+    },
+  ];
   const handleSave = async () => {
     // 校验两次密码一致性
     if (formData.newPassword !== formData.confirmPassword) {
       addToast({
-        title: "两次输入的新密码不一致",
+        title: t("toast"),
         timeout: 1000,
         color: "danger",
       });
@@ -46,17 +65,9 @@ export function SecurityTab({ texts, fields }: SecurityTabProps) {
         newPassword: formData.newPassword,
       });
 
-      // addToast({
-      //   title: "密码修改成功，请重新登录",
-      //   timeout: 1000,
-      //   color: "danger",
-      // });
-      // 跳转登录页（可改成你的登录路由）
       setTimeout(() => {
         router.push("/login");
       }, 2000);
-
-      return true;
     } catch {}
   };
 
@@ -64,24 +75,24 @@ export function SecurityTab({ texts, fields }: SecurityTabProps) {
     <>
       <div className="flex justify-between items-center">
         <div>
-          <p className="text-title">{texts.title}</p>
-          <p className="text-sm my-1">{texts.description}</p>
+          <p className="text-title">{t("title")}</p>
+          <p className="text-sm my-1">{t("description")}</p>
         </div>
         <div>
           <Button color="primary" onPress={() => setIsOpen(true)}>
-            {texts.button}
+            {t("button")}
           </Button>
         </div>
       </div>
       <Divider className="my-4" />
       <FormModal
-        fields={fields}
+        fields={securityFields}
         formData={formData}
         isOpen={isOpen}
-        title={texts.modalTitle}
-        onChange={(data) => setFormData(data)} // ✅ 避免类型不匹配
+        title={t("modalTitle")}
+        onChange={setFormData}
         onOpenChange={setIsOpen}
-        onSave={handleSave}
+        onSubmit={handleSave}
       />
     </>
   );

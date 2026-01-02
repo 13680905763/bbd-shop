@@ -28,7 +28,7 @@ const tabKeyToStatusCode: Record<string, string> = {
 };
 
 export default function WarehousePage() {
-  const t = useTranslations("Dashboard.WarehousePage");
+  const t = useTranslations("dashboard.WarehousePage");
   const [activeTab, setActiveTab] =
     useState<keyof typeof tabKeyToStatusCode>("all");
   const [page, setPage] = useState<number>(1);

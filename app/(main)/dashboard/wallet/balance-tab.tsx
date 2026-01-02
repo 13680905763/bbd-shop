@@ -14,7 +14,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { IoAddCircleOutline, IoWallet } from "react-icons/io5";
 
-import FormModal from "@/components/modal/form-modal";
 import { FieldConfig } from "@/components/form/formItem-renderer";
 import RechargeModal from "@/components/modal/recharge.modal";
 import { useGlobalStore, useWalletStore } from "@/store";
@@ -99,6 +98,7 @@ export default function BalanceTab({
             {texts.recharge}
           </Button>
           <Button
+            isDisabled
             className="button-default"
             size="md"
             onPress={() => setIsOpenWithdrawal(true)}
@@ -170,7 +170,7 @@ export default function BalanceTab({
       <RechargeModal isOpen={isOpenRecharge} onOpenChange={setIsOpenRecharge} />
 
       {/* 提现弹窗 */}
-      <FormModal
+      {/* <FormModal
         fields={withdrawalFields}
         formData={formData}
         isOpen={isOpenWithdrawal}
@@ -178,7 +178,7 @@ export default function BalanceTab({
         onChange={setFormData}
         onOpenChange={setIsOpenWithdrawal}
         onSave={handleSave}
-      />
+      /> */}
     </div>
   );
 }

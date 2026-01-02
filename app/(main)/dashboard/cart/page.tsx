@@ -22,7 +22,7 @@ import { useSelection } from "@/hook/useSelection";
 import { debounce } from "@/lib/debounce";
 
 export default function CartPage() {
-  const t = useTranslations("Dashboard.cart");
+  const t = useTranslations("dashboard.cart");
   const { currency } = useGlobalStore();
   const [isSubmitting, setIsSubmitting] = useState(false); // ✅ 批量支付 loading
 

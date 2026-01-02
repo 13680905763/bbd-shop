@@ -16,7 +16,7 @@ import { useGlobalStore } from "@/store";
 import { getRefundList } from "@/services";
 
 export default function RefundList() {
-  const t = useTranslations("Dashboard.OrderPage");
+  const t = useTranslations("dashboard.order");
   const { currency } = useGlobalStore();
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);

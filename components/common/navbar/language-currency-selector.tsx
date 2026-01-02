@@ -9,7 +9,7 @@ import { useGlobalStore } from "@/store";
 import { setUserCurrency, setUserLocale } from "@/i18n/service";
 
 export default function LanguageCurrencySelector() {
-  const t = useTranslations("Components.Navbar");
+  const t = useTranslations("components.navbar.selector");
 
   const { language, setLanguage, currency, setCurrency, currencies } =
     useGlobalStore();

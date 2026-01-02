@@ -13,7 +13,7 @@ export interface Message {
 }
 
 export function useChat(user: any, isOpen: boolean) {
-  const t = useTranslations("Components.ChatBox");
+  const t = useTranslations("components.chatbox");
   const [messages, setMessages] = useState<Message[]>([]);
   const [receiverId, setReceiverId] = useState<number | null>(null);
   const [hasAgent, setHasAgent] = useState(false);
