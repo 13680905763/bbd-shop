@@ -90,6 +90,12 @@
         }
     },
     "components": {
+        "ui": {
+            "copy": {
+                "success": "Copy Success",
+                "fail": "Copy Failed"
+            }
+        },
         "navbar": {
             "selector": {
                 "language": "Language",
@@ -715,6 +721,22 @@
                 "receipt": "Receipt"
             }
         },
+        "history": {
+            "title": "Browse History",
+            "manage": "Manage",
+            "complete": "Complete",
+            "selectAll": "Select All",
+            "delete": "Delete",
+            "noData": "No browse history"
+        },
+        "favorite":{
+            "title": "Favorite Products",
+            "manage": "Manage",
+            "complete": "Complete",
+            "selectAll": "Select All",
+            "delete": "Delete",
+            "noData": "No favorite products"
+        },
         "Promotion": {
             "page": {
                 "process": [
@@ -883,6 +905,9 @@
         "tooltipTip": "Due to currency conversion, there may be a small difference of 0.01 or 0.02"
     },
     "Goods": {
+        "favorite": "Favorite",
+        "favorited": "Favorited",
+        "share": "Share",
         "agreeTerms": "Please agree to the terms",
         "selectSku": "Please select a product specification",
         "purchaseRecord": "Purchase Record",

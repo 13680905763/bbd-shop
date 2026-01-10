@@ -12,3 +12,5 @@ export * from "./pay/usePaymentMethodList";
 export * from "./warehouse/useWarehouseList";
 export * from "./warehouse/useWarehousePreview";
 export * from "./package/usePackageList";
+export * from "./goods/useHistory";
+export * from "./goods/useFavorite";

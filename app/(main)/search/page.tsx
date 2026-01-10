@@ -12,8 +12,10 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { getGoodsList } from "@/services";
+import { useGlobalStore } from "@/store";
 
 export default function SearchPage() {
+   const { currency } = useGlobalStore();
   const [list, setList] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -135,13 +137,16 @@ export default function SearchPage() {
                             radius="none"
                             src={item.imageUrl}
                             width="100%"
+
                           />
+
                         </CardBody>
                         <CardFooter className="text-small">
                           <div className="text-left">
                             <b className="line-clamp-2">{item.title}</b>
-                            <p className="text-money-lg">{item.price}</p>
+                            <p className="text-money-lg">  {currency.symbol}{item.price}</p>
                           </div>
+
                         </CardFooter>
                       </Card>
                     ))}

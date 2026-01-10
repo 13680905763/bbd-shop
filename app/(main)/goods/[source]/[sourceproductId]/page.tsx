@@ -13,6 +13,7 @@ import { GrPowerReset } from "react-icons/gr";
 import { IoIosLink } from "react-icons/io";
 import { useTranslations } from "next-intl";
 import { Image } from "antd";
+import { IoShareSocialOutline, IoStar, IoStarOutline } from "react-icons/io5";
 
 import {
   commonCard,
@@ -21,7 +22,7 @@ import {
   subtitle,
 } from "@/components/primitives";
 import Stepper from "@/components/stepper";
-import { getGoodsInfo } from "@/services/goods";
+import { favoriteProduct, getGoodsInfo } from "@/services/goods";
 import { addCart } from "@/services/cart";
 import {
   createOrderPreviewKeyByProduct,
@@ -29,6 +30,7 @@ import {
 } from "@/services";
 import { queryClient } from "@/lib/react-query";
 import SourceIcon from "@/components/common/source-icon";
+import CopyText from "@/components/ui/copy-text";
 import CommonModal from "@/components/modal/common-modal";
 import { useGlobalStore } from "@/store";
 import { safeMul } from "@/utils/number";
@@ -84,6 +86,7 @@ export default function GoodsPage() {
   const [issub, setissub] = useState<any>(false);
   const [isCheck, setIsCheck] = useState<any>(false);
   const [currentImg, setCurrentImg] = useState<string>();
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const router = useRouter();
 
   const validateSkuSelection = () => {
@@ -261,12 +264,25 @@ export default function GoodsPage() {
     };
   }, [goodsInfo, currentSku]);
 
+  const handleFavorite = async () => {
+    try {
+      await favoriteProduct(
+        params.source as any,
+        params.sourceProductId as string,
+        isFavorite ? 0 : 1,
+      );
+      setIsFavorite(!isFavorite);
+    } catch (err) {
+      console.log("err", err);
+    }
+  };
+
   useEffect(() => {
     setisLoading(true);
     getGoodsInfo({ ...params })
       .then((data: any) => {
         console.log("get goods");
-
+        setIsFavorite(data.collection);
         // 数据初始化
         const cloned = structuredClone(data);
         let pathMap = generateDynamicSkuPathDict(cloned.productInfo);
@@ -361,6 +377,33 @@ export default function GoodsPage() {
                     onClick={() => setCurrentImg(src)}
                   />
                 ))}
+              </div>
+              <div className="flex justify-between items-center px-2 py-2 mt-4">
+                <div
+                  className="flex items-center gap-1 cursor-pointer hover:text-primary transition-colors"
+                  role="button"
+                  onClick={handleFavorite}
+                >
+                  {isFavorite ? (
+                    <IoStar className="text-2xl text-[#f0700c]" />
+                  ) : (
+                    <IoStarOutline className="text-xl" />
+                  )}
+                  <span className={isFavorite ? "text-[#f0700c]" : ""}>
+                    {isFavorite ? t("favorited") : t("favorite")}
+                  </span>
+                </div>
+                <CopyText
+                  text={
+                    typeof window !== "undefined" ? window.location.href : ""
+                  }
+                  toastMessage="Link Copied"
+                >
+                  <div className="flex items-center gap-1 cursor-pointer hover:text-primary transition-colors">
+                    <IoShareSocialOutline className="text-xl" />
+                    <span>{t("share")}</span>
+                  </div>
+                </CopyText>
               </div>
               <div className="">
                 <div className={subtitle()}>{t("singleItemSalesTitle")}</div>

@@ -90,6 +90,12 @@
         }
     },
     "components": {
+        "ui": {
+            "copy": {
+                "success": "复制成功",
+                "fail": "复制失败"
+            }
+        },
         "navbar": {
             "selector": {
                 "language": "语言",
@@ -715,6 +721,22 @@
                 "receipt": "收货"
             }
         },
+        "history": {
+            "title": "浏览历史",
+            "manage": "管理",
+            "complete": "完成",
+            "selectAll": "全选",
+            "delete": "删除",
+            "noData": "暂无浏览历史"
+        },
+        "favorite":{
+            "title": "收藏商品",
+            "manage": "管理",
+            "complete": "完成",
+            "selectAll": "全选",
+            "delete": "删除",
+            "noData": "暂无收藏商品"
+        },
         "Promotion": {
             "page": {
                 "process": [
@@ -883,6 +905,9 @@
         "tooltipTip": "由于货币转换，可能会有0.01或0.02的小额差异"
     },
     "Goods": {
+        "favorite": "收藏",
+        "favorited": "已收藏",
+        "share": "分享链接",
         "agreeTerms": "请勾选同意协议",
         "selectSku": "请选择商品规格",
         "purchaseRecord": "购买记录",

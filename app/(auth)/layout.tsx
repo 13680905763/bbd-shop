@@ -23,6 +23,7 @@ export default function AuthLayout({
   const handleGoogleLogin = useGoogleLogin({
     flow: "auth-code",
     scope: "email profile openid",
+    ux_mode: "popup",
     onSuccess: async (codeResponse) => {
       try {
         await loginWithGoogleNew(codeResponse.code);
@@ -31,6 +32,7 @@ export default function AuthLayout({
         router.push("/");
       } catch {}
     },
+    onError: (error) => console.error("Google Login Failed:", error),
   });
 
   return (
