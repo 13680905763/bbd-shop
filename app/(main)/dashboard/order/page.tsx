@@ -6,7 +6,6 @@ import {
   Tabs,
   Spinner,
   addToast,
-  Card,
 } from "@heroui/react";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -19,17 +18,10 @@ import RefundModal from "./refund-modal";
 
 import Progress from "@/components/common/order-progress";
 import PaginationBar from "@/components/common/pagination-bar";
-import { useOrderList } from "@/hook";
-import FullscreenLoader from "@/components/common/fullscreen-loader";
-import {
-  batchPayOrder,
-  OrderRefund,
-  putOrderCancel,
-  putOrderRevoke,
-} from "@/services";
-import ConfirmModal from "@/components/modal/confirm-modal";
-import { queryClient } from "@/lib/react-query";
-import { useSelection } from "@/hook/useSelection";
+import { useOrderList, useOrderMutations } from "@/hook/api";
+import { FullscreenLoader } from "@/components/ui";
+import { useSelection } from "@/hook/common";
+import { useConfirm } from "@/components/common/modal/confirm-provider";
 
 const tabKeyToStatusCode: Record<string, string> = {
   all: "",
@@ -55,33 +47,25 @@ function OrderTabContent({
 }: any) {
   const t = useTranslations("dashboard.order");
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [modal, setModal] = useState<OrderModalState>(null);
-  // ================= 使用 useSelection =================
   const {
     selectedIds,
     isSelected,
     hasSelected,
-    toggle,
+    onSelect,
     isAllSelected,
-    toggleSelectAll,
+    onToggleSelectAll,
   } = useSelection((orders as any) ?? [], { idKey: "orderCode" });
+  const { confirm } = useConfirm();
+  const { batchPayMutation, refundMutation, cancelMutation, revokeMutation } =
+    useOrderMutations();
 
   const handleOrderSubmit = async () => {
-    if (isSubmitting) return;
+    const bizCode = await batchPayMutation.mutateAsync({
+      orderCodeSet: selectedIds,
+    });
 
-    try {
-      setIsSubmitting(true);
-
-      const bizCode = await batchPayOrder({
-        orderCodeSet: selectedIds,
-      });
-
-      router.push(`/payment/${bizCode}`);
-    } catch {
-    } finally {
-      setIsSubmitting(false);
-    }
+    router.push(`/payment/${bizCode}`);
   };
 
   // 提交退款逻辑
@@ -107,12 +91,10 @@ function OrderTabContent({
 
       return;
     }
-    await OrderRefund({
-      orderId: modal.order.id,
+    await refundMutation.mutateAsync({
+      orderId: modal.order.orderCode,
       skuList: selectedProducts,
     });
-
-    queryClient.invalidateQueries({ queryKey: ["orderList"] });
     setModal(null);
   };
 
@@ -134,14 +116,28 @@ function OrderTabContent({
             activeTab={activeTab}
             order={order}
             revokeRefund={(refundId: string) =>
-              setModal({ type: "revoke", refundId })
+              confirm({
+                title: t("withdrawTitle"),
+                content: t("withdrawContent"),
+                onConfirm: async () => {
+                  await revokeMutation.mutateAsync(refundId);
+                  setModal(null);
+                },
+              })
             }
             selected={isSelected(order.orderCode)}
             texts={t.raw("texts")}
             onCancelOrder={() =>
-              setModal({ type: "cancel", orderId: order.id })
+              confirm({
+                title: t("cancelTitle"),
+                content: t("cancelContent"),
+                onConfirm: async () => {
+                  await cancelMutation.mutateAsync({ id: order.orderCode });
+                  setModal(null);
+                },
+              })
             }
-            onChange={() => toggle(order.orderCode)}
+            onChange={() => onSelect(order.orderCode)}
             onRequestRefund={() =>
               setModal({
                 type: "refund",
@@ -161,18 +157,18 @@ function OrderTabContent({
       <div className="mt-10 sticky bottom-0 border-t bg-white z-10 p-4 card-cart">
         {isFooter && (
           <div className="flex justify-between items-center gap-4 ">
-            <Checkbox isSelected={isAllSelected} onChange={toggleSelectAll}>
+            <Checkbox isSelected={isAllSelected} onChange={onToggleSelectAll}>
               {t("selectAll")}
             </Checkbox>
             <Button
               className="w-[150px]"
               color="primary"
               isDisabled={!hasSelected}
-              isLoading={isSubmitting}
+              isLoading={batchPayMutation.isPending}
               size="lg"
               onPress={handleOrderSubmit}
             >
-              {t("batchPay")}
+              {t("batchPay")}{selectedIds.length ? ` (${selectedIds.length})` : ""}
             </Button>
           </div>
         )}
@@ -187,32 +183,6 @@ function OrderTabContent({
         )}
       </div>
 
-      {modal?.type === "cancel" && (
-        <ConfirmModal
-          isOpen
-          content={t("cancelContent")}
-          title={t("cancelTitle")}
-          onConfirm={async () => {
-            await putOrderCancel({ id: modal.orderId });
-            queryClient.invalidateQueries({ queryKey: ["orderList"] });
-            setModal(null);
-          }}
-          onOpenChange={() => setModal(null)}
-        />
-      )}
-      {modal?.type === "revoke" && (
-        <ConfirmModal
-          isOpen
-          content={t("withdrawContent")}
-          title={t("withdrawTitle")}
-          onConfirm={async () => {
-            await putOrderRevoke(modal.refundId);
-            queryClient.invalidateQueries({ queryKey: ["orderList"] });
-            setModal(null);
-          }}
-          onOpenChange={() => setModal(null)}
-        />
-      )}
       {modal?.type === "refund" && (
         <RefundModal
           order={modal.order}
@@ -244,7 +214,7 @@ export default function OrderPage() {
       <div className="mt-5">
         <Progress currentStep={1} />
       </div>
-      <Card className="w-full p-5 bg-[#ffeee1] ">
+      <div className="w-full p-5 bg-[#ffeee1] rounded-lg">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <div>
@@ -267,7 +237,7 @@ export default function OrderPage() {
             {t("promptCard.button")}
           </Button>
         </div>
-      </Card>
+      </div>
       <Tabs
         aria-label="Options"
         classNames={{

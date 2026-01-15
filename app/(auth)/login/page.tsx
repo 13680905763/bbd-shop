@@ -8,7 +8,7 @@ import { loginCustomer } from "@/services";
 import CommonForm from "@/components/form/common-form";
 import { FieldConfig } from "@/components/form/formItem-renderer";
 import { LoginFormData } from "@/types";
-import { handleAuthSuccess } from "@/lib/auth-handler";
+import { queryClient } from "@/lib/react-query";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -43,9 +43,9 @@ export default function LoginPage() {
   const handleSubmit = async (data: LoginFormData) => {
     try {
       await loginCustomer(data);
-      await handleAuthSuccess();
+      queryClient.invalidateQueries({ queryKey: ["userInfo"] }); // 刷新
       router.push("/");
-    } catch {}
+    } catch { }
   };
 
   return (

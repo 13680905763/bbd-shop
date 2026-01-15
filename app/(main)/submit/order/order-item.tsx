@@ -2,8 +2,8 @@
 
 import { Button, Divider, Image } from "@heroui/react";
 
-import SourceIcon from "@/components/common/source-icon";
 import { useGlobalStore } from "@/store";
+import { SourceIcon } from "@/components/ui";
 
 interface OrderItemProps {
   order: any;

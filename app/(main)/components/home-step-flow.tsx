@@ -30,7 +30,7 @@ export default function HomeStepFlow() {
   ];
 
   return (
-    <div className="h-[116px] rounded-2xl p-4 flex items-center justify-around mb-4 w-[70%] bg-white/5 ">
+    <div className="h-[116px] rounded-2xl p-4 flex items-center justify-around mb-4 w-[70%]  ">
       {steps.map((step, index) => (
         <React.Fragment key={step.title}>
           <div className="flex flex-col items-center text-sm font-bold">
@@ -46,7 +46,7 @@ export default function HomeStepFlow() {
             <div className="mt-4 text-gray-800 font-semibold">{step.title}</div>
 
             {/* 步骤描述 */}
-            <div className="mt-2 text-gray-600 font-medium text-center text-xs">
+            <div className="mt-2 text-gray-800 font-medium text-center text-xs">
               {step.describe}
             </div>
           </div>

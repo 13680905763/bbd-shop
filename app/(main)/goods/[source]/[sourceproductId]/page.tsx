@@ -29,13 +29,13 @@ import {
   getOrderPreviewProduct,
 } from "@/services";
 import { queryClient } from "@/lib/react-query";
-import SourceIcon from "@/components/common/source-icon";
 import CopyText from "@/components/ui/copy-text";
 import CommonModal from "@/components/modal/common-modal";
 import { useGlobalStore } from "@/store";
 import { safeMul } from "@/utils/number";
-import ConfirmModal from "@/components/modal/confirm-modal";
 import { generateDynamicSkuPathDict } from "@/lib/sku-helper";
+import { useConfirm } from "@/components/common/modal/confirm-provider";
+import { SourceIcon } from "@/components/ui";
 
 const getSelectedValues = (specs: any) => {
   const arr: any = [];
@@ -79,21 +79,25 @@ export default function GoodsPage() {
   const [remark, setRemark] = useState<string>();
   const [quantity, setQuantity] = useState<number>(1);
   const [isOpen1, setIsOpen1] = useState(false);
-  const [isOpen2, setIsOpen2] = useState(false);
   const [goodsInfo, setGoodsInfo] = useState<any>();
   const [pathMap, setPathMap] = useState<any>(null);
   const [isLoading, setisLoading] = useState<any>(false);
   const [issub, setissub] = useState<any>(false);
-  const [isCheck, setIsCheck] = useState<any>(false);
+  const [isChecked, setIsChecked] = useState<any>(false);
   const [currentImg, setCurrentImg] = useState<string>();
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
+
+  const { confirm } = useConfirm();
   const router = useRouter();
 
   const validateSkuSelection = () => {
     if (issub) return false;
-    if (!isCheck) {
-      setIsOpen2(true);
-
+    if (!isChecked) {
+       confirm({
+        title: t("disclaimer"),
+        content: t("disclaimerDescription"),
+        onConfirm: () => setIsChecked(true),
+      });
       return false;
     }
     if (!currentSku) {
@@ -617,9 +621,9 @@ export default function GoodsPage() {
                         className="mt-2 "
                         color="primary"
                         defaultSelected={true}
-                        isSelected={isCheck}
+                        isSelected={isChecked}
                         onValueChange={(e) => {
-                          setIsCheck(e);
+                          setIsChecked(e);
                         }}
                       >
                         <span className="text-[#676969]">
@@ -671,15 +675,7 @@ export default function GoodsPage() {
         </div>
       </CommonModal>
 
-      <ConfirmModal
-        content={t("disclaimerDescription")} // 弹窗正文
-        isOpen={isOpen2} // 根据状态控制显示
-        title={t("agreeTerms")} // 弹窗标题
-        onConfirm={async () => {
-          setIsCheck(true);
-        }}
-        onOpenChange={setIsOpen2}
-      />
+
     </div>
   );
 }

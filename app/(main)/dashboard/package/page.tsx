@@ -29,11 +29,11 @@ import {
   withdrawPayPackage,
 } from "@/services";
 import CommonModal from "@/components/modal/common-modal";
-import ConfirmModal from "@/components/modal/confirm-modal";
 import { queryClient } from "@/lib/react-query";
 import { useGlobalStore } from "@/store";
 import RouteCard from "@/components/common/route-card";
-import { useSelection } from "@/hook/useSelection";
+import { useSelection } from "@/hook/common";
+import { useConfirm } from "@/components/common/modal/confirm-provider";
 
 const tabKeyToStatusCode: Record<string, string> = {
   all: "",
@@ -71,16 +71,16 @@ export default function WarehousePage() {
   const router = useRouter();
 
   const [modal, setModal] = useState<ModalState>({ type: null });
+  const { confirm } = useConfirm();
 
-  // ================= 使用 useSelection =================
   const {
     selectedIds,
     isSelected,
     hasSelected,
-    toggle,
+    onSelect,
     isAllSelected,
-    toggleSelectAll,
-  } = useSelection(data?.records || [], { idKey: "packingPackageCode" });
+    onToggleSelectAll,
+  } = useSelection((data?.records || []), { idKey: "packingPackageCode" });
   // 打开取消弹窗
   const openCancelModal = async (currentPackage: any) => {
     const res = await refundPrePayPackage(currentPackage?.id);
@@ -152,21 +152,24 @@ export default function WarehousePage() {
   };
   // 打开撤销退款弹窗
   const openRevokeModal = (packageId: string) => {
-    setModal({
-      type: "revoke",
-      confirm: async () => {
+    console.log(666);
+    confirm({
+      title: t("withdrawTitle"),
+      content: t("withdrawContent"),
+      onConfirm: async () => {
         // 调用后端撤销接口
         await withdrawPayPackage(packageId);
         queryClient.invalidateQueries({ queryKey: ["packageList"] });
-        setModal({ type: null });
+        // setModal({ type: null });
       },
     });
   };
   // 打开收货弹窗
   const openReceiptModal = (packageId: string) => {
-    setModal({
-      type: "receipt",
-      confirm: async () => {
+    confirm({
+      title: t("receiptTitle"),
+      content: t("receiptContent"),
+      onConfirm: async () => {
         // 调用后端撤销接口
         await ReceiptPackage(packageId);
         await queryClient.invalidateQueries({ queryKey: ["packageList"] });
@@ -218,7 +221,7 @@ export default function WarehousePage() {
               pack={p}
               selected={isSelected(p.packingPackageCode)}
               onCancelPackage={() => openCancelModal(p)} //取消包裹预览
-              onChange={() => toggle(p.packingPackageCode)}
+              onChange={() => onSelect(p.packingPackageCode)}
               onChangePackageLine={() => openChangeLineModal(p)} //变更路线预览
               onLine={() => {
                 openLineModal(p);
@@ -236,7 +239,7 @@ export default function WarehousePage() {
         <div className="mt-10 sticky bottom-0 border-t bg-white z-10 p-4 card-cart">
           {activeTab == "pay" && (
             <div className="flex justify-between items-center gap-4">
-              <Checkbox isSelected={isAllSelected} onChange={toggleSelectAll}>
+              <Checkbox isSelected={isAllSelected} onChange={onToggleSelectAll}>
                 {t("selectAll")}
               </Checkbox>
               <Button
@@ -330,9 +333,8 @@ export default function WarehousePage() {
                     <IoCloseCircleOutline className="h-10 w-10 text-red-500" />
                   )}
                   <p
-                    className={`text-base font-semibold ${
-                      modal?.isCancelling ? "text-gray-500" : "text-red-600"
-                    }`}
+                    className={`text-base font-semibold ${modal?.isCancelling ? "text-gray-500" : "text-red-600"
+                      }`}
                   >
                     {modal?.isCancelling
                       ? t("cancelModal.cancelCard.submittingTitle")
@@ -543,26 +545,6 @@ export default function WarehousePage() {
               ))}
           </div>
         </CommonModal>
-      )}
-      {/* 撤回弹窗 */}
-      {modal.type === "revoke" && (
-        <ConfirmModal
-          isOpen
-          content={t("withdrawContent")}
-          title={t("withdrawTitle")}
-          onConfirm={modal.confirm as () => Promise<void>}
-          onOpenChange={() => setModal({ type: null })}
-        />
-      )}
-      {/* 收货弹窗 */}
-      {modal.type === "receipt" && (
-        <ConfirmModal
-          isOpen
-          content={t("receiptContent")}
-          title={t("receiptTitle")}
-          onConfirm={modal.confirm as () => Promise<void>}
-          onOpenChange={() => setModal({ type: null })}
-        />
       )}
     </div>
   );

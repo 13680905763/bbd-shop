@@ -2,7 +2,6 @@ import axios from "axios";
 
 import { request, requestWithOption } from "./request";
 
-import { AddressItem } from "@/types";
 
 /** 新增地址 */
 export const addAddress = (data: any): Promise<string> => {
@@ -37,8 +36,11 @@ export const deleteAddress = (data: any): Promise<string> => {
     { showToast: true }, // 成功/失败都会弹 toast
   );
 };
-export const getAddressList = (addressType: number): Promise<AddressItem[]> => {
-  return request.get("/customer/address/list?addressType=" + addressType);
+export const getAddressList = (): Promise<any[]> => {
+  return request.get("/customer/address/list?addressType=1");
+};
+export const getBillingAddressList = (): Promise<any[]> => {
+  return request.get("/customer/address/list?addressType=2");
 };
 export const getCountries = async (): Promise<any> => {
   try {

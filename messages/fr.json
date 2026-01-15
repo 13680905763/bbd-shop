@@ -94,6 +94,16 @@
             "copy": {
                 "success": "Copié avec succès",
                 "fail": "Échec de la copie"
+            },
+            "emptyState": {
+               "defaultMessage": "Pas de données"
+            }
+        },
+        "block": {
+            "addressItem": {
+                "edit": "Éditer",
+                "delete": "Supprimer",
+                "default": "Par défaut"
             }
         },
         "navbar": {
@@ -560,18 +570,19 @@
                 ]
             }
         },
-        "MessagePage": {
+        "message": {
             "title": "Titre",
-            "time": "Heure",
+            "time": "Date",
             "actions": "Actions",
             "viewDetail": "Détails",
             "allMessages": "Tous",
             "noMessages": "Aucun message",
-            "selectAll": "Tout Sélectionner",
+            "selectAll": "Tout sélectionner",
             "delete": "Supprimer",
-            "modalTitle": "Voir les Détails",
-            "readMessages": "Lus",
-            "unreadMessages": "Non lus",
+            "confirmDeleteContent": "Êtes-vous sûr de vouloir supprimer les messages sélectionnés ?",
+            "modalTitle": "Voir les détails",
+            "readMessages": "Lu",
+            "unreadMessages": "Non lu",
             "noData": "Aucune donnée"
         },
         "cart": {
@@ -648,17 +659,14 @@
                 "button": "Aller à l'entrepôt"
             }
         },
-        "WarehousePage": {
+        "warehouse": {
             "allTab": "Tous",
             "submitTab": "Colis Soumettables",
-            "emptyText": "Aucun colis disponible",
             "selectAll": "Tout Sélectionner",
             "submitPackage": "Soumettre le Colis",
             "texts": {
                 "orderNumber": "N° de Commande :",
-                "createTime": "Créée le :",
-                "refundRequest": "Demander Remboursement",
-                "valueAddedService": "Service à Valeur Ajoutée"
+                "createTime": "Créée le :"
             }
         },
         "package": {
@@ -729,7 +737,7 @@
             "delete": "Supprimer",
             "noData": "Aucun historique de navigation"
         },
-        "favorite":{
+        "favorite": {
             "title": "Produits favoris",
             "manage": "Gérer",
             "complete": "Compléter",
@@ -839,6 +847,7 @@
             "packagingMethod": "Méthode d'Emballage",
             "deliveryRoute": "Itinéraire de Livraison",
             "leavingMessage": "Laisser un Message",
+            "defaultMessage": "Veuillez sélectionner une adresse de livraison pour afficher les itinéraires de livraison",
             "placeholder": "Si vous avez des exigences particulières, veuillez les noter ici",
             "submit": "Soumettre le Colis",
             "agreement": "J'ai lu et j'accepte l'accord d'expédition de colis BBDbuy",

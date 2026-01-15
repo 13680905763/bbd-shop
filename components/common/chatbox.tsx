@@ -16,12 +16,13 @@ import Picker from "@emoji-mart/react";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 
-import { useUserStore } from "@/store";
 import { useChat } from "@/hook/chat/useChat";
+import { useUserInfo } from "@/hook";
 
 export default function ChatBox() {
   const t = useTranslations("components.chatbox");
-  const user = useUserStore((state) => state.user);
+  const { data: user, isLoading: userLoading, error } = useUserInfo();
+
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -212,11 +213,10 @@ export default function ChatBox() {
               {messages.map((msg) => (
                 <div
                   key={msg.id}
-                  className={`max-w-[75%] break-words rounded-lg p-2 ${
-                    msg.sender === "user"
+                  className={`max-w-[75%] break-words rounded-lg p-2 ${msg.sender === "user"
                       ? "ml-auto bg-blue-500 text-white"
                       : "mr-auto bg-gray-200 text-black"
-                  }`}
+                    }`}
                 >
                   {msg.type === "IMAGE" && msg.text ? (
                     <div className="relative inline-block">

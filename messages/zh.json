@@ -94,6 +94,20 @@
             "copy": {
                 "success": "复制成功",
                 "fail": "复制失败"
+            },
+            "empty": {
+                "defaultMessage": "暂无数据"
+            }
+        },
+        "block": {
+            "addressItem": {
+                "edit": "编辑",
+                "delete": "删除",
+                "default": "默认"
+            },
+            "addAddress": {
+                "addButton": "添加收货地址",
+                "addBillingButton": "添加账单地址"
             }
         },
         "navbar": {
@@ -560,7 +574,7 @@
                 ]
             }
         },
-        "MessagePage": {
+        "message": {
             "title": "标题",
             "time": "时间",
             "actions": "操作",
@@ -569,6 +583,7 @@
             "noMessages": "暂无消息",
             "selectAll": "全选",
             "delete": "删除",
+            "confirmDeleteContent": "确定要删除选中的消息吗？",
             "modalTitle": "查看详情",
             "readMessages": "已读",
             "unreadMessages": "未读",
@@ -648,17 +663,14 @@
                 "button": "前往仓库"
             }
         },
-        "WarehousePage": {
+        "warehouse": {
             "allTab": "全部",
             "submitTab": "可提交包裹",
-            "emptyText": "暂无包裹",
             "selectAll": "全选",
             "submitPackage": "提交包裹",
-            "texts": {
+            "packageItem": {
                 "orderNumber": "订单号:",
-                "createTime": "创建时间:",
-                "refundRequest": "申请退款",
-                "valueAddedService": "增值服务"
+                "createTime": "创建时间:"
             }
         },
         "package": {
@@ -729,7 +741,7 @@
             "delete": "删除",
             "noData": "暂无浏览历史"
         },
-        "favorite":{
+        "favorite": {
             "title": "收藏商品",
             "manage": "管理",
             "complete": "完成",
@@ -840,6 +852,7 @@
             "deliveryRoute": "运输路线",
             "leavingMessage": "留言",
             "placeholder": "如果您有任何特殊要求，请在此备注",
+            "defaultMessage": "请选择地址后查看运输路线",
             "submit": "提交包裹",
             "agreement": "我已阅读并同意 bbdbuy 包裹运输协议",
             "toast": {

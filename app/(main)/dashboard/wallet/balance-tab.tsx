@@ -16,9 +16,10 @@ import { IoAddCircleOutline, IoWallet } from "react-icons/io5";
 
 import { FieldConfig } from "@/components/form/formItem-renderer";
 import RechargeModal from "@/components/modal/recharge.modal";
-import { useGlobalStore, useWalletStore } from "@/store";
-import { getWalletDetailList, getWalletInfo } from "@/services/wallet";
+import { useGlobalStore } from "@/store";
+import { getWalletDetailList } from "@/services/wallet";
 import PaginationBar from "@/components/common/pagination-bar";
+import { useWalletInfo } from "@/hook";
 
 interface BalanceTabProps {
   tableColumns: any[];
@@ -38,7 +39,13 @@ export default function BalanceTab({
   withdrawalFields,
   texts,
 }: BalanceTabProps) {
-  const wallet = useWalletStore((state) => state.wallet);
+
+  const {
+    data: wallet,
+    isLoading: walletLoading,
+    error: walletError,
+  } = useWalletInfo();
+
   const { currency } = useGlobalStore();
 
   const [loading, setLoading] = useState(true);
@@ -56,10 +63,8 @@ export default function BalanceTab({
   const fetchData = async () => {
     try {
       const res: any = await getWalletDetailList(page, pageSize);
-      const wallet = await getWalletInfo();
 
       console.log("res", res);
-      useWalletStore.getState().setWallet(wallet);
       setWalletRecords(res?.records || []);
       setTotal(res?.pages || []);
     } catch {
@@ -68,9 +73,7 @@ export default function BalanceTab({
     }
   };
 
-  const handleSave = async () => {
-    console.log("保存提现数据:", formData);
-  };
+
 
   useEffect(() => {
     fetchData();
@@ -153,7 +156,7 @@ export default function BalanceTab({
                 const value = getKeyValue(item, columnKey);
                 const formatted =
                   (columnKey === "amount" || columnKey === "currentBalance") &&
-                  value !== undefined
+                    value !== undefined
                     ? Number(value) < 0
                       ? `-${currency.symbol}${Math.abs(Number(value))}`
                       : `${currency.symbol}${value}`

@@ -1,55 +1,46 @@
 "use client";
 import React, { useState } from "react";
 import { Button, Checkbox } from "@heroui/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
-import { useHistory } from "@/hook";
-import { useSelection } from "@/hook/useSelection";
-import { delHistory } from "@/services/goods";
-import FullscreenLoader from "@/components/common/fullscreen-loader";
-import ProductCard from "@/components/domain/product-card";
+import { useHistoryList, useHistoryMutations } from "@/hook/api";
+import { useSelection } from "@/hook/common";
+import { FullscreenLoader } from "@/components/ui";
+import { ProductCard } from "@/components/block";
 import { useTranslations } from "next-intl";
 
 export default function HistoryPage() {
   const t = useTranslations("dashboard.history");
-  const { data, isLoading } = useHistory();
   const router = useRouter();
+  const { data, isLoading } = useHistoryList();
+  const { deleteMutation } = useHistoryMutations();
   const historyList = (data as unknown as any[]) || [];
   const [isManage, setIsManage] = useState(false);
-  const queryClient = useQueryClient();
 
   const {
     selectedIds,
     isSelected,
-    toggle,
-    selectAll,
-    unselectAll,
+    onSelect,
     isAllSelected,
+    onToggleSelectAll,
+    onClearAll,
     hasSelected,
-    toggleSelectAll,
   } = useSelection(historyList, {
     idKey: "id",
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: (ids: string[]) => delHistory(ids),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["history"] });
-      unselectAll();
-      setIsManage(false);
-    },
-    onError: () => {},
-  });
-
   const handleDelete = () => {
     if (!hasSelected) return;
-    deleteMutation.mutate(selectedIds as string[]);
+    deleteMutation.mutateAsync(selectedIds as string[], {
+      onSuccess: () => {
+        setIsManage(false);
+      },
+    });
   };
 
   const toggleManage = () => {
     if (isManage) {
-      unselectAll();
+      onClearAll();
     }
     setIsManage(!isManage);
   };
@@ -77,7 +68,7 @@ export default function HistoryPage() {
           <div className="flex gap-4 items-center">
             <Checkbox
               isSelected={isAllSelected}
-              onValueChange={toggleSelectAll}
+              onValueChange={onToggleSelectAll}
             >
               {t("selectAll")}
             </Checkbox>
@@ -97,22 +88,18 @@ export default function HistoryPage() {
         <div className="text-center text-default-500 py-10">{t("noData")}</div>
       ) : (
         <div className="gap-5 grid grid-cols-2 sm:grid-cols-5">
-          {historyList.map((item) => (
+          {historyList.map((product) => (
             <ProductCard
-              key={item.id}
-              id={item.id}
-              imageUrl={item.productPicUrl}
+              key={product.id}
               isManageMode={isManage}
-              isSelected={isSelected(item.id)}
-              price={item.price}
-              title={item.productTitle}
-              updateTime={item.updateTime}
+              isSelected={isSelected(product.id)}
+              product={{ ...product }}
               onClick={() => {
-                if (item.source && item.sourceProductId) {
-                  router.push(`/goods/${item.source}/${item.sourceProductId}`);
+                if (product.source && product.sourceProductId) {
+                  router.push(`/goods/${product.source}/${product.sourceProductId}`);
                 }
               }}
-              onToggle={toggle}
+              onSelect={onSelect}
             />
           ))}
         </div>

@@ -1,21 +1,13 @@
-// /hooks/user/useUserInfo.ts
 import { useQuery } from "@tanstack/react-query";
 
-import { useWalletStore } from "@/store";
 import { getWalletInfo } from "@/services/wallet";
 
-export const useWalletInfo = (enabled: boolean = false) => {
+export const useWalletInfo = () => {
   return useQuery({
     queryKey: ["walletInfo"],
-    queryFn: async () => {
-      const data = await getWalletInfo();
-
-      // ✅ 在 queryFn 中做副作用（例如写入 Zustand）
-      useWalletStore.getState().setWallet(data);
-
-      return data;
-    },
-    staleTime: 0, // 缓存 5 分钟
-    enabled,
+    queryFn: getWalletInfo,
+    staleTime: 3 * 1000,          // 3 秒内认为是新鲜的
+    refetchOnWindowFocus: true,   // 用户回来自动更新
+    refetchOnReconnect: true,     // 网络恢复自动更新
   });
 };

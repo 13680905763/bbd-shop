@@ -2,8 +2,8 @@
 import { Button, Checkbox, Image } from "@heroui/react";
 import { useRouter } from "next/navigation";
 
-import SourceIcon from "@/components/common/source-icon";
 import { useGlobalStore } from "@/store";
+import { SourceIcon } from "@/components/ui";
 
 function ProductItem({ product, texts, revokeRefund }: any) {
   const { currency } = useGlobalStore();
@@ -15,7 +15,18 @@ function ProductItem({ product, texts, revokeRefund }: any) {
       <div className="flex justify-between items-center gap-4">
         <div className="flex grow-0 shrink-0 basis-[400px] gap-2">
           <div className="grow-0 shrink-0 basis-[90px]">
+            <Image
+              alt="Product"
+              height={90}
+              radius="md"
+              referrerPolicy="no-referrer"
+              src={product.skuPicUrl || product?.picUrl}
+              width={90}
+            />
+          </div>
+          <div>
             <button
+              className="line-clamp-2 font-bold hover:text-[#f0700c] text-left"
               onClick={() => {
                 if (product.source === "BBD") return;
                 router.push(
@@ -23,20 +34,8 @@ function ProductItem({ product, texts, revokeRefund }: any) {
                 );
               }}
             >
-              <Image
-                alt="Product"
-                height={90}
-                radius="none"
-                referrerPolicy="no-referrer"
-                src={product.skuPicUrl || product?.picUrl}
-                width={90}
-              />
-            </button>
-          </div>
-          <div>
-            <div className="line-clamp-2 font-bold">
               {product?.productTitle}
-            </div>
+            </button>
             <div className="text-gray-500 text-sm line-clamp-2">
               {product?.propAndValue?.propName_valueName}
             </div>
@@ -68,24 +67,26 @@ function ProductItem({ product, texts, revokeRefund }: any) {
         </div>
       </div>
 
-      {product?.orderServiceList?.length > 0 && (
-        <div className="p-3 bg-[#f8f8f8] rounded-lg mt-2">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm font-medium text-gray-800">
-              {texts.valueAddedService}
-            </span>
-            {product.orderServiceList.map((item: any) => (
-              <span
-                key={item.serviceId}
-                className="px-2 py-0.5 text-xs rounded-md bg-white text-gray-700 border border-gray-200"
-              >
-                {item.serviceName}*{item.quantity}
+      {
+        product?.orderServiceList?.length > 0 && (
+          <div className="p-3 bg-[#f8f8f8] rounded-lg mt-2">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-sm font-medium text-gray-800">
+                {texts.valueAddedService}
               </span>
-            ))}
+              {product.orderServiceList.map((item: any) => (
+                <span
+                  key={item.serviceId}
+                  className="px-2 py-0.5 text-xs rounded-md bg-white text-gray-700 border border-gray-200"
+                >
+                  {item.serviceName}*{item.quantity}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )
+      }
+    </div >
   );
 }
 

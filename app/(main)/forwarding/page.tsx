@@ -5,158 +5,74 @@ import {
   Divider,
   Form,
   Input,
-  Snippet,
-  Textarea,
 } from "@heroui/react";
-import { Image } from "antd";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import { FaCamera } from "react-icons/fa";
 
+import { IoCopyOutline } from "react-icons/io5";
+
 import { useGlobalStore } from "@/store";
-import { createCustomizeOrder, getServicesList } from "@/services";
-import FullscreenLoader from "@/components/common/fullscreen-loader";
-import Stepper from "@/components/stepper";
-import CommonModal from "@/components/modal/common-modal";
+import {FullscreenLoader} from "@/components/ui";
+import CopyText from "@/components/ui/copy-text";
+
+import { useForwardingLogic } from "./useForwardingLogic";
+import { ServiceItem } from "./types";
+import ServiceDetailModal from "./service-detail-modal";
 
 export default function Forwarding() {
   const t = useTranslations("forwarding");
-  const [isLoading, setIsLoading] = useState(false); // 🔹 loading 状态
-
   const { currency } = useGlobalStore();
 
-  const [servicesList, setServicesList] = useState([]);
-
-  const router = useRouter();
+  const {
+    servicesList,
+    isLoading,
+    isSubmitting,
+    updateService,
+    removeService,
+    submitOrder,
+  } = useForwardingLogic();
 
   const [acceptAgreement, setAcceptAgreement] = useState(false);
-  const [loading, setLoading] = useState(false); // 🔥 loading 状态
-
-  // 当前服务详情对象
-  const [currentService, setCurrentService] = useState<any>(null);
-  // 弹窗状态
+  const [currentService, setCurrentService] = useState<ServiceItem | null>(null);
   const [isServiceDetailOpen, setIsServiceDetailOpen] = useState(false);
-  // 当前服务详情对象
-  const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        const res = await getServicesList();
-
-        // 克隆服务，初始化 isCheck、remark
-        setServicesList(
-          res.map((s: any) => {
-            return {
-              ...s,
-              serviceId: s?.id,
-              isCheck: false,
-              remark: "",
-              quantity: 1,
-            };
-          }),
-        );
-      } catch {
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.currentTarget));
-
-    const payload = {
-      logisticsCode: data.logisticsCode,
-      packageItemName: data.packageItemName,
-      serviceList: servicesList
-        .filter((s: any) => s.isCheck)
-        .map((item: any) => {
-          return {
-            serviceId: item.serviceId,
-            quantity: item.quantity,
-            remark: item.remark,
-          };
-        }),
-      receiver: "Bryant-4-Bryant",
-      receivePhone: "15916408071",
-      receiveAddress: "广东省惠州市惠城区水口荔枝城青创产业园9楼901",
-    };
-
-    console.log("提交的数据:", payload);
-
-    try {
-      setLoading(true); // 开始 loading
-      const bizCode = await createCustomizeOrder(payload);
-
-      console.log("创建成功:", bizCode);
-
-      if (bizCode) {
-        router.push("/payment/" + bizCode);
-      } else {
-        router.push("/dashboard/order");
-      }
-    } catch (err) {
-      console.error("创建失败:", err);
-      // 你也可以加一个 toast 提示
-    } finally {
-      setLoading(false); // 结束 loading
-    }
-  };
-  // 保存服务详情备注
-  const saveServiceDetail = () => {
-    console.log("currentService", currentService);
-
-    // 如果是基础拍照（id === 1），直接关掉弹窗，不修改 localServices
-    if (currentService.id == 1) {
-      setIsServiceDetailOpen(false);
-
-      return;
-    }
-
-    setServicesList((prev: any) =>
-      prev.map((s: any) =>
-        s.id === currentService.id
-          ? {
-              ...s,
-              remark: currentService?.remark,
-              isCheck: true,
-              quantity: currentService?.quantity,
-            }
-          : s,
-      ),
-    );
-
-    setIsServiceDetailOpen(false);
-  };
   // 打开某个服务详情
-  const openServiceDetail = (serviceId: string) => {
-    const service = servicesList.find((s: any) => s.id === serviceId);
-
+  const openServiceDetail = (serviceId: string | number) => {
+    const service = servicesList.find((s) => s.id === serviceId);
     if (!service) return;
     setCurrentService(service);
     setIsServiceDetailOpen(true);
   };
-  // 删除已选服务
-  const removeService = (serviceId: string) => {
-    setServicesList((prev: any) =>
-      prev.map((s: any) =>
-        s.id === serviceId ? { ...s, isCheck: false, remark: "" } : s,
-      ),
-    );
+  const handleServiceConfirm = (updatedService: ServiceItem) => {
+    // 基础拍照（id === 1）直接关闭弹窗，不修改状态
+    if (updatedService.id == 1) {
+      setIsServiceDetailOpen(false);
+      return;
+    }
+    updateService(updatedService.id, {
+      remark: updatedService.remark,
+      isCheck: true,
+      quantity: updatedService.quantity,
+    });
+    setIsServiceDetailOpen(false);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.currentTarget));
+    
+    await submitOrder({
+      logisticsCode: data.logisticsCode as string,
+      packageItemName: data.packageItemName as string,
+    });
   };
 
   return (
     <div>
       {isLoading && <FullscreenLoader />}
-      {/* 顶部 Banner */}
       <div className="bg-[url('/images/estimation.webp')] bg-no-repeat bg-cover h-[180px]" />
 
-      {/* 一个大 Form，包裹左右两边 */}
       <Form
         className="container mx-auto flex justify-between gap-5 p-5 flex-row"
         onSubmit={handleSubmit}
@@ -164,11 +80,19 @@ export default function Forwarding() {
         {/* 左侧：地址 + 包裹信息 */}
         <div className="rounded-lg bg-[#fff] flex-[3] p-8">
           <p className="font-bold mb-5">{t("warehouseAddress")}</p>
-          <Snippet className="w-full" symbol="">
-            <span>Bryant-4-Bryant</span>
-            <span>15916408071</span>
-            <span>广东省惠州市惠城区水口荔枝城青创产业园9楼901</span>
-          </Snippet>
+          <div className="relative w-full bg-[#f4f4f5] rounded-large p-4 text-sm font-mono text-default-600">
+            <div className="flex flex-col gap-1">
+              <span>Bryant-4-Bryant</span>
+              <span>15916408071</span>
+              <span>广东省惠州市惠城区水口荔枝城青创产业园9楼901</span>
+            </div>
+            <CopyText
+              className="absolute top-3 right-3 text-default-400 hover:text-default-700 transition-colors p-1 rounded-md hover:bg-default-100"
+              text={`Bryant-4-Bryant\n15916408071\n广东省惠州市惠城区水口荔枝城青创产业园9楼901`}
+            >
+              <IoCopyOutline size={18} />
+            </CopyText>
+          </div>
           <Divider className="my-4" />
 
           <p className="font-bold my-5">{t("forwardingPackage")}</p>
@@ -198,18 +122,18 @@ export default function Forwarding() {
         {/* 右侧：服务选择 + 协议 + 提交按钮 */}
         <div className="rounded-lg bg-[#fff] flex-1 p-8 flex flex-col justify-between">
           <div className="flex flex-col gap-2">
-            {servicesList.map((service: any) => (
+            {servicesList.map((service) => (
               <div
                 key={service.id}
-                className="items-center p-3 border rounded-lg "
+                className="items-center p-3 border rounded-lg"
               >
                 <div className="flex justify-between items-center">
                   <div className="font-medium">{service.serviceName}</div>
                   {service.id == 1 ? (
-                    // 免费的 icon
                     <button
                       className="flex items-center text-green-500 text-sm gap-1 h-8 w-16 justify-center"
                       onClick={() => openServiceDetail(service.id)}
+                      type="button" // 明确 type="button" 防止触发表单提交
                     >
                       <FaCamera />
                       {t("free")}
@@ -259,114 +183,20 @@ export default function Forwarding() {
                 )}
               </div>
             ))}
-            {/* 服务详情弹窗 */}
-            {currentService && (
-              <CommonModal
-                isDismissable={false}
-                isOpen={isServiceDetailOpen}
-                showCancel={currentService.id != 1}
-                title={currentService.serviceName}
-                onConfirm={saveServiceDetail}
-                onOpenChange={setIsServiceDetailOpen}
-              >
-                <div className="space-y-5">
-                  {/* 服务介绍 */}
-                  <div className="bg-[#f8f8f8] p-4 rounded-lg space-y-4">
-                    <div className="space-y-2">
-                      <h3 className="text-sm font-medium text-gray-900">
-                        {t("serviceIntro")}
-                      </h3>
-                      <p className="text-sm leading-relaxed text-gray-600">
-                        {currentService.introduction || t("noIntro")}
-                      </p>
-                    </div>
-
-                    {/* 示例（id != 1 时才展示） */}
-                    {currentService.sample.length > 0 && (
-                      <div className="space-y-2">
-                        <h3 className="text-sm font-medium text-gray-900">
-                          {t("sample")}
-                        </h3>
-                        <div
-                          ref={containerRef}
-                          className="relative"
-                          style={{ width: "100%", overflow: "hidden" }}
-                        >
-                          <Image.PreviewGroup
-                            preview={{
-                              getContainer: () =>
-                                containerRef.current || document.body, // 让预览挂在这个 div 内
-                            }}
-                          >
-                            <div className="grid grid-cols-4 gap-2">
-                              {currentService.sample.map((url: string) => (
-                                <Image
-                                  key={url}
-                                  height={80}
-                                  src={url}
-                                  width={80}
-                                />
-                              ))}
-                            </div>
-                          </Image.PreviewGroup>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* 服务费（id != 1 时才展示） */}
-                  {currentService.id != 1 && (
-                    <div className="flex items-center justify-between border-t pt-3">
-                      <span className="text-sm text-gray-700">
-                        {t("serviceFee")}
-                      </span>
-                      <div className="flex gap-2">
-                        <span className="text-lg font-semibold text-rose-600">
-                          {currency.symbol}
-                          {currentService.price}
-                        </span>
-                        {currentService?.stacked == 1 ? (
-                          <Stepper
-                            value={currentService?.quantity}
-                            onChange={(quantity) => {
-                              console.log("quantity", quantity);
-
-                              setCurrentService({
-                                ...currentService,
-                                quantity: quantity,
-                              });
-                            }}
-                          />
-                        ) : null}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* 备注输入框（id != 1 时才展示） */}
-                  {currentService.id != 1 && (
-                    <Textarea
-                      className="w-full mt-2"
-                      minRows={3}
-                      placeholder={t("remarkPlaceholder")}
-                      value={currentService.remark}
-                      onChange={(e) =>
-                        setCurrentService({
-                          ...currentService,
-                          remark: e.target.value,
-                        })
-                      }
-                    />
-                  )}
-                </div>
-              </CommonModal>
-            )}
+            
+            <ServiceDetailModal 
+              isOpen={isServiceDetailOpen}
+              onOpenChange={setIsServiceDetailOpen}
+              service={currentService}
+              onConfirm={handleServiceConfirm}
+            />
           </div>
 
           <div className="mt-6 flex flex-col gap-4">
             <Button
               className="w-full bg-[#f0700c] text-[#fff]"
-              isDisabled={!acceptAgreement || loading}
-              isLoading={loading} // 🔥 按钮 loading 效果
+              isDisabled={!acceptAgreement || isSubmitting}
+              isLoading={isSubmitting}
               type="submit"
             >
               {t("submit")}

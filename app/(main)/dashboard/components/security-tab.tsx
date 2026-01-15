@@ -8,6 +8,8 @@ import { useTranslations } from "next-intl";
 import FormModal from "@/components/modal/form-modal";
 import { updatePwd } from "@/services";
 import { FieldConfig } from "@/components/form/formItem-renderer";
+import { useMutation } from "@tanstack/react-query";
+import { queryClient } from "@/lib/react-query";
 
 export function SecurityTab() {
   const t = useTranslations("dashboard.page.security");
@@ -47,7 +49,19 @@ export function SecurityTab() {
       required: true,
     },
   ];
-  const handleSave = async () => {
+
+  // ✅ 使用 useMutation 封装请求
+  const mutation = useMutation({
+    mutationFn: (data: { oldPassword: string; newPassword: string }) => updatePwd(data),
+    onSuccess: () => {
+      queryClient.clear();
+      setIsOpen(false);
+      setTimeout(() => {
+        router.push("/login");
+      }, 2000);
+    },
+  });
+  const handleSubmit = () => {
     // 校验两次密码一致性
     if (formData.newPassword !== formData.confirmPassword) {
       addToast({
@@ -55,20 +69,13 @@ export function SecurityTab() {
         timeout: 1000,
         color: "danger",
       });
-
-      return false;
+      return;
     }
-
-    try {
-      await updatePwd({
-        oldPassword: formData.oldPassword,
-        newPassword: formData.newPassword,
-      });
-
-      setTimeout(() => {
-        router.push("/login");
-      }, 2000);
-    } catch {}
+    // 调用 mutation
+    mutation.mutateAsync({
+      oldPassword: formData.oldPassword,
+      newPassword: formData.newPassword,
+    });
   };
 
   return (
@@ -79,7 +86,7 @@ export function SecurityTab() {
           <p className="text-sm my-1">{t("description")}</p>
         </div>
         <div>
-          <Button color="primary" onPress={() => setIsOpen(true)}>
+          <Button color="primary" radius="lg" onPress={() => setIsOpen(true)}>
             {t("button")}
           </Button>
         </div>
@@ -92,7 +99,8 @@ export function SecurityTab() {
         title={t("modalTitle")}
         onChange={setFormData}
         onOpenChange={setIsOpen}
-        onSubmit={handleSave}
+        onSubmit={handleSubmit}
+        isLoading={mutation.isPending}
       />
     </>
   );

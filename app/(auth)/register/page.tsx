@@ -11,9 +11,9 @@ import {
 import { useTranslations } from "next-intl";
 
 import { activateEmail, signUpCustomer } from "@/services";
-import { handleAuthSuccess } from "@/lib/auth-handler";
 import CommonForm from "@/components/form/common-form";
 import { FieldConfig } from "@/components/form/formItem-renderer";
+import { queryClient } from "@/lib/react-query";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -69,7 +69,7 @@ export default function RegisterPage() {
           email: formData.email,
           activationCode: code,
         });
-        await handleAuthSuccess();
+        queryClient.invalidateQueries({ queryKey: ["userInfo"] }); // 刷新
         router.push("/dashboard");
       } catch {}
     }

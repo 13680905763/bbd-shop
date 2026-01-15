@@ -15,9 +15,9 @@ import { Image } from "antd";
 import OrderItem from "./order-item";
 
 import Progress from "@/components/common/order-progress";
-import FullscreenLoader from "@/components/common/fullscreen-loader";
+import {FullscreenLoader} from "@/components/ui";
 import CommonModal from "@/components/modal/common-modal";
-import { useOrderPreview } from "@/hook";
+import { useOrderPreview, useServices } from "@/hook";
 import {
   createOrderByCart,
   createOrderByProduct,
@@ -30,28 +30,27 @@ import { createOrderPreviewKeyByProductParams } from "@/types";
 import { queryClient } from "@/lib/react-query";
 import Stepper from "@/components/stepper";
 import { safeMul } from "@/utils/number";
-import ConfirmModal from "@/components/modal/confirm-modal";
+import { useConfirm } from "@/components/common/modal/confirm-provider";
 
 export default function SubmitOrder() {
   const t = useTranslations("SubmitOrder");
   const { currency } = useGlobalStore();
-
+  const { confirm } = useConfirm();
   const searchParam = useSearchParams();
   const router = useRouter();
   const type = searchParam.get("type") as "cart" | "product";
   const key = searchParam.get("key") as string;
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const { data, isLoading, isError } = useOrderPreview(type, key);
+  const { data, isLoading, } = useOrderPreview(type, key);
+  const { data: services, isLoading: isServicesLoading, isError: isServicesError } = useServices();
   const [orderData, setOrderData] = useState<any>(null);
 
   const [submitting, setSubmitting] = useState(false);
-  const [ischeck, setIscheck] = useState(false);
-  const [isOpen2, setIsOpen2] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
-  const [servicesList, setServicesList] = useState([]);
 
-  // 本地状态：存储克隆的服务列表，用于单商品
+  // 本地状态：存储服务列表
   const [localServices, setLocalServices] = useState<any[]>([]);
 
   // 弹窗状态
@@ -67,32 +66,15 @@ export default function SubmitOrder() {
   useEffect(() => {
     if (data) setOrderData(data);
   }, [data]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await getServicesList();
 
-        setServicesList(res);
-      } catch (err) {
-        console.error("获取服务列表失败:", err);
-      } finally {
-      }
-    };
-
-    fetchData();
-  }, []);
   // 打开商品服务列表弹窗
   const openServiceModal = (cartId: string, skuId: string) => {
-    // console.log("services", services, cartId);
     setCurrentCartId(cartId);
     const handleSO = orderData?.orderList?.find((item: any) => {
-      // console.log(item);
-
       return item?.products.find((iitem: any) => {
         return iitem?.sku?.propId_valueId == skuId;
       });
     });
-
     const hanldeSer =
       handleSO.products
         .find((item: any) => {
@@ -105,17 +87,14 @@ export default function SubmitOrder() {
             remark: item?.remark || "",
           };
         }) || [];
-
     console.log("hanldeSer", hanldeSer);
-
     // 克隆服务，初始化 isCheck、remark
     setLocalServices(
-      servicesList.map((s: any) => {
+      services.map((s: any) => {
         console.log(
           "hanldeSer.find((id: any) => id == s.id)",
           hanldeSer.find((item: any) => item.id == s.id),
         );
-
         return {
           ...s,
           isCheck: hanldeSer.find((item: any) => item.id == s.id)
@@ -148,19 +127,17 @@ export default function SubmitOrder() {
     // 如果是基础拍照（id === 1），直接关掉弹窗，不修改 localServices
     if (currentService.id == 1) {
       setIsServiceDetailOpen(false);
-
       return;
     }
-
     setLocalServices((prev) =>
       prev.map((s) =>
         s.id === currentService.id
           ? {
-              ...s,
-              remark: currentService?.remark,
-              isCheck: true,
-              quantity: currentService?.quantity,
-            }
+            ...s,
+            remark: currentService?.remark,
+            isCheck: true,
+            quantity: currentService?.quantity,
+          }
           : s,
       ),
     );
@@ -213,13 +190,15 @@ export default function SubmitOrder() {
 
       setOrderData(res);
       onOpenChange();
-    } catch {}
+    } catch { }
   };
-
   const handleSubmitOrder = async () => {
-    if (!ischeck) {
-      setIsOpen2(true);
-
+    if (!isChecked) {
+      await confirm({
+        title: t("disclaimer"),
+        content: t("disclaimerDescription"),
+        onConfirm: () => setIsChecked(true),
+      });
       return false;
     }
     if (submitting) return;
@@ -260,7 +239,6 @@ export default function SubmitOrder() {
   }, [orderData]);
 
   if (isLoading) return <FullscreenLoader />;
-  if (isError) return <div>出错了</div>;
 
   return (
     <div className="container mx-auto bg-white p-4 py-6">
@@ -273,7 +251,6 @@ export default function SubmitOrder() {
           <span className="flex-[0_0_200px] text-center">{t("remark")}</span>
           <span className="flex-[0_0_130px] text-center">{t("price")}</span>
           <span className="flex-[0_0_150px] text-center">{t("quantity")}</span>
-          {/* <span className="flex-[0_0_150px] text-center">{t("subtotal")}</span> */}
         </div>
 
         {orderData?.orderList?.map((order: any) => (
@@ -304,9 +281,9 @@ export default function SubmitOrder() {
         </p>
         <Checkbox
           color="primary"
-          isSelected={ischeck}
+          isSelected={isChecked}
           size="sm"
-          onValueChange={setIscheck}
+          onValueChange={setIsChecked}
         >
           <span className="text-[#676969]">{t("agreement")}</span>
         </Checkbox>
@@ -496,15 +473,6 @@ export default function SubmitOrder() {
           </div>
         </CommonModal>
       )}
-      <ConfirmModal
-        content={t("disclaimerDescription")} // 弹窗正文
-        isOpen={isOpen2} // 根据状态控制显示
-        title={t("agreeTerms")} // 弹窗标题
-        onConfirm={async () => {
-          setIscheck(true);
-        }}
-        onOpenChange={setIsOpen2}
-      />
     </div>
   );
 }

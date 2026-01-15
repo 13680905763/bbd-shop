@@ -15,22 +15,20 @@ import {
 import { HiQuestionMarkCircle } from "react-icons/hi";
 import { IoWallet } from "react-icons/io5";
 import { useParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";  
+import {FullscreenLoader} from "@/components/ui";
 
-import BillingAddress from "./billing-address";
 
 import Progress from "@/components/common/order-progress";
 import RechargeModal from "@/components/modal/recharge.modal";
-import FullscreenLoader from "@/components/common/fullscreen-loader";
+
 import {
-  useBillingAddressStore,
   useGlobalStore,
-  useWalletStore,
 } from "@/store";
-import { useBillingAddress, usePaymentMethodList } from "@/hook";
+import { useBillingAddress, usePaymentMethodList, useWalletInfo } from "@/hook";
 import { createPayOrder } from "@/services";
 import { price } from "@/components/primitives";
-import { getWalletInfo } from "@/services/wallet";
+import { BillingAddress } from "@/components/domain";
 
 // 自定义 Radio 组件
 const CustomRadio = (props: RadioProps) => {
@@ -121,9 +119,13 @@ export default function SubmitOrder() {
   const { currency } = useGlobalStore();
 
   const params = useParams<{ bizCode: string }>();
-  const wallet = useWalletStore((state) => state.wallet);
-  const billingAddress = useBillingAddressStore(
-    (state) => state.billingAddress,
+
+  const {
+    data: wallet,
+    isLoading: walletLoading,
+    error: walletError,
+  } = useWalletInfo();
+  const { data: billingAddress } = useBillingAddress(
   );
 
   const [submitting, setSubmitting] = useState(false);
@@ -133,13 +135,13 @@ export default function SubmitOrder() {
 
   const { data, isLoading, isError } = usePaymentMethodList(params.bizCode);
 
-  useBillingAddress();
+console.log('billingAddress', billingAddress);
 
   const handleCreatePayOrder = async () => {
     if (submitting) return;
     setSubmitting(true);
 
-    if (paymentId !== "1" && !billingAddress?.id) {
+    if (paymentId !== "1" && !billingAddress) {
       addToast({
         title: t("addBillingAddress"),
         timeout: 1000,
@@ -196,17 +198,7 @@ export default function SubmitOrder() {
       if (firstPayment) setPaymentId(firstPayment.id);
     }
   }, [sortedData]);
-  useEffect(() => {
-    const fetchWallet = async () => {
-      try {
-        const wallet = await getWalletInfo();
 
-        useWalletStore.getState().setWallet(wallet);
-      } catch {}
-    };
-
-    fetchWallet();
-  }, []);
   if (isLoading) return <FullscreenLoader />;
   if (isError) return <div>{t("loadFailed")}</div>;
 
@@ -217,7 +209,7 @@ export default function SubmitOrder() {
       {paymentId !== "1" && (
         <div className="my-4">
           <p className="text-title">{t("billingAddress")}</p>
-          <BillingAddress billingAddress={billingAddress} />
+          <BillingAddress />
         </div>
       )}
 

@@ -85,17 +85,17 @@ export const updateUserInfo = (data: any): Promise<UserInfo> => {
   );
 };
 /** 获取用户信息 */
-export const getMessageList = (query: string = ""): Promise<any> => {
-  return request.get(`/system-notice/list${query}`);
+export const getMessageList = (params: any): Promise<any> => {
+  return request.get(`/system-notice/list`, { params });
 };
 /** 已读用户信息 */
 export const readMessage = (id: string): Promise<any> => {
   return request.put("/system-notice/" + id);
 };
 /** 删除用户信息 */
-export const delMessage = (ids: number[]): Promise<any> => {
+export const delMessage = (data: number[]): Promise<any> => {
   return request.delete("/system-notice/batch", {
-    data: ids, // axios DELETE 需要包在 data 中
+    data 
   });
 };
 /** 上传用户头像 */

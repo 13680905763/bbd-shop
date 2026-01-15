@@ -13,9 +13,11 @@ import React, { useEffect, useState } from "react";
 import { IoTicketOutline, IoWallet } from "react-icons/io5";
 
 import { getPointsList } from "@/services";
+import { useUserInfo } from "@/hook";
 
-export default function ScoreTab({ user, tableColumns, texts }: any) {
+export default function ScoreTab({ tableColumns, texts }: any) {
   const [isOpen, setIsOpen] = useState(false);
+  const { data: user, isLoading: userLoading, error } = useUserInfo();
   const [isLoading, setIsLoading] = useState(true);
 
   const [scoreList, setScoreList] = useState([]);
@@ -48,7 +50,8 @@ export default function ScoreTab({ user, tableColumns, texts }: any) {
           <Button
             color="primary"
             size="md"
-            // onPress={() => setIsOpenRecharge(true)}
+            isDisabled
+          // onPress={() => setIsOpenRecharge(true)}
           >
             <IoTicketOutline className="w-5 h-5 " />
             {texts.exchangeCoupon}

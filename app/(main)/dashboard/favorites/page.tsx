@@ -2,71 +2,49 @@
 
 import React, { useState } from "react";
 import { Button, Checkbox } from "@heroui/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
-import { useFavorite } from "@/hook";
-import { useSelection } from "@/hook/useSelection";
-import { delFavorite } from "@/services/goods";
-import FullscreenLoader from "@/components/common/fullscreen-loader";
-import ProductCard from "@/components/domain/product-card";
+import { useFavoriteList, useFavoriteMutations } from "@/hook/api";
+import { useSelection } from "@/hook/common";
+import { FullscreenLoader } from "@/components/ui";
 import { useTranslations } from "next-intl";
+import { ProductCard } from "@/components/block";
 
-interface FavoriteItem {
-  id: string;
-  createTime?: string;
-  updateTime?: string;
-  customerId?: number;
-  source: string;
-  sourceProductId: string;
-  productTitle: string;
-  productUrl?: string;
-  productPicUrl: string;
-  collection?: number;
-  productPrice?: number | string;
-}
 
 export default function FavoritesPage() {
   const t = useTranslations("dashboard.favorite");
-  const { data, isLoading } = useFavorite();
+  const { data, isLoading } = useFavoriteList();
+  const { deleteMutation } = useFavoriteMutations();
   const router = useRouter();
-  // Ensure list is typed and defaults to empty array
-  const list = (data as unknown as FavoriteItem[]) || [];
+  const list = (data as unknown as any[]) || [];
 
   const [isManage, setIsManage] = useState(false);
-  const queryClient = useQueryClient();
 
   const {
     selectedIds,
     isSelected,
-    toggle,
-    selectAll,
-    unselectAll,
+    onSelect,
     isAllSelected,
+    onToggleSelectAll,
+    onClearAll,
     hasSelected,
-    toggleSelectAll,
   } = useSelection(list, {
     idKey: "id",
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: (ids: string[]) => delFavorite(ids),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["favorite"] });
-      unselectAll();
-      setIsManage(false);
-    },
-    onError: () => {},
-  });
-
   const handleDelete = () => {
     if (!hasSelected) return;
-    deleteMutation.mutate(selectedIds as string[]);
+    deleteMutation.mutateAsync(selectedIds as string[], {
+      onSuccess: () => {
+        onClearAll();
+        setIsManage(false);
+      },
+    });
   };
 
   const toggleManage = () => {
     if (isManage) {
-      unselectAll();
+      onClearAll();
     }
     setIsManage(!isManage);
   };
@@ -94,7 +72,7 @@ export default function FavoritesPage() {
           <div className="flex gap-4 items-center">
             <Checkbox
               isSelected={isAllSelected}
-              onValueChange={toggleSelectAll}
+              onValueChange={onToggleSelectAll}
             >
               {t("selectAll")}
             </Checkbox>
@@ -104,7 +82,7 @@ export default function FavoritesPage() {
               isLoading={deleteMutation.isPending}
               onPress={handleDelete}
             >
-              {t("delete")}{selectedIds.length ? `(${selectedIds.length})` : ""}  
+              {t("delete")}{selectedIds.length ? `(${selectedIds.length})` : ""}
             </Button>
           </div>
         )}
@@ -114,22 +92,18 @@ export default function FavoritesPage() {
         <div className="text-center text-default-500 py-10">{t("noData")}</div>
       ) : (
         <div className="gap-5 grid grid-cols-2 sm:grid-cols-5">
-          {list.map((item) => (
+          {list.map((product) => (
             <ProductCard
-              key={item.id}
-              id={item.id}
-              imageUrl={item.productPicUrl}
+              key={product.id}
               isManageMode={isManage}
-              isSelected={isSelected(item.id)}
-              price={item.productPrice}
-              title={item.productTitle}
-              updateTime={item.updateTime}
+              isSelected={isSelected(product.id)}
+              product={{ ...product }}
               onClick={() => {
-                if (item.source && item.sourceProductId) {
-                  router.push(`/goods/${item.source}/${item.sourceProductId}`);
+                if (product.source && product.sourceProductId) {
+                  router.push(`/goods/${product.source}/${product.sourceProductId}`);
                 }
               }}
-              onToggle={toggle}
+              onSelect={onSelect}
             />
           ))}
         </div>

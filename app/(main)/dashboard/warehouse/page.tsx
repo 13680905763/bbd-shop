@@ -1,159 +1,115 @@
 "use client";
 import { Button, Checkbox, Spinner, Tab, Tabs } from "@heroui/react";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-
 import WarehouseItem from "./warehouse-item";
-
 import Progress from "@/components/common/order-progress";
 import PaginationBar from "@/components/common/pagination-bar";
-import { createWarehousePreviewKeyByCart } from "@/services";
-import { useWarehouseList } from "@/hook";
-import FullscreenLoader from "@/components/common/fullscreen-loader";
-
-interface WarehouseRecord {
-  id: string;
-  packageCode: string;
-  [key: string]: any;
-}
-interface WarehouseListResponse {
-  records: WarehouseRecord[];
-  total: number;
-}
-
+import { useSelection } from "@/hook/common";
+import { EmptyState, FullscreenLoader } from "@/components/ui";
+import { useWarehousePackageList, useCreateWaybillPreview } from "@/hook/api";
 const tabKeyToStatusCode: Record<string, string> = {
   all: "",
   submit: "302",
 };
-
 export default function WarehousePage() {
-  const t = useTranslations("dashboard.WarehousePage");
+  const t = useTranslations("dashboard.warehouse");
+  const router = useRouter();
+
   const [activeTab, setActiveTab] =
     useState<keyof typeof tabKeyToStatusCode>("all");
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
 
-  const { data, isLoading, isFetching } = useWarehouseList(
-    page,
-    pageSize,
-    tabKeyToStatusCode[activeTab],
-  ) as {
-    data?: WarehouseListResponse;
-    isLoading: boolean;
-    isFetching: boolean;
-  };
-
-  const [selected, setSelected] = useState<Record<string, boolean>>({});
-  const router = useRouter();
-
-  const allIds = useMemo<string[]>(() => {
-    return data?.records.map((w) => w.packageCode) || [];
-  }, [data]);
-
-  const allSelected = useMemo(() => {
-    return (
-      allIds.length > 0 && allIds.every((packageCode) => selected[packageCode])
-    );
-  }, [allIds, selected]);
-
-  const toggleAll = (checked: boolean) => {
-    const newSelected = Object.fromEntries(allIds.map((id) => [id, checked]));
-
-    setSelected(newSelected);
-  };
-
-  const selectedIds = useMemo<string[]>(() => {
-    return Object.entries(selected)
-      .filter(([_, value]) => value)
-      .map(([key]) => key);
-  }, [selected]);
-
-  const handleWarehouseSubmit = async () => {
-    const key = await createWarehousePreviewKeyByCart({
-      packageSet: selectedIds,
-    });
-
-    router.push("/submit/warehouse?key=" + key);
-  };
+  const { data, isLoading, isFetching } = useWarehousePackageList({
+    current: page,
+    size: pageSize,
+    statusCode: tabKeyToStatusCode[activeTab],
+  })
+  const { mutateAsync: createPreview, isPending } =
+    useCreateWaybillPreview();
+  const {
+    selectedIds,
+    isSelected,
+    onSelect,
+    isAllSelected,
+    onToggleSelectAll,
+    onClearAll,
+  } = useSelection(data?.records || [], { idKey: "packageCode" });
 
   useEffect(() => {
-    if (data?.records) {
-      const initialSelected: Record<string, boolean> = data.records.reduce(
-        (acc, item) => {
-          acc[item.packageCode] = false;
+    onClearAll();
+  }, [page, activeTab, onClearAll]);
 
-          return acc;
-        },
-        {} as Record<string, boolean>,
-      );
 
-      setSelected(initialSelected);
-    }
-  }, [data]);
+  const handleSubmit = async () => {
+    const key = await createPreview(selectedIds);
+    router.push(`/submit/warehouse?key=${key}`);
+  };
 
-  const EmptyWarehouse = () => (
-    <div className="flex flex-col items-center justify-center h-[60vh] text-gray-500">
-      <p className="text-lg mb-2">{t("emptyText")}</p>
-    </div>
-  );
 
-  if (isLoading) return <FullscreenLoader />;
-
-  /** Tab 内容组件 */
-  const WarehouseTabContent = ({ footer }: { footer?: React.ReactNode }) => {
-    if (!data?.records?.length) return <EmptyWarehouse />;
-    if (isFetching)
-      return (
-        <div className="flex flex-col items-center justify-center h-[60vh] text-gray-500">
-          <div className="text-lg mb-2">
-            <Spinner />
-          </div>
-        </div>
-      );
-
+  const renderWarehouseContent = () => {
+    if (!data?.records?.length) return <EmptyState />;
     return (
       <>
+        {/* 列表 */}
         <div className="flex flex-col gap-3">
-          {data?.records?.map((warehouse) => (
+          {isFetching && (
+            <Spinner className="flex justify-center py-2 text-xs text-gray-400" />
+          )}
+
+          {data.records.map((warehouse) => (
             <WarehouseItem
               key={warehouse.id}
-              activeTab={activeTab}
-              selected={!!selected[warehouse.packageCode]}
-              texts={t.raw("texts")}
-              warehouse={warehouse}
-              onChange={(e: any) => {
-                setSelected((prev) => ({
-                  ...prev,
-                  [warehouse.packageCode]: e.target.checked,
-                }));
-              }}
+              showCheckbox={activeTab === "submit"}
+              isSelected={isSelected}
+              packageItem={warehouse}
+              onSelect={onSelect}
             />
           ))}
         </div>
 
-        <div className="mt-10 sticky bottom-0 border-t bg-white z-10 p-4 card-cart">
-          {footer}
-          {(data?.total as number) > 0 && (
-            <PaginationBar
-              page={page}
-              pageSize={pageSize}
-              total={data?.total as number}
-              onPageChange={setPage}
-              onPageSizeChange={setPageSize}
-            />
+        {/* 底部 */}
+        <div className="mt-10 sticky bottom-0 z-10 border-t bg-white p-4 card-cart">
+          {activeTab === "submit" && (
+            <div className=" flex items-center justify-between">
+              <Checkbox
+                isSelected={isAllSelected}
+                onChange={onToggleSelectAll}
+              >
+                {t("selectAll")}
+              </Checkbox>
+              <Button
+                className="w-[150px]"
+                color="primary"
+                isLoading={isPending}
+                isDisabled={!selectedIds.length}
+                size="lg"
+                onPress={handleSubmit}
+              >
+                {t("submitPackage")}{selectedIds.length ? ` (${selectedIds.length})` : ""}
+              </Button>
+            </div>
           )}
+          <PaginationBar
+            page={page}
+            pageSize={pageSize}
+            total={data.total as number}
+            onPageChange={setPage}
+            onPageSizeChange={setPageSize}
+          />
         </div>
       </>
     );
   };
 
+  if (isLoading) return <FullscreenLoader />;
   return (
     <div className="flex w-full flex-col">
       <div className="mt-5">
         <Progress currentStep={2} />
       </div>
-
       <Tabs
         aria-label="Options"
         classNames={{
@@ -170,30 +126,10 @@ export default function WarehousePage() {
         }}
       >
         <Tab key="all" title={<span>{t("allTab")}</span>}>
-          <WarehouseTabContent />
+          {renderWarehouseContent()}
         </Tab>
         <Tab key="submit" title={<span>{t("submitTab")}</span>}>
-          <WarehouseTabContent
-            footer={
-              <div className="flex justify-between items-center gap-4">
-                <Checkbox
-                  isSelected={allSelected}
-                  onChange={(e) => toggleAll(e.target.checked)}
-                >
-                  {t("selectAll")}
-                </Checkbox>
-                <Button
-                  className="w-[150px]"
-                  color="primary"
-                  isDisabled={!selectedIds.length}
-                  size="lg"
-                  onPress={handleWarehouseSubmit}
-                >
-                  {t("submitPackage")}
-                </Button>
-              </div>
-            }
-          />
+          {renderWarehouseContent()}
         </Tab>
       </Tabs>
     </div>

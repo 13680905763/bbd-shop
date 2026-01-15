@@ -4,15 +4,13 @@ import { Tabs, Tab } from "@heroui/react";
 import { useTranslations } from "next-intl";
 
 import {
-  ProfileTab,
   AddressTab,
   SecurityTab,
   UserBalanceCard,
-  BillingAddressTab,
+  ProfileTab
 } from "./components";
 
-import { useUserStore, useWalletStore } from "@/store";
-import { useBillingAddress, useWalletInfo } from "@/hook";
+import { BillingAddress } from "@/components/domain";
 
 interface TabConfig {
   key: string;
@@ -21,12 +19,6 @@ interface TabConfig {
 
 export default function DashBoard() {
   const t = useTranslations("dashboard.page");
-  const user = useUserStore((state) => state.user);
-  const wallet = useWalletStore((state) => state.wallet);
-
-  useBillingAddress();
-  useWalletInfo();
-
   // 动态生成 Tabs 配置
   const tabs = [
     {
@@ -51,7 +43,7 @@ export default function DashBoard() {
 
     switch (tab.key) {
       case "profile":
-        component = <ProfileTab defaultformData={user} />;
+        component = <ProfileTab />;
         break;
       case "address":
         component = <AddressTab />;
@@ -60,20 +52,15 @@ export default function DashBoard() {
         component = <SecurityTab />;
         break;
       case "billingAddress":
-        component = <BillingAddressTab />;
+        component = <BillingAddress />;
         break;
     }
 
     return { key: tab.key, component };
   });
-
   return (
     <div className="flex flex-col gap-6 bg-[#f8f8f8] -mx-5">
-      <UserBalanceCard
-        availabalBalance={wallet?.availabalBalance}
-        score={user?.myPoints}
-        userInfo={user}
-      />
+      <UserBalanceCard/>
 
       <div className="bg-[#fff] rounded-lg flex-1">
         <div className="flex w-full flex-col px-5">

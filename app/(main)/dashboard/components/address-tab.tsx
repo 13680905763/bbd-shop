@@ -1,97 +1,57 @@
 "use client";
 import {
   Button,
-  Spacer,
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
+
 } from "@heroui/react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import React from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 
 import { deleteAddress } from "@/services/address";
-import ConfirmModal from "@/components/modal/confirm-modal";
 import { useAddressList } from "@/hook";
-import FullscreenLoader from "@/components/common/fullscreen-loader";
+import {FullscreenLoader} from "@/components/ui";
 import AddressModal from "@/components/modal/address-modal";
+import { useConfirm } from "@/components/common/modal/confirm-provider";
+import { Address, AddressModalState } from "@/types";
+import AddressItem from "@/components/block/address-item";
+import { queryClient } from "@/lib/react-query";
 
-type ModalType = "add" | "edit" | "delete" | null;
 
 export function AddressTab() {
   const t = useTranslations("dashboard.page.address");
+  const [modalState, setModalState] = useState<AddressModalState>({
+    type: null,
+  });
+  const { data: addressList, isLoading } = useAddressList();
+  const { confirm } = useConfirm();
 
-  const [modalType, setModalType] = useState<ModalType>(null);
-  const { data, isLoading } = useAddressList();
-  const [currentRowData, setCurrentRowData] = useState<any>(null);
-  const queryClient = useQueryClient();
-
-  const tableColumns = [
-    {
-      key: "recipient",
-      label: t("tableColumns.recipient.label"),
-    },
-    {
-      key: "phone",
-      label: t("tableColumns.phone.label"),
-    },
-    {
-      key: "address",
-      label: t("tableColumns.address.label"),
-    },
-    {
-      key: "actions",
-      label: t("tableColumns.actions.label"),
-    },
-  ];
-
-  const handleDelete = async () => {
-    try {
-      await deleteAddress({ id: currentRowData.id });
-      setModalType(null);
-    } finally {
+  const deleteMutation = useMutation({
+    mutationFn: deleteAddress,
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["addressList"] });
-    }
-  };
+    },
+  });
 
-  const renderCell = (rows: any, columnKey: any) => {
-    const cellValue = rows[columnKey];
+  const handleOpenChange = useCallback((open: boolean) => {
+    if (!open) setModalState({ type: null });
+  }, []);
 
-    if (columnKey === "actions") {
-      return (
-        <div className="relative flex items-center gap-2">
-          <Button
-            color="primary"
-            radius="none"
-            size="sm"
-            onPress={() => {
-              setCurrentRowData(rows);
-              setModalType("edit");
-            }}
-          >
-            {t("edit")}
-          </Button>
-          <Button
-            className="button-default"
-            radius="none"
-            size="sm"
-            onPress={() => {
-              setCurrentRowData(rows);
-              setModalType("delete");
-            }}
-          >
-            {t("delete")}
-          </Button>
-        </div>
-      );
-    }
-
-    return cellValue;
-  };
+  const handleAddClick = useCallback(() => {
+    setModalState({ type: "add" });
+  }, []);
+  const handleEditClick = useCallback((address: Address) => {
+    setModalState({ type: "edit", address });
+  }, []);
+  const handleDeleteClick = useCallback(async (address: Address) => {
+    if (!address) return;
+    await confirm({
+      content: t("deleteConfirm"),
+      onConfirm: async () => {
+        await deleteMutation.mutateAsync({ id: address.id });
+      }
+    });
+  }, []);
 
   if (isLoading) return <FullscreenLoader />;
 
@@ -99,60 +59,29 @@ export function AddressTab() {
     <>
       <Button
         color="primary"
-        radius="none"
         size="sm"
-        onPress={() => {
-          setModalType("add");
-        }}
+        className="mb-2"
+        onPress={handleAddClick}
       >
         {t("add")}
       </Button>
-      <Spacer y={2} />
-
-      <Table
-        aria-label="address-table"
-        classNames={{
-          wrapper: "p-0 rounded-none border-1",
-          tr: "border-b-1 last:border-b-0",
-          th: "text-default-500 !rounded-none",
-        }}
-        radius="none"
-        shadow="none"
-      >
-        <TableHeader columns={tableColumns}>
-          {(column: any) => (
-            <TableColumn key={column.key}>{column.label}</TableColumn>
-          )}
-        </TableHeader>
-        <TableBody emptyContent={t("tableEmpty")} items={data}>
-          {(item: any) => (
-            <TableRow key={item?.id}>
-              {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
-              )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-
+      <div className="flex-1 overflow-auto space-y-2">
+        {addressList?.map((addressDetail: Address) => (
+          <AddressItem
+            key={addressDetail.id}
+            addressDetail={addressDetail}
+            onDelete={handleDeleteClick}
+            onEdit={handleEditClick}
+          />
+        ))}
+      </div>
       <AddressModal
-        defaultData={currentRowData}
-        isOpen={modalType === "add" || modalType === "edit"}
-        type={modalType === "add" ? "add" : "edit"}
-        onOpenChange={(open) => {
-          if (!open) setModalType(null);
-        }}
-      />
-
-      <ConfirmModal
-        content={t("deleteConfirm")}
-        isOpen={modalType === "delete"}
-        onConfirm={async () => {
-          await handleDelete();
-        }}
-        onOpenChange={(open) => {
-          if (!open) setModalType(null);
-        }}
+        defaultData={
+          modalState.type === "edit" ? modalState.address : undefined
+        }
+        isOpen={modalState.type === "add" || modalState.type === "edit"}
+        type={modalState.type === "add" ? "add" : "edit"}
+        onOpenChange={handleOpenChange}
       />
     </>
   );

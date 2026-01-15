@@ -1,16 +1,19 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Avatar, Spinner } from "@heroui/react";
 import { useTranslations } from "next-intl";
 
 import CommonForm from "@/components/form/common-form";
-import { getUserInfo, updateUserInfo, uploadAvatar } from "@/services"; // 需要你实现 uploadAvatar API
-import { useUserStore } from "@/store";
+import { updateUserInfo, uploadAvatar } from "@/services"; // 需要你实现 uploadAvatar API
 import { FieldConfig } from "@/components/form/formItem-renderer";
+import { queryClient } from "@/lib/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useUserInfo } from "@/hook";
 
-export function ProfileTab({ defaultformData }: any) {
+export function ProfileTab() {
   const t = useTranslations("dashboard.page.profile");
+  const { data: user, isLoading, error } = useUserInfo();
   const profileFields: FieldConfig[] = [
     {
       type: "input",
@@ -33,24 +36,27 @@ export function ProfileTab({ defaultformData }: any) {
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [formData, setFormData] = useState({
-    id: defaultformData?.id,
-    nickName: defaultformData?.nickName || "",
-    mobile: defaultformData?.mobile || "",
+    id: "",
+    nickName: "",
+    mobile: "",
   });
-  const [isLoading, setIsLoading] = useState(false);
   const [avatarLoading, setAvatarLoading] = useState(false);
 
-  const handleSubmit = async (data: any) => {
-    setIsLoading(true);
-    try {
-      await updateUserInfo(data);
-    } finally {
-      setIsLoading(false);
-      const user = await getUserInfo();
+  useEffect(() => {
+    if (!user) return;
+    setFormData({
+      id: user.id,
+      nickName: user.nickName ?? "",
+      mobile: user.mobile ?? "",
+    });
+  }, [user]);
+  const updateMutation = useMutation({
+    mutationFn: updateUserInfo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["userInfo"] });
+    },
+  });
 
-      useUserStore.getState().setUser(user);
-    }
-  };
 
   const handleAvatarClick = () => {
     fileInputRef.current?.click();
@@ -58,17 +64,11 @@ export function ProfileTab({ defaultformData }: any) {
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-
     if (!file) return;
-
     setAvatarLoading(true);
     try {
-      // 这里需要你实现 uploadAvatar 接口：把 file 上传到后端并返回新的头像地址
       await uploadAvatar(file);
-
-      const user = await getUserInfo();
-
-      useUserStore.getState().setUser(user);
+      queryClient.invalidateQueries({ queryKey: ["userInfo"] });
     } finally {
       setAvatarLoading(false);
     }
@@ -77,20 +77,21 @@ export function ProfileTab({ defaultformData }: any) {
   return (
     <>
       <div className="text-xl font-semibold text-title mb-4">{t("title")}</div>
-
       <div className="my-2">
         <button className="relative cursor-pointer" onClick={handleAvatarClick}>
           {avatarLoading ? (
             <Spinner size="lg" />
           ) : (
-            <Avatar
-              className="w-16 h-16 text-large"
-              src={defaultformData?.avatarUrl ?? ""}
-            />
+            <>
+              <Avatar
+                className="w-16 h-16 text-large"
+                src={user?.avatarUrl ?? ""}
+              />
+              <span className="absolute bottom-0 left-0 bg-black/50 text-white text-xs px-1 rounded">
+                {t("edit")}
+              </span>
+            </>
           )}
-          <span className="absolute bottom-0 left-0 bg-black/50 text-white text-xs px-1 rounded">
-            {t("edit")}
-          </span>
         </button>
         <input
           ref={fileInputRef}
@@ -105,9 +106,9 @@ export function ProfileTab({ defaultformData }: any) {
         <CommonForm
           fields={profileFields}
           formData={formData}
-          isLoading={isLoading}
           onChange={setFormData}
-          onSubmit={handleSubmit}
+          onSubmit={updateMutation.mutateAsync}
+          isLoading={updateMutation.isPending}
         />
       </div>
     </>

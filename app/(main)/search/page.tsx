@@ -134,6 +134,7 @@ export default function SearchPage() {
                           <Image
                             alt={item.sourceProductId}
                             className="w-full object-fill h-[300px]"
+                            referrerPolicy="no-referrer"
                             radius="none"
                             src={item.imageUrl}
                             width="100%"

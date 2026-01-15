@@ -11,28 +11,54 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-  useDisclosure,
 } from "@heroui/react";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
 
-import CommonModal from "@/components/modal/common-modal";
 import PaginationBar from "@/components/common/pagination-bar";
-import { getMessageList, readMessage, delMessage } from "@/services";
+import { useMessageList, useMessageMutations } from "@/hook";
+import { useSelection } from "@/hook/common";
+import { useConfirm } from "@/components/common/modal/confirm-provider";
 
 type TabKey = "all" | "read" | "unread";
 
 export default function MessagePage() {
-  const t = useTranslations("dashboard.MessagePage");
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const t = useTranslations("dashboard.message");
+  const { confirm } = useConfirm();
+
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-
-  const [rows, setRows] = useState<any[]>([]);
-  const [selectedKeys, setSelectedKeys] = useState<Set<any>>(new Set());
-  const [loading, setLoading] = useState(false);
-  const [currentContent, setCurrentContent] = useState("");
   const [activeTab, setActiveTab] = useState<TabKey>("all");
+
+  const statusCode = activeTab === "read" ? 1 : activeTab === "unread" ? 0 : undefined;
+
+  const { data, isLoading, isFetching } = useMessageList({
+    page,
+    pageSize,
+    statusCode,
+  });
+const { readMutation, deleteMutation } = useMessageMutations();
+  const records = Array.isArray(data?.records) ? data.records : [];
+  const total = data?.total || 0;
+
+  const {
+    selectedIds,
+    onSelect,
+    onSelectAll,
+    onClearAll,
+    isAllSelected,
+    hasSelected,
+    onToggleSelectAll,
+    setSelection,
+  } = useSelection(records, {
+    idKey: "id",
+  });
+
+  useEffect(() => {
+    onClearAll();
+  }, [page, activeTab, onClearAll]);
+
+
 
   const columns = [
     { key: "title", label: t("title") },
@@ -41,42 +67,24 @@ export default function MessagePage() {
     { key: "actions", label: t("actions") },
   ];
 
-  // 获取消息列表
-  const fetchMessages = async () => {
-    setLoading(true);
-    try {
-      const params: any = { deleteFlag: 1 }; // 默认只查正常的消息
-
-      if (activeTab === "read") params.statusCode = 1;
-      if (activeTab === "unread") params.statusCode = 0;
-
-      const query = new URLSearchParams(params).toString();
-      const res = await getMessageList(
-        `?${query}&current=${page}&size=${pageSize}`,
-      );
-
-      if (Array.isArray(res.records)) {
-        setRows(res.records.map((msg: any) => ({ ...msg })));
-      } else {
-        setRows([]);
-      }
-      setSelectedKeys(new Set()); // Tab 切换清空选中
-    } catch (err) {
-      console.error("Failed to load messages:", err);
-      setRows([]);
-    } finally {
-      setLoading(false);
-    }
+  const handleViewDetail = async (item: any) => {
+    await confirm({
+      title: t("modalTitle"),
+      content: item.content,
+      onConfirm: async () => {
+        await readMutation.mutateAsync(item.id);
+      },
+    });
   };
-
-  useEffect(() => {
-    fetchMessages();
-  }, [page, activeTab]);
-  useEffect(() => {
-    fetchMessages();
-  }, [page, pageSize]);
-
-  // 渲染表格单元格
+  const handleDelete = async () => {
+    await confirm({
+      title: t("delete"),
+      content: t("confirmDeleteContent"),
+      onConfirm: async () => {
+        await deleteMutation.mutateAsync(Array.from(selectedIds) as number[]);
+      },
+    });
+  };
   const renderCell = useCallback(
     (item: any, columnKey: string) => {
       switch (columnKey) {
@@ -86,62 +94,37 @@ export default function MessagePage() {
           ) : (
             <span className="text-green-500 font-bold">✔</span>
           );
-
         case "actions":
           return (
             <Button
               color="primary"
               size="sm"
-              onPress={async () => {
-                setCurrentContent(item.content);
-                onOpen();
-
-                if (item.statusCode === 0) {
-                  try {
-                    await readMessage(item.id);
-                    fetchMessages();
-                  } catch (err) {
-                    console.error("Failed to mark message as read:", err);
-                  }
-                }
-              }}
+              onPress={() => handleViewDetail(item)}
             >
               {t("viewDetail")}
             </Button>
           );
-
+        case "title":
+          return (
+            <span className="font-semibold text-gray-800">
+              {item.title || t("noTitle")}
+            </span>
+          );
+        case "createTime":
+          return (
+            <span className="text-gray-500 text-sm">
+              {item.createTime || t("noTime")}
+            </span>
+          );
         default:
           return item[columnKey];
       }
     },
-    [onOpen, t],
+    [t, handleViewDetail]
   );
-
-  const allSelected = rows.length > 0 && selectedKeys.size === rows.length;
-
-  // 切换全选/取消全选
-  const toggleAll = () => {
-    if (allSelected) {
-      setSelectedKeys(new Set());
-    } else {
-      setSelectedKeys(new Set(rows.map((row) => row.key)));
-    }
-  };
-
-  // 批量删除
-  const handleDelete = async () => {
-    if (selectedKeys.size === 0) return;
-    try {
-      await delMessage(Array.from(selectedKeys));
-      fetchMessages();
-    } catch (err) {
-      console.error("Failed to delete messages:", err);
-    }
-  };
 
   return (
     <div className="flex w-full flex-col">
-      {/* Tab 标签 */}
       <Tabs
         aria-label="Options"
         classNames={{
@@ -155,10 +138,7 @@ export default function MessagePage() {
         variant="underlined"
         onSelectionChange={(key: any) => {
           setActiveTab(key);
-          setPage(1); // ✅ 切换 Tab 时重置分页
-          console.log("切换");
-
-          fetchMessages();
+          setPage(1);
         }}
       >
         <Tab key="all" title={<span>{t("allMessages")}</span>} value="all" />
@@ -170,13 +150,12 @@ export default function MessagePage() {
         />
       </Tabs>
 
-      {/* Tab 内容 */}
       <div className="flex-1 mt-4">
-        {loading ? (
+        {isLoading || isFetching ? (
           <div className="flex justify-center items-center h-[50vh]">
             <Spinner color="primary" size="lg" />
           </div>
-        ) : rows.length === 0 ? (
+        ) : records.length === 0 ? (
           <div className="text-center text-gray-500 py-10">
             {t("noMessages")}
           </div>
@@ -188,18 +167,17 @@ export default function MessagePage() {
               <div className="flex items-center justify-between">
                 <div className="p-3 flex items-center gap-3">
                   <Checkbox
-                    className="flex-1"
-                    isIndeterminate={
-                      selectedKeys.size > 0 && selectedKeys.size < rows.length
-                    }
-                    isSelected={allSelected}
-                    onChange={toggleAll}
+                    isSelected={isAllSelected}
+                    onValueChange={onToggleSelectAll}
+                    isIndeterminate={hasSelected && !isAllSelected}
                   >
                     {t("selectAll")}
                   </Checkbox>
                   <Button
-                    className="bg-transparent text-[#f0700c]"
+                    variant="light"
+                    className="text-[#f0700c]"
                     onPress={handleDelete}
+                    isDisabled={!hasSelected}
                   >
                     {t("delete")}
                   </Button>
@@ -208,46 +186,42 @@ export default function MessagePage() {
                   <PaginationBar
                     page={page}
                     pageSize={pageSize}
-                    total={rows.length}
+                    total={total}
                     onPageChange={setPage}
                     onPageSizeChange={setPageSize}
                   />
                 </div>
               </div>
             }
-            selectedKeys={selectedKeys}
+            selectedKeys={new Set(selectedIds)}
             selectionMode="multiple"
-            onSelectionChange={(keys: any) => setSelectedKeys(keys)}
+            onSelectionChange={(keys) => {
+              if (keys === "all") {
+                onSelectAll();
+              } else {
+                // keys 是 Set<Key>
+                setSelection(Array.from(keys));
+              }
+            }}
           >
             <TableHeader columns={columns}>
               {(column) => (
                 <TableColumn key={column.key}>{column.label}</TableColumn>
               )}
             </TableHeader>
-            <TableBody items={rows}>
-              {(item) => (
-                <TableRow key={item.key}>
+            <TableBody items={records}>
+              {(item: any) => (
+                <TableRow key={item.id}>
                   {(columnKey: any) => (
-                    <TableCell>{renderCell(item, columnKey)}</TableCell>
+                    <TableCell>
+                      {renderCell(item, columnKey)}
+                    </TableCell>
                   )}
                 </TableRow>
               )}
             </TableBody>
           </Table>
         )}
-
-        <CommonModal
-          isOpen={isOpen}
-          title={t("modalTitle")}
-          onConfirm={() => {
-            onOpenChange();
-          }}
-          onOpenChange={onOpenChange}
-        >
-          <div className="max-h-[60vh] overflow-auto px-4 py-2 scrollbar-hide">
-            <p>{currentContent}</p>
-          </div>
-        </CommonModal>
       </div>
     </div>
   );

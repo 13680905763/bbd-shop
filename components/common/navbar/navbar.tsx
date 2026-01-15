@@ -15,12 +15,9 @@ import LanguageCurrencySelector from "./language-currency-selector";
 import { UserMenu } from "./user-menu";
 
 import { Logo } from "@/components/icons";
-import { getUserInfo } from "@/services";
-import { useUserStore } from "@/store";
 
 export const Navbar = () => {
   const t = useTranslations("components.navbar");
-  const clearUser = useUserStore((state) => state.clearUser);
   const pathname = usePathname(); // 获取当前路径
   const router = useRouter();
 
@@ -49,31 +46,30 @@ export const Navbar = () => {
     },
   ];
 
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   useEffect(() => {
     setCurrentNav(pathname);
   }, [pathname]);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await getUserInfo();
+  const isHome = pathname === "/";
+  const navBgClass = isHome 
+    ? (isScrolled ? "bg-white shadow-sm" : "bg-transparent") 
+    : "bg-white shadow-sm";
 
-        if (!res) {
-          console.log("清空userStore");
-          clearUser();
-        } else {
-          useUserStore.getState().setUser(res);
-        }
-        // ✅ 如果返回正常用户信息则不做处理
-      } catch (err: any) {
-        // ✅ 如果 getUserInfo 抛出了异常（例如 axios 拦截器 Promise.reject）
-        console.warn("获取用户信息失败:", err);
-      }
-    })();
-  }, []);
+
 
   return (
-    <HeroUINavbar isBordered maxWidth="full" position="sticky">
+    <HeroUINavbar  maxWidth="full" isBlurred={false} position="sticky" className={`${navBgClass} transition-all duration-300`} >
       <NavbarContent justify="start">
         <button className="cursor-pointer" onClick={() => router.push("/")}>
           <Logo width={170} />

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { FieldConfig } from "../form/formItem-renderer";
 
@@ -101,29 +101,48 @@ export default function AddressModal({
     }
   }, [type, defaultData, isOpen]);
 
-  const handleSave = async (data: any) => {
-    const { createTime, updateTime, customerId, ...filteredData } = data;
 
-    try {
-      if (type === "add") {
-        await addAddress({
-          ...data,
-          addressType: 1,
-          defaultAddress: filteredData.defaultAddress ? 1 : 0,
-        });
-      } else if (type === "edit") {
-        await updateAddress({
-          ...filteredData,
-          defaultAddress: filteredData.defaultAddress ? 1 : 0,
-        });
-      }
-      onOpenChange(false);
-
-      return true;
-    } finally {
-      queryClient.invalidateQueries({ queryKey: ["addressList"] });
-    }
+  const normalizeFormData = (data: any) => {
+    const { createTime, updateTime, customerId, ...rest } = data;
+    return rest;
   };
+  const addMutation = useMutation({
+    mutationFn: async (formData: any) => {
+      const normalizedData = normalizeFormData(formData);
+      return addAddress({
+        ...normalizedData,
+        addressType: 1,
+        defaultAddress: normalizedData.defaultAddress ? 1 : 0,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["addressList"] });
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async (formData: any) => {
+      const normalized = normalizeFormData(formData);
+      return updateAddress({
+        ...normalized,
+        defaultAddress: normalized.defaultAddress ? 1 : 0,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["addressList"] });
+    },
+  });
+  const isSubmitting = addMutation.isPending || updateMutation.isPending;
+
+  const handleSubmit = async (currentFormData: any) => {
+    if (type === "edit") {
+      await updateMutation.mutateAsync(currentFormData);
+    } else {
+      await addMutation.mutateAsync(currentFormData);
+    }
+    onOpenChange(false);
+  };
+
 
   return (
     <FormModal
@@ -133,7 +152,8 @@ export default function AddressModal({
       title={type === "add" ? t("addTitle") : t("editTitle")}
       onChange={setFormData}
       onOpenChange={onOpenChange}
-      onSubmit={handleSave}
+      onSubmit={handleSubmit}
+      isLoading={isSubmitting}
     />
   );
 }

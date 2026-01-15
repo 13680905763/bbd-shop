@@ -94,6 +94,16 @@
             "copy": {
                 "success": "Copy Success",
                 "fail": "Copy Failed"
+            },
+            "empty": {
+                "defaultMessage": "No data available"
+            }
+        },
+        "block": {
+            "addressItem": {
+                "edit": "Edit",
+                "delete": "Delete",
+                "default": "Default"
             }
         },
         "navbar": {
@@ -560,7 +570,7 @@
                 ]
             }
         },
-        "MessagePage": {
+        "message": {
             "title": "Title",
             "time": "Time",
             "actions": "Actions",
@@ -569,6 +579,7 @@
             "noMessages": "No messages",
             "selectAll": "Select All",
             "delete": "Delete",
+            "confirmDeleteContent": "Are you sure you want to delete the selected messages?",
             "modalTitle": "View Details",
             "readMessages": "Read",
             "unreadMessages": "Unread",
@@ -648,17 +659,14 @@
                 "button": "Go to Warehouse"
             }
         },
-        "WarehousePage": {
+        "warehouse": {
             "allTab": "All",
             "submitTab": "Submittable Packages",
-            "emptyText": "No packages available",
             "selectAll": "Select All",
             "submitPackage": "Submit Package",
-            "texts": {
+            "packageItem": {
                 "orderNumber": "Order No:",
-                "createTime": "Created At:",
-                "refundRequest": "Request Refund",
-                "valueAddedService": "Value-added Service"
+                "createTime": "Created At:"
             }
         },
         "package": {
@@ -729,7 +737,7 @@
             "delete": "Delete",
             "noData": "No browse history"
         },
-        "favorite":{
+        "favorite": {
             "title": "Favorite Products",
             "manage": "Manage",
             "complete": "Complete",
@@ -839,6 +847,7 @@
             "packagingMethod": "Packaging Method",
             "deliveryRoute": "Delivery Route",
             "leavingMessage": "Leaving A Message",
+            "defaultMessage": "Please select shipping address to view delivery routes",
             "placeholder": "If you have any special requirements, please note here",
             "submit": "Submit Package",
             "agreement": "I have read and agreed bbdbuy Package Shipping Agreement",
