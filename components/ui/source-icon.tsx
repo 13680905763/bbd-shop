@@ -4,7 +4,6 @@ import React from "react";
 import { AiOutlineAlibaba } from "react-icons/ai";
 import { FaCircle } from "react-icons/fa";
 
-
 interface SourceIconProps {
   source?: string;
   size?: number;

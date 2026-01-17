@@ -3,13 +3,12 @@
 import React, { useState } from "react";
 import { Button, Checkbox } from "@heroui/react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { useFavoriteList, useFavoriteMutations } from "@/hook/api";
 import { useSelection } from "@/hook/common";
 import { FullscreenLoader } from "@/components/ui";
-import { useTranslations } from "next-intl";
 import { ProductCard } from "@/components/block";
-
 
 export default function FavoritesPage() {
   const t = useTranslations("dashboard.favorite");
@@ -82,7 +81,8 @@ export default function FavoritesPage() {
               isLoading={deleteMutation.isPending}
               onPress={handleDelete}
             >
-              {t("delete")}{selectedIds.length ? `(${selectedIds.length})` : ""}
+              {t("delete")}
+              {selectedIds.length ? `(${selectedIds.length})` : ""}
             </Button>
           </div>
         )}
@@ -100,7 +100,9 @@ export default function FavoritesPage() {
               product={{ ...product }}
               onClick={() => {
                 if (product.source && product.sourceProductId) {
-                  router.push(`/goods/${product.source}/${product.sourceProductId}`);
+                  router.push(
+                    `/goods/${product.source}/${product.sourceProductId}`,
+                  );
                 }
               }}
               onSelect={onSelect}

@@ -30,14 +30,15 @@ export default function MessagePage() {
   const [pageSize, setPageSize] = useState(10);
   const [activeTab, setActiveTab] = useState<TabKey>("all");
 
-  const statusCode = activeTab === "read" ? 1 : activeTab === "unread" ? 0 : undefined;
+  const statusCode =
+    activeTab === "read" ? 1 : activeTab === "unread" ? 0 : undefined;
 
   const { data, isLoading, isFetching } = useMessageList({
     page,
     pageSize,
     statusCode,
   });
-const { readMutation, deleteMutation } = useMessageMutations();
+  const { readMutation, deleteMutation } = useMessageMutations();
   const records = Array.isArray(data?.records) ? data.records : [];
   const total = data?.total || 0;
 
@@ -57,8 +58,6 @@ const { readMutation, deleteMutation } = useMessageMutations();
   useEffect(() => {
     onClearAll();
   }, [page, activeTab, onClearAll]);
-
-
 
   const columns = [
     { key: "title", label: t("title") },
@@ -120,7 +119,7 @@ const { readMutation, deleteMutation } = useMessageMutations();
           return item[columnKey];
       }
     },
-    [t, handleViewDetail]
+    [t, handleViewDetail],
   );
 
   return (
@@ -167,17 +166,17 @@ const { readMutation, deleteMutation } = useMessageMutations();
               <div className="flex items-center justify-between">
                 <div className="p-3 flex items-center gap-3">
                   <Checkbox
+                    isIndeterminate={hasSelected && !isAllSelected}
                     isSelected={isAllSelected}
                     onValueChange={onToggleSelectAll}
-                    isIndeterminate={hasSelected && !isAllSelected}
                   >
                     {t("selectAll")}
                   </Checkbox>
                   <Button
-                    variant="light"
                     className="text-[#f0700c]"
-                    onPress={handleDelete}
                     isDisabled={!hasSelected}
+                    variant="light"
+                    onPress={handleDelete}
                   >
                     {t("delete")}
                   </Button>
@@ -213,9 +212,7 @@ const { readMutation, deleteMutation } = useMessageMutations();
               {(item: any) => (
                 <TableRow key={item.id}>
                   {(columnKey: any) => (
-                    <TableCell>
-                      {renderCell(item, columnKey)}
-                    </TableCell>
+                    <TableCell>{renderCell(item, columnKey)}</TableCell>
                   )}
                 </TableRow>
               )}

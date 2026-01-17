@@ -67,26 +67,24 @@ function ProductItem({ product, texts, revokeRefund }: any) {
         </div>
       </div>
 
-      {
-        product?.orderServiceList?.length > 0 && (
-          <div className="p-3 bg-[#f8f8f8] rounded-lg mt-2">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-sm font-medium text-gray-800">
-                {texts.valueAddedService}
+      {product?.orderServiceList?.length > 0 && (
+        <div className="p-3 bg-[#f8f8f8] rounded-lg mt-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm font-medium text-gray-800">
+              {texts.valueAddedService}
+            </span>
+            {product.orderServiceList.map((item: any) => (
+              <span
+                key={item.serviceId}
+                className="px-2 py-0.5 text-xs rounded-md bg-white text-gray-700 border border-gray-200"
+              >
+                {item.serviceName}*{item.quantity}
               </span>
-              {product.orderServiceList.map((item: any) => (
-                <span
-                  key={item.serviceId}
-                  className="px-2 py-0.5 text-xs rounded-md bg-white text-gray-700 border border-gray-200"
-                >
-                  {item.serviceName}*{item.quantity}
-                </span>
-              ))}
-            </div>
+            ))}
           </div>
-        )
-      }
-    </div >
+        </div>
+      )}
+    </div>
   );
 }
 

@@ -15,16 +15,11 @@ import {
 import { HiQuestionMarkCircle } from "react-icons/hi";
 import { IoWallet } from "react-icons/io5";
 import { useParams } from "next/navigation";
-import { useTranslations } from "next-intl";  
-import {FullscreenLoader} from "@/components/ui";
+import { useTranslations } from "next-intl";
 
-
-import Progress from "@/components/common/order-progress";
+import { BusinessProgress, FullscreenLoader } from "@/components/ui";
 import RechargeModal from "@/components/modal/recharge.modal";
-
-import {
-  useGlobalStore,
-} from "@/store";
+import { useGlobalStore } from "@/store";
 import { useBillingAddress, usePaymentMethodList, useWalletInfo } from "@/hook";
 import { createPayOrder } from "@/services";
 import { price } from "@/components/primitives";
@@ -125,8 +120,7 @@ export default function SubmitOrder() {
     isLoading: walletLoading,
     error: walletError,
   } = useWalletInfo();
-  const { data: billingAddress } = useBillingAddress(
-  );
+  const { data: billingAddress } = useBillingAddress();
 
   const [submitting, setSubmitting] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
@@ -135,7 +129,7 @@ export default function SubmitOrder() {
 
   const { data, isLoading, isError } = usePaymentMethodList(params.bizCode);
 
-console.log('billingAddress', billingAddress);
+  console.log("billingAddress", billingAddress);
 
   const handleCreatePayOrder = async () => {
     if (submitting) return;
@@ -204,7 +198,7 @@ console.log('billingAddress', billingAddress);
 
   return (
     <div className="container mx-auto bg-white p-4">
-      <Progress currentStep={1} />
+      <BusinessProgress currentStep={1} />
 
       {paymentId !== "1" && (
         <div className="my-4">

@@ -1,4 +1,6 @@
 export interface RouteItem {
+  disable?: boolean;
+  prompt?: string;
   logoUrl: string;
   templateName: string;
   shippingFee: number;

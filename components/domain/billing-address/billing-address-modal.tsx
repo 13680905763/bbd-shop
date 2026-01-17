@@ -1,12 +1,13 @@
 "use client";
 import React, { useState, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
+import { useMutation } from "@tanstack/react-query";
+
 import { addAddress, updateAddress } from "@/services/address";
 import { FieldConfig } from "@/components/form/formItem-renderer";
 import FormModal from "@/components/modal/form-modal";
 import { useBillingAddress } from "@/hook";
 import { queryClient } from "@/lib/react-query";
-import { useMutation } from "@tanstack/react-query";
 
 interface AddressModalProps {
   isOpen: boolean;
@@ -16,7 +17,7 @@ export default function AddressModal({
   isOpen,
   onOpenChange,
 }: AddressModalProps) {
-  console.log('渲染账单地址弹窗~~~~');
+  console.log("渲染账单地址弹窗~~~~");
   const t = useTranslations("components.modal.billingAddress");
   const { data } = useBillingAddress();
   /** 是否编辑态（由 domain 数据决定） */
@@ -78,7 +79,9 @@ export default function AddressModal({
         required: true,
         errorMessage: t("fields.postcode.errorMessage"),
       },
-    ], [t])
+    ],
+    [t],
+  );
 
   const [formData, setFormData] = useState<any>({
     familyName: "",
@@ -101,11 +104,13 @@ export default function AddressModal({
   /** 统一清洗表单数据（与 UI 解耦） */
   const normalizeFormData = (data: any) => {
     const { createTime, updateTime, customerId, ...rest } = data;
+
     return rest;
   };
   const addMutation = useMutation({
     mutationFn: async (formData: any) => {
       const normalizedData = normalizeFormData(formData);
+
       return addAddress({
         ...normalizedData,
         addressType: 2,
@@ -120,6 +125,7 @@ export default function AddressModal({
   const updateMutation = useMutation({
     mutationFn: async (formData: any) => {
       const normalized = normalizeFormData(formData);
+
       return updateAddress(normalized);
     },
     onSuccess: () => {
@@ -142,12 +148,12 @@ export default function AddressModal({
     <FormModal
       fields={billingAddressField}
       formData={formData}
+      isLoading={isSubmitting}
       isOpen={isOpen}
       title={isEdit ? t("editTitle") : t("addTitle")}
       onChange={setFormData}
       onOpenChange={onOpenChange}
       onSubmit={handleSubmit}
-      isLoading={isSubmitting}
     />
   );
 }

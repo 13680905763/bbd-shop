@@ -1,8 +1,7 @@
 "use client";
 import { Image } from "@heroui/react";
 
-import Footer from "@/components/common/footer";
-import { Navbar } from "@/components/common/navbar/navbar";
+import { Navbar, Footer } from "./components";
 
 export default function AboutLayout({
   children,

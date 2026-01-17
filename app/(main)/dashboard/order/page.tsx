@@ -1,12 +1,5 @@
 "use client";
-import {
-  Button,
-  Checkbox,
-  Tab,
-  Tabs,
-  Spinner,
-  addToast,
-} from "@heroui/react";
+import { Button, Checkbox, Tab, Tabs, Spinner, addToast } from "@heroui/react";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -16,10 +9,13 @@ import OrderItem from "./order-item";
 import RefundList from "./refund-list";
 import RefundModal from "./refund-modal";
 
-import Progress from "@/components/common/order-progress";
 import PaginationBar from "@/components/common/pagination-bar";
 import { useOrderList, useOrderMutations } from "@/hook/api";
-import { FullscreenLoader } from "@/components/ui";
+import {
+  BusinessProgress,
+  EmptyState,
+  FullscreenLoader,
+} from "@/components/ui";
 import { useSelection } from "@/hook/common";
 import { useConfirm } from "@/components/common/modal/confirm-provider";
 
@@ -100,12 +96,7 @@ function OrderTabContent({
 
   if (isFetching)
     return <Spinner className="flex h-[70vh] flex-col items-center" />;
-  if (!orders?.length)
-    return (
-      <div className="flex flex-col items-center justify-center h-[60vh] text-gray-500 text-lg mb-2">
-        {t("noOrders")}
-      </div>
-    );
+  if (!orders?.length) return <EmptyState />;
 
   return (
     <>
@@ -168,7 +159,8 @@ function OrderTabContent({
               size="lg"
               onPress={handleOrderSubmit}
             >
-              {t("batchPay")}{selectedIds.length ? ` (${selectedIds.length})` : ""}
+              {t("batchPay")}
+              {selectedIds.length ? ` (${selectedIds.length})` : ""}
             </Button>
           </div>
         )}
@@ -212,7 +204,7 @@ export default function OrderPage() {
   return (
     <div className="flex w-full flex-col">
       <div className="mt-5">
-        <Progress currentStep={1} />
+        <BusinessProgress currentStep={1} />
       </div>
       <div className="w-full p-5 bg-[#ffeee1] rounded-lg">
         <div className="flex items-center justify-between">

@@ -1,22 +1,30 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Button, Checkbox } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import CartItem from "./cart-item";
-import { useCartList, useCartMutations } from "@/hook/api";
-import { FullscreenLoader, OrderProgress } from "@/components/ui";
+import EditRemarkModal from "./edit-remark-modal";
+
+import {
+  useCartList,
+  useCreateOrderPreview,
+  useDeleteCart,
+  useUpdateCartItem,
+} from "@/hook/api";
+import {
+  FullscreenLoader,
+  BusinessProgress,
+  BlockSpinner,
+  EmptyState,
+  ProductItemTitle,
+} from "@/components/ui";
 import { useGlobalStore } from "@/store";
 import { useConfirm } from "@/components/common/modal/confirm-provider";
 import { useSelection, useDebounceCallback } from "@/hook/common";
-import {
-  CreateOrderPreviewKeyByCartParams,
-  PreviewItem,
-} from "@/types";
-
+import { CreateOrderPreviewKeyByCartParams, PreviewItem } from "@/types";
 import { calculateTotalPrice } from "@/lib/price";
-import EditRemarkModal from "./edit-remark-modal";
 
 export default function CartPage() {
   const t = useTranslations("dashboard.cart");
@@ -28,11 +36,16 @@ export default function CartPage() {
     remark: string;
   }>({ open: false, productId: "", remark: "" });
 
-  const { data, isLoading } = useCartList();
+  const { data, isLoading, isFetching } = useCartList();
+  const { mutateAsync: updateMutation, isPending: isUpdating } =
+    useUpdateCartItem();
+  const { mutateAsync: deleteMutation } = useDeleteCart();
+  const { mutateAsync: createOrderPreview, isPending: isSubmitting } =
+    useCreateOrderPreview();
   // 扁平化购物车数据
   const flatList =
     useMemo(() => {
-      return data?.flatMap((shop) => shop.cartList);
+      return data?.flatMap((shop: any) => shop.cartList);
     }, [data]) ?? [];
 
   const {
@@ -45,16 +58,14 @@ export default function CartPage() {
     hasSelected,
     isGroupAllSelected,
     onToggleGroup,
-  } = useSelection(flatList, {
+  } = useSelection<any>(flatList, {
     idKey: "id",
     groupKey: "shopId",
   });
   const { confirm } = useConfirm();
   const router = useRouter();
 
-  const { updateMutation, deleteMutation, submitMutation } = useCartMutations();
-
-  const handleSubmitCart = async () => {
+  const submitCart = async () => {
     try {
       const params: CreateOrderPreviewKeyByCartParams = {
         previewList: selectedIds.map((cartId) => ({
@@ -62,51 +73,45 @@ export default function CartPage() {
           serviceList: [],
         })) as PreviewItem[],
       };
-      const key = await submitMutation.mutateAsync(params);
+      const key = await createOrderPreview(params);
+
       if (key) {
         router.push("/submit/order?type=cart&key=" + key);
       }
-    } catch { }
+    } catch {}
   };
 
-  const handleDeleteCart = async () => {
+  const deleteCart = async () => {
     await confirm({
       content: t("confirmDeleteContent"), // 弹窗正文
       title: t("confirmDeleteTitle"), // 弹窗标题
       onConfirm: async () => {
-        await deleteMutation.mutateAsync({ idList: selectedIds });
-      },
-    });
-  };
-  const handleDeleteProduct = async (productId: string) => {
-    await confirm({
-      content: t("confirmDeleteContent"), // 弹窗正文
-      title: t("confirmDeleteTitle"), // 弹窗标题
-      onConfirm: async () => {
-        await deleteMutation.mutateAsync({ idList: [productId] });
+        await deleteMutation({ idList: selectedIds });
       },
     });
   };
 
-  const handleUpdateProductQuantity = useDebounceCallback(
+  const updateProductQuantity = useDebounceCallback(
     async (productId: string, quantity: number) => {
-      await updateMutation.mutateAsync([
+      await updateMutation([
         {
           id: productId,
           quantity,
         },
       ]);
     },
-    500
+    500,
   );
 
-  const handleUpdateProductRemark = (productId: string, remark: string) => {
-    setRemarkModalState({ open: true, productId, remark });
-  };
-
-  const submitRemark = async (newRemark: string) => {
+  const updateProductRemark = useCallback(
+    (productId: string, remark: string) => {
+      setRemarkModalState({ open: true, productId, remark });
+    },
+    [],
+  );
+  const submitProductRemark = async (newRemark: string) => {
     if (!remarkModalState.productId) return;
-    await updateMutation.mutateAsync([
+    await updateMutation([
       {
         id: remarkModalState.productId,
         remark: newRemark,
@@ -114,81 +119,78 @@ export default function CartPage() {
     ]);
   };
 
-  const togglePrice = useMemo(() =>
-    calculateTotalPrice(selectedItems, "totalFee")
-    , [selectedItems]);
+  const togglePrice = useMemo(
+    () => calculateTotalPrice(selectedItems, "totalFee"),
+    [selectedItems],
+  );
 
   if (isLoading) return <FullscreenLoader />;
 
   return (
     <div className="h-full">
       <div className="mt-5">
-        <OrderProgress currentStep={0} />
+        <BusinessProgress currentStep={0} />
       </div>
-      <div>
-        <div className="text-title">
-          {t("title", {
-            count: flatList.length,
-          })}
-        </div>
+      <div className="relative">
+        {(isFetching || isUpdating) && <BlockSpinner />}
         {flatList.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-[60vh] text-gray-500">
-            <p className="text-lg mb-2">{t("empty.title")}</p>
-            <p className="text-sm">{t("empty.desc")}</p>
-          </div>
+          <EmptyState desc={t("empty.desc")} title={t("empty.title")} />
         ) : (
           <>
-            <div className="flex flex-col gap-4">
-              {data?.map((c) => (
+            <div className="space-y-2">
+              <ProductItemTitle />
+              {data?.map((c: any) => (
                 <CartItem
                   key={c.shopId}
                   cart={c}
-                  isGroupAllSelected={isGroupAllSelected(c.shopId)} //  店铺selected
+                  isGroupAllSelected={isGroupAllSelected} //  店铺selected
                   isSelected={isSelected}
-                  onDeleteProduct={handleDeleteProduct}
-                  onQuantityChange={handleUpdateProductQuantity}
-                  onRemark={handleUpdateProductRemark}
                   toggle={onSelect}
-                  toggleGroup={() => onToggleGroup(c.shopId)} // 店铺onChange
+                  toggleGroup={onToggleGroup} // 店铺onChange
+                  onQuantityChange={updateProductQuantity}
+                  onRemark={updateProductRemark}
                 />
               ))}
             </div>
-
-            <div className="mt-10  sticky bottom-0 border-t-[1px] bg-white z-10 card-cart">
-              <div className="flex justify-between items-center p-4 gap-4 ">
-                <div className="flex gap-2">
-                  <Checkbox isSelected={isAllSelected} onChange={onToggleSelectAll}>
-                    {t("selectAll")}
-                  </Checkbox>
-                  <Button
-                    className="text-[#f0700c]"
-                    isDisabled={!hasSelected}
-                    size="sm"
-                    variant="light"
-                    onPress={handleDeleteCart}
-                  >
-                    {t("delete")}{selectedIds.length ? ` (${selectedIds.length})` : ""}
-                  </Button>
-                </div>
-                <div className="flex items-center gap-8">
-                  <p>
-                    <span className="font-semibold ">{t("totalPayable")}</span>
-                    <span className=" font-bold text-3xl text-[#f0700c]">
-                      {currency.symbol}
-                      {togglePrice}
-                    </span>
-                  </p>
-                  <Button
-                    className="w-[150px]"
-                    color="primary"
-                    isDisabled={!hasSelected}
-                    isLoading={submitMutation.isPending}
-                    size="lg"
-                    onPress={handleSubmitCart}
-                  >
-                    {t("checkout")}{selectedIds.length ? ` (${selectedIds.length})` : ""}
-                  </Button>
-                </div>
+            <div className="mt-10 sticky bottom-0 bg-white z-10 border border-gray-200 rounded-lg flex justify-between items-center p-4 gap-4 ">
+              <div className="flex gap-2">
+                <Checkbox
+                  isSelected={isAllSelected}
+                  onChange={onToggleSelectAll}
+                >
+                  {t("selectAll")}
+                </Checkbox>
+                <Button
+                  className="text-[#f0700c]"
+                  isDisabled={!hasSelected}
+                  variant="light"
+                  onPress={deleteCart}
+                >
+                  {t("delete")}
+                  {selectedIds.length ? ` (${selectedIds.length})` : ""}
+                </Button>
+              </div>
+              <div className="flex items-center gap-8">
+                <p>
+                  <span className="font-medium text-2xl">
+                    {t("totalPayable")}
+                  </span>
+                  <span className="font-bold text-3xl text-[#f0700c]">
+                    {currency.symbol}
+                    {togglePrice}
+                  </span>
+                </p>
+                <Button
+                  className="w-[200px]"
+                  color="primary"
+                  isDisabled={!hasSelected}
+                  isLoading={isSubmitting}
+                  size="lg"
+                  onPress={submitCart}
+                >
+                  {t("checkout")}
+                  {selectedIds.length ? ` (${selectedIds.length})` : ""}
+                </Button>
               </div>
             </div>
           </>
@@ -196,10 +198,10 @@ export default function CartPage() {
         <EditRemarkModal
           initialValue={remarkModalState.remark}
           isOpen={remarkModalState.open}
-          onSubmit={submitRemark}
           onOpenChange={(open) =>
             setRemarkModalState((prev) => ({ ...prev, open }))
           }
+          onSubmit={submitProductRemark}
         />
       </div>
     </div>

@@ -23,12 +23,11 @@ import {
 } from "@/components/primitives";
 import Stepper from "@/components/stepper";
 import { favoriteProduct, getGoodsInfo } from "@/services/goods";
-import { addCart } from "@/services/cart";
+// import { addCart } from "@/services/cart";
 import {
   createOrderPreviewKeyByProduct,
   getOrderPreviewProduct,
 } from "@/services";
-import { queryClient } from "@/lib/react-query";
 import CopyText from "@/components/ui/copy-text";
 import CommonModal from "@/components/modal/common-modal";
 import { useGlobalStore } from "@/store";
@@ -36,6 +35,7 @@ import { safeMul } from "@/utils/number";
 import { generateDynamicSkuPathDict } from "@/lib/sku-helper";
 import { useConfirm } from "@/components/common/modal/confirm-provider";
 import { SourceIcon } from "@/components/ui";
+import { useAddCartItem } from "@/hook/api";
 
 const getSelectedValues = (specs: any) => {
   const arr: any = [];
@@ -87,17 +87,19 @@ export default function GoodsPage() {
   const [currentImg, setCurrentImg] = useState<string>();
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
+  const { mutateAsync: addCartItem, isPending: isAdding } = useAddCartItem();
   const { confirm } = useConfirm();
   const router = useRouter();
 
   const validateSkuSelection = () => {
     if (issub) return false;
     if (!isChecked) {
-       confirm({
+      confirm({
         title: t("disclaimer"),
         content: t("disclaimerDescription"),
         onConfirm: () => setIsChecked(true),
       });
+
       return false;
     }
     if (!currentSku) {
@@ -141,9 +143,6 @@ export default function GoodsPage() {
   };
   const add = async () => {
     if (!validateSkuSelection()) return;
-
-    setissub(true);
-
     const data = {
       source: params.source,
       sourceProductId: params.sourceProductId,
@@ -156,13 +155,8 @@ export default function GoodsPage() {
     };
 
     try {
-      await addCart(data);
-      await queryClient.removeQueries({ queryKey: ["cartList"] });
-      await queryClient.invalidateQueries({ queryKey: ["cartList"] }); // 手动刷新
-    } catch {
-    } finally {
-      setissub(false);
-    }
+      await addCartItem(data);
+    } catch {}
   };
   // 切换选择状态
   const changeSelectedStatus = (index: any, indey: any) => {
@@ -636,7 +630,7 @@ export default function GoodsPage() {
                 <div className="flex-1 flex gap-2  mt-4 ">
                   <Button
                     className="flex-1 h-16"
-                    isLoading={issub}
+                    isLoading={isAdding}
                     onPress={add}
                   >
                     {t("addToCart")}
@@ -644,6 +638,7 @@ export default function GoodsPage() {
                   <Button
                     className=" h-16 flex-1"
                     color="primary"
+                    isDisabled={isAdding}
                     isLoading={issub}
                     onPress={handleBuyNow}
                   >
@@ -674,8 +669,6 @@ export default function GoodsPage() {
           </div>
         </div>
       </CommonModal>
-
-
     </div>
   );
 }

@@ -1,25 +1,30 @@
 "use client";
+import clsx from "clsx";
 import { useTranslations } from "next-intl";
 
 interface AddAddressProps {
-    type: "address" | "billingAddress";
-    onAdd?: () => void;
+  type: "address" | "billingAddress";
+  onAdd?: () => void;
 }
 
 export default function AddAddress({ type, onAdd }: AddAddressProps) {
-    const t = useTranslations("components.block.addAddress");
-    return (
-        <div className="border-1 border-[#5e5e5e] h-[140px] flex items-center justify-center rounded-lg">
-            <button
-                className="p-6 w-full"
-                onClick={onAdd}
-                aria-label={type === "address" ? t("addButton") : t("addBillingButton")}
-            >
-                <p className="flex items-center gap-2 justify-center">
-                    <span>+</span>
-                    <span>{type === "address" ? t("addButton") : t("addBillingButton")}</span>
-                </p>
-            </button>
-        </div>
-    );
+  const t = useTranslations("components.block.addAddress");
+
+  return (
+    <button
+      aria-label={type === "address" ? t("addButton") : t("addBillingButton")}
+      className={clsx(
+        "border-gray-300 border-2 h-[120px] flex items-center justify-center rounded-lg p-6 w-full",
+        type === "billingAddress" ? "border-dashed" : "",
+      )}
+      onClick={onAdd}
+    >
+      <p className="flex items-center gap-2 justify-center">
+        <span>+</span>
+        <span>
+          {type === "address" ? t("addButton") : t("addBillingButton")}
+        </span>
+      </p>
+    </button>
+  );
 }

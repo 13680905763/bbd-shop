@@ -15,6 +15,8 @@ interface BackendRoute {
   firstWeightFee?: number; // 首重价格
   firstVolumeFee?: number; // 首重价格
   description?: string; // 描述
+  disable?: boolean; // 是否禁用
+  prompt?: string; // 禁用提示
 }
 
 interface RouteCardProps {
@@ -42,9 +44,11 @@ export default function RouteCard({
     firstVolumeFee = 0,
     billTypeCode = "",
     description = "",
+    disable = false,
+    prompt = "",
   } = data;
 
-  // console.log("data", data);
+  console.log("data", data);
 
   const name = templateName || methodName;
   const price = ` ${billTypeCode == "VOLUME" ? firstVolumeFee : firstWeightFee}`;
@@ -55,12 +59,17 @@ export default function RouteCard({
 
   return (
     <Card
-      isPressable
       className={`p-4 border ${
         isSelected ? "border-primary border-2" : "border-gray-200"
       } rounded-xl transition hover:shadow-md bg-white`}
+      isBlurred={false}
+      isDisabled={disable}
+      isPressable={!disable}
       shadow="none"
-      onPress={() => onSelect?.(id)}
+      onPress={() => {
+        if (disable) return;
+        onSelect?.(id);
+      }}
     >
       <div className="flex gap-5 items-start">
         {/* 左侧图片 + 名称 */}
@@ -91,6 +100,11 @@ export default function RouteCard({
           </span>
         </div>
       </div>
+      {disable && prompt && (
+        <div className="mt-2 p-2 bg-red-50 text-red-500 text-sm rounded-lg">
+          {prompt}
+        </div>
+      )}
     </Card>
   );
 }

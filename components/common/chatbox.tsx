@@ -17,7 +17,7 @@ import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 
 import { useChat } from "@/hook/chat/useChat";
-import { useUserInfo } from "@/hook";
+import { useUserInfo } from "@/hook/api";
 
 export default function ChatBox() {
   const t = useTranslations("components.chatbox");
@@ -213,10 +213,11 @@ export default function ChatBox() {
               {messages.map((msg) => (
                 <div
                   key={msg.id}
-                  className={`max-w-[75%] break-words rounded-lg p-2 ${msg.sender === "user"
+                  className={`max-w-[75%] break-words rounded-lg p-2 ${
+                    msg.sender === "user"
                       ? "ml-auto bg-blue-500 text-white"
                       : "mr-auto bg-gray-200 text-black"
-                    }`}
+                  }`}
                 >
                   {msg.type === "IMAGE" && msg.text ? (
                     <div className="relative inline-block">

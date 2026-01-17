@@ -4,19 +4,22 @@ import {
   Accordion,
   AccordionItem,
   Divider,
-  Snippet,
   Image,
   Button,
 } from "@heroui/react";
 import { useTranslations } from "next-intl";
+import { IoCopyOutline } from "react-icons/io5";
 
+import { CopyText } from "@/components/ui";
 import { describeText, price, subtitle } from "@/components/primitives";
 import { getExperience, getPromotionConfig } from "@/services";
 import { useGlobalStore } from "@/store";
+import { useUserInfo } from "@/hook/api";
 
 export default function PromotionPage() {
   const t: any = useTranslations("dashboard.Promotion.page");
   const { currency } = useGlobalStore();
+  const { data: user, isLoading, error } = useUserInfo();
 
   const [experience, setExperience] = useState<any>(null);
   const [experienceList, setExperienceList] = useState(null);
@@ -67,9 +70,17 @@ export default function PromotionPage() {
           })}
         </div>
         <div className="mt-10 w-full px-40 ">
-          <Snippet className="w-full " symbol="">
-            <span>https://bbdbuy1.com/register?ref=undefind</span>
-          </Snippet>
+          <CopyText
+            className="w-full"
+            text={`https://www.bbdbuy1.com/register?inviteCode=${user?.inviteCode || ""}`}
+          >
+            <div className="w-full py-2.5 px-4 bg-[#f4f4f5] rounded-xl text-[#11181C] flex items-center justify-between cursor-pointer hover:bg-[#e4e4e7] transition-colors">
+              <span className="font-mono text-sm break-all">
+                {`https://www.bbdbuy1.com/register?inviteCode=${user?.inviteCode || ""}`}
+              </span>
+              <IoCopyOutline size={18} />
+            </div>
+          </CopyText>
 
           <div className="my-2">
             <span className={describeText({ weight: "normal" })}>

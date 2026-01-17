@@ -7,8 +7,9 @@ import { IoWallet } from "react-icons/io5";
 import { useTranslations } from "next-intl";
 
 import { useGlobalStore } from "@/store";
-import { useUserInfo, useWalletInfo } from "@/hook";
+import { useWalletInfo } from "@/hook";
 import { FullscreenLoader } from "@/components/ui";
+import { useUserInfo } from "@/hook/api";
 
 interface BalanceButtonProps {
   label: string;
@@ -49,6 +50,7 @@ export const UserBalanceCard = () => {
 
   const router = useRouter();
   const { currency } = useGlobalStore();
+
   if (isLoading || walletLoading) return <FullscreenLoader />;
 
   return (

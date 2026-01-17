@@ -7,7 +7,7 @@
  */
 export function calculateTotalPrice<T>(
   items: T[],
-  priceKey: keyof T = "totalFee" as keyof T
+  priceKey: keyof T = "totalFee" as keyof T,
 ): string {
   if (!items || items.length === 0) return "0.00";
 
@@ -19,6 +19,7 @@ export function calculateTotalPrice<T>(
     const price = Number(item[priceKey]) || 0;
     // 将金额转为“分”（整数），使用 Math.round 防止 19.99 * 100 = 1998.9999999 这种情况
     const cents = Math.round(price * MULTIPLIER);
+
     return sum + cents;
   }, 0);
 

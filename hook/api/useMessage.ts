@@ -1,11 +1,16 @@
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import { delMessage, getMessageList, readMessage } from "@/services";
 
 interface MessageListParams {
   page: number;
   pageSize: number;
-  statusCode?: string|number;
+  statusCode?: string | number;
 }
 
 export const useMessageList = (params: MessageListParams) => {

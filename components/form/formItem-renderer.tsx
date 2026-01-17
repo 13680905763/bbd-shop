@@ -28,6 +28,7 @@ export interface FieldConfig {
   options?: FieldOption[];
   startContent?: React.ReactNode;
   errorMessage?: string;
+  isDisabled?: boolean;
 }
 
 interface DynamicFormProps<T extends Record<string, any>> {
@@ -61,6 +62,7 @@ export default function FormItemRenderer<T extends Record<string, any>>({
           size = "md",
           required = false,
           errorMessage,
+          isDisabled = false,
         } = field;
 
         const value = formData[name] ?? "";
@@ -71,6 +73,7 @@ export default function FormItemRenderer<T extends Record<string, any>>({
               <Input
                 key={name} // 用 key
                 errorMessage={errorMessage}
+                isDisabled={isDisabled}
                 isRequired={required}
                 label={label}
                 placeholder={placeholder}

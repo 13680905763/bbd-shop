@@ -2,7 +2,6 @@ import axios from "axios";
 
 import { request, requestWithOption } from "./request";
 
-
 /** 新增地址 */
 export const addAddress = (data: any): Promise<string> => {
   return requestWithOption<string>(

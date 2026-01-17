@@ -40,14 +40,11 @@ export default function FormModal({
     e.preventDefault();
     onSubmit(formData);
   };
+
   return (
-    <Modal
-      isDismissable={false}
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}
-    >
+    <Modal isDismissable={false} isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
-        <Form onSubmit={handleSubmit} >
+        <Form onSubmit={handleSubmit}>
           <ModalHeader>{title}</ModalHeader>
           <ModalBody className="w-full">
             <FormItemRenderer
@@ -58,17 +55,13 @@ export default function FormModal({
           </ModalBody>
           <ModalFooter className="w-full">
             <Button
-              variant="flat"
               isDisabled={isLoading}
+              variant="flat"
               onPress={() => onOpenChange(false)}
             >
               {cancelText ?? t("cancel")}
             </Button>
-            <Button
-              color="primary"
-              type="submit"
-              isLoading={isLoading}
-            >
+            <Button color="primary" isLoading={isLoading} type="submit">
               {confirmText ?? t("confirm")}
             </Button>
           </ModalFooter>
@@ -76,4 +69,4 @@ export default function FormModal({
       </ModalContent>
     </Modal>
   );
-};
+}

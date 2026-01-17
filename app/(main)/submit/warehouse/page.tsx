@@ -1,29 +1,31 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { addToast, Button, Checkbox, Spinner, Textarea } from "@heroui/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
-
-import Progress from "@/components/common/order-progress";
-import { useAddressList } from "@/hook";
-import {
-  createWaybill,
-  getWarehouseRoutesListByCC,
-} from "@/services";
 import WarehouseServiceCard from "./werahouse-service-card";
+
+import { useGlobalStore } from "@/store";
 import RouteCard from "@/components/common/route-card";
-import { FullscreenLoader } from "@/components/ui";
+import { BusinessProgress, FullscreenLoader } from "@/components/ui";
 import AddressModal from "@/components/modal/address-modal";
-import { useWarehouseServicesList, useWaybillPreview } from "@/hook/api";
+import {
+  useCreateWaybill,
+  useWarehouseServicesList,
+  useWaybillFeeEstimate,
+  useWaybillPreview,
+} from "@/hook/api";
 import { AddAddress, PackageProductItem } from "@/components/block";
 import { useServiceSelection } from "@/hook/common";
+import { useAddressList } from "@/hook";
 import AddressItem from "@/components/block/address-item";
 import { Address, AddressModalState } from "@/types";
-
+import { routesApi } from "@/services/routesApi";
 
 export default function SubmitOrder() {
+  const { currency } = useGlobalStore();
   const t = useTranslations("submit.warehouse");
   const router = useRouter();
   const searchParam = useSearchParams();
@@ -32,32 +34,50 @@ export default function SubmitOrder() {
   const [modalState, setModalState] = useState<AddressModalState>({
     type: null,
   });
-
-  const { data, isLoading } = useWaybillPreview(key);
-  const { data: serviceList } = useWarehouseServicesList();
-  const { data: addressList } = useAddressList();
-
-  const {
-    services,           // 渲染数据（包含 isSelected 和 quantity）
-    toggleSelection,    // 切换选中状态
-    updateQuantity,     // 更新数量
-    getSelectedServices // 获取选中结果
-  } = useServiceSelection(serviceList);
-
-
-  const [submitting, setSubmitting] = useState(false);
-  const [isCheck, setIsCheck] = useState(false);
-  // 路由路线相关
-  const [routesList, setRoutesList] = useState<any[]>([]);
-  const [routesMessage, setRoutesMessage] = useState<string>(t("defaultMessage"));
-
   // 都用 string 类型 id 进行比较
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
     null,
   );
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
   const [remark, setRemark] = useState("");
+  const { data, isLoading } = useWaybillPreview(key);
+  const { data: serviceList } = useWarehouseServicesList();
+  const { data: addressList } = useAddressList();
+  const { mutateAsync: createWaybillAsync, isPending } = useCreateWaybill();
 
+  const {
+    services, // 渲染数据（包含 isSelected 和 quantity）
+    toggleSelection, // 切换选中状态
+    updateQuantity, // 更新数量
+    getSelectedServices, // 获取选中结果
+  } = useServiceSelection(serviceList);
+
+  const estimatePayload = useMemo(() => {
+    if (!selectedRouteId || !selectedAddressId || !data?.param) return null;
+
+    return {
+      serviceList: getSelectedServices(),
+      templateId: selectedRouteId,
+      addressId: selectedAddressId,
+      ...data.param,
+    };
+  }, [selectedRouteId, selectedAddressId, getSelectedServices, services]);
+
+  const { data: feeEstimate, isFetching: isEstimating } =
+    useWaybillFeeEstimate(estimatePayload);
+
+  useEffect(() => {
+    if (estimatePayload && feeEstimate) {
+      console.log("Fee Estimating:", feeEstimate);
+    }
+  }, [estimatePayload]);
+
+  const [isCheck, setIsCheck] = useState(false);
+  // 路由路线相关
+  const [routesList, setRoutesList] = useState<any[]>([]);
+  const [routesMessage, setRoutesMessage] = useState<string>(
+    t("defaultMessage"),
+  );
 
   useEffect(() => {
     const countryId = addressList?.find(
@@ -65,10 +85,11 @@ export default function SubmitOrder() {
     )?.countryId;
 
     if (!countryId) return;
-    getWarehouseRoutesListByCC({
-      categoryIds: data?.packageItemList.map((item: any) => item?.categoryId),
-      countryId,
-    })
+    routesApi
+      .byCategoryAndCountry({
+        categoryIds: data?.packageItemList.map((item: any) => item?.categoryId),
+        countryId,
+      })
       .then((res) => {
         console.log("res", res, typeof res != "string", res?.length);
         if (typeof res != "string" && res?.length) {
@@ -78,8 +99,7 @@ export default function SubmitOrder() {
           setRoutesList([]);
           setRoutesMessage(res);
         }
-      })
-
+      });
   }, [selectedAddressId]);
 
   const handleOpenChange = useCallback((open: boolean) => {
@@ -114,33 +134,26 @@ export default function SubmitOrder() {
         color: "warning",
       });
     }
+    const payload = {
+      serviceList: getSelectedServices(),
+      templateId: selectedRouteId,
+      addressId: selectedAddressId,
+      remark,
+      ...data.param,
+    };
 
-    if (submitting) return;
-    setSubmitting(true);
+    console.log("提交数据", payload);
 
-    try {
-      const payload = {
-        serviceList: getSelectedServices(),
-        templateId: selectedRouteId,
-        addressId: selectedAddressId,
-        remark,
-        ...data.param,
-      };
-
-      console.log("提交数据", payload);
-
-      // 调接口
-      await createWaybill(payload);
-      router.push(`/dashboard/package`);
-    } finally {
-      setSubmitting(false);
-    }
+    // 调接口
+    await createWaybillAsync(payload);
+    router.push(`/dashboard/package`);
   };
+
   if (isLoading) return <FullscreenLoader />;
 
   return (
     <div className="container mx-auto bg-[#fff] p-4 py-6">
-      <Progress currentStep={2} />
+      <BusinessProgress currentStep={2} />
       <div className="flex container gap-10">
         {/* 左侧内容 */}
         <div className="flex-[5] space-y-4">
@@ -149,7 +162,11 @@ export default function SubmitOrder() {
             <div className="text-title">{t("commodityList")}</div>
             <div className="space-y-2">
               {data?.packageItemList?.map((item: any) => (
-                <PackageProductItem key={item?.id} isBorder={true} packageItem={item} />
+                <PackageProductItem
+                  key={item?.id}
+                  isBorder={true}
+                  packageItem={item}
+                />
               ))}
             </div>
           </div>
@@ -162,8 +179,8 @@ export default function SubmitOrder() {
                   <WarehouseServiceCard
                     key={service.id}
                     service={service}
-                    onUpdateQuantity={updateQuantity}
                     onSelect={toggleSelection}
+                    onUpdateQuantity={updateQuantity}
                   />
                 );
               })}
@@ -178,13 +195,13 @@ export default function SubmitOrder() {
                   key={addressDetail.id}
                   addressDetail={addressDetail}
                   selectable={true}
-                  showDeleteButton={false}
                   selected={selectedAddressId === String(addressDetail.id)}
-                  onSelect={() => setSelectedAddressId(addressDetail.id)}
+                  showDeleteButton={false}
                   onEdit={handleEditClick}
+                  onSelect={() => setSelectedAddressId(addressDetail.id)}
                 />
               ))}
-              <AddAddress onAdd={handleAddClick} type="address" />
+              <AddAddress type="address" onAdd={handleAddClick} />
             </div>
           </div>
           {/* 路线 */}
@@ -219,10 +236,99 @@ export default function SubmitOrder() {
               value={remark}
               onChange={(e) => setRemark(e.target.value)}
             />
+            <div className="flex flex-wrap gap-4 p-4 bg-gray-100 rounded-xl mt-4">
+              <div className="flex-1 min-w-[140px]">
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="w-6 h-6 rounded-md bg-orange-100 flex items-center justify-center">
+                    <svg
+                      className="w-3 h-3 text-orange-600"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        clipRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+                        fillRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <span className="text-sm font-medium text-gray-600">
+                    {t("totalWeight")}
+                  </span>
+                </div>
+                <p className="text-2xl font-bold text-gray-800">
+                  {data?.outbound?.estimateTotalWeight || 0}
+                  <span className="text-base font-normal text-gray-500 ml-1">
+                    g
+                  </span>
+                </p>
+              </div>
+
+              <div className="flex-1 min-w-[140px]">
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="w-6 h-6 rounded-md bg-indigo-100 flex items-center justify-center">
+                    <svg
+                      className="w-3 h-3 text-indigo-600"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        clipRule="evenodd"
+                        d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+                        fillRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <span className="text-sm font-medium text-gray-600">
+                    {t("totalVolume")}
+                  </span>
+                </div>
+                <p className="text-2xl font-bold text-gray-800">
+                  {data?.outbound?.estimateTotalVolume || 0}
+                  <span className="text-base font-normal text-gray-500 ml-1">
+                    cm³
+                  </span>
+                </p>
+              </div>
+            </div>
+            {isEstimating ? (
+              <div className="mt-2 p-4   text-sm rounded-lg text-center flex items-center justify-center">
+                <div>{t("estimating")}</div>
+                <Spinner className=" ml-2" />
+              </div>
+            ) : (
+              feeEstimate?.outbound && (
+                <div className="mt-4 p-4  bg-gray-100 rounded-xl space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">{t("shippingFee")}</span>
+                    <span className="font-medium">
+                      {currency.symbol}
+                      {feeEstimate?.outbound.estimateShippingFee}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">{t("serviceFee")}</span>
+                    <span className="font-medium">
+                      {currency.symbol}
+                      {feeEstimate.outbound.serviceFee}
+                    </span>
+                  </div>
+                  <div className="pt-2 mt-2 border-t border-gray-200 flex justify-between items-center">
+                    <span className="text-gray-900 font-semibold">
+                      {t("total")}
+                    </span>
+                    <span className="text-xl font-bold text-primary">
+                      {currency.symbol}
+                      {feeEstimate.outbound.totalFee}
+                    </span>
+                  </div>
+                </div>
+              )
+            )}
             <Button
               className="w-full my-4"
               color="primary"
-              isLoading={submitting}
+              isLoading={isPending}
               radius="sm"
               size="lg"
               onPress={handleSubmitWaybill}

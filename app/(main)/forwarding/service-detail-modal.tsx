@@ -3,10 +3,11 @@ import { Image } from "antd";
 import { Textarea } from "@heroui/react";
 import { useTranslations } from "next-intl";
 
+import { ServiceItem } from "./types";
+
 import CommonModal from "@/components/modal/common-modal";
 import Stepper from "@/components/stepper";
 import { useGlobalStore } from "@/store";
-import { ServiceItem } from "./types";
 
 interface ServiceDetailModalProps {
   isOpen: boolean;
@@ -86,12 +87,7 @@ export default function ServiceDetailModal({
                 >
                   <div className="grid grid-cols-4 gap-2">
                     {localService.sample.map((url: string) => (
-                      <Image
-                        key={url}
-                        height={80}
-                        src={url}
-                        width={80}
-                      />
+                      <Image key={url} height={80} src={url} width={80} />
                     ))}
                   </div>
                 </Image.PreviewGroup>

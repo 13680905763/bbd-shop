@@ -1,10 +1,11 @@
 import type { Address } from "@/types/address";
 
-import { Chip, Divider } from "@heroui/react";
+import { Chip } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import { memo, useCallback, useMemo } from "react";
 import clsx from "clsx";
+
 import { formatFullAddress, formatFullCity } from "@/utils";
 
 type AddressItemProps = {
@@ -28,8 +29,14 @@ export default memo(function AddressItem({
 }: AddressItemProps) {
   const t = useTranslations("components.block.addressItem");
 
-  const fullCity = useMemo(() => formatFullCity(addressDetail), [addressDetail]);
-  const fullAddress = useMemo(() => formatFullAddress(addressDetail), [addressDetail]);
+  const fullCity = useMemo(
+    () => formatFullCity(addressDetail),
+    [addressDetail],
+  );
+  const fullAddress = useMemo(
+    () => formatFullAddress(addressDetail),
+    [addressDetail],
+  );
 
   const handleSelect = useCallback(() => {
     if (!selectable || !onSelect) return;
@@ -51,9 +58,9 @@ export default memo(function AddressItem({
   return (
     <div
       className={clsx(
-        "rounded-lg bg-white py-2 flex flex-col gap-1 p-4 text-sm transition",
+        "rounded-lg bg-white py-2 flex flex-col gap-1 p-4 text-sm transition h-[120px]",
         selectable && "cursor-pointer",
-        !selected && "border-[#5e5e5e]  border-1 ",
+        !selected && "border-gray-300 border-2",
         selected && "bg-primary/5 ring-2 ring-primary",
       )}
       role="button"
@@ -70,8 +77,6 @@ export default memo(function AddressItem({
       <div className="text-gray-700">
         <span className="line-clamp-2">{fullAddress}</span>
       </div>
-
-      <Divider className="my-1" />
 
       <div className="flex items-center justify-between">
         {addressDetail.defaultAddress ? (

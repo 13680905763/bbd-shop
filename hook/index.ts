@@ -1,4 +1,3 @@
-export * from "./user/useUserInfo";
 export * from "./wallet/useWalletInfo";
 export * from "./wallet/useWalletDetailList";
 export * from "./api/useMessage";

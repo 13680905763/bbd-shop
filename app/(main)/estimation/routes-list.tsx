@@ -10,12 +10,20 @@ interface RoutesListProps {
 }
 
 export default function RoutesList({ routes }: RoutesListProps) {
+  const disabledKeys = routes
+    .map((route, index) => (route.disable ? String(index) : null))
+    .filter((item) => item !== null) as string[];
+
   return (
     <div className="container m-auto p-5">
-      <Accordion className="!border-1" variant="bordered">
+      <Accordion
+        className="!border-1"
+        disabledKeys={disabledKeys}
+        variant="bordered"
+      >
         {routes.map((route, index) => (
           <AccordionItem
-            key={index}
+            key={String(index)}
             title={<RouteItemHeader route={route} />}
           >
             <Divider />

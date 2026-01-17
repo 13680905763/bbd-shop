@@ -3,13 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Avatar, Spinner } from "@heroui/react";
 import { useTranslations } from "next-intl";
+import { useMutation } from "@tanstack/react-query";
 
 import CommonForm from "@/components/form/common-form";
 import { updateUserInfo, uploadAvatar } from "@/services"; // 需要你实现 uploadAvatar API
 import { FieldConfig } from "@/components/form/formItem-renderer";
 import { queryClient } from "@/lib/react-query";
-import { useMutation } from "@tanstack/react-query";
-import { useUserInfo } from "@/hook";
+import { useUserInfo } from "@/hook/api";
 
 export function ProfileTab() {
   const t = useTranslations("dashboard.page.profile");
@@ -57,13 +57,13 @@ export function ProfileTab() {
     },
   });
 
-
   const handleAvatarClick = () => {
     fileInputRef.current?.click();
   };
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
     if (!file) return;
     setAvatarLoading(true);
     try {
@@ -73,6 +73,10 @@ export function ProfileTab() {
       setAvatarLoading(false);
     }
   };
+  let sku = "";
+  let pic = "123123";
+
+  console.log(sku || pic);
 
   return (
     <>
@@ -106,9 +110,9 @@ export function ProfileTab() {
         <CommonForm
           fields={profileFields}
           formData={formData}
+          isLoading={updateMutation.isPending}
           onChange={setFormData}
           onSubmit={updateMutation.mutateAsync}
-          isLoading={updateMutation.isPending}
         />
       </div>
     </>

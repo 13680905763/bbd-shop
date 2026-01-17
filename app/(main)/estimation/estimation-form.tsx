@@ -12,9 +12,9 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 
-import { searchWarehouseRoutesList } from "@/services";
 import { useCountries } from "@/hook";
 import { useCategoryOptions } from "@/hook/config/useCategoryOptions";
+import { routesApi } from "@/services/routesApi";
 
 export interface EstimationFormData {
   countryId: number;
@@ -29,7 +29,9 @@ interface EstimationFormProps {
   onSearchSuccess: (routes: any[], message?: string) => void;
 }
 
-export default function EstimationForm({ onSearchSuccess }: EstimationFormProps) {
+export default function EstimationForm({
+  onSearchSuccess,
+}: EstimationFormProps) {
   const t = useTranslations("estimation");
   const { data: countries = [] } = useCountries();
   const { data: categoryOptions = [] } = useCategoryOptions();
@@ -48,7 +50,8 @@ export default function EstimationForm({ onSearchSuccess }: EstimationFormProps)
   };
 
   const searchMutation = useMutation({
-    mutationFn: (data: EstimationFormData) => searchWarehouseRoutesList(data),
+    mutationFn: (data: EstimationFormData) =>
+      routesApi.byCategoryAndCountryAndVolumeAndWeight(data),
     onSuccess: (res) => {
       if (typeof res !== "string" && res?.length) {
         onSearchSuccess(res);
@@ -77,6 +80,7 @@ export default function EstimationForm({ onSearchSuccess }: EstimationFormProps)
         timeout: 1000,
         color: "danger",
       });
+
       return;
     }
 

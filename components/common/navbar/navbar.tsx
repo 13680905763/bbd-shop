@@ -54,6 +54,7 @@ export const Navbar = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -62,14 +63,19 @@ export const Navbar = () => {
   }, [pathname]);
 
   const isHome = pathname === "/";
-  const navBgClass = isHome 
-    ? (isScrolled ? "bg-white shadow-sm" : "bg-transparent") 
+  const navBgClass = isHome
+    ? isScrolled
+      ? "bg-white shadow-sm"
+      : "bg-transparent"
     : "bg-white shadow-sm";
 
-
-
   return (
-    <HeroUINavbar  maxWidth="full" isBlurred={false} position="sticky" className={`${navBgClass} transition-all duration-300`} >
+    <HeroUINavbar
+      className={`${navBgClass} transition-all duration-300`}
+      isBlurred={false}
+      maxWidth="full"
+      position="sticky"
+    >
       <NavbarContent justify="start">
         <button className="cursor-pointer" onClick={() => router.push("/")}>
           <Logo width={170} />

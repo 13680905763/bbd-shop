@@ -29,6 +29,7 @@ export interface UserInfo {
   status?: number; // 用户状态，具体含义看后台文档
   myPoints: number;
   vipLv: string;
+  inviteCode?: string;
 }
 export interface UserState {
   user: UserInfo | null;

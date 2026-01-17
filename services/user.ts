@@ -49,14 +49,12 @@ export const loginWithGoogle = (idToken: string): Promise<string> => {
   );
 };
 /** 谷歌登录新 */
-export const loginWithGoogleNew = (
-  authorizationCode: string,
-): Promise<string> => {
+export const loginWithGoogleNew = (data: any): Promise<string> => {
   return requestWithOption<string>(
     {
       url: "/customer/google/code",
       method: "POST",
-      data: { authorizationCode },
+      data,
     },
     { showToast: true }, // 登录成功/失败都会弹 toast
   );
@@ -95,7 +93,7 @@ export const readMessage = (id: string): Promise<any> => {
 /** 删除用户信息 */
 export const delMessage = (data: number[]): Promise<any> => {
   return request.delete("/system-notice/batch", {
-    data 
+    data,
   });
 };
 /** 上传用户头像 */

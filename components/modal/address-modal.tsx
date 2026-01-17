@@ -101,14 +101,15 @@ export default function AddressModal({
     }
   }, [type, defaultData, isOpen]);
 
-
   const normalizeFormData = (data: any) => {
     const { createTime, updateTime, customerId, ...rest } = data;
+
     return rest;
   };
   const addMutation = useMutation({
     mutationFn: async (formData: any) => {
       const normalizedData = normalizeFormData(formData);
+
       return addAddress({
         ...normalizedData,
         addressType: 1,
@@ -123,6 +124,7 @@ export default function AddressModal({
   const updateMutation = useMutation({
     mutationFn: async (formData: any) => {
       const normalized = normalizeFormData(formData);
+
       return updateAddress({
         ...normalized,
         defaultAddress: normalized.defaultAddress ? 1 : 0,
@@ -143,17 +145,16 @@ export default function AddressModal({
     onOpenChange(false);
   };
 
-
   return (
     <FormModal
       fields={addressFields}
       formData={formData}
+      isLoading={isSubmitting}
       isOpen={isOpen}
       title={type === "add" ? t("addTitle") : t("editTitle")}
       onChange={setFormData}
       onOpenChange={onOpenChange}
       onSubmit={handleSubmit}
-      isLoading={isSubmitting}
     />
   );
 }

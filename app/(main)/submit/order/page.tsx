@@ -14,14 +14,12 @@ import { Image } from "antd";
 
 import OrderItem from "./order-item";
 
-import Progress from "@/components/common/order-progress";
-import {FullscreenLoader} from "@/components/ui";
+import { BusinessProgress, FullscreenLoader, ProductItemTitle } from "@/components/ui";
 import CommonModal from "@/components/modal/common-modal";
 import { useOrderPreview, useServices } from "@/hook";
 import {
   createOrderByCart,
   createOrderByProduct,
-  getServicesList,
   updateOrderPreviewCart,
   updateOrderPreviewProduct,
 } from "@/services";
@@ -42,13 +40,16 @@ export default function SubmitOrder() {
   const key = searchParam.get("key") as string;
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const { data, isLoading, } = useOrderPreview(type, key);
-  const { data: services, isLoading: isServicesLoading, isError: isServicesError } = useServices();
+  const { data, isLoading } = useOrderPreview(type, key);
+  const {
+    data: services,
+    isLoading: isServicesLoading,
+    isError: isServicesError,
+  } = useServices();
   const [orderData, setOrderData] = useState<any>(null);
 
   const [submitting, setSubmitting] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-
 
   // 本地状态：存储服务列表
   const [localServices, setLocalServices] = useState<any[]>([]);
@@ -87,6 +88,7 @@ export default function SubmitOrder() {
             remark: item?.remark || "",
           };
         }) || [];
+
     console.log("hanldeSer", hanldeSer);
     // 克隆服务，初始化 isCheck、remark
     setLocalServices(
@@ -95,6 +97,7 @@ export default function SubmitOrder() {
           "hanldeSer.find((id: any) => id == s.id)",
           hanldeSer.find((item: any) => item.id == s.id),
         );
+
         return {
           ...s,
           isCheck: hanldeSer.find((item: any) => item.id == s.id)
@@ -127,6 +130,7 @@ export default function SubmitOrder() {
     // 如果是基础拍照（id === 1），直接关掉弹窗，不修改 localServices
     if (currentService.id == 1) {
       setIsServiceDetailOpen(false);
+
       return;
     }
     setLocalServices((prev) =>
@@ -199,6 +203,7 @@ export default function SubmitOrder() {
         content: t("disclaimerDescription"),
         onConfirm: () => setIsChecked(true),
       });
+
       return false;
     }
     if (submitting) return;
@@ -242,17 +247,11 @@ export default function SubmitOrder() {
 
   return (
     <div className="container mx-auto bg-white p-4 py-6">
-      <Progress currentStep={0} />
+      <BusinessProgress currentStep={0} />
 
       <div className="text-title mt-4 mb-2">{t("confirmProductInfo")}</div>
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center p-4 bg-[#ffeee1] rounded-lg">
-          <span className="flex-1 text-left">{t("product")}</span>
-          <span className="flex-[0_0_200px] text-center">{t("remark")}</span>
-          <span className="flex-[0_0_130px] text-center">{t("price")}</span>
-          <span className="flex-[0_0_150px] text-center">{t("quantity")}</span>
-        </div>
-
+      <div className="space-y-4">
+        <ProductItemTitle />
         {orderData?.orderList?.map((order: any) => (
           <OrderItem
             key={order.shopName}

@@ -45,7 +45,7 @@ export default function LoginPage() {
       await loginCustomer(data);
       queryClient.invalidateQueries({ queryKey: ["userInfo"] }); // 刷新
       router.push("/");
-    } catch { }
+    } catch {}
   };
 
   return (

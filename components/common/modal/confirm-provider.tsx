@@ -1,6 +1,13 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback, ReactNode, useRef } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  ReactNode,
+  useRef,
+} from "react";
 import {
   Modal,
   ModalContent,
@@ -34,17 +41,18 @@ const ConfirmContext = createContext<ConfirmContextType | undefined>(undefined);
 // 3. Provider 组件
 export const ConfirmProvider = ({ children }: { children: ReactNode }) => {
   const t = useTranslations("components.modal");
-  
+
   const [isOpen, setIsOpen] = useState(false);
   const [options, setOptions] = useState<ConfirmOptions | null>(null);
   const [loading, setLoading] = useState(false);
-  
+
   // 使用 ref 存储 resolve 函数，以便在 confirm 中调用
   const resolveRef = useRef<(value: boolean) => void>(() => {});
 
   const confirm = useCallback((opts: ConfirmOptions) => {
     setOptions(opts);
     setIsOpen(true);
+
     return new Promise<boolean>((resolve) => {
       resolveRef.current = resolve;
     });
@@ -64,12 +72,13 @@ export const ConfirmProvider = ({ children }: { children: ReactNode }) => {
         await options.onConfirm();
       } catch (error) {
         console.error("Confirm action failed:", error);
+
         return; // 出错时不关闭弹窗
       } finally {
         setLoading(false);
       }
     }
-    
+
     resolveRef.current(true);
     close();
   };
@@ -82,9 +91,12 @@ export const ConfirmProvider = ({ children }: { children: ReactNode }) => {
 
   const getButtonColor = (type?: string) => {
     switch (type) {
-      case "danger": return "danger";
-      case "warning": return "warning";
-      default: return "primary";
+      case "danger":
+        return "danger";
+      case "warning":
+        return "warning";
+      default:
+        return "primary";
     }
   };
 
@@ -92,11 +104,11 @@ export const ConfirmProvider = ({ children }: { children: ReactNode }) => {
     <ConfirmContext.Provider value={{ confirm, close }}>
       {children}
       {options && (
-        <Modal 
-          isOpen={isOpen} 
-          onOpenChange={(open) => !open && handleCancel()}
-          isDismissable={false}
+        <Modal
           hideCloseButton={loading}
+          isDismissable={false}
+          isOpen={isOpen}
+          onOpenChange={(open) => !open && handleCancel()}
         >
           <ModalContent>
             {(onClose) => (
@@ -105,22 +117,24 @@ export const ConfirmProvider = ({ children }: { children: ReactNode }) => {
                   {options.title || t("confirmModalTitle")}
                 </ModalHeader>
                 <ModalBody>
-                  <div className={options.type === 'danger' ? 'text-danger' : ''}>
+                  <div
+                    className={options.type === "danger" ? "text-danger" : ""}
+                  >
                     {options.content}
                   </div>
                 </ModalBody>
                 <ModalFooter>
-                  <Button 
-                    variant="light" 
-                    onPress={handleCancel}
+                  <Button
                     isDisabled={loading || options.isLoading}
+                    variant="light"
+                    onPress={handleCancel}
                   >
                     {options.cancelText || t("cancel")}
                   </Button>
-                  <Button 
-                    color={getButtonColor(options.type)} 
-                    onPress={handleConfirm}
+                  <Button
+                    color={getButtonColor(options.type)}
                     isLoading={loading || options.isLoading}
+                    onPress={handleConfirm}
                   >
                     {options.confirmText || t("confirm")}
                   </Button>
@@ -137,8 +151,10 @@ export const ConfirmProvider = ({ children }: { children: ReactNode }) => {
 // 4. 自定义 Hook
 export const useConfirm = () => {
   const context = useContext(ConfirmContext);
+
   if (!context) {
     throw new Error("useConfirm must be used within a ConfirmProvider");
   }
+
   return context;
 };

@@ -16,17 +16,20 @@ export default function useSelection<T extends Record<string, any>>(
 
   // 同步数据：当 data 变化时，清理掉已经不存在的 selectedIds
   useEffect(() => {
-    console.log('data 变化');
-    
+    console.log("data 变化");
+
     if (!data || data.length === 0) {
-      console.log('data 不存在');
-      
+      console.log("data 不存在");
+
       setSelectedIds((prev) => (prev.length === 0 ? prev : []));
+
       return;
     }
     const currentIds = new Set(data.map((item) => item[idKey]));
+
     setSelectedIds((prev) => {
       const next = prev.filter((id) => currentIds.has(id));
+
       // 如果长度一致，说明所有已选 ID 都在当前列表中，无需更新
       // (prev 是 currentIds 的子集)
       return next.length === prev.length ? prev : next;
@@ -54,6 +57,7 @@ export default function useSelection<T extends Record<string, any>>(
   // 全选
   const onSelectAll = useCallback(() => {
     const all = data.map((item) => item[idKey]);
+
     setSelectedIds(all);
   }, [data, idKey]);
 
@@ -93,9 +97,7 @@ export default function useSelection<T extends Record<string, any>>(
     (gid: any) => {
       if (!groupKey) return [];
 
-      return data
-        .filter((i) => i[groupKey] === gid)
-        .map((i) => i[idKey]);
+      return data.filter((i) => i[groupKey] === gid).map((i) => i[idKey]);
     },
     [data, groupKey, idKey],
   );
@@ -125,11 +127,13 @@ export default function useSelection<T extends Record<string, any>>(
         // 全选：添加当前组未选中的 ID
         setSelectedIds((prev) => {
           const newIds = [...prev];
+
           groupItemIds.forEach((id) => {
             if (!newIds.includes(id)) {
               newIds.push(id);
             }
           });
+
           return newIds;
         });
       }

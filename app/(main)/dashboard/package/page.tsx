@@ -15,7 +15,6 @@ import { IoCloseCircleOutline, IoSwapHorizontalOutline } from "react-icons/io5";
 
 import PackageItem from "./package-item";
 
-import Progress from "@/components/common/order-progress";
 import PaginationBar from "@/components/common/pagination-bar";
 import { usePackageList } from "@/hook";
 import {
@@ -34,6 +33,7 @@ import { useGlobalStore } from "@/store";
 import RouteCard from "@/components/common/route-card";
 import { useSelection } from "@/hook/common";
 import { useConfirm } from "@/components/common/modal/confirm-provider";
+import { BusinessProgress } from "@/components/ui";
 
 const tabKeyToStatusCode: Record<string, string> = {
   all: "",
@@ -80,7 +80,7 @@ export default function WarehousePage() {
     onSelect,
     isAllSelected,
     onToggleSelectAll,
-  } = useSelection((data?.records || []), { idKey: "packingPackageCode" });
+  } = useSelection(data?.records || [], { idKey: "packingPackageCode" });
   // 打开取消弹窗
   const openCancelModal = async (currentPackage: any) => {
     const res = await refundPrePayPackage(currentPackage?.id);
@@ -243,7 +243,7 @@ export default function WarehousePage() {
                 {t("selectAll")}
               </Checkbox>
               <Button
-                className="w-[150px]"
+                className="w-[200px]"
                 color="primary"
                 isDisabled={!hasSelected}
                 size="lg"
@@ -270,7 +270,7 @@ export default function WarehousePage() {
   return (
     <div className="flex w-full flex-col">
       <div className="mt-5">
-        <Progress currentStep={3} />
+        <BusinessProgress currentStep={3} />
       </div>
 
       <Tabs
@@ -333,8 +333,9 @@ export default function WarehousePage() {
                     <IoCloseCircleOutline className="h-10 w-10 text-red-500" />
                   )}
                   <p
-                    className={`text-base font-semibold ${modal?.isCancelling ? "text-gray-500" : "text-red-600"
-                      }`}
+                    className={`text-base font-semibold ${
+                      modal?.isCancelling ? "text-gray-500" : "text-red-600"
+                    }`}
                   >
                     {modal?.isCancelling
                       ? t("cancelModal.cancelCard.submittingTitle")

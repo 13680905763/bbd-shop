@@ -30,7 +30,7 @@ export default function CommonForm<T extends Record<string, any>>({
   // 👇 实际生效的 loading（外部优先）
   const loading = useMemo(
     () => externalLoading ?? internalLoading,
-    [externalLoading, internalLoading]
+    [externalLoading, internalLoading],
   );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -39,6 +39,7 @@ export default function CommonForm<T extends Record<string, any>>({
     // 外部有 loading → 说明由外部管理
     if (externalLoading !== undefined) {
       await onSubmit?.(formData);
+
       return;
     }
     // 否则使用内部兜底

@@ -96,7 +96,20 @@
                 "fail": "Échec de la copie"
             },
             "emptyState": {
-               "defaultMessage": "Pas de données"
+                "desc": "Pas de données"
+            },
+            "businessProgress": {
+                "step1": "Sélectionnez le produit",
+                "step2": "Payez l'order",
+                "step3": "Inspection de qualité & stockage",
+                "step4": "Emballage",
+                "step5": "Réception des Marchandises"
+            },
+            "productItemTitle": {
+                "product": "Produit",
+                "remark": "Remarque",
+                "price": "Prix",
+                "quantity": "Quantité"
             }
         },
         "block": {
@@ -104,6 +117,17 @@
                 "edit": "Éditer",
                 "delete": "Supprimer",
                 "default": "Par défaut"
+            },
+            "addAddress": {
+                "addButton": "Ajouter une adresse de livraison",
+                "addBillingButton": "Ajouter une adresse de facturation"
+            },
+            "productItem": {
+                "remark": "Remarque",
+                "noRemark": "Aucune Remarque",
+                "unitPrice": "Prix Unitaire",
+                "postFee": " Frais d'Expédition",
+                "delete": "Supprimer"
             }
         },
         "navbar": {
@@ -177,13 +201,6 @@
                 "terms": "Conditions de Service",
                 "privacy": "Politique de Confidentialité"
             }
-        },
-        "progress": {
-            "step1": "Sélectionner les Produits",
-            "step2": "Payer la Commande",
-            "step3": "Inspection Qualité & Stockage",
-            "step4": "Emballage",
-            "step5": "Réception des Marchandises"
         },
         "modal": {
             "confirm": "Confirmer",
@@ -586,28 +603,18 @@
             "noData": "Aucune donnée"
         },
         "cart": {
-            "title": "Tous les Produits ({count})",
             "empty": {
                 "title": "Votre panier est vide",
                 "desc": "Allez choisir vos produits préférés !"
             },
             "selectAll": "Tout Sélectionner",
             "delete": "Supprimer",
-            "selected": "Sélectionné(s)",
-            "selectItemFirst": "Veuillez d'abord sélectionner des articles",
             "totalPayable": "Total : ",
             "checkout": "Passer à la Caisse",
             "confirmDeleteTitle": "Supprimer du Panier",
             "confirmDeleteContent": "Êtes-vous sûr de vouloir supprimer cet article ?",
             "remarkTitle": "Remarque",
-            "remarkPlaceholder": "Veuillez entrer une remarque",
-            "productItem": {
-                "remark": "Remarque",
-                "noRemark": "Aucune remarque",
-                "unitPrice": "Prix Unitaire",
-                "postFee": "Frais d'Envoi",
-                "delete": "Supprimer"
-            }
+            "remarkPlaceholder": "Veuillez entrer une remarque"
         },
         "order": {
             "all": "Tous",
@@ -664,7 +671,7 @@
             "submitTab": "Colis Soumettables",
             "selectAll": "Tout Sélectionner",
             "submitPackage": "Soumettre le Colis",
-            "texts": {
+            "packageItem": {
                 "orderNumber": "N° de Commande :",
                 "createTime": "Créée le :"
             }
@@ -849,6 +856,12 @@
             "leavingMessage": "Laisser un Message",
             "defaultMessage": "Veuillez sélectionner une adresse de livraison pour afficher les itinéraires de livraison",
             "placeholder": "Si vous avez des exigences particulières, veuillez les noter ici",
+            "totalWeight": "Poids Total",
+            "totalVolume": "Volume Total",
+            "estimating": "Estimation des Frais d'Expédition",
+            "shippingFee": "Frais d'Expédition Estimé",
+            "serviceFee": "Frais de Service",
+            "total": "Total",
             "submit": "Soumettre le Colis",
             "agreement": "J'ai lu et j'accepte l'accord d'expédition de colis BBDbuy",
             "toast": {

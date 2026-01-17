@@ -1,15 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 import clsx from "clsx";
 import { useTranslations } from "next-intl";
 
-interface OrderProgressProps {
-  currentStep: number; // 从 0 开始
-}
-
-const OrderProgress: React.FC<OrderProgressProps> = ({ currentStep }) => {
-  const t = useTranslations("components.progress"); // 从语言包读取步骤
+export default memo(function BusinessProgress({
+  currentStep,
+}: {
+  currentStep: number;
+}) {
+  const t = useTranslations("components.ui.businessProgress"); // 从语言包读取步骤
   const steps = [
     t("step1"), // "选择商品"
     t("step2"), // "支付订单"
@@ -45,7 +45,6 @@ const OrderProgress: React.FC<OrderProgressProps> = ({ currentStep }) => {
                 {step}
               </div>
             </div>
-
             {index < steps.length - 1 && (
               <div className="flex-1 -mt-10 mx-4 border-t-2 border-dashed border-[#ffb98a]" />
             )}
@@ -54,6 +53,4 @@ const OrderProgress: React.FC<OrderProgressProps> = ({ currentStep }) => {
       })}
     </div>
   );
-};
-
-export default OrderProgress;
+});

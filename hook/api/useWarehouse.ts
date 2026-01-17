@@ -3,9 +3,7 @@ import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { warehouseApi } from "@/services/warehouseApi";
 import { WarehousePackageListParams } from "@/types/warehouse";
 
-export function useWarehousePackageList(
-  params: WarehousePackageListParams,
-) {
+export function useWarehousePackageList(params: WarehousePackageListParams) {
   return useQuery({
     queryKey: ["warehousePackageList", params],
     queryFn: () => warehouseApi.listPackages(params),
@@ -14,8 +12,7 @@ export function useWarehousePackageList(
   });
 }
 /** 提交包裹 附加服务 key */
-export function useWarehouseServicesList(
-) {
+export function useWarehouseServicesList() {
   return useQuery({
     queryKey: ["warehouseServicesList"],
     queryFn: () => warehouseApi.listServices(),
@@ -28,6 +25,18 @@ export function useCreateWaybillPreview() {
   return useMutation({
     mutationFn: (packageIds: string[]) =>
       warehouseApi.createWaybillPreview({ packageSet: packageIds }),
+  });
+}
+export function useWaybillFeeEstimate(data: any) {
+  return useQuery<any>({
+    queryKey: ["waybillFeeEstimate", data],
+    queryFn: () => {
+      if (!data) {
+        return {};
+      }
+
+      return warehouseApi.getWaybillFeeEstimate(data);
+    },
   });
 }
 
@@ -43,5 +52,12 @@ export function useWaybillPreview(key: string) {
     // ✅ key 变化才重新请求
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+  });
+}
+
+/** 创建运单 */
+export function useCreateWaybill() {
+  return useMutation({
+    mutationFn: (data: any) => warehouseApi.createWaybill(data),
   });
 }

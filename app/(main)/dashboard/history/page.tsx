@@ -2,12 +2,12 @@
 import React, { useState } from "react";
 import { Button, Checkbox } from "@heroui/react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { useHistoryList, useHistoryMutations } from "@/hook/api";
 import { useSelection } from "@/hook/common";
 import { FullscreenLoader } from "@/components/ui";
 import { ProductCard } from "@/components/block";
-import { useTranslations } from "next-intl";
 
 export default function HistoryPage() {
   const t = useTranslations("dashboard.history");
@@ -78,7 +78,8 @@ export default function HistoryPage() {
               isLoading={deleteMutation.isPending}
               onPress={handleDelete}
             >
-              {t("delete")}{selectedIds.length ? `(${selectedIds.length})` : ""}
+              {t("delete")}
+              {selectedIds.length ? `(${selectedIds.length})` : ""}
             </Button>
           </div>
         )}
@@ -96,7 +97,9 @@ export default function HistoryPage() {
               product={{ ...product }}
               onClick={() => {
                 if (product.source && product.sourceProductId) {
-                  router.push(`/goods/${product.source}/${product.sourceProductId}`);
+                  router.push(
+                    `/goods/${product.source}/${product.sourceProductId}`,
+                  );
                 }
               }}
               onSelect={onSelect}

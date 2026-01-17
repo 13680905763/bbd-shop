@@ -12,9 +12,8 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { logoutCustomer } from "@/services";
-import { useUserInfo } from "@/hook";
+import { useUserInfo } from "@/hook/api";
 import { queryClient } from "@/lib/react-query";
-
 
 export const UserMenu = () => {
   const t = useTranslations("components.navbar.dropdown");
@@ -26,6 +25,7 @@ export const UserMenu = () => {
     queryClient.clear();
     router.replace("/");
   };
+
   if (isLoading) return <Skeleton className="flex rounded-full w-12 h-12" />;
   if (!user) {
     return (
@@ -39,6 +39,7 @@ export const UserMenu = () => {
       </div>
     );
   }
+
   return (
     <Dropdown>
       <DropdownTrigger>
@@ -52,7 +53,10 @@ export const UserMenu = () => {
         <DropdownItem key="account" onPress={() => router.push("/dashboard")}>
           {t("account")}
         </DropdownItem>
-        <DropdownItem key="orders" onPress={() => router.push("/dashboard/order")}>
+        <DropdownItem
+          key="orders"
+          onPress={() => router.push("/dashboard/order")}
+        >
           {t("orders")}
         </DropdownItem>
         <DropdownItem key="logout" onPress={logout}>

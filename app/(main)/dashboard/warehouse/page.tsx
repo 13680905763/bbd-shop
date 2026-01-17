@@ -3,16 +3,22 @@ import { Button, Checkbox, Spinner, Tab, Tabs } from "@heroui/react";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+
 import WarehouseItem from "./warehouse-item";
-import Progress from "@/components/common/order-progress";
+
 import PaginationBar from "@/components/common/pagination-bar";
 import { useSelection } from "@/hook/common";
-import { EmptyState, FullscreenLoader } from "@/components/ui";
+import {
+  BusinessProgress,
+  EmptyState,
+  FullscreenLoader,
+} from "@/components/ui";
 import { useWarehousePackageList, useCreateWaybillPreview } from "@/hook/api";
 const tabKeyToStatusCode: Record<string, string> = {
   all: "",
   submit: "302",
 };
+
 export default function WarehousePage() {
   const t = useTranslations("dashboard.warehouse");
   const router = useRouter();
@@ -20,15 +26,14 @@ export default function WarehousePage() {
   const [activeTab, setActiveTab] =
     useState<keyof typeof tabKeyToStatusCode>("all");
   const [page, setPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
+  const [pageSize, setPageSize] = useState<number>(20);
 
   const { data, isLoading, isFetching } = useWarehousePackageList({
     current: page,
     size: pageSize,
     statusCode: tabKeyToStatusCode[activeTab],
-  })
-  const { mutateAsync: createPreview, isPending } =
-    useCreateWaybillPreview();
+  });
+  const { mutateAsync: createPreview, isPending } = useCreateWaybillPreview();
   const {
     selectedIds,
     isSelected,
@@ -42,15 +47,15 @@ export default function WarehousePage() {
     onClearAll();
   }, [page, activeTab, onClearAll]);
 
-
   const handleSubmit = async () => {
     const key = await createPreview(selectedIds);
+
     router.push(`/submit/warehouse?key=${key}`);
   };
 
-
   const renderWarehouseContent = () => {
     if (!data?.records?.length) return <EmptyState />;
+
     return (
       <>
         {/* 列表 */}
@@ -62,9 +67,9 @@ export default function WarehousePage() {
           {data.records.map((warehouse) => (
             <WarehouseItem
               key={warehouse.id}
-              showCheckbox={activeTab === "submit"}
               isSelected={isSelected}
               packageItem={warehouse}
+              showCheckbox={activeTab === "submit"}
               onSelect={onSelect}
             />
           ))}
@@ -74,21 +79,19 @@ export default function WarehousePage() {
         <div className="mt-10 sticky bottom-0 z-10 border-t bg-white p-4 card-cart">
           {activeTab === "submit" && (
             <div className=" flex items-center justify-between">
-              <Checkbox
-                isSelected={isAllSelected}
-                onChange={onToggleSelectAll}
-              >
+              <Checkbox isSelected={isAllSelected} onChange={onToggleSelectAll}>
                 {t("selectAll")}
               </Checkbox>
               <Button
-                className="w-[150px]"
+                className="w-[200px]"
                 color="primary"
-                isLoading={isPending}
                 isDisabled={!selectedIds.length}
+                isLoading={isPending}
                 size="lg"
                 onPress={handleSubmit}
               >
-                {t("submitPackage")}{selectedIds.length ? ` (${selectedIds.length})` : ""}
+                {t("submitPackage")}
+                {selectedIds.length ? ` (${selectedIds.length})` : ""}
               </Button>
             </div>
           )}
@@ -105,10 +108,11 @@ export default function WarehousePage() {
   };
 
   if (isLoading) return <FullscreenLoader />;
+
   return (
     <div className="flex w-full flex-col">
       <div className="mt-5">
-        <Progress currentStep={2} />
+        <BusinessProgress currentStep={2} />
       </div>
       <Tabs
         aria-label="Options"

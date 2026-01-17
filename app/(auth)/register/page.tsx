@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { addToast, InputOtp } from "@heroui/react";
 import {
   IoPerson,
@@ -17,13 +17,14 @@ import { queryClient } from "@/lib/react-query";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const t = useTranslations("auth.register");
 
   const [isActive, setIsActive] = useState(false); // 是否进入验证码页
   const [formData, setFormData] = useState<any>({
     email: "",
     password: "",
-    inviteCode: "",
+    inviteCode: searchParams.get("inviteCode") || "",
     isChecked: false,
   });
 
@@ -52,6 +53,7 @@ export default function RegisterPage() {
       size: "lg",
       placeholder: t("fields.inviteCode.placeholder"),
       startContent: <IoPeopleSharp />,
+      isDisabled: searchParams.get("inviteCode") ? true : false,
     },
     {
       type: "checkbox",

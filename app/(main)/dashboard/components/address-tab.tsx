@@ -1,8 +1,5 @@
 "use client";
-import {
-  Button,
 
-} from "@heroui/react";
 import { useCallback, useState } from "react";
 import React from "react";
 import { useMutation } from "@tanstack/react-query";
@@ -10,13 +7,13 @@ import { useTranslations } from "next-intl";
 
 import { deleteAddress } from "@/services/address";
 import { useAddressList } from "@/hook";
-import {FullscreenLoader} from "@/components/ui";
+import { FullscreenLoader } from "@/components/ui";
 import AddressModal from "@/components/modal/address-modal";
 import { useConfirm } from "@/components/common/modal/confirm-provider";
 import { Address, AddressModalState } from "@/types";
 import AddressItem from "@/components/block/address-item";
 import { queryClient } from "@/lib/react-query";
-
+import { AddAddress } from "@/components/block";
 
 export function AddressTab() {
   const t = useTranslations("dashboard.page.address");
@@ -49,22 +46,14 @@ export function AddressTab() {
       content: t("deleteConfirm"),
       onConfirm: async () => {
         await deleteMutation.mutateAsync({ id: address.id });
-      }
+      },
     });
   }, []);
 
   if (isLoading) return <FullscreenLoader />;
 
   return (
-    <>
-      <Button
-        color="primary"
-        size="sm"
-        className="mb-2"
-        onPress={handleAddClick}
-      >
-        {t("add")}
-      </Button>
+    <div className="space-y-2">
       <div className="flex-1 overflow-auto space-y-2">
         {addressList?.map((addressDetail: Address) => (
           <AddressItem
@@ -75,6 +64,7 @@ export function AddressTab() {
           />
         ))}
       </div>
+      <AddAddress type="address" onAdd={handleAddClick} />
       <AddressModal
         defaultData={
           modalState.type === "edit" ? modalState.address : undefined
@@ -83,6 +73,6 @@ export function AddressTab() {
         type={modalState.type === "add" ? "add" : "edit"}
         onOpenChange={handleOpenChange}
       />
-    </>
+    </div>
   );
 }

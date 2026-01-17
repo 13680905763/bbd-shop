@@ -39,7 +39,6 @@ export default function BalanceTab({
   withdrawalFields,
   texts,
 }: BalanceTabProps) {
-
   const {
     data: wallet,
     isLoading: walletLoading,
@@ -72,8 +71,6 @@ export default function BalanceTab({
       setLoading(false);
     }
   };
-
-
 
   useEffect(() => {
     fetchData();
@@ -156,7 +153,7 @@ export default function BalanceTab({
                 const value = getKeyValue(item, columnKey);
                 const formatted =
                   (columnKey === "amount" || columnKey === "currentBalance") &&
-                    value !== undefined
+                  value !== undefined
                     ? Number(value) < 0
                       ? `-${currency.symbol}${Math.abs(Number(value))}`
                       : `${currency.symbol}${value}`

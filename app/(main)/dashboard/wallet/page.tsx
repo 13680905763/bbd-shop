@@ -7,7 +7,6 @@ import { useTranslations } from "next-intl";
 import BalanceTab from "./balance-tab";
 import ScoreTab from "./score-tab";
 
-
 interface TabConfig {
   key: string;
   component: React.ReactNode;

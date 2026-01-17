@@ -1,9 +1,10 @@
 "use client";
 
-import { Button, Divider, Image } from "@heroui/react";
+import { Button, Divider } from "@heroui/react";
 
 import { useGlobalStore } from "@/store";
 import { SourceIcon } from "@/components/ui";
+import { ProductItem } from "@/components/block";
 
 interface OrderItemProps {
   order: any;
@@ -38,64 +39,21 @@ export default function OrderItem({
       <Divider />
 
       {/* 商品列表 */}
-      <div className="flex flex-col gap-4 p-4">
+      <div className="space-y-4 p-4">
         {order.products.map((product: any) => (
           <div key={product?.propAndValue?.propName_valueName}>
-            <div className="flex">
-              <div className="flex flex-1">
-                <div className="flex grow-0 shrink-0 basis-[400px] gap-2">
-                  {/* 商品图 */}
-                  <div className="grow-0 shrink-0 basis-[90px]">
-                    <Image
-                      alt="Product"
-                      height={90}
-                      src={product?.skuPicUrl || product?.picUrl}
-                      width={90}
-                    />
-                  </div>
-                  {/* 商品信息 */}
-                  <div>
-                    <div className="line-clamp-2 font-bold">
-                      {product?.productTitle}
-                    </div>
-                    <div className="text-gray-500 text-sm">
-                      {product?.propAndValue?.propName_valueName}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* 备注 */}
-              <div className="flex justify-center flex-[0_0_200px]">
-                <p className="max-w-44 truncate">
-                  {texts.remark}：
-                  <span className="text-gray-500">
-                    {product?.remark ?? texts.noService}
-                  </span>
-                </p>
-              </div>
-              {/* 单价 */}
-              <div className="flex justify-center flex-[0_0_130px]">
-                <p>
-                  {currency.symbol}
-                  {product.price}
-                </p>
-              </div>
-              {/* 数量 */}
-              <div className="flex justify-center flex-[0_0_150px]">
-                <p>x{product.quantity}</p>
-              </div>
-              {/* 小计 */}
-              {/* <div className="flex justify-center flex-[0_0_150px]">
-                <p>
-                  {currency.symbol}
-                  {safeMul(product.price, product.quantity)}
-                </p>
-              </div> */}
-            </div>
+            <ProductItem
+              key={product.id}
+              // isSelected={isSelected(product.id)}
+              product={product}
+              // onDelete={onDeleteProduct}
+              // onUpdateQuantity={onQuantityChange}
+              // onRemark={onRemark}
+              // onToggle={() => toggle(product.id)}
+            />
 
             {/* 增值服务 */}
-            <div className="p-3 bg-[#f8f8f8] rounded-lg">
+            <div className="p-3 bg-[#f8f8f8] rounded-lg mt-2">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-sm font-medium text-gray-800">

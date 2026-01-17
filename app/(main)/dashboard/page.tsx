@@ -7,7 +7,7 @@ import {
   AddressTab,
   SecurityTab,
   UserBalanceCard,
-  ProfileTab
+  ProfileTab,
 } from "./components";
 
 import { BillingAddress } from "@/components/domain";
@@ -58,9 +58,10 @@ export default function DashBoard() {
 
     return { key: tab.key, component };
   });
+
   return (
     <div className="flex flex-col gap-6 bg-[#f8f8f8] -mx-5">
-      <UserBalanceCard/>
+      <UserBalanceCard />
 
       <div className="bg-[#fff] rounded-lg flex-1">
         <div className="flex w-full flex-col px-5">

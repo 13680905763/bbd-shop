@@ -1,24 +1,17 @@
 "use client";
-import {
-  Button,
-  Checkbox,
-  Divider,
-  Form,
-  Input,
-} from "@heroui/react";
+import { Button, Checkbox, Divider, Form, Input } from "@heroui/react";
 import React, { useState } from "react";
 import { useTranslations } from "next-intl";
 import { FaCamera } from "react-icons/fa";
-
 import { IoCopyOutline } from "react-icons/io5";
-
-import { useGlobalStore } from "@/store";
-import {FullscreenLoader} from "@/components/ui";
-import CopyText from "@/components/ui/copy-text";
 
 import { useForwardingLogic } from "./useForwardingLogic";
 import { ServiceItem } from "./types";
 import ServiceDetailModal from "./service-detail-modal";
+
+import { useGlobalStore } from "@/store";
+import { FullscreenLoader } from "@/components/ui";
+import CopyText from "@/components/ui/copy-text";
 
 export default function Forwarding() {
   const t = useTranslations("forwarding");
@@ -34,12 +27,15 @@ export default function Forwarding() {
   } = useForwardingLogic();
 
   const [acceptAgreement, setAcceptAgreement] = useState(false);
-  const [currentService, setCurrentService] = useState<ServiceItem | null>(null);
+  const [currentService, setCurrentService] = useState<ServiceItem | null>(
+    null,
+  );
   const [isServiceDetailOpen, setIsServiceDetailOpen] = useState(false);
 
   // 打开某个服务详情
   const openServiceDetail = (serviceId: string | number) => {
     const service = servicesList.find((s) => s.id === serviceId);
+
     if (!service) return;
     setCurrentService(service);
     setIsServiceDetailOpen(true);
@@ -48,6 +44,7 @@ export default function Forwarding() {
     // 基础拍照（id === 1）直接关闭弹窗，不修改状态
     if (updatedService.id == 1) {
       setIsServiceDetailOpen(false);
+
       return;
     }
     updateService(updatedService.id, {
@@ -61,7 +58,7 @@ export default function Forwarding() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.currentTarget));
-    
+
     await submitOrder({
       logisticsCode: data.logisticsCode as string,
       packageItemName: data.packageItemName as string,
@@ -132,8 +129,8 @@ export default function Forwarding() {
                   {service.id == 1 ? (
                     <button
                       className="flex items-center text-green-500 text-sm gap-1 h-8 w-16 justify-center"
-                      onClick={() => openServiceDetail(service.id)}
                       type="button" // 明确 type="button" 防止触发表单提交
+                      onClick={() => openServiceDetail(service.id)}
                     >
                       <FaCamera />
                       {t("free")}
@@ -183,12 +180,12 @@ export default function Forwarding() {
                 )}
               </div>
             ))}
-            
-            <ServiceDetailModal 
+
+            <ServiceDetailModal
               isOpen={isServiceDetailOpen}
-              onOpenChange={setIsServiceDetailOpen}
               service={currentService}
               onConfirm={handleServiceConfirm}
+              onOpenChange={setIsServiceDetailOpen}
             />
           </div>
 

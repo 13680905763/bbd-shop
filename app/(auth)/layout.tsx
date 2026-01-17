@@ -1,6 +1,6 @@
 "use client";
 import { Button, Divider } from "@heroui/react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { IoCaretBackCircleOutline } from "react-icons/io5";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useTranslations } from "next-intl";
@@ -15,7 +15,7 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   const t = useTranslations("auth");
-
+  const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -25,10 +25,13 @@ export default function AuthLayout({
     ux_mode: "popup",
     onSuccess: async (codeResponse) => {
       try {
-        await loginWithGoogleNew(codeResponse.code);
+        await loginWithGoogleNew({
+          authorizationCode: codeResponse.code,
+          inviteCode: searchParams.get("inviteCode") || "",
+        });
         queryClient.invalidateQueries({ queryKey: ["userInfo"] }); // 刷新
         router.push("/");
-      } catch { }
+      } catch {}
     },
     onError: (error) => console.error("Google Login Failed:", error),
   });
@@ -47,7 +50,7 @@ export default function AuthLayout({
             <div className="font-bold text-[#f0700c]">
               {t("oneStopService")}
             </div>
-            <div >{t("slogan")}</div>
+            <div>{t("slogan")}</div>
           </div>
 
           {children}

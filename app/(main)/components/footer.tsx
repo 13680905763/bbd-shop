@@ -3,7 +3,7 @@ import React from "react";
 import { Divider, Image } from "@heroui/react";
 import { useTranslations } from "next-intl";
 
-import { Logo } from "../icons";
+import { Logo } from "@/components/icons";
 
 export default function Footer() {
   const t = useTranslations("components.footer");

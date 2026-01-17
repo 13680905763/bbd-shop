@@ -95,10 +95,6 @@ export interface ServicesState {
   clearServices: () => void;
 }
 
-
-
-
-
 // 新
 /** 增值服务关联文件 */
 export interface OrderServiceFile {
@@ -122,7 +118,7 @@ export interface OrderServiceItem {
   serviceCode: string;
   serviceName?: string;
   /** 价格 & 数量 */
-  price: string;      // ⚠️ 后端字符串
+  price: string; // ⚠️ 后端字符串
   quantity: number;
   /** 备注 */
   remark?: string;
@@ -160,7 +156,7 @@ export interface OrderProduct {
   /** 价格（⚠️ 后端字符串） */
   price: string;
   /** SKU 规格 */
-  sku: ProductSkuSpec;
+  propAndValue: ProductSkuSpec;
   /** 备注 */
   remark?: string;
   /** 增值服务 */

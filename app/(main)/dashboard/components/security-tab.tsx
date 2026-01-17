@@ -1,14 +1,15 @@
 "use client";
 
-import { addToast, Button, Divider } from "@heroui/react";
+import { addToast, Button, Card } from "@heroui/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { IoShieldCheckmarkOutline } from "react-icons/io5";
+import { useMutation } from "@tanstack/react-query";
 
 import FormModal from "@/components/modal/form-modal";
 import { updatePwd } from "@/services";
 import { FieldConfig } from "@/components/form/formItem-renderer";
-import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/react-query";
 
 export function SecurityTab() {
@@ -52,7 +53,8 @@ export function SecurityTab() {
 
   // ✅ 使用 useMutation 封装请求
   const mutation = useMutation({
-    mutationFn: (data: { oldPassword: string; newPassword: string }) => updatePwd(data),
+    mutationFn: (data: { oldPassword: string; newPassword: string }) =>
+      updatePwd(data),
     onSuccess: () => {
       queryClient.clear();
       setIsOpen(false);
@@ -69,6 +71,7 @@ export function SecurityTab() {
         timeout: 1000,
         color: "danger",
       });
+
       return;
     }
     // 调用 mutation
@@ -80,27 +83,33 @@ export function SecurityTab() {
 
   return (
     <>
-      <div className="flex justify-between items-center">
-        <div>
-          <p className="text-title">{t("title")}</p>
-          <p className="text-sm my-1">{t("description")}</p>
+      <Card className="p-6 border-2 border-gray-300" shadow="none">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-primary/10 rounded-full text-primary">
+              <IoShieldCheckmarkOutline size={24} />
+            </div>
+            <div>
+              <p className="text-lg font-semibold">{t("title")}</p>
+              <p className="text-sm text-gray-500 mt-1">{t("description")}</p>
+            </div>
+          </div>
+          <div>
+            <Button color="primary" radius="lg" onPress={() => setIsOpen(true)}>
+              {t("button")}
+            </Button>
+          </div>
         </div>
-        <div>
-          <Button color="primary" radius="lg" onPress={() => setIsOpen(true)}>
-            {t("button")}
-          </Button>
-        </div>
-      </div>
-      <Divider className="my-4" />
+      </Card>
       <FormModal
         fields={securityFields}
         formData={formData}
+        isLoading={mutation.isPending}
         isOpen={isOpen}
         title={t("modalTitle")}
         onChange={setFormData}
         onOpenChange={setIsOpen}
         onSubmit={handleSubmit}
-        isLoading={mutation.isPending}
       />
     </>
   );

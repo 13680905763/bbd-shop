@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getServicesList, createCustomizeOrder } from "@/services";
+
 import { ServiceItem, ForwardingFormData } from "./types";
+
+import { getServicesList, createCustomizeOrder } from "@/services";
 
 export function useForwardingLogic() {
   const router = useRouter();
@@ -15,6 +17,7 @@ export function useForwardingLogic() {
       try {
         setIsLoading(true);
         const res = await getServicesList();
+
         if (Array.isArray(res)) {
           setServicesList(
             res.map((s: any) => ({
@@ -23,7 +26,7 @@ export function useForwardingLogic() {
               isCheck: false,
               remark: "",
               quantity: 1,
-            }))
+            })),
           );
         }
       } catch (error) {
@@ -32,13 +35,17 @@ export function useForwardingLogic() {
         setIsLoading(false);
       }
     };
+
     fetchData();
   }, []);
 
   // 更新服务列表（通用方法）
-  const updateService = (id: string | number, updates: Partial<ServiceItem>) => {
+  const updateService = (
+    id: string | number,
+    updates: Partial<ServiceItem>,
+  ) => {
     setServicesList((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, ...updates } : s))
+      prev.map((s) => (s.id === id ? { ...s, ...updates } : s)),
     );
   };
 
@@ -51,7 +58,7 @@ export function useForwardingLogic() {
   const submitOrder = async (formData: ForwardingFormData) => {
     try {
       setIsSubmitting(true);
-      
+
       const selectedServices = servicesList
         .filter((s) => s.isCheck)
         .map((item) => ({
@@ -63,7 +70,7 @@ export function useForwardingLogic() {
       const payload = {
         ...formData,
         serviceList: selectedServices,
-        receiver: "Bryant-4-Bryant", 
+        receiver: "Bryant-4-Bryant",
         receivePhone: "15916408071",
         receiveAddress: "广东省惠州市惠城区水口荔枝城青创产业园9楼901",
       };

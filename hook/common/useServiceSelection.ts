@@ -7,7 +7,7 @@ export interface ServiceItem {
   price?: number;
   // 原始数据可能有的字段
   isSelected?: boolean; // 如果原始数据有，会被覆盖
-  quantity?: number;    // 如果原始数据有，会被覆盖
+  quantity?: number; // 如果原始数据有，会被覆盖
 }
 
 // 带选择状态的服务
@@ -35,7 +35,7 @@ export interface ServiceSelectionState {
 
 export default function useServiceSelection(
   // 你传入的原始服务数组
-  serviceList: ServiceItem[] = []
+  serviceList: ServiceItem[] = [],
 ): ServiceSelectionState {
   // 内部状态：记录每个服务的选中和数量
   const [selection, setSelection] = useState<
@@ -46,35 +46,36 @@ export default function useServiceSelection(
   useEffect(() => {
     const initialSelection: typeof selection = {};
 
-    serviceList.forEach(service => {
+    serviceList.forEach((service) => {
       if (!selection[service.id]) {
         initialSelection[service.id] = {
           isSelected: false,
-          quantity: 1
+          quantity: 1,
         };
       }
     });
 
     if (Object.keys(initialSelection).length > 0) {
-      setSelection(prev => ({
+      setSelection((prev) => ({
         ...prev,
-        ...initialSelection
+        ...initialSelection,
       }));
     }
   }, [serviceList]);
 
   // 2. 切换选中状态
   const toggleSelection = useCallback((id: string) => {
-    setSelection(prev => {
+    setSelection((prev) => {
       const current = prev[id];
+
       if (!current) return prev;
 
       return {
         ...prev,
         [id]: {
           ...current,
-          isSelected: !current.isSelected
-        }
+          isSelected: !current.isSelected,
+        },
       };
     });
   }, []);
@@ -83,27 +84,29 @@ export default function useServiceSelection(
   const updateQuantity = useCallback((id: string, quantity: number) => {
     if (quantity < 1) return;
 
-    setSelection(prev => {
+    setSelection((prev) => {
       const current = prev[id];
+
       if (!current) return prev;
 
       return {
         ...prev,
         [id]: {
           ...current,
-          quantity
-        }
+          quantity,
+        },
       };
     });
   }, []);
 
   // 4. 提供给你渲染的数据
-  const services: ServiceWithSelection[] = serviceList.map(service => {
+  const services: ServiceWithSelection[] = serviceList.map((service) => {
     const state = selection[service.id] || { isSelected: false, quantity: 1 };
+
     return {
-      ...service,                // 原始服务数据
+      ...service, // 原始服务数据
       isSelected: state.isSelected, // 覆盖/添加选择状态
-      quantity: state.quantity      // 覆盖/添加数量
+      quantity: state.quantity, // 覆盖/添加数量
     };
   });
 
@@ -114,14 +117,14 @@ export default function useServiceSelection(
       .map(([id, state]) => ({
         serviceId: id,
         quantity: state.quantity,
-        remark: ""
+        remark: "",
       }));
   }, [selection]);
 
   return {
-    services,          // 渲染用的数据
-    toggleSelection,   // 切换选中
-    updateQuantity,    // 修改数量
-    getSelectedServices // 获取选中结果
+    services, // 渲染用的数据
+    toggleSelection, // 切换选中
+    updateQuantity, // 修改数量
+    getSelectedServices, // 获取选中结果
   };
 }

@@ -19,16 +19,15 @@ export default function Estimation() {
       setRoutesMessage("");
     }
   };
+
   return (
     <div>
       <div className="bg-[url('/images/estimation.webp')] bg-no-repeat bg-cover h-[180px]" />
       <div className=" bg-[#fff]">
         <div className="text-center container m-auto p-5">
-          <h1 className='text-2xl font-bold'>{t("title")}</h1>
+          <h1 className="text-2xl font-bold">{t("title")}</h1>
           <Spacer y={8} />
-          <EstimationForm
-            onSearchSuccess={handleSearchSuccess}
-          />
+          <EstimationForm onSearchSuccess={handleSearchSuccess} />
         </div>
       </div>
 

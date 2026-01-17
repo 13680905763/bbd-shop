@@ -20,6 +20,7 @@ export default function Stepper({
   const [count, setCount] = useState(value);
   const handleChange = (val: number) => {
     const clamped = Math.max(min, Math.min(val, max));
+
     setCount(clamped);
     onChange?.(clamped);
   };

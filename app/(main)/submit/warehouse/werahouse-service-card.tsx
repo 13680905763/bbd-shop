@@ -11,11 +11,14 @@ export default function WarehouseServiceCard({
   onUpdateQuantity,
 }: any) {
   const { currency } = useGlobalStore();
+
   return (
     <button
       className={clsx(
         "p-3 rounded-xl border transition cursor-pointer w-full text-left relative",
-        service.isSelected ? "border-primary bg-orange-50 border-2" : "border-gray-200 bg-white"
+        service.isSelected
+          ? "border-primary bg-orange-50 border-2"
+          : "border-gray-200 bg-white",
       )}
       onClick={() => onSelect?.(service.id)}
     >
