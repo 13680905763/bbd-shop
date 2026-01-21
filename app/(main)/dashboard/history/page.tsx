@@ -6,13 +6,13 @@ import { useTranslations } from "next-intl";
 
 import { useHistoryList, useHistoryMutations } from "@/hook/api";
 import { useSelection } from "@/hook/common";
-import { FullscreenLoader } from "@/components/ui";
+import { BlockSpinner, FullscreenLoader } from "@/components/ui";
 import { ProductCard } from "@/components/block";
 
 export default function HistoryPage() {
   const t = useTranslations("dashboard.history");
   const router = useRouter();
-  const { data, isLoading } = useHistoryList();
+  const { data, isLoading, isFetching } = useHistoryList();
   const { deleteMutation } = useHistoryMutations();
   const historyList = (data as unknown as any[]) || [];
   const [isManage, setIsManage] = useState(false);
@@ -50,7 +50,8 @@ export default function HistoryPage() {
   }
 
   return (
-    <div>
+    <div className="relative">
+      {(isFetching) && <BlockSpinner />}
       <div className="my-5 flex items-center justify-between">
         <div>
           <span className="font-bold mr-5 text-xl">{t("title")}</span>

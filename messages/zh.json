@@ -110,6 +110,13 @@
                 "remark": "备注",
                 "price": "单价",
                 "quantity": "数量"
+            },
+            "refundCountdown": {
+                "day": "天 ",
+                "hour": "时 ",
+                "minute": "分 ",
+                "second": "秒 ",
+                "expired": "已过期"
             }
         },
         "block": {
@@ -307,84 +314,22 @@
         }
     },
     "dashboard": {
-        "LayoutMenu": [
-            {
-                "key": "",
-                "label": "我的账户",
-                "href": "/dashboard"
-            },
-            {
-                "key": "wallet",
-                "label": "钱包",
-                "href": "/dashboard/wallet"
-            },
-            {
-                "key": "message",
-                "label": "消息",
-                "href": "/dashboard/message"
-            },
-            {
-                "key": "divider",
-                "type": "divider"
-            },
-            {
-                "key": "cart",
-                "label": "购物车",
-                "href": "/dashboard/cart"
-            },
-            {
-                "key": "order",
-                "label": "订单",
-                "href": "/dashboard/order"
-            },
-            {
-                "key": "warehouse",
-                "label": "仓库",
-                "href": "/dashboard/warehouse"
-            },
-            {
-                "key": "package",
-                "label": "包裹",
-                "href": "/dashboard/package"
-            },
-            {
-                "key": "favorites",
-                "label": "收藏",
-                "href": "/dashboard/favorites"
-            },
-            {
-                "key": "history",
-                "label": "历史记录",
-                "href": "/dashboard/history"
-            },
-            {
-                "key": "promotion",
-                "label": "邀请联盟",
-                "type": "accordion",
-                "children": [
-                    {
-                        "key": "promotion",
-                        "label": "仪表板",
-                        "href": "/dashboard/promotion"
-                    },
-                    {
-                        "key": "user",
-                        "label": "用户明细",
-                        "href": "/dashboard/promotion/user"
-                    },
-                    {
-                        "key": "experience",
-                        "label": "经验明细",
-                        "href": "/dashboard/promotion/experience"
-                    },
-                    {
-                        "key": "bonus",
-                        "label": "奖金明细",
-                        "href": "/dashboard/promotion/bonus"
-                    }
-                ]
-            }
-        ],
+        "menu": {
+            "myAccount": "我的账户",
+            "wallet": "钱包",
+            "message": "消息",
+            "cart": "购物车",
+            "order": "订单",
+            "warehouse": "仓库",
+            "package": "包裹",
+            "favorites": "收藏",
+            "history": "历史记录",
+            "promotion": "邀请联盟",
+            "promotionDashboard": "仪表板",
+            "invitedUser": "邀请明细",
+            "experienceDetails": "经验明细",
+            "bonusDetails": "奖金明细"
+        },
         "page": {
             "userBalanceCard": {
                 "balance": "余额",
@@ -467,129 +412,43 @@
                 "noAddress": "暂无账单地址"
             }
         },
-        "WalletPage": {
-            "Tabs": [
-                {
-                    "key": "balance",
-                    "label": "余额"
-                },
-                {
-                    "key": "score",
-                    "label": "积分"
-                },
-                {
-                    "key": "coupon",
-                    "label": "优惠券"
-                }
-            ],
-            "BalanceTab": {
-                "texts": {
-                    "title": "余额",
-                    "recharge": "充值",
-                    "withdraw": "提现",
-                    "tableTitle": "交易记录",
-                    "noData": "暂无交易记录",
-                    "withdrawModalTitle": "提现"
-                },
-                "tableColumns": [
-                    {
-                        "key": "bizReference",
-                        "label": "业务参考号"
-                    },
-                    {
-                        "key": "bizType",
-                        "label": "业务类型"
-                    },
-                    {
-                        "key": "amount",
-                        "label": "金额"
-                    },
-                    {
-                        "key": "currentBalance",
-                        "label": "当前余额"
-                    },
-                    {
-                        "key": "createTime",
-                        "label": "交易时间"
-                    }
-                ],
-                "fields": [
-                    {
-                        "key": "name",
-                        "type": "input",
-                        "name": "name",
-                        "label": "全名",
-                        "placeholder": "输入您的全名"
-                    },
-                    {
-                        "key": "bank",
-                        "type": "select",
-                        "name": "bank",
-                        "label": "银行",
-                        "placeholder": "选择银行",
-                        "options": [
-                            {
-                                "key": "BOC",
-                                "label": "中国银行",
-                                "value": "BOC"
-                            },
-                            {
-                                "key": "CCB",
-                                "label": "中国建设银行",
-                                "value": "CCB"
-                            },
-                            {
-                                "key": "Paypal",
-                                "label": "PayPal",
-                                "value": "Paypal"
-                            }
-                        ]
-                    },
-                    {
-                        "key": "cardNumber",
-                        "type": "input",
-                        "name": "cardNumber",
-                        "label": "卡号",
-                        "placeholder": "输入您的卡号"
-                    },
-                    {
-                        "key": "amount",
-                        "type": "input",
-                        "name": "amount",
-                        "label": "提现金额",
-                        "placeholder": "输入提现金额"
-                    }
-                ]
+        "wallet": {
+            "tab": {
+                "balance": "余额",
+                "score": "积分",
+                "coupon": "优惠券"
             },
-            "ScoreTab": {
-                "texts": {
-                    "title": "积分",
-                    "exchangeCoupon": "积分兑换优惠券",
-                    "details": "积分明细"
-                },
-                "tableColumns": [
-                    {
-                        "key": "bizType",
-                        "label": "来源"
-                    },
-                    {
-                        "key": "amount",
-                        "label": "数量"
-                    },
-                    {
-                        "key": "availablePoints",
-                        "label": "可用积分"
-                    },
-                    {
-                        "key": "createTime",
-                        "label": "时间"
-                    }
-                ]
+            "balance": {
+                "title": "余额",
+                "recharge": "充值",
+                "withdraw": "提现",
+                "tableTitle": "交易记录",
+                "noData": "暂无交易记录",
+                "withdrawModalTitle": "提现",
+                "tableColumns": {
+                    "bizReference": "业务参考号",
+                    "bizType": "业务类型",
+                    "amount": "金额",
+                    "currentBalance": "当前余额",
+                    "createTime": "交易时间"
+                }
+            },
+            "score": {
+                "title": "积分",
+                "exchangeCoupon": "积分兑换优惠券",
+                "details": "积分明细",
+                "tableColumns": {
+                    "bizType": "来源",
+                    "amount": "数量",
+                    "availablePoints": "可用积分",
+                    "createTime": "时间"
+                }
             }
         },
         "message": {
             "title": "标题",
             "time": "时间",
+            "status": "状态",
             "actions": "操作",
             "viewDetail": "详情",
             "allMessages": "全部",
@@ -645,20 +504,21 @@
                 "updateTime": "审核时间",
                 "emptyContent": "暂无退款记录"
             },
-            "texts": {
+            "orderItem": {
                 "orderNumber": "订单号:",
                 "createTime": "创建时间:",
                 "payment": "支付",
                 "cancel": "取消",
                 "refund": "退款",
+                "refundRemark": "退款备注",
                 "valueAddedService": "增值服务",
                 "withdrawRequest": "撤回申请",
-                "serviceFee": "服务费：",
-                "shippingFee": "运费：",
-                "productFee": "商品费用：",
-                "totalFee": "总费用：",
-                "discountFee": "折扣费：",
-                "refundAmount": "退款金额："
+                "serviceFee": "服务费",
+                "shippingFee": "运费",
+                "productFee": "商品费用",
+                "totalFee": "总费用",
+                "discountFee": "折扣费",
+                "refundAmount": "退款金额"
             },
             "promptCard": {
                 "title": "订单QC与包裹管理",
@@ -752,7 +612,7 @@
             "delete": "删除",
             "noData": "暂无收藏商品"
         },
-        "Promotion": {
+        "promotion": {
             "page": {
                 "process": [
                     "分享您的联盟代码",
@@ -784,66 +644,33 @@
                         "我的奖金是如何计算的？",
                         "如何免费推广？"
                     ],
-                    "defaultContent": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                    "defaultContent": "敬请期待."
                 }
             },
-            "user": {
-                "title": "用户明细",
-                "noData": "暂无交易记录",
-                "tableColumns": [
-                    {
-                        "key": "name",
-                        "label": "被邀请人"
-                    },
-                    {
-                        "key": "email",
-                        "label": "被邀请人邮箱"
-                    },
-                    {
-                        "key": "createTime",
-                        "label": "时间"
-                    }
-                ]
+            "invitedUser": {
+                "title": "被邀请用户",
+                "tableColumns": {
+                    "name": "被邀请人",
+                    "email": "被邀请人邮箱",
+                    "createTime": "时间"
+                }
             },
             "bonus": {
                 "title": "奖金明细",
-                "noData": "暂无交易记录",
-                "tableColumns": [
-                    {
-                        "key": "bizType",
-                        "label": "来源"
-                    },
-                    {
-                        "key": "amount",
-                        "label": "数量"
-                    },
-                    {
-                        "key": "currentBalance",
-                        "label": "可用奖金"
-                    },
-                    {
-                        "key": "createTime",
-                        "label": "时间"
-                    }
-                ]
+                "tableColumns": {
+                    "bizType": "来源",
+                    "amount": "数量",
+                    "currentBalance": "可用奖金",
+                    "createTime": "时间"
+                }
             },
             "experience": {
                 "title": "经验明细",
-                "noData": "暂无交易记录",
-                "tableColumns": [
-                    {
-                        "key": "email",
-                        "label": "被邀请人邮箱"
-                    },
-                    {
-                        "key": "experience",
-                        "label": "经验值"
-                    },
-                    {
-                        "key": "createTime",
-                        "label": "时间"
-                    }
-                ]
+                "tableColumns": {
+                    "email": "被邀请人邮箱",
+                    "experience": "经验值",
+                    "createTime": "时间"
+                }
             }
         }
     },
@@ -858,9 +685,10 @@
             "totalWeight": "总重量",
             "totalVolume": "总体积",
             "estimating": "费用估算中",
-            "shippingFee": "预估运费",
-            "serviceFee": "服务费",
-            "total": "总计",
+            "estimatedShipping": "预估运费",
+            "estimatedService": "预估服务费",
+            "estimatedTotal": "预估总计",
+            "estimatedTip": "具体费用将在包裹完成打包之后展示",
             "defaultMessage": "请选择地址后查看运输路线",
             "submit": "提交包裹",
             "agreement": "我已阅读并同意 bbdbuy 包裹运输协议",

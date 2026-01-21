@@ -81,7 +81,7 @@ export default function OrderItem({
                   onPress={() => {
                     openServiceModal(
                       product?.cartId || 1,
-                      product?.sku?.propId_valueId,
+                      product?.propAndValue?.propId_valueId,
                     );
                   }}
                 >

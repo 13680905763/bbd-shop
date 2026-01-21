@@ -73,13 +73,13 @@ export default function SubmitOrder() {
     setCurrentCartId(cartId);
     const handleSO = orderData?.orderList?.find((item: any) => {
       return item?.products.find((iitem: any) => {
-        return iitem?.sku?.propId_valueId == skuId;
+        return iitem?.propAndValue?.propId_valueId == skuId;
       });
     });
     const hanldeSer =
       handleSO.products
         .find((item: any) => {
-          return item?.sku?.propId_valueId == skuId;
+          return item?.propAndValue?.propId_valueId == skuId;
         })
         ?.orderServiceList?.map((item: any) => {
           return {

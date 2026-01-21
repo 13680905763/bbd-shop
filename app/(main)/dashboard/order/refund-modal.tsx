@@ -5,28 +5,24 @@ import { useEffect, useState } from "react";
 import CommonModal from "@/components/modal/common-modal";
 import { useGlobalStore } from "@/store";
 
-export default function RefundModal({ order, onSubmit, onCancel }: any) {
+export default function RefundModal({
+  products,
+  onSelect,
+  onUpdateQuantity,
+  onRemarkChange,
+  onSubmit,
+  onCancel,
+  isDisabled = false,
+}: any) {
   const t = useTranslations("dashboard.order");
   const { currency } = useGlobalStore();
-  const [products, setProducts] = useState<any[]>([]);
-
-  useEffect(() => {
-    if (order?.products) {
-      setProducts(order.products);
-    }
-  }, [order]);
-
-  const updateProduct = (index: number, patch: Partial<any>) => {
-    setProducts((prev) =>
-      prev.map((p, i) => (i === index ? { ...p, ...patch } : p)),
-    );
-  };
 
   return (
     <CommonModal
-      isOpen={!!order}
+      isOpen
+      isDisabled={isDisabled}
       title={t("refundTitle")}
-      onConfirm={async () => onSubmit(products)}
+      onConfirm={async () => onSubmit()}
       onOpenChange={onCancel}
     >
       <div className="space-y-3">
@@ -34,31 +30,26 @@ export default function RefundModal({ order, onSubmit, onCancel }: any) {
           <Card
             key={index}
             className={`border rounded-lg shadow-sm transition-all duration-150 ${
-              product.selected
+              product.isSelected
                 ? "border-primary bg-primary/5"
                 : "border-gray-200 bg-white"
             }`}
             isPressable={false}
           >
             <CardBody className="flex flex-col p-4 gap-3">
-              {/* 第一行：商品选择 + 基本信息 + 数量/价格 */}
               <div className="flex gap-3">
-                {/* 左：选择框 */}
                 <Checkbox
                   className="mt-1"
                   isDisabled={product.isRefunded || product.canRefundQty === 0}
-                  isSelected={product.selected || false}
+                  isSelected={product.isSelected || false}
                   size="sm"
-                  onValueChange={(checked) =>
-                    updateProduct(index, { selected: checked })
-                  }
+                  onValueChange={() => onSelect(product.id)}
                 />
-
-                {/* 商品图片 */}
                 <div className="w-[70px] h-[70px] flex-shrink-0">
                   <Image
                     alt={product.productTitle}
                     className="w-full h-full object-cover rounded-md"
+                    referrerPolicy="no-referrer"
                     height={70}
                     src={
                       product.skuPicUrl || product.picUrl || "/placeholder.png"
@@ -97,18 +88,16 @@ export default function RefundModal({ order, onSubmit, onCancel }: any) {
                     <input
                       className="w-16 px-2 py-1 border rounded text-sm text-center focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-gray-100"
                       disabled={
-                        !product.selected ||
+                        !product.isSelected ||
                         product.isRefunded ||
                         product.canRefundQty === 0
                       }
                       max={product.canRefundQty}
                       min={1}
                       type="number"
-                      value={product.refundQuantity}
+                      value={product.quantity}
                       onChange={(e) =>
-                        updateProduct(index, {
-                          refundQuantity: Number(e.target.value),
-                        })
+                        onUpdateQuantity(product.id, Number(e.target.value))
                       }
                     />
                     <span className="text-gray-400 text-xs">
@@ -131,9 +120,7 @@ export default function RefundModal({ order, onSubmit, onCancel }: any) {
                   minRows={2}
                   placeholder={t("remarkPlaceholder")}
                   value={product.remark || ""}
-                  onChange={(e) =>
-                    updateProduct(index, { remark: e.target.value })
-                  }
+                  onChange={(e) => onRemarkChange(product.id, e.target.value)}
                 />
               </div>
             </CardBody>

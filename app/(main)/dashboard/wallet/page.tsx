@@ -13,7 +13,7 @@ interface TabConfig {
 }
 
 export default function WalletPage() {
-  const t = useTranslations("dashboard.WalletPage");
+  const t = useTranslations("dashboard.wallet");
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -27,10 +27,11 @@ export default function WalletPage() {
   );
 
   // 动态生成 Tabs 配置
-  const tabLabels = t.raw("Tabs") as {
-    key: string;
-    label: string;
-  }[];
+  const tabLabels = [
+    { key: "balance", label: t("tab.balance") },
+    { key: "score", label: t("tab.score") },
+    { key: "coupon", label: t("tab.coupon") },
+  ];
 
   const tabsConfig: TabConfig[] = tabLabels.map((tab) => {
     let component: React.ReactNode = null;
@@ -38,26 +39,18 @@ export default function WalletPage() {
     switch (tab.key) {
       case "balance":
         component = (
-          <BalanceTab
-            tableColumns={t.raw("BalanceTab.tableColumns")}
-            texts={t.raw("BalanceTab.texts")}
-            withdrawalFields={t.raw("BalanceTab.fields")}
-          />
+          <BalanceTab />
         );
         break;
       case "score":
         component = (
-          <ScoreTab
-            tableColumns={t.raw("ScoreTab.tableColumns")}
-            texts={t.raw("ScoreTab.texts")}
-          />
+          <ScoreTab />
         );
-        // component = <div>score</div>;
         break;
-      case "coupon":
-        // component = <CouponTab />;
-        component = <div>coupon</div>;
-        break;
+      // case "coupon":
+      //   // component = <CouponTab />;
+      //   component = <div>coupon</div>;
+      //   break;
     }
 
     return { key: tab.key, component };

@@ -60,32 +60,33 @@ export default function ProductItem({
             {product.productTitle}
           </button>
           <div className="line-clamp-1 text-gray-500 text-sm">
-            {product?.propAndValue?.propName_valueName ??
-              product?.sku?.propName_valueName}
+            {product?.propAndValue?.propName_valueName}
           </div>
         </div>
       </div>
 
-      <div className="col-span-2 flex justify-center items-center text-sm">
-        <div className="flex  gap-2">
+      <div className="col-span-2 flex justify-center items-center text-sm px-2">
+        <div className="flex items-center gap-2 w-full min-w-0">
           {product.remark ? (
-            <Tooltip
-              className="bg-[#262626] text-white p-2 max-w-xs "
-              content={product.remark}
-              placement="bottom"
-            >
-              <p className=" text-gray-600 line-clamp-4 text-left">
-                {product.remark}
-              </p>
-            </Tooltip>
+            <div className="flex-1 min-w-0">
+              <Tooltip
+                className="bg-[#262626] text-white p-2 max-w-xs break-all whitespace-pre-wrap"
+                content={product.remark}
+                placement="bottom"
+              >
+                <p className="text-gray-600 text-left truncate">
+                  {product.remark}
+                </p>
+              </Tooltip>
+            </div>
           ) : (
-            <p className="line-clamp-4 text-gray-600 text-left">
+            <p className="text-gray-400 text-left italic flex-1 min-w-0 truncate">
               {t("noRemark")}
             </p>
           )}
           {isOperated && (
             <button
-              className="text-blue-500"
+              className="text-blue-500 shrink-0"
               onClick={() => onRemark!(product.id, product.remark)}
             >
               <FaEdit className="w-5 h-5 text-[#f0700c]" />
@@ -107,7 +108,7 @@ export default function ProductItem({
             onChange={(value) => onUpdateQuantity!(product.id, value)}
           />
         ) : (
-          <div className="font-semibold text-base">{product.quantity}</div>
+          <div className="font-semibold text-base">x{product.quantity}</div>
         )}
       </div>
     </div>

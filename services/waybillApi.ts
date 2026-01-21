@@ -1,6 +1,40 @@
+import { PageResult } from "@/types/api";
 import { request, requestWithOption } from "./request";
 
 export const waybillApi = {
+  /** 获取包裹分页列表 */
+  listWaybill(
+    params: any,
+  ): Promise<PageResult<any>> {
+    return request.post("/waybill/page", params);
+  },
+
+  /** 包裹批量支付 */
+  batchPay(data: any): Promise<any> {
+    return requestWithOption(
+      { url: "/waybill/pay/preview/init", method: "POST", data },
+      { showToast: true },
+    );
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /** 创建结算包裹预览 key */
   createPreviewKey(data: any): Promise<string> {
     return request.post("/waybill/preview/init", data);

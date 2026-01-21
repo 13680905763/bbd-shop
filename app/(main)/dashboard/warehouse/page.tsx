@@ -9,6 +9,7 @@ import WarehouseItem from "./warehouse-item";
 import PaginationBar from "@/components/common/pagination-bar";
 import { useSelection } from "@/hook/common";
 import {
+  BlockSpinner,
   BusinessProgress,
   EmptyState,
   FullscreenLoader,
@@ -57,13 +58,10 @@ export default function WarehousePage() {
     if (!data?.records?.length) return <EmptyState />;
 
     return (
-      <>
+      <div className="relative">
         {/* 列表 */}
-        <div className="flex flex-col gap-3">
-          {isFetching && (
-            <Spinner className="flex justify-center py-2 text-xs text-gray-400" />
-          )}
-
+        {(isFetching) && <BlockSpinner />}
+        <div className="space-y-3 ">
           {data.records.map((warehouse) => (
             <WarehouseItem
               key={warehouse.id}
@@ -76,9 +74,9 @@ export default function WarehousePage() {
         </div>
 
         {/* 底部 */}
-        <div className="mt-10 sticky bottom-0 z-10 border-t bg-white p-4 card-cart">
+        <div className="mt-10 sticky bottom-0 z-10 border-t bg-white p-4 border border-gray-200 rounded-lg">
           {activeTab === "submit" && (
-            <div className=" flex items-center justify-between">
+            <div className="flex items-center justify-between">
               <Checkbox isSelected={isAllSelected} onChange={onToggleSelectAll}>
                 {t("selectAll")}
               </Checkbox>
@@ -103,7 +101,7 @@ export default function WarehousePage() {
             onPageSizeChange={setPageSize}
           />
         </div>
-      </>
+      </div>
     );
   };
 

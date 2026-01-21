@@ -17,6 +17,7 @@ interface BackendRoute {
   description?: string; // 描述
   disable?: boolean; // 是否禁用
   prompt?: string; // 禁用提示
+  shippingFee?: number; // 运费
 }
 
 interface RouteCardProps {
@@ -46,6 +47,7 @@ export default function RouteCard({
     description = "",
     disable = false,
     prompt = "",
+    shippingFee = 0,
   } = data;
 
   console.log("data", data);
@@ -59,9 +61,8 @@ export default function RouteCard({
 
   return (
     <Card
-      className={`p-4 border ${
-        isSelected ? "border-primary border-2" : "border-gray-200"
-      } rounded-xl transition hover:shadow-md bg-white`}
+      className={`p-4 border ${isSelected ? "border-primary border-2" : "border-gray-200"
+        } rounded-xl transition hover:shadow-md bg-white`}
       isBlurred={false}
       isDisabled={disable}
       isPressable={!disable}
@@ -83,7 +84,7 @@ export default function RouteCard({
           <div className="text-gray-500 text-sm">Price</div>
           <div className="text-lg font-bold">
             {currency.symbol}
-            {price}
+            {shippingFee}
           </div>
         </div>
 

@@ -7,7 +7,7 @@ import { IoWallet } from "react-icons/io5";
 import { useTranslations } from "next-intl";
 
 import { useGlobalStore } from "@/store";
-import { useWalletInfo } from "@/hook";
+import { useWalletInfo } from "@/hook/api";
 import { FullscreenLoader } from "@/components/ui";
 import { useUserInfo } from "@/hook/api";
 

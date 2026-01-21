@@ -20,10 +20,11 @@ import { useTranslations } from "next-intl";
 import { BusinessProgress, FullscreenLoader } from "@/components/ui";
 import RechargeModal from "@/components/modal/recharge.modal";
 import { useGlobalStore } from "@/store";
-import { useBillingAddress, usePaymentMethodList, useWalletInfo } from "@/hook";
+import { useBillingAddress, usePaymentMethodList } from "@/hook";
 import { createPayOrder } from "@/services";
 import { price } from "@/components/primitives";
 import { BillingAddress } from "@/components/domain";
+import { useWalletInfo } from "@/hook/api";
 
 // 自定义 Radio 组件
 const CustomRadio = (props: RadioProps) => {

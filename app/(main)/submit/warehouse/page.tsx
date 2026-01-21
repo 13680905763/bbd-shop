@@ -9,7 +9,7 @@ import WarehouseServiceCard from "./werahouse-service-card";
 
 import { useGlobalStore } from "@/store";
 import RouteCard from "@/components/common/route-card";
-import { BusinessProgress, FullscreenLoader } from "@/components/ui";
+import { BlockSpinner, BusinessProgress, FullscreenLoader } from "@/components/ui";
 import AddressModal from "@/components/modal/address-modal";
 import {
   useCreateWaybill,
@@ -18,11 +18,12 @@ import {
   useWaybillPreview,
 } from "@/hook/api";
 import { AddAddress, PackageProductItem } from "@/components/block";
-import { useServiceSelection } from "@/hook/common";
+import { useEnhancedSelection } from "@/hook/common";
 import { useAddressList } from "@/hook";
 import AddressItem from "@/components/block/address-item";
 import { Address, AddressModalState } from "@/types";
 import { routesApi } from "@/services/routesApi";
+import { queryClient } from "@/lib/react-query";
 
 export default function SubmitOrder() {
   const { currency } = useGlobalStore();
@@ -46,11 +47,19 @@ export default function SubmitOrder() {
   const { mutateAsync: createWaybillAsync, isPending } = useCreateWaybill();
 
   const {
-    services, // 渲染数据（包含 isSelected 和 quantity）
+    items: services, // 渲染数据（包含 isSelected 和 quantity）
     toggleSelection, // 切换选中状态
     updateQuantity, // 更新数量
-    getSelectedServices, // 获取选中结果
-  } = useServiceSelection(serviceList);
+    getSelectedItems, // 获取选中结果
+  } = useEnhancedSelection(serviceList);
+
+  const getSelectedServices = useCallback(() => {
+    return getSelectedItems().map((item) => ({
+      serviceId: item.id,
+      quantity: item.quantity,
+      remark: item.remark,
+    }));
+  }, [getSelectedItems]);
 
   const estimatePayload = useMemo(() => {
     if (!selectedRouteId || !selectedAddressId || !data?.param) return null;
@@ -74,6 +83,7 @@ export default function SubmitOrder() {
 
   const [isCheck, setIsCheck] = useState(false);
   // 路由路线相关
+  const [isRouteEstimating, setIsRouteEstimating] = useState(false);
   const [routesList, setRoutesList] = useState<any[]>([]);
   const [routesMessage, setRoutesMessage] = useState<string>(
     t("defaultMessage"),
@@ -85,10 +95,13 @@ export default function SubmitOrder() {
     )?.countryId;
 
     if (!countryId) return;
+    setIsRouteEstimating(true);
     routesApi
       .byCategoryAndCountry({
         categoryIds: data?.packageItemList.map((item: any) => item?.categoryId),
         countryId,
+        weight: data?.outbound?.estimateTotalWeight,
+        volume: data?.outbound?.estimateTotalVolume,
       })
       .then((res) => {
         console.log("res", res, typeof res != "string", res?.length);
@@ -99,6 +112,8 @@ export default function SubmitOrder() {
           setRoutesList([]);
           setRoutesMessage(res);
         }
+      }).finally(() => {
+        setIsRouteEstimating(false);
       });
   }, [selectedAddressId]);
 
@@ -205,9 +220,12 @@ export default function SubmitOrder() {
             </div>
           </div>
           {/* 路线 */}
-          <div>
+          <div className="relative">
             <div className="text-title">{t("deliveryRoute")}</div>
             <div className="flex flex-col gap-4">
+              {
+                isRouteEstimating && <BlockSpinner />
+              }
               {routesList?.map((route) => (
                 <RouteCard
                   key={route.id}
@@ -300,14 +318,14 @@ export default function SubmitOrder() {
               feeEstimate?.outbound && (
                 <div className="mt-4 p-4  bg-gray-100 rounded-xl space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">{t("shippingFee")}</span>
+                    <span className="text-gray-500">{t("estimatedShipping")}</span>
                     <span className="font-medium">
                       {currency.symbol}
                       {feeEstimate?.outbound.estimateShippingFee}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">{t("serviceFee")}</span>
+                    <span className="text-gray-500">{t("estimatedService")}</span>
                     <span className="font-medium">
                       {currency.symbol}
                       {feeEstimate.outbound.serviceFee}
@@ -315,12 +333,15 @@ export default function SubmitOrder() {
                   </div>
                   <div className="pt-2 mt-2 border-t border-gray-200 flex justify-between items-center">
                     <span className="text-gray-900 font-semibold">
-                      {t("total")}
+                      {t("estimatedTotal")}
                     </span>
                     <span className="text-xl font-bold text-primary">
                       {currency.symbol}
                       {feeEstimate.outbound.totalFee}
                     </span>
+                  </div>
+                  <div className="text-sm text-gray-500 text-left">
+                    {t("estimatedTip")}
                   </div>
                 </div>
               )

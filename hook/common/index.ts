@@ -1,3 +1,3 @@
 export { default as useSelection } from "./useSelection";
-export { default as useServiceSelection } from "./useServiceSelection";
+export { default as useEnhancedSelection } from "./useEnhancedSelection";
 export * from "./useDebounceCallback";

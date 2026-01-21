@@ -2,6 +2,7 @@ import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 
 import { warehouseApi } from "@/services/warehouseApi";
 import { WarehousePackageListParams } from "@/types/warehouse";
+import { queryClient } from "@/lib/react-query";
 
 export function useWarehousePackageList(params: WarehousePackageListParams) {
   return useQuery({
@@ -34,7 +35,6 @@ export function useWaybillFeeEstimate(data: any) {
       if (!data) {
         return {};
       }
-
       return warehouseApi.getWaybillFeeEstimate(data);
     },
   });
@@ -59,5 +59,8 @@ export function useWaybillPreview(key: string) {
 export function useCreateWaybill() {
   return useMutation({
     mutationFn: (data: any) => warehouseApi.createWaybill(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["warehousePackageList"] });
+    },
   });
 }

@@ -110,6 +110,13 @@
                 "remark": "Remark",
                 "price": "Price",
                 "quantity": "Quantity"
+            },
+            "refundCountdown": {
+                "day": "d ",
+                "hour": "h ",
+                "minute": "m ",
+                "second": "s ",
+                "expired": "Expired"
             }
         },
         "block": {
@@ -307,84 +314,22 @@
         }
     },
     "dashboard": {
-        "LayoutMenu": [
-            {
-                "key": "",
-                "label": "My Account",
-                "href": "/dashboard"
-            },
-            {
-                "key": "wallet",
-                "label": "Wallet",
-                "href": "/dashboard/wallet"
-            },
-            {
-                "key": "message",
-                "label": "Messages",
-                "href": "/dashboard/message"
-            },
-            {
-                "key": "divider",
-                "type": "divider"
-            },
-            {
-                "key": "cart",
-                "label": "Cart",
-                "href": "/dashboard/cart"
-            },
-            {
-                "key": "order",
-                "label": "Orders",
-                "href": "/dashboard/order"
-            },
-            {
-                "key": "warehouse",
-                "label": "Warehouse",
-                "href": "/dashboard/warehouse"
-            },
-            {
-                "key": "package",
-                "label": "Packages",
-                "href": "/dashboard/package"
-            },
-            {
-                "key": "favorites",
-                "label": "Favorites",
-                "href": "/dashboard/favorites"
-            },
-            {
-                "key": "history",
-                "label": "History",
-                "href": "/dashboard/history"
-            },
-            {
-                "key": "promotion",
-                "label": "Affiliate Program",
-                "type": "accordion",
-                "children": [
-                    {
-                        "key": "promotion",
-                        "label": "Dashboard",
-                        "href": "/dashboard/promotion"
-                    },
-                    {
-                        "key": "user",
-                        "label": "User Details",
-                        "href": "/dashboard/promotion/user"
-                    },
-                    {
-                        "key": "experience",
-                        "label": "Experience Details",
-                        "href": "/dashboard/promotion/experience"
-                    },
-                    {
-                        "key": "bonus",
-                        "label": "Bonus Details",
-                        "href": "/dashboard/promotion/bonus"
-                    }
-                ]
-            }
-        ],
+        "menu": {
+            "myAccount": "My Account",
+            "wallet": "Wallet",
+            "message": "Messages",
+            "cart": "Cart",
+            "order": "Orders",
+            "warehouse": "Warehouse",
+            "package": "Packages",
+            "favorites": "Favorites",
+            "history": "History",
+            "promotion": "Promotion",
+            "promotionDashboard": "Dashboard",
+            "invitedUser": "Invite User",
+            "experienceDetails": "Experience Details",
+            "bonusDetails": "Bonus Details"
+        },
         "page": {
             "userBalanceCard": {
                 "balance": "Balance",
@@ -467,129 +412,43 @@
                 "noAddress": "No billing address available"
             }
         },
-        "WalletPage": {
-            "Tabs": [
-                {
-                    "key": "balance",
-                    "label": "Balance"
-                },
-                {
-                    "key": "score",
-                    "label": "Score"
-                },
-                {
-                    "key": "coupon",
-                    "label": "Coupons"
-                }
-            ],
-            "BalanceTab": {
-                "texts": {
-                    "title": "Balance",
-                    "recharge": "Recharge",
-                    "withdraw": "Withdraw",
-                    "tableTitle": "Transaction History",
-                    "noData": "No transaction records",
-                    "withdrawModalTitle": "Withdraw"
-                },
-                "tableColumns": [
-                    {
-                        "key": "bizReference",
-                        "label": "Business Reference"
-                    },
-                    {
-                        "key": "bizType",
-                        "label": "Business Type"
-                    },
-                    {
-                        "key": "amount",
-                        "label": "Amount"
-                    },
-                    {
-                        "key": "currentBalance",
-                        "label": "Current Balance"
-                    },
-                    {
-                        "key": "createTime",
-                        "label": "Transaction Time"
-                    }
-                ],
-                "fields": [
-                    {
-                        "key": "name",
-                        "type": "input",
-                        "name": "name",
-                        "label": "Full Name",
-                        "placeholder": "Enter your full name"
-                    },
-                    {
-                        "key": "bank",
-                        "type": "select",
-                        "name": "bank",
-                        "label": "Bank",
-                        "placeholder": "Select a bank",
-                        "options": [
-                            {
-                                "key": "BOC",
-                                "label": "Bank of China",
-                                "value": "BOC"
-                            },
-                            {
-                                "key": "CCB",
-                                "label": "China Construction Bank",
-                                "value": "CCB"
-                            },
-                            {
-                                "key": "Paypal",
-                                "label": "PayPal",
-                                "value": "Paypal"
-                            }
-                        ]
-                    },
-                    {
-                        "key": "cardNumber",
-                        "type": "input",
-                        "name": "cardNumber",
-                        "label": "Card Number",
-                        "placeholder": "Enter your card number"
-                    },
-                    {
-                        "key": "amount",
-                        "type": "input",
-                        "name": "amount",
-                        "label": "Withdrawal Amount",
-                        "placeholder": "Enter withdrawal amount"
-                    }
-                ]
+        "wallet": {
+            "tab": {
+                "balance": "Balance",
+                "score": "Points",
+                "coupon": "Coupons"
             },
-            "ScoreTab": {
-                "texts": {
-                    "title": "Points",
-                    "exchangeCoupon": "Redeem Points for Coupons",
-                    "details": "Points Details"
-                },
-                "tableColumns": [
-                    {
-                        "key": "bizType",
-                        "label": "Source"
-                    },
-                    {
-                        "key": "amount",
-                        "label": "Quantity"
-                    },
-                    {
-                        "key": "availablePoints",
-                        "label": "Available Points"
-                    },
-                    {
-                        "key": "createTime",
-                        "label": "Time"
-                    }
-                ]
+            "balance": {
+                "title": "Balance",
+                "recharge": "Recharge",
+                "withdraw": "Withdraw",
+                "tableTitle": "Transaction Records",
+                "noData": "No transaction records",
+                "withdrawModalTitle": "Withdrawal",
+                "tableColumns": {
+                    "bizReference": "Business Reference No.",
+                    "bizType": "Business Type",
+                    "amount": "Amount",
+                    "currentBalance": "Current Balance",
+                    "createTime": "Transaction Time"
+                }
+            },
+            "score": {
+                "title": "Points",
+                "exchangeCoupon": "Exchange Points for Coupons",
+                "details": "Points Details",
+                "tableColumns": {
+                    "bizType": "Source",
+                    "amount": "Quantity",
+                    "availablePoints": "Available Points",
+                    "createTime": "Time"
+                }
             }
         },
         "message": {
             "title": "Title",
             "time": "Time",
+            "status": "Status",
             "actions": "Actions",
             "viewDetail": "Details",
             "allMessages": "All",
@@ -618,23 +477,23 @@
         },
         "order": {
             "all": "All",
-            "waitPay": "Unpaid",
+            "waitPay": "Pending Payment",
             "paid": "Paid",
             "refund": "Refund List",
-            "noOrders": "No orders yet",
+            "noOrders": "No Orders",
             "cancelTitle": "Cancel Order",
             "cancelContent": "Are you sure you want to cancel this order?",
             "withdrawTitle": "Withdraw",
-            "withdrawContent": "Are you sure you want to withdraw the current request?",
-            "refundTitle": "Request Refund",
-            "refundContent": "Are you sure you want to request a refund for this order?",
+            "withdrawContent": "Confirm to withdraw the current application?",
+            "refundTitle": "Apply for Refund",
+            "refundContent": "Are you sure you want to apply for a refund for this order?",
             "selectAll": "Select All",
             "batchPay": "Batch Payment",
             "refundable": "Refundable",
             "unrefundable": "Non-refundable",
-            "remarkPlaceholder": "Please enter the refund reason",
+            "remarkPlaceholder": "Please enter refund reason",
             "refundTable": {
-                "orderCode": "Order No.",
+                "orderCode": "Order Number",
                 "productTitle": "Product Name",
                 "picUrl": "Product Image",
                 "refundAmount": "Refund Amount",
@@ -645,24 +504,25 @@
                 "updateTime": "Review Time",
                 "emptyContent": "No refund records"
             },
-            "texts": {
+            "orderItem": {
                 "orderNumber": "Order No:",
-                "createTime": "Created At:",
-                "payment": "Payment",
+                "createTime": "Created:",
+                "payment": "Pay",
                 "cancel": "Cancel",
                 "refund": "Refund",
-                "withdrawRequest": "Withdraw Request",
-                "valueAddedService": "Value-added Service",
-                "serviceFee": "Service Fee:",
-                "shippingFee": "Shipping Fee:",
-                "productFee": "Product Cost:",
-                "totalFee": "Total Cost:",
-                "discountFee": "Discount:",
-                "refundAmount": "RefundAmount:"
+                "refundRemark": "Refund Note",
+                "valueAddedService": "Value Added Services",
+                "withdrawRequest": "Withdraw",
+                "serviceFee": "Service Fee",
+                "shippingFee": "Shipping Fee",
+                "productFee": "Product Fee",
+                "totalFee": "Total",
+                "discountFee": "Discount",
+                "refundAmount": "Refund Amount"
             },
             "promptCard": {
                 "title": "Order QC & Package Management",
-                "description": "Please go to the warehouse page to view QC photos and submit packages",
+                "description": "Please go to warehouse page to view QC photos and submit packages",
                 "button": "Go to Warehouse"
             }
         },
@@ -752,7 +612,7 @@
             "delete": "Delete",
             "noData": "No favorite products"
         },
-        "Promotion": {
+        "promotion": {
             "page": {
                 "process": [
                     "Share your referral code",
@@ -784,66 +644,33 @@
                         "How is my bonus calculated?",
                         "How to promote for free?"
                     ],
-                    "defaultContent": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                    "defaultContent": "Stay tuned."
                 }
             },
-            "user": {
-                "title": "User Details",
-                "noData": "No transaction records",
-                "tableColumns": [
-                    {
-                        "key": "name",
-                        "label": "Invitee"
-                    },
-                    {
-                        "key": "email",
-                        "label": "Invitee Email"
-                    },
-                    {
-                        "key": "createTime",
-                        "label": "Time"
-                    }
-                ]
+            "invitedUser": {
+                "title": "Invited Users",
+                "tableColumns": {
+                    "name": "Invitee",
+                    "email": "Invitee Email",
+                    "createTime": "Invitation Time"
+                }
             },
             "bonus": {
                 "title": "Bonus Details",
-                "noData": "No transaction records",
-                "tableColumns": [
-                    {
-                        "key": "bizType",
-                        "label": "Source"
-                    },
-                    {
-                        "key": "amount",
-                        "label": "Amount"
-                    },
-                    {
-                        "key": "currentBalance",
-                        "label": "Available Bonus"
-                    },
-                    {
-                        "key": "createTime",
-                        "label": "Time"
-                    }
-                ]
+                "tableColumns": {
+                    "bizType": "Source",
+                    "amount": "Amount",
+                    "currentBalance": "Available Bonus",
+                    "createTime": "Time"
+                }
             },
             "experience": {
                 "title": "Experience Details",
-                "noData": "No transaction records",
-                "tableColumns": [
-                    {
-                        "key": "email",
-                        "label": "Invitee Email"
-                    },
-                    {
-                        "key": "experience",
-                        "label": "Experience Points"
-                    },
-                    {
-                        "key": "createTime",
-                        "label": "Time"
-                    }
-                ]
+                "tableColumns": {
+                    "email": "Invitee Email",
+                    "experience": "Experience Points",
+                    "createTime": "Time"
+                }
             }
         }
     },
@@ -859,9 +686,10 @@
             "totalWeight": "Total Weight",
             "totalVolume": "Total Volume",
             "estimating": "Estimating Shipping Fee",
-            "shippingFee": "Estimated Shipping Fee",
-            "serviceFee": "Service Fee",
-            "total": "Total",
+            "estimatedShipping": "Estimated Shipping Fee",
+            "estimatedService": "Estimated Service Fee",
+            "estimatedTotal": "Estimated Total",
+            "estimatedTip": "Estimated Tip",
             "submit": "Submit Package",
             "agreement": "I have read and agreed bbdbuy Package Shipping Agreement",
             "toast": {

@@ -2,11 +2,8 @@ import { request, requestWithOption } from "./request";
 
 import {
   createOrderByRechargeParams,
-  CreateOrderPreviewKeyByCartParams,
   createOrderPreviewKeyByProductParams,
   createPayOrderParams,
-  GetOrderListParams,
-  OrderListResponse,
   OrderPreviewByCart,
   OrderPreviewByProduct,
 } from "@/types";
@@ -15,12 +12,7 @@ import {
 export const createOrderPreviewKeyByProduct = (
   data: createOrderPreviewKeyByProductParams,
 ): Promise<string> => request.post("/orders/preview/init", data);
-/** 创建购物车结算订单预览key */
-export const createOrderPreviewKeyByCart = (
-  data: CreateOrderPreviewKeyByCartParams,
-): Promise<string> => {
-  return request.post("/customer/cart/order/init", data);
-};
+
 /** 创建充值订单 */
 export const createOrderByRecharge = (
   data: createOrderByRechargeParams,
@@ -79,10 +71,7 @@ export const createPayOrder = (data: createPayOrderParams): Promise<any> => {
 export const getPayOrderStatus = (bizCode: string): Promise<number> =>
   request.get(`/customer/pay-order/status?bizCode=${bizCode}`);
 
-/** 订单列表 */
-export const getOrderList = (
-  data: GetOrderListParams,
-): Promise<OrderListResponse> => request.post("/orders/page", data);
+
 /** 获取增值服务列表 */
 export const getServicesList = (): Promise<any> => {
   return requestWithOption(
@@ -90,27 +79,7 @@ export const getServicesList = (): Promise<any> => {
     { showToast: false },
   );
 };
-/** 订单取消 */
-export const putOrderCancel = (data: { id: string }): Promise<any> => {
-  return requestWithOption(
-    { url: "/orders/cancel?orderId=" + data.id, method: "PUT" },
-    { showToast: true },
-  );
-};
-/** 订单批量支付 */
-export const batchPayOrder = (data: any): Promise<any> => {
-  return requestWithOption(
-    { url: "/orders/pay/preview/init", method: "POST", data },
-    { showToast: true },
-  );
-};
-/** 订单取消 */
-export const OrderRefund = (data: any): Promise<any> => {
-  return requestWithOption(
-    { url: "/order-refund/applyRefund", method: "POST", data },
-    { showToast: true },
-  );
-};
+
 
 /** 订单取消 */
 export const createCustomizeOrder = (data: any): Promise<any> => {
@@ -119,13 +88,7 @@ export const createCustomizeOrder = (data: any): Promise<any> => {
     { showToast: true },
   );
 };
-/** 撤销退款 */
-export const putOrderRevoke = (id: string): Promise<any> => {
-  return requestWithOption(
-    { url: `/order-refund/cancelApplyRefund/${id}`, method: "PUT" },
-    { showToast: true },
-  );
-};
+
 /** 撤销列表 */
 export const getRefundList = (data = {}): Promise<any> => {
   return request.post("/order-refund/list", data);

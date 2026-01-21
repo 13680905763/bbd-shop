@@ -8,9 +8,6 @@ import { IoChevronDown } from "react-icons/io5";
 
 import { useServices } from "@/hook";
 
-type MenuItem =
-  | { type: "divider"; key: string }
-  | { key: string; label: string; href: string; type?: undefined };
 
 interface DashBoardLayoutProps {
   children: React.ReactNode;
@@ -18,10 +15,88 @@ interface DashBoardLayoutProps {
 
 export default function DashBoardlayout({ children }: DashBoardLayoutProps) {
   const pathname = usePathname();
-  const t = useTranslations("dashboard");
+  const t = useTranslations("dashboard.menu");
   const [open, setOpen] = useState(true);
 
-  const menuItems = t.raw("LayoutMenu") as MenuItem[];
+  const menuItems = [
+    {
+      key: '',
+      label: t("myAccount"),
+      href: '/dashboard'
+    },
+    {
+      key: 'wallet',
+      label: t("wallet"),
+      href: '/dashboard/wallet'
+    },
+    {
+      key: 'message',
+      label: t("message"),
+      href: '/dashboard/message'
+    },
+    {
+      key: 'divider',
+      type: 'divider'
+    },
+    {
+      key: 'cart',
+      label: t("cart"),
+      href: '/dashboard/cart'
+    },
+    {
+      key: 'order',
+      label: t("order"),
+      href: '/dashboard/order'
+    },
+    {
+      key: 'warehouse',
+      label: t("warehouse"),
+      href: '/dashboard/warehouse'
+    },
+    {
+      key: 'package',
+      label: t("package"),
+      href: '/dashboard/package'
+    },
+    {
+      key: 'favorites',
+      label: t("favorites"),
+      href: '/dashboard/favorites'
+    },
+    {
+      key: 'history',
+      label: t("history"),
+      href: '/dashboard/history'
+    },
+    {
+      key: 'promotion',
+      label: t("promotion"),
+      type: 'accordion',
+      children: [
+        {
+          key: 'promotion',
+          label: t("promotionDashboard"),
+          href: '/dashboard/promotion'
+        },
+        {
+          key: 'invitedUser',
+          label: t("invitedUser"),
+          href: '/dashboard/promotion/invitedUser'
+        },
+        {
+          key: 'experience',
+          label: t("experienceDetails"),
+          href: '/dashboard/promotion/experience'
+        },
+        {
+          key: 'bonus',
+          label: t("bonusDetails"),
+          href: '/dashboard/promotion/bonus'
+        }
+      ]
+    }
+  ];
+
 
   useServices();
 
@@ -34,9 +109,6 @@ export default function DashBoardlayout({ children }: DashBoardLayoutProps) {
     return pathParts[0] === "dashboard" ? (pathParts[1] ?? "") : "";
   }, [pathname]);
 
-  // console.log("currentItem", currentItem);
-
-  // if (!t) return <FullscreenLoader />;
 
   return (
     <div className="bg-[#f8f8f8]">
@@ -58,9 +130,8 @@ export default function DashBoardlayout({ children }: DashBoardLayoutProps) {
                     >
                       <span className="flex-1">{item.label}</span>
                       <IoChevronDown
-                        className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${
-                          open === item.key ? "rotate-180" : ""
-                        }`}
+                        className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${open === item.key ? "rotate-180" : ""
+                          }`}
                       />
                     </div>
 
@@ -69,11 +140,10 @@ export default function DashBoardlayout({ children }: DashBoardLayoutProps) {
                         {item.children?.map((child: any) => (
                           <li
                             key={child.key}
-                            className={`h-10 flex items-center px-2 rounded  ${
-                              currentItem === child.key
+                            className={`h-10 flex items-center px-2 rounded  ${currentItem === child.key
                                 ? "bg-[#f0700c] text-white"
                                 : "hover:bg-[#f5f5f5]"
-                            }`}
+                              }`}
                           >
                             <NextLink
                               className="w-full h-full flex items-center p-2"
@@ -92,11 +162,10 @@ export default function DashBoardlayout({ children }: DashBoardLayoutProps) {
               return (
                 <li
                   key={item.key}
-                  className={`h-10 flex items-center my-2 rounded-lg cursor-pointer ${
-                    currentItem === item.key
+                  className={`h-10 flex items-center my-2 rounded-lg cursor-pointer ${currentItem === item.key
                       ? "bg-[#f0700c] text-white"
                       : "hover:bg-[#f5f5f5]"
-                  }`}
+                    }`}
                   title={item.label}
                 >
                   <NextLink

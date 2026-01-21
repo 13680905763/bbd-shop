@@ -12,26 +12,23 @@ import { IoCopyOutline } from "react-icons/io5";
 
 import { CopyText } from "@/components/ui";
 import { describeText, price, subtitle } from "@/components/primitives";
-import { getExperience, getPromotionConfig } from "@/services";
+import { getExperience } from "@/services";
 import { useGlobalStore } from "@/store";
-import { useUserInfo } from "@/hook/api";
+import { useBonusConfig, useUserInfo } from "@/hook/api";
 
 export default function PromotionPage() {
-  const t: any = useTranslations("dashboard.Promotion.page");
+  const t: any = useTranslations("dashboard.promotion.page");
   const { currency } = useGlobalStore();
   const { data: user, isLoading, error } = useUserInfo();
-
+  const { data: bonusConfig, isLoading: isLoadingBonusConfig } = useBonusConfig();
   const [experience, setExperience] = useState<any>(null);
-  const [experienceList, setExperienceList] = useState(null);
-  const [promotionConfig, setPromotionConfig] = useState([]);
-  const [promotionList, setPromotionList] = useState([]);
+
 
   const fetchExperience = async () => {
     try {
       const res = await getExperience();
-      const res1 = await getPromotionConfig();
 
-      setPromotionConfig(res1);
+      // setPromotionConfig(res1);
       setExperience(res || null);
     } catch {
     } finally {
@@ -134,12 +131,12 @@ export default function PromotionPage() {
           </span>
         </div>
         <div className="flex justify-center items-center bg-[#f7f8f9] rounded-lg">
-          {promotionConfig.map((item: any, index) => (
+          {bonusConfig?.map((item: any, index: any) => (
             <div
               key={item.id}
               className={`
                 flex-1 flex justify-center items-center flex-col border border-[#eeeeee]
-                ${index !== promotionConfig.length - 1 ? "border-r-0" : ""}
+                ${index !== bonusConfig.length - 1 ? "border-r-0" : ""}
                 ${index === 0 ? "bg-[#ffeee1]" : ""}
               `}
             >

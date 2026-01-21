@@ -34,6 +34,7 @@ interface CommonModalProps {
     | "full";
   isDismissable?: boolean;
   isKeyboardDismissDisabled?: boolean;
+  isDisabled?: boolean;
 }
 
 export default function CommonModal({
@@ -50,6 +51,7 @@ export default function CommonModal({
   size = "md",
   isDismissable = false,
   isKeyboardDismissDisabled = false,
+  isDisabled = false,
 }: CommonModalProps) {
   const t = useTranslations("components.modal"); // Common 是语言包的 namespace
 
@@ -104,6 +106,7 @@ export default function CommonModal({
                   color="primary"
                   isLoading={isLoading}
                   onPress={handleConfirm}
+                  isDisabled={isDisabled}
                 >
                   {confirmText ?? t("confirm")}
                 </Button>

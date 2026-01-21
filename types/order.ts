@@ -13,10 +13,10 @@ export interface OrderListResponse {
   pages?: any;
 }
 
-export interface GetOrderListParams {
+export interface OrderListParams {
   current: number;
   size: number;
-  customerPayStatusCode?: string; // ✅ 可选，用于筛选订单状态
+  customerPayStatusCode?: string;
   statusCode?: string;
 }
 export type source = "1688" | "TAOBAO";

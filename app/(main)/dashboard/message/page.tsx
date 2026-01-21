@@ -19,6 +19,7 @@ import PaginationBar from "@/components/common/pagination-bar";
 import { useMessageList, useMessageMutations } from "@/hook";
 import { useSelection } from "@/hook/common";
 import { useConfirm } from "@/components/common/modal/confirm-provider";
+import { BlockSpinner, EmptyState, FullscreenLoader } from "@/components/ui";
 
 type TabKey = "all" | "read" | "unread";
 
@@ -62,7 +63,7 @@ export default function MessagePage() {
   const columns = [
     { key: "title", label: t("title") },
     { key: "createTime", label: t("time") },
-    { key: "statusCode", label: "" },
+    { key: "statusCode", label: t("status") },
     { key: "actions", label: t("actions") },
   ];
 
@@ -121,7 +122,7 @@ export default function MessagePage() {
     },
     [t, handleViewDetail],
   );
-
+  if (isLoading) return <FullscreenLoader />;
   return (
     <div className="flex w-full flex-col">
       <Tabs
@@ -150,7 +151,7 @@ export default function MessagePage() {
       </Tabs>
 
       <div className="flex-1 mt-4">
-        {isLoading || isFetching ? (
+        {/* {isFetching ? (
           <div className="flex justify-center items-center h-[50vh]">
             <Spinner color="primary" size="lg" />
           </div>
@@ -158,67 +159,74 @@ export default function MessagePage() {
           <div className="text-center text-gray-500 py-10">
             {t("noMessages")}
           </div>
-        ) : (
-          <Table
-            hideHeader
-            aria-label="Message table"
-            bottomContent={
-              <div className="flex items-center justify-between">
-                <div className="p-3 flex items-center gap-3">
-                  <Checkbox
+        ) : ( */}
+        <Table
+          className="relative"
+          // classNames={{
+          //   table: "min-h-[60vh]",
+          // }}
+          
+          aria-label="Message table"
+          bottomContent={
+            <div className="flex items-center justify-between">
+              <div className="">
+                {/* <Checkbox
                     isIndeterminate={hasSelected && !isAllSelected}
                     isSelected={isAllSelected}
                     onValueChange={onToggleSelectAll}
                   >
                     {t("selectAll")}
-                  </Checkbox>
-                  <Button
-                    className="text-[#f0700c]"
-                    isDisabled={!hasSelected}
-                    variant="light"
-                    onPress={handleDelete}
-                  >
-                    {t("delete")}
-                  </Button>
-                </div>
-                <div className="flex-1">
-                  <PaginationBar
-                    page={page}
-                    pageSize={pageSize}
-                    total={total}
-                    onPageChange={setPage}
-                    onPageSizeChange={setPageSize}
-                  />
-                </div>
+                  </Checkbox> */}
+                <Button
+                  className="text-[#f0700c]"
+                  isDisabled={!hasSelected}
+                  variant="light"
+                  size="sm"
+                  onPress={handleDelete}
+                >
+                  {t("delete")}
+                </Button>
               </div>
+              <div className="flex-1">
+                <PaginationBar
+                  page={page}
+                  pageSize={pageSize}
+                  total={total}
+                  onPageChange={setPage}
+                  onPageSizeChange={setPageSize}
+                />
+              </div>
+            </div>
+          }
+          selectedKeys={new Set(selectedIds)}
+          selectionMode="multiple"
+          onSelectionChange={(keys) => {
+            if (keys === "all") {
+              onSelectAll();
+            } else {
+              // keys 是 Set<Key>
+              setSelection(Array.from(keys));
             }
-            selectedKeys={new Set(selectedIds)}
-            selectionMode="multiple"
-            onSelectionChange={(keys) => {
-              if (keys === "all") {
-                onSelectAll();
-              } else {
-                // keys 是 Set<Key>
-                setSelection(Array.from(keys));
-              }
-            }}
-          >
-            <TableHeader columns={columns}>
-              {(column) => (
-                <TableColumn key={column.key}>{column.label}</TableColumn>
-              )}
-            </TableHeader>
-            <TableBody items={records}>
-              {(item: any) => (
-                <TableRow key={item.id}>
-                  {(columnKey: any) => (
-                    <TableCell>{renderCell(item, columnKey)}</TableCell>
-                  )}
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        )}
+          }}
+        >
+          <TableHeader columns={columns}>
+            {(column) => (
+              <TableColumn key={column.key}>{column.label}</TableColumn>
+            )}
+          </TableHeader>
+          <TableBody items={records} isLoading={isFetching}
+            emptyContent={<EmptyState className="!h-auto"/>}
+            loadingContent={<BlockSpinner />}>
+            {(item: any) => (
+              <TableRow key={item.id}>
+                {(columnKey: any) => (
+                  <TableCell>{renderCell(item, columnKey)}</TableCell>
+                )}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+        {/* )} */}
       </div>
     </div>
   );

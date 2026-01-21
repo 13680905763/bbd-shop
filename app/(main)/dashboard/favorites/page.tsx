@@ -7,12 +7,12 @@ import { useTranslations } from "next-intl";
 
 import { useFavoriteList, useFavoriteMutations } from "@/hook/api";
 import { useSelection } from "@/hook/common";
-import { FullscreenLoader } from "@/components/ui";
+import { BlockSpinner, FullscreenLoader } from "@/components/ui";
 import { ProductCard } from "@/components/block";
 
 export default function FavoritesPage() {
   const t = useTranslations("dashboard.favorite");
-  const { data, isLoading } = useFavoriteList();
+  const { data, isLoading, isFetching } = useFavoriteList();
   const { deleteMutation } = useFavoriteMutations();
   const router = useRouter();
   const list = (data as unknown as any[]) || [];
@@ -53,7 +53,8 @@ export default function FavoritesPage() {
   }
 
   return (
-    <div>
+    <div className="relative">
+      {(isFetching) && <BlockSpinner />}
       <div className="my-5 flex items-center justify-between">
         <div>
           <span className="font-bold mr-5 text-xl">{t("title")}</span>

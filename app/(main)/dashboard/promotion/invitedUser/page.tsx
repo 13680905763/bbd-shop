@@ -1,26 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {
-  getKeyValue,
-  Spinner,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-} from "@heroui/react";
+
 import { useTranslations } from "next-intl";
 
-import { getExperienceList } from "@/services";
-import { useExperience } from "@/hook/api";
+import { useInvitedUsers } from "@/hook/api";
 import { CommonTable } from "@/components/common";
 
-export default function PromotionExperiencePage() {
-  const t: any = useTranslations("dashboard.promotion.experience");
-
-
+export default function InvitedUser() {
+  const t = useTranslations("dashboard.promotion.invitedUser");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -28,25 +16,26 @@ export default function PromotionExperiencePage() {
     data,
     isLoading,
     isFetching,
-  } = useExperience({
+  } = useInvitedUsers({
     current: page,
     size: pageSize,
   });
 
   const tableColumns = [
     {
-      key: "email",
-      label: t("tableColumns.email"),
+      key: "name",
+      label: t("tableColumns.name"),
     },
     {
-      key: "experience",
-      label: t("tableColumns.experience"),
+      key: "email",
+      label: t("tableColumns.email"),
     },
     {
       key: "createTime",
       label: t("tableColumns.createTime"),
     },
-  ]
+  ];
+  // if (isLoading) return <FullscreenLoader />;
   return (
     <>
       <div className="font-bold my-4">{t("title")}</div>
