@@ -21,10 +21,7 @@ export const PromotionApi = {
             params,
         });
     },
-    /** 获取奖金配置 */
-    getBonusConfig(): Promise<any> {
-        return request.get(`/promotion-config?configType=EXPERIENCE`);
-    },
+   
     // /** 获取奖金配置 */
     // getPromotionConfig(params: any): Promise<any> {
     //     return request.get("/promotion-config", {

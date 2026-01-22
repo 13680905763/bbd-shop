@@ -16,9 +16,14 @@ export const WalletApi = {
       params,
     });
   },
+  /** 获取积分明细列表 */
   listPoints(params: any): Promise<any> {
     return request.get("/customer-points-detail", {
       params,
     });
+  },
+  /** 获取支付方式列表 */
+  listPaymentMethods(bizCode: string): Promise<any[]> {
+    return request.get("/customer/pay-order/preview?bizCode=" + bizCode);
   },
 };

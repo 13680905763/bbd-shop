@@ -11,86 +11,78 @@ import {
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
-import PaginationBar from "@/components/common/pagination-bar";
 import { useGlobalStore } from "@/store";
-import { getRefundList } from "@/services";
+import { CommonTable } from "@/components/common";
+import { useRefundOrderList } from "@/hook/api";
 
 export default function RefundList() {
-  const t = useTranslations("dashboard.order");
+  const t = useTranslations("dashboard.order.refundList");
   const { currency } = useGlobalStore();
-  const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [totalr, setTotal] = useState(10);
-  const [refundList, setRefundList] = useState([]);
-
-  const fetchData = async () => {
-    try {
-      setIsLoading(true);
-
-      const res = await getRefundList({
-        current: page,
-        size: pageSize,
-      });
-
-      setRefundList(res.records);
-      setTotal(res?.total);
-    } catch (err) {
-      console.error("获取服务列表失败:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [page, pageSize]);
-  const renderCell = ({
-    item,
-    columnKey,
-    currency,
-  }: {
-    item: any;
-    columnKey: string;
-    currency?: any;
-  }) => {
+  const { data, isLoading, isFetching } = useRefundOrderList({
+    current: page,
+    size: pageSize,
+  });
+  console.log('refundList', data, isFetching);
+  const renderCell = (
+    item: any,
+    columnKey: any,
+  ) => {
     const value = item[columnKey];
 
-    // 商品标题
+    // 商品信息（图片 + 标题 + SKU）
     if (columnKey === "productTitle") {
+      const imgSrc = item.skuUrl || item.picUrl;
+
       return (
-        <div className="text-base text-gray-800 leading-snug line-clamp-2">
-          {value}
+        <div className="flex items-center gap-3 min-w-[240px] max-w-[400px]">
+          <div className="flex-shrink-0 h-16 w-16 border border-gray-200 rounded-lg overflow-hidden bg-gray-50">
+            <Image
+              alt={item.productTitle || "Product Image"}
+              className="w-full h-full object-cover"
+              classNames={{
+                wrapper: "w-full h-full",
+                img: "w-full h-full",
+              }}
+              referrerPolicy="no-referrer"
+              src={imgSrc || "/placeholder.png"}
+              radius="none"
+            />
+          </div>
+          <div className="flex flex-col gap-1 min-w-0">
+            <div
+              className="text-sm font-medium text-gray-900 line-clamp-2 leading-snug"
+              title={value}
+            >
+              {value || "--"}
+            </div>
+            <div
+              className="text-xs text-gray-500 line-clamp-1"
+              title={item.propAndValue?.propName_valueName}
+            >
+              {item.propAndValue?.propName_valueName || "--"}
+            </div>
+          </div>
         </div>
       );
     }
 
-    // SKU属性
-    if (columnKey === "propAndValue") {
+    // 备注信息限制长度
+    if (columnKey === "applyRemark" || columnKey === "handleRemark") {
       return (
-        <div className="text-sm text-gray-500 leading-snug line-clamp-2">
-          {value?.propName_valueName}
+        <div
+          className="max-w-[200px] text-sm text-gray-600 line-clamp-4"
+          title={value}
+        >
+          {value || "--"}
         </div>
       );
     }
+
     // 金额统一格式
     if (columnKey === "refundAmount") {
       return `${currency?.symbol}${Number(value).toFixed(2)}`;
-    }
-
-    // 图片列
-    if (columnKey === "picUrl") {
-      const imgSrc = item.skuUrl || value;
-
-      return (
-        <Image
-          alt="商品图片"
-          height={50}
-          referrerPolicy="no-referrer"
-          src={imgSrc}
-          width={50}
-        />
-      );
     }
 
     // 时间格式化
@@ -101,71 +93,29 @@ export default function RefundList() {
     return value || "--";
   };
   const columns = [
-    { key: "orderCode", label: t("refundTable.orderCode") },
-    { key: "picUrl", label: t("refundTable.picUrl") },
-    { key: "productTitle", label: t("refundTable.productTitle") },
-    { key: "propAndValue", label: "sku" },
-    { key: "refundAmount", label: t("refundTable.refundAmount") },
-    { key: "applyRemark", label: t("refundTable.applyRemark") },
-    { key: "handleRemark", label: t("refundTable.handleRemark") },
-    { key: "status", label: t("refundTable.status") },
-    // { key: "createTime", label: t("refundTable.createTime") },
-    { key: "updateTime", label: t("refundTable.updateTime") },
+    { key: "orderCode", label: t("tableColumn.orderCode") },
+    { key: "productTitle", label: t("tableColumn.productTitle") },
+    // { key: "propAndValue", label: t("tableColumn.propAndValue") },
+    { key: "refundAmount", label: t("tableColumn.refundAmount") },
+    { key: "applyRemark", label: t("tableColumn.applyRemark") },
+    { key: "handleRemark", label: t("tableColumn.handleRemark") },
+    { key: "status", label: t("tableColumn.status") },
+    { key: "updateTime", label: t("tableColumn.updateTime") },
   ];
 
   return (
     <>
-      <Table
-        isHeaderSticky
-        removeWrapper
-        classNames={{
-          wrapper: "p-0 rounded-none border border-default-200 min-w-[900px]",
-          thead: "bg-default-50",
-          th: "text-default-600 font-medium !rounded-none text-sm",
-          tr: "border-b last:border-b-0",
-          td: "text-sm text-default-700",
-        }}
-        radius="none"
-        shadow="none"
-      >
-        <TableHeader columns={columns}>
-          {(column: any) => (
-            <TableColumn key={column.key}>{column.label}</TableColumn>
-          )}
-        </TableHeader>
-
-        <TableBody
-          emptyContent={t("refundTable.emptyContent")}
-          isLoading={isLoading}
-          items={refundList}
-          loadingContent={<Spinner />}
-        >
-          {(item: any) => (
-            <TableRow key={item.id}>
-              {(columnKey: any) => (
-                <TableCell className="text-sm text-default-700 break-words whitespace-normal">
-                  {renderCell({
-                    item,
-                    columnKey,
-                    currency,
-                  })}
-                </TableCell>
-              )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-      <div className="mt-10 sticky bottom-0 border-t bg-white z-10 p-4 card-cart">
-        {(totalr as number) > 0 && (
-          <PaginationBar
-            page={page}
-            pageSize={pageSize}
-            total={totalr as number}
-            onPageChange={setPage}
-            onPageSizeChange={setPageSize}
-          />
-        )}
-      </div>
+      <div className="font-bold my-4">{t('title')}</div>
+      <CommonTable
+        columns={columns}
+        data={data}
+        renderCell={renderCell}
+        isLoading={isFetching}
+        page={page}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+      />
     </>
   );
 }

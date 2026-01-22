@@ -1,56 +1,48 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Accordion,
   AccordionItem,
-  Divider,
   Image,
-  Button,
 } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { IoCopyOutline } from "react-icons/io5";
 
 import { CopyText } from "@/components/ui";
-import { describeText, price, subtitle } from "@/components/primitives";
-import { getExperience } from "@/services";
+import { describeText, price } from "@/components/primitives";
 import { useGlobalStore } from "@/store";
-import { useBonusConfig, useUserInfo } from "@/hook/api";
+import { useBonusConfig, useUserExperience, useUserInfo } from "@/hook/api";
+import clsx from "clsx";
+import { useRouter } from "next/navigation";
 
 export default function PromotionPage() {
   const t: any = useTranslations("dashboard.promotion.page");
+  const router = useRouter();
   const { currency } = useGlobalStore();
   const { data: user, isLoading, error } = useUserInfo();
+  const { data: experience, isLoading: isLoadingExperience } = useUserExperience();
   const { data: bonusConfig, isLoading: isLoadingBonusConfig } = useBonusConfig();
-  const [experience, setExperience] = useState<any>(null);
+
+  const process = [
+    t("process1"),
+    t("process2"),
+    t("process3"),
+  ]
 
 
-  const fetchExperience = async () => {
-    try {
-      const res = await getExperience();
-
-      // setPromotionConfig(res1);
-      setExperience(res || null);
-    } catch {
-    } finally {
-    }
-  };
-
-  useEffect(() => {
-    fetchExperience();
-  }, []);
 
   return (
-    <div className="pt-5">
+    <div className="space-y-2">
       <Image
         alt="HeroUI hero Image"
-        className=" object-cover h-[160px]"
+        className="object-cover h-[160px] my-4"
         radius="md"
         src="/images/promotion.png"
         width={"100%"}
       />
-      <div className="container mx-auto ">
-        <div className=" mt-5 w-full px-40 flex items-center">
-          {t.raw("process").map((item: any, index: any) => {
+      <div className="container mx-auto space-y-10 px-40">
+        <div className="flex items-center">
+          {process.map((item: any, index: any) => {
             return (
               <React.Fragment key={item}>
                 <div className="w-5 h-5 rounded-full bg-[#fcf4f2] text-[#f0700c] text-xs flex items-center justify-center relative">
@@ -66,7 +58,7 @@ export default function PromotionPage() {
             );
           })}
         </div>
-        <div className="mt-10 w-full px-40 ">
+        <div >
           <CopyText
             className="w-full"
             text={`https://www.bbdbuy1.com/register?inviteCode=${user?.inviteCode || ""}`}
@@ -78,99 +70,75 @@ export default function PromotionPage() {
               <IoCopyOutline size={18} />
             </div>
           </CopyText>
-
-          <div className="my-2">
-            <span className={describeText({ weight: "normal" })}>
-              {t("invite.copyUrl")}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <Divider className="my-4" />
-      {/* 我的联盟 */}
-      <div>
-        <div className={subtitle()}>{t("myAlliance.title")}</div>
-        <div className="flex justify-center items-center bg-[#ffeee1] rounded-lg p-5 gap-5">
-          <div className="flex-1 flex justify-center flex-col items-center gap-2">
-            <div className={price()}>{currency.symbol}0</div>
-            <div className={describeText({ weight: "normal" })}>
-              {t("myAlliance.totalReward")}
-            </div>
-            <div className="flex gap-10">
-              <Button className="w-32 button-default" size="sm">
-                {t("myAlliance.record")}
-              </Button>
-              <Button className="w-32" color="primary" size="sm">
-                {t("myAlliance.withdraw")}
-              </Button>
-            </div>
-          </div>
-          <div className="flex-[2] flex bg-[#fff] p-4 rounded-lg">
-            <div className="flex-1 flex flex-col items-center">
-              <div>0</div>
-              <div>{t("myAlliance.inviteUsers")}</div>
-            </div>
-            <div className="flex-1 flex flex-col items-center">
-              <div>0</div>
-              <div>{t("myAlliance.withdrawTimes")}</div>
-            </div>
-            <div className="flex-1 flex flex-col items-center">
-              <div>0</div>
-              <div>{t("myAlliance.earned")}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* 我的等级 */}
-      <div>
-        <div className={subtitle()}>
-          {t("myLevel.title")}
-          <span className="text-sm font-medium">
-            ({t("myLevel.experience")} {experience?.experience})
+          <span className='text-[#acacac] text-xs'>
+            {t("processTip")}
           </span>
         </div>
-        <div className="flex justify-center items-center bg-[#f7f8f9] rounded-lg">
-          {bonusConfig?.map((item: any, index: any) => (
-            <div
-              key={item.id}
-              className={`
-                flex-1 flex justify-center items-center flex-col border border-[#eeeeee]
-                ${index !== bonusConfig.length - 1 ? "border-r-0" : ""}
-                ${index === 0 ? "bg-[#ffeee1]" : ""}
-              `}
-            >
-              <div className="py-4 text-[#f0700c]">{item.rangeCode}</div>
-              <div className="flex flex-col gap-1 p-5 w-full items-center bg-[#fff]">
-                <div className={describeText()}>{t("myLevel.bonusRate")}</div>
-                <div className={price()}>
-                  {(Number(item.configValue) * 100).toFixed(2)}%
-                </div>
-                <div className={describeText()}>
-                  {item.rangeMin} ~ {item.rangeMax}{" "}
-                  {t("myLevel.experienceRange")}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
 
-      {/* FAQ */}
-      <div>
-        <div className={subtitle()}>{t("faq.title")}</div>
-        <Accordion className="!border-1" variant="bordered">
-          {t.raw("faq.questions").map((q: string, i: number) => (
-            <AccordionItem
-              key={i + 1}
-              aria-label={`Accordion ${i + 1}`}
-              title={q}
-            >
-              {t("faq.defaultContent")}
-            </AccordionItem>
-          ))}
-        </Accordion>
+      <div className='subtitle'>{t("title1")}</div>
+      <div className="grid grid-cols-3 bg-[#ffeee1] rounded-lg p-5">
+        <div className="col-span-1 text-center">
+          <div className='font-bold text-3xl text-[#f0700c]'>{currency.symbol}{user?.myBonus}</div>
+          <div>
+            {t("totalReward")}
+          </div>
+        </div>
+        <div className="col-span-2 grid grid-cols-2 bg-[#fff] p-4 rounded-lg">
+          <div className="text-center">
+            <div>{user?.inviteCount}</div>
+            <button className="hover:text-[#f0700c]" onClick={() => router.push("/dashboard/promotion/invitedUser")}>
+              {t("inviteUsers")}
+            </button>
+          </div>
+          <div className="text-center">
+            <div>{experience?.experience || 0}</div>
+            <button className="hover:text-[#f0700c]" onClick={() => router.push("/dashboard/promotion/experience")}>
+              {t("experience")}
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
+      <div className='subtitle'>{t("title2")}</div>
+      <div className="grid grid-cols-3 bg-[#f7f8f9] rounded-lg">
+        {bonusConfig?.map((item: any, index: any) => (
+          <div
+            key={item.id}
+            className={clsx(
+              "col-span-1 text-center border border-[#eeeeee] ",
+              index !== bonusConfig.length - 1 && "border-r-0",
+              index == bonusConfig.length - 1 && "rounded-r-lg rounded-br-lg",
+              index == 0 && "rounded-l-lg   bg-[#ffeee1]",
+            )}
+          >
+            <div className="py-4 text-[#f0700c]">{item.rangeCode}</div>
+            <div className="flex flex-col gap-1 p-5 w-full items-center bg-[#fff] rounded-b-lg">
+              <div className={describeText()}>{t("bonusRate")}</div>
+              <div className={price()}>
+                {(Number(item.configValue) * 100).toFixed(2)}%
+              </div>
+              <div className={describeText()}>
+                {item.rangeMin} ~ {item.rangeMax}{" "}
+                {t("experienceRange")}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+
+      {/* <div className='subtitle'>{t("faq.title")}</div>
+      <Accordion className="!border-1" variant="bordered">
+        {t.raw("faq.questions").map((q: string, i: number) => (
+          <AccordionItem
+            key={i + 1}
+            aria-label={`Accordion ${i + 1}`}
+            title={q}
+          >
+            {t("faq.defaultContent")}
+          </AccordionItem>
+        ))}
+      </Accordion> */}
+    </div >
   );
 }

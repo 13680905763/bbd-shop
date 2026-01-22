@@ -14,7 +14,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { IoAddCircleOutline, IoWallet } from "react-icons/io5";
 
-import { FieldConfig } from "@/components/form/formItem-renderer";
 import RechargeModal from "@/components/modal/recharge.modal";
 import { useGlobalStore } from "@/store";
 import PaginationBar from "@/components/common/pagination-bar";

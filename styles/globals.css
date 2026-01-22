@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.subtitle {
+  @apply text-[#000] text-base font-medium;
+}
+
 .text-title {
   @apply text-[#000] text-base font-bold mb-4;
 }

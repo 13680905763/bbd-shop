@@ -7,46 +7,39 @@ import RouteCard from "@/components/common/route-card";
 interface ChangeLineModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void;
-  modalData: any;
-  setModalData: (data: any) => void;
+  onConfirm: (waybill: any, routeId: string | null) => Promise<void>;
+  currentWaybill: any;
+  selectedRouteId: string | null;
+  setSelectedRouteId: (id: string | null) => void;
 }
 
 export default function ChangeLineModal({
   isOpen,
   onClose,
   onConfirm,
-  modalData,
-  setModalData,
+  currentWaybill,
+  selectedRouteId,
+  setSelectedRouteId,
 }: ChangeLineModalProps) {
   const t = useTranslations("dashboard.package");
+  console.log('currentWaybill', currentWaybill);
 
   return (
     <CommonModal
       isOpen={isOpen}
       size={"4xl"}
       title={t("changeTitle")}
-      onConfirm={onConfirm}
+      onConfirm={async () => await onConfirm(currentWaybill?.id, selectedRouteId)}
       onOpenChange={onClose}
     >
       {/* 路线 */}
       <div className="flex flex-col gap-2">
-        {modalData?.linePre?.map((route: any) => (
+        {currentWaybill?.changePre?.map((line: any) => (
           <RouteCard
-            key={route.id}
-            data={route}
-            isSelected={route?.checked}
-            onSelect={(id: any) =>
-              setModalData({
-                ...modalData,
-                linePre: modalData?.linePre?.map((item: any) => {
-                  return {
-                    ...item,
-                    checked: id == item?.id ? true : false,
-                  };
-                }),
-              })
-            }
+            key={line.id}
+            data={line}
+            isSelected={line?.id == selectedRouteId}
+            onSelect={() => { setSelectedRouteId(line?.id || null) }}
           />
         ))}
       </div>

@@ -1,8 +1,8 @@
 "use client";
 
+import { configApi } from "@/services/configApi";
 import { create } from "zustand";
 
-import { getCurrency } from "@/services";
 
 interface GlobalState {
   language: string;
@@ -29,7 +29,7 @@ export const useGlobalStore = create<GlobalState>((set) => ({
   },
 
   fetchConfig: async () => {
-    const res: any = await getCurrency();
+    const res: any = await configApi.getCurrency();
 
     const initcurrency = res.find((item: any) => item?.currency == "USD");
 

@@ -1,55 +1,43 @@
 import { PageResult } from "@/types/api";
-import { request, requestWithOption } from "./request";
+import { request } from "./request";
 
 export const waybillApi = {
-  /** 获取包裹分页列表 */
+  /** 获取运单分页列表 */
   listWaybill(
     params: any,
   ): Promise<PageResult<any>> {
     return request.post("/waybill/page", params);
   },
-
-  /** 包裹批量支付 */
+  /** 运单批量支付 */
   batchPay(data: any): Promise<any> {
-    return requestWithOption(
-      { url: "/waybill/pay/preview/init", method: "POST", data },
-      { showToast: true },
-    );
+    return request.post("/waybill/pay/preview/init", data,);
   },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  /** 创建结算包裹预览 key */
-  createPreviewKey(data: any): Promise<string> {
-    return request.post("/waybill/preview/init", data);
+  /** 运单取消预览 */
+  previewCancel(waybillId: string): Promise<any> {
+    return request.put(`/waybill/cancel/preview/${waybillId}`);
   },
-
-  /** 获取包裹结算订单预览 */
-  getPreviewByKey(key: string): Promise<any> {
-    return request.get(`/waybill/preview/key?key=${key}`);
+  /** 运单取消 */
+  cancelWaybill(waybillId: string): Promise<any> {
+    return request.put(`/waybill/cancel/${waybillId}`);
   },
-
-  /** 提交运单 / 创建运单 */
-  submit(data: any): Promise<any> {
-    return requestWithOption(
-      { url: "/waybill/submit", method: "POST", data },
-      { showToast: true },
-    );
+  /** 包裹撤销取消 */
+  withdrawCancel(waybillId: string): Promise<any> {
+    return request.put(`/waybill/cancel/withdraw/${waybillId}`);
+  },
+  /** 运单更换路线预览 */
+  previewChangeLine(waybillId: string): Promise<any> {
+    return request.get(`/waybill/change/line/fee?id=${waybillId}`);
+  },
+  /** 包裹物流查询 */
+  trackDetail(params: any): Promise<any> {
+    return request.get(`/track`, { params });
+  },
+  /** 运单更换路线提交 */
+  changeLine(data: any): Promise<any> {
+    return request.post(`/waybill/change/line`, data);
+  },
+  /** 运单确认收货 */
+  receipt(outboundPackingId: string): Promise<any> {
+    return request.get(`/waybill/sign?outboundPackingId=${outboundPackingId}`);
   },
 };

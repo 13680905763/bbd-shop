@@ -2,7 +2,5 @@ export * from "./address";
 export * from "./goods";
 export * from "./order";
 export * from "./user";
-export * from "./pay";
-export * from "./package";
 export * from "./chat";
-export * from "./config";
+export * from "./configApi";

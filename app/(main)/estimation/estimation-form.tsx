@@ -13,8 +13,8 @@ import { useMutation } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 
 import { useCountries } from "@/hook";
-import { useCategoryOptions } from "@/hook/config/useCategoryOptions";
 import { routesApi } from "@/services/routesApi";
+import { useCategoryOptions } from "@/hook/api";
 
 export interface EstimationFormData {
   countryId: number;

@@ -71,10 +71,7 @@ export const logoutCustomer = (): Promise<void> => {
   );
 };
 
-/** 获取用户信息 */
-export const getUserInfo = (): Promise<UserInfo> => {
-  return request("/customer/detail");
-};
+
 /** 更新用户信息 */
 export const updateUserInfo = (data: any): Promise<UserInfo> => {
   return requestWithOption(
@@ -117,10 +114,7 @@ export const uploadAvatar = async (file: File) => {
   }
 };
 
-/** 获取用户经验 */
-export const getExperience = (): Promise<any> => {
-  return request.get(`/customer-experience/myExperience`);
-};
+
 /** 获取积分列表 */
 export const getPointsList = (): Promise<any> => {
   return request.get(`/customer-points-detail`);
@@ -133,10 +127,7 @@ export const getExperienceList = (): Promise<any> => {
 export const getPromotionUserList = (): Promise<any> => {
   return request.get(`/customer/inviteList`);
 };
-/** 获取奖金配置 */
-export const getPromotionConfig = (): Promise<any> => {
-  return request.get(`/promotion-config?configType=EXPERIENCE`);
-};
+
 /** 获取奖金配置 */
 export const getPromotionBonusList = (): Promise<any> => {
   return request.get(`/customer-bonus-detail`);

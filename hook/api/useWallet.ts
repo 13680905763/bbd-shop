@@ -29,3 +29,12 @@ export const usePointsList = (params: any) => {
     refetchOnReconnect: true, // 网络恢复自动更新
   });
 };
+export function usePaymentMethodList(bizCode: string) {
+  return useQuery({
+    queryKey: ["paymentMethodList", bizCode],
+    queryFn: () => WalletApi.listPaymentMethods(bizCode),
+    gcTime: 1000 * 60,
+    staleTime: 0,
+    refetchOnMount: true,
+  });
+}

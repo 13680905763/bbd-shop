@@ -14,6 +14,14 @@ export function useOrderList(params: any) {
     refetchOnWindowFocus: false, // ⚠️ 禁止切回 Tab 时自动请求
   });
 }
+export function useRefundOrderList(params: any) {
+  return useQuery({
+    queryKey: ["refundOrderList", params],
+    queryFn: () => OrderApi.listRefundOrder(params),
+    placeholderData: keepPreviousData,
+    refetchOnWindowFocus: false, // ⚠️ 禁止切回 Tab 时自动请求
+  });
+}
 export function useCancelOrder() {
   return useMutation({
     mutationFn: (orderId: string) => OrderApi.cancelOrder(orderId),

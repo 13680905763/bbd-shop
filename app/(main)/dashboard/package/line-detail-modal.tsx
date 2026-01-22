@@ -6,13 +6,13 @@ import CommonModal from "@/components/modal/common-modal";
 interface LineDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
-  modalData: any;
+  currentWaybill: any;
 }
 
 export default function LineDetailModal({
   isOpen,
   onClose,
-  modalData,
+  currentWaybill,
 }: LineDetailModalProps) {
   const t = useTranslations("dashboard.package");
 
@@ -31,13 +31,13 @@ export default function LineDetailModal({
           <p className="text-sm text-gray-600">
             {t("lineModal.waybillNumber")}
             <span className="font-medium text-gray-800">
-              {modalData?.lineDetails?.trackingNumber}
+              {currentWaybill?.trackDetail?.trackingNumber}
             </span>
           </p>
           <p className="text-sm text-gray-600">
             {t("lineModal.currentStatus")}
             <span className="font-medium text-[#f0700c]">
-              {modalData?.lineDetails?.statusName}
+              {currentWaybill?.trackDetail?.statusName}
             </span>
           </p>
         </div>
@@ -52,7 +52,7 @@ export default function LineDetailModal({
             {/* 竖线 */}
             <div className="absolute bottom-0 left-2 top-0 w-[2px] bg-gray-200" />
 
-            {modalData?.lineDetails?.trackItems?.map(
+            {currentWaybill?.trackDetail?.trackItems?.map(
               (item: any, index: number) => (
                 <div key={index} className="relative mb-6 flex items-start">
                   {/* 时间线圆点 */}
@@ -79,9 +79,9 @@ export default function LineDetailModal({
         </div>
 
         {/* ========== 多个子运单（如果存在） ========== */}
-        {Array.isArray(modalData?.lineDetails?.subOrderList) &&
-          modalData?.lineDetails.subOrderList.length > 0 &&
-          modalData?.lineDetails.subOrderList.map((sub: any) => (
+        {Array.isArray(currentWaybill?.trackDetail?.subOrderList) &&
+          currentWaybill?.trackDetail?.subOrderList.length > 0 &&
+          currentWaybill?.trackDetail.subOrderList.map((sub: any) => (
             <div key={sub}>
               <h3 className="mb-4 text-lg font-semibold">
                 {t("lineModal.subWaybillTitle")}
@@ -91,7 +91,7 @@ export default function LineDetailModal({
               <div className="relative pl-6">
                 <div className="absolute bottom-0 left-2 top-0 w-[2px] bg-gray-200" />
 
-                {modalData?.lineDetails.subOrderTrackItems?.[sub]?.map(
+                {currentWaybill?.trackDetail?.subOrderTrackItems?.[sub]?.map(
                   (item: any, idx: number) => (
                     <div key={idx} className="relative mb-6 flex items-start">
                       <div className="absolute left-0 mt-1 h-3 w-3 rounded-full bg-green-500 shadow" />

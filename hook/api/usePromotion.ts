@@ -29,15 +29,7 @@ export const useBonus = (params: any) => {
     refetchOnReconnect: true, // 网络恢复自动更新
   });
 };
-export const useBonusConfig = () => {
-  return useQuery({
-    queryKey: ["bonusConfig"],
-    queryFn: () => PromotionApi.getBonusConfig(),
-    staleTime: 1000 * 1000, // 10 秒内认为是新鲜的
-    refetchOnWindowFocus: true, // 用户回来自动更新
-    refetchOnReconnect: true, // 网络恢复自动更新
-  });
-};
+
 // export const usePointsList = () => {
 //   return useQuery({
 //     queryKey: ["pointsList"],

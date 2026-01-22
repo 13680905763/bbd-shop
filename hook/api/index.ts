@@ -8,3 +8,4 @@ export * from "./useWaybill";
 export * from "./useUser";
 export * from "./useWallet";
 export * from "./usePromotion";
+export * from "./useConfig";

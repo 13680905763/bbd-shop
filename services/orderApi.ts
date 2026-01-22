@@ -4,6 +4,9 @@ import { request, requestWithOption } from "./request";
 export const OrderApi = {
     /** 获取订单列表 */
     listOrder: (data: OrderListParams): Promise<any> => request.post("/orders/page", data),
+    listRefundOrder: (data: any): Promise<any> => {
+        return request.post("/order-refund/list", data);
+    },
     /** 订单取消 */
     cancelOrder: (orderId: string): Promise<any> => {
         return request.put(`/orders/cancel?orderId=${orderId}`);

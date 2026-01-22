@@ -39,6 +39,9 @@ export default function CommonTable({
   onPageSizeChange,
   renderCell,
 }: CommonTableProps) {
+  console.log('isLoading', isLoading);
+  console.log('data', data);
+  console.log('columns', columns);
   const total = data?.total || 10;
   return (
     <Table

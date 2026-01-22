@@ -30,6 +30,7 @@ export interface UserInfo {
   myPoints: number;
   vipLv: string;
   inviteCode?: string;
+  inviteCount?: number;
 }
 export interface UserState {
   user: UserInfo | null;

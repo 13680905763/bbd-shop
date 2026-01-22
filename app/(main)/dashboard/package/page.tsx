@@ -15,18 +15,8 @@ import ChangeLineModal from "./change-line-modal";
 import LineDetailModal from "./line-detail-modal";
 
 import PaginationBar from "@/components/common/pagination-bar";
-import { useWaybillList } from "@/hook/api";
-import {
-  batchPayPackage,
-  changePayPackage,
-  changePrePayPackage,
-  ReceiptPackage,
-  refundPayPackage,
-  refundPrePayPackage,
-  routePackage,
-  withdrawPayPackage,
-} from "@/services";
-import { queryClient } from "@/lib/react-query";
+import { useBatchPay, useCancelWaybill, useChangeLine, usePreviewCancel, usePreviewChangeLine, useReceipt, useTrackDetail, useWaybillList, useWithdrawCancel } from "@/hook/api";
+
 import { useSelection } from "@/hook/common";
 import { useConfirm } from "@/components/common/modal/confirm-provider";
 import { BlockSpinner, BusinessProgress, EmptyState, FullscreenLoader } from "@/components/ui";
@@ -39,33 +29,33 @@ const tabKeyToStatusCode: Record<string, string> = {
 };
 
 type ModalType = "cancel" | "revoke" | "changeLine" | "line" | "receipt" | null;
-interface ModalState {
-  type: ModalType;
-  confirm?: () => Promise<void>;
-  order?: any; // 退款 modal 可能需要 order 数据
-  currentPackage?: any; // 退款 modal 选中商品信息
-  cancelPre?: any; //取消预览
-  linePre?: any; //路线预览
-  lineDetails?: any; //路线详情
-  isCancelling?: boolean;
-  isUpdatingRoute?: boolean;
-}
+
 export default function PackagePage() {
   const t = useTranslations("dashboard.package");
   const [activeTab, setActiveTab] =
     useState<keyof typeof tabKeyToStatusCode>("all");
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
-  const [isSubLoading, setIsSubLoading] = useState(false);
   const { data, isLoading, isFetching } = useWaybillList({
     current: page,
     size: pageSize,
     statusCode: tabKeyToStatusCode[activeTab],
   });
+  const { mutateAsync: batchPay, isPending: isBatchPaying } = useBatchPay();
+  const { mutateAsync: previewCancel, isPending: isUpdatingRoute } = usePreviewCancel();
+  const { mutateAsync: withdrawCancel, isPending: isWithdrawCancelling } = useWithdrawCancel();
+  const { mutateAsync: cancelWaybill, isPending: isCancelling } = useCancelWaybill();
+  const { mutateAsync: previewChangeLine, isPending: isPreviewChangingLine } = usePreviewChangeLine();
+  const { mutateAsync: changeLine, isPending: isChangingLine } = useChangeLine();
+  const { mutateAsync: trackDetail, isPending: isTracking } = useTrackDetail();
+  const { mutateAsync: receipt, isPending: isReceipting } = useReceipt();
 
   const router = useRouter();
 
-  const [modal, setModal] = useState<ModalState>({ type: null });
+  const [modalType, setModalType] = useState<ModalType>(null);
+  const [currentWaybill, setCurrentWaybill] = useState<any>(null);
+  const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
+
   const { confirm } = useConfirm();
 
   const {
@@ -76,118 +66,72 @@ export default function PackagePage() {
     isAllSelected,
     onToggleSelectAll,
   } = useSelection(data?.records || [], { idKey: "packingPackageCode" });
+
   // 打开取消弹窗
-  const openCancelModal = async (currentPackage: any) => {
-    const res = await refundPrePayPackage(currentPackage?.id);
-
-    setModal({
-      type: "cancel",
-      confirm: async () => {
-        try {
-          const bizCode = await refundPayPackage(currentPackage?.id);
-
-          if (bizCode) router.push("/payment/" + bizCode);
-          await queryClient.invalidateQueries({ queryKey: ["packageList"] }); // 手动刷新
-        } catch {
-        } finally {
-          setModal({ type: null });
-        }
-      },
-      currentPackage,
-      cancelPre: res,
-    });
+  const onCancel = async (waybill: any) => {
+    const res = await previewCancel(waybill?.id);
+    setCurrentWaybill({ ...waybill, cancelPre: res });
+    setModalType("cancel");
   };
-
-  // 打开跟换路线弹窗
-  const openChangeLineModal = async (currentPackage: any) => {
-    const res = await changePrePayPackage(currentPackage.id);
-
-    setModal({
-      type: "changeLine",
-      linePre: res.map((item: any) => {
-        return {
-          ...item,
-          checked:
-            item?.id == currentPackage?.shipping?.templateId ? true : false,
-          packageId: currentPackage?.id,
-        };
-      }),
-    });
+  const handleCancel = async (waybillId: string) => {
+    try {
+      const bizCode = await cancelWaybill(waybillId);
+      if (bizCode) router.push("/payment/" + bizCode);
+    } catch {
+    } finally {
+      setModalType(null);
+    }
   };
-  // 提交跟换路线
-  const handleChangeLine = async () => {
-    const selected = modal.linePre.find((i: any) => i.checked);
-
-    if (!selected) return;
-    const payload = {
-      id: selected.packageId,
-      templateId: selected.id,
-    };
-
-    await changePayPackage(payload);
-    await queryClient.invalidateQueries({ queryKey: ["packageList"] });
-    setModal({ type: null });
+  // 打开更换路线弹窗
+  const onChangeLine = async (waybill: any) => {
+    const res = await previewChangeLine(waybill.id);
+    setSelectedRouteId(res.find((i: any) => i.id == waybill?.shipping?.templateId)?.id || null);
+    setCurrentWaybill({ ...waybill, changePre: res });
+    setModalType("changeLine");
   };
-  // 打开路线详情弹窗
-  const openLineModal = async (currentPackage: any) => {
-    const res = await routePackage({
-      serverCode: currentPackage?.shipping?.serverCode,
-      shippingCode: currentPackage?.shipping?.shippingCode,
+  const handleChangeLine = async (waybillId: string, routeId: string | null) => {
+    await changeLine({
+      id: waybillId,
+      templateId: routeId,
     });
-
-    console.log("line", res);
-
-    setModal({
-      type: "line",
-      confirm: async () => {
-        setModal({ type: null });
-      },
-      lineDetails: res,
-    });
+    setModalType(null);
   };
   // 打开撤销退款弹窗
-  const openRevokeModal = (packageId: string) => {
-    console.log(666);
+  const onRevoke = (waybillId: string) => {
     confirm({
       title: t("withdrawTitle"),
       content: t("withdrawContent"),
       onConfirm: async () => {
-        // 调用后端撤销接口
-        await withdrawPayPackage(packageId);
-        queryClient.invalidateQueries({ queryKey: ["packageList"] });
-        // setModal({ type: null });
+        await withdrawCancel(waybillId);
+        setModalType(null);
       },
     });
   };
+  // 打开路线详情弹窗
+  const onTrack = async (pack: any) => {
+    const res = await trackDetail({
+      serverCode: pack?.shipping?.serverCode,
+      shippingCode: pack?.shipping?.shippingCode,
+    });
+    setCurrentWaybill({ ...pack, trackDetail: res });
+    setModalType("line");
+  };
   // 打开收货弹窗
-  const openReceiptModal = (packageId: string) => {
+  const onReceipt = (packageId: string) => {
     confirm({
       title: t("receiptTitle"),
       content: t("receiptContent"),
       onConfirm: async () => {
-        // 调用后端撤销接口
-        await ReceiptPackage(packageId);
-        await queryClient.invalidateQueries({ queryKey: ["packageList"] });
-        setModal({ type: null });
+        await receipt(packageId);
+        setModalType(null);
       },
     });
   };
-  // 批量支付
-  const handleSubmit = async () => {
-    if (isSubLoading) return;
-    setIsSubLoading(true);
-    try {
-      const bizCode = await batchPayPackage({ packageSet: selectedIds });
-
-      if (bizCode) {
-        router.push(`/payment/${bizCode}`);
-      }
-    } catch {
-    } finally {
-      setIsSubLoading(false);
-    }
+  // 批量支付/单独支付
+  const handleBatchPay = async (waybillIds: string[] = []) => {
+    const bizCode = await batchPay({ packageSet: waybillIds });
+    if (bizCode) router.push(`/payment/${bizCode}`);
   };
-
 
   const renderWaybillTabContent = () => {
     if (!data?.records?.length) return <EmptyState />;
@@ -195,25 +139,19 @@ export default function PackagePage() {
       <div className="relative">
         {(isFetching) && <BlockSpinner />}
         <div className="space-y-3 relative">
-          {data.records.map((p: any) => (
+          {data.records.map((waybill: any) => (
             <PackageItem
-              key={p.packingPackageCode || p.outboundId}
-              activeTab={activeTab}
-              pack={p}
-              selected={isSelected(p.packingPackageCode)}
-              onCancelPackage={() => openCancelModal(p)} //取消包裹预览
-              onChange={() => onSelect(p.packingPackageCode)}
-              onChangePackageLine={() => openChangeLineModal(p)} //变更路线预览
-              onLine={() => {
-                openLineModal(p);
-              }} // 路线详情
-              onPayPackageRedirect={() => {
-                router.push(`/payment/${p?.packingPackageCode}`);
-              }} //支付
-              onReceiptPackage={() => {
-                openReceiptModal(p?.id);
-              }} //收货
-              onRevokePackage={() => openRevokeModal(p?.id)} //撤回取消包裹
+              key={waybill.packingPackageCode}
+              showCheckbox={activeTab === "pay"}
+              pack={waybill}
+              onCancel={onCancel}
+              isSelected={isSelected}
+              onChange={onSelect}
+              onChangeLine={onChangeLine} //变更路线预览
+              onPay={handleBatchPay} //支付
+              onRevoke={onRevoke} //撤回取消包裹
+              onTrack={onTrack} //物流详情
+              onReceipt={onReceipt} //收货
             />
           ))}
         </div>
@@ -227,9 +165,9 @@ export default function PackagePage() {
                 className="w-[200px]"
                 color="primary"
                 isDisabled={!hasSelected}
-                isLoading={isSubLoading}
+                isLoading={isBatchPaying}
                 size="lg"
-                onPress={handleSubmit}
+                onPress={() => handleBatchPay(selectedIds)}
               >
                 {t("batchPay")}
                 {selectedIds.length ? ` (${selectedIds.length})` : ""}
@@ -253,7 +191,6 @@ export default function PackagePage() {
       <div className="mt-5">
         <BusinessProgress currentStep={3} />
       </div>
-
       <Tabs
         aria-label="Options"
         classNames={{
@@ -266,52 +203,45 @@ export default function PackagePage() {
         variant="underlined"
         onSelectionChange={(key) => {
           const k = String(key) as keyof typeof tabKeyToStatusCode;
-
           setActiveTab(k);
           setPage(1);
           setPageSize(k === "submit" ? 100 : 10);
-          router.push(`/dashboard/package?tab=${key}`);
         }}
       >
         <Tab key="all" title={t("tabs.all")}>
           {renderWaybillTabContent()}
         </Tab>
-
         <Tab key="pay" title={t("tabs.pay")}>
-          {renderWaybillTabContent()} 
+          {renderWaybillTabContent()}
         </Tab>
-
         <Tab key="shipping" title={t("tabs.shipping")}>
           {renderWaybillTabContent()}
         </Tab>
-
         <Tab key="receivded" title={t("tabs.receivded")}>
           {renderWaybillTabContent()}
         </Tab>
       </Tabs>
-      {/* 取消弹窗 */}
       <CancelModal
-        isOpen={modal.type === "cancel"}
-        modalData={modal}
-        onClose={() => setModal({ type: null })}
-        onOpenChangeLine={async () => {
-          await openChangeLineModal(modal?.currentPackage);
-        }}
-        setModalData={setModal}
+        currentWaybill={currentWaybill}
+        isOpen={modalType === "cancel"}
+        onClose={() => setModalType(null)}
+        onConfirm={handleCancel}
+        onChangeLine={onChangeLine}
+        isCancelling={isCancelling}
+        isChangingLine={isPreviewChangingLine}
       />
-      {/* 更换路线弹窗 */}
       <ChangeLineModal
-        isOpen={modal.type === "changeLine"}
-        modalData={modal}
-        onClose={() => setModal({ type: null })}
+        isOpen={modalType === "changeLine"}
+        currentWaybill={currentWaybill}
+        onClose={() => setModalType(null)}
         onConfirm={handleChangeLine}
-        setModalData={setModal}
+        selectedRouteId={selectedRouteId}
+        setSelectedRouteId={setSelectedRouteId}
       />
-      {/* 路线详情弹窗 */}
       <LineDetailModal
-        isOpen={modal.type === "line"}
-        modalData={modal}
-        onClose={() => setModal({ type: null })}
+        isOpen={modalType === "line"}
+        currentWaybill={currentWaybill}
+        onClose={() => setModalType(null)}
       />
     </div>
   );

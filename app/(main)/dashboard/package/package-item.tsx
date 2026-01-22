@@ -1,30 +1,35 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Button, Checkbox, Image } from "@heroui/react";
 import { FiSearch } from "react-icons/fi";
 import { useTranslations } from "next-intl";
-
 import MediaPreviewGroup, {
   MediaItem,
 } from "@/components/common/media-preview";
 import { useGlobalStore } from "@/store";
 
 export default function PackageItem({
-  pack,
-  onPayPackageRedirect,
-  activeTab,
-  selected,
-  onChange,
-  onRevokePackage,
-  onCancelPackage,
-  onChangePackageLine,
-  onLine,
-  onReceiptPackage,
+  pack, //运单信息
+  showCheckbox, //是否展示勾选框
+  isSelected, //是否选中
+  onChange, //选中状态改变回调
+  onPay, //支付
+  onChangeLine, //更换路线
+  onCancel, //取消
+  onRevoke, //撤销
+  onTrack, //跟踪
+  onReceipt, //确认收货
 }: any) {
   const t = useTranslations("dashboard.package.packageItem");
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const { currency } = useGlobalStore();
+  const [isCancelLoading, setIsCancelLoading] = useState(false);
+  const [isPayLoading, setIsPayLoading] = useState(false);
+  const [isLineLoading, setIsLineLoading] = useState(false);
+  const [isTrackLoading, setIsTrackLoading] = useState(false);
+
+
 
   const isDragging = useRef(false);
   const startX = useRef(0);
@@ -71,9 +76,9 @@ export default function PackageItem({
 
   return (
     <div className="card-cart mb-4 p-2 bg-white rounded-lg shadow-sm">
-      <div className="flex items-center gap-2 p-2 text-sm">
-        {activeTab === "pay" ? (
-          <Checkbox isSelected={selected} onChange={onChange} />
+      <div className="flex items-center  p-2 text-sm">
+        {showCheckbox ? (
+          <Checkbox isSelected={isSelected(pack.packingPackageCode)} onChange={() => onChange(pack.packingPackageCode)} />
         ) : null}
         {t("packageNumberLabel")}:
         <span className="font-semibold">{pack?.packingPackageCode}</span>
@@ -120,29 +125,26 @@ export default function PackageItem({
             </span>
           </div>
 
-          <div className="flex flex-col justify-center p-2 text-gray-700 flex-[0_0_200px]">
+          <div className="space-y-2 flex-[0_0_200px]">
             <p>{pack?.shipping?.methodCode}</p>
             <p>{pack?.shipping?.templateName}</p>
             {/* 物流信息 */}
             {pack?.shipping?.shippingCode && (
-              <div className="mt-3 flex items-center gap-2 text-sm text-gray-700">
-                <div className="flex flex-col flex-1">
-                  <span
-                    className="text-gray-500"
-                    role="button"
-                    onClick={onLine}
-                  >
-                    <FiSearch
-                      className="inline-block text-gray-500 mr-1"
-                      size={14}
-                    />
-                    {t("shippingCode")}
-                  </span>
-                  <span className="font-medium text-gray-900 break-all">
-                    {pack.shipping.shippingCode}
-                  </span>
-                </div>
-              </div>
+              <Button
+                className="button-default"
+                size="sm"
+                isLoading={isTrackLoading}
+                onPress={async () => {
+                  setIsTrackLoading(true);
+                  await onTrack(pack);
+                  setIsTrackLoading(false);
+                }}
+              >
+                <FiSearch
+                  size={14}
+                />
+                {pack.shipping.shippingCode}
+              </Button>
             )}
           </div>
 
@@ -157,69 +159,76 @@ export default function PackageItem({
             </span>
           </div>
 
-          <div className="flex flex-col gap-2 p-2 flex-[0_0_150px]">
-            <div className="space-y-2 flex flex-col">
-              {/* 状态展示 */}
-              <div className="text-[#f0700c] font-medium">{pack?.status}</div>
-              {/* 状态：更换路线 */}
-              {pack?.changeFlag && (
-                <Button
-                  color="success"
-                  radius="sm"
-                  size="sm"
-                  variant="flat"
-                  onPress={onChangePackageLine}
-                >
-                  {t("changeBtn")}
-                </Button>
-              )}
-              {/* 状态：申请取消 */}
-              {pack?.cancelFlag && (
-                <Button
-                  radius="sm"
-                  size="sm"
-                  variant="flat"
-                  onPress={onCancelPackage}
-                >
-                  {t("requestRefund")}
-                </Button>
-              )}
+          <div className="space-y-2 p-2 flex-[0_0_150px]">
+            <div className="text-[#f0700c] font-medium">{pack?.status}</div>
+            {(pack?.statusCode == 203 || pack?.statusCode == 209) && (
+              <Button
+                color="primary"
+                radius="sm"
+                size="sm"
+                isLoading={isPayLoading}
+                onPress={async () => {
+                  setIsPayLoading(true);
+                  await onPay([pack.packingPackageCode])
+                  setIsPayLoading(false);
+                }
+                }
+              >
+                {pack?.statusCode == 203 ? t("payButton") : t("payCancelFee")}
+              </Button>
+            )}
+            {pack?.changeFlag && (
+              <Button
+                // color="primary"
+                className="button-default"
+                radius="sm"
+                size="sm"
+                isLoading={isLineLoading}
+                onPress={async () => {
+                  setIsLineLoading(true);
+                  await onChangeLine(pack);
+                  setIsLineLoading(false);
+                }}
+              >
+                {t("changeBtn")}
+              </Button>
+            )}
+            {pack?.cancelFlag && (
+              <Button
+                radius="sm"
+                size="sm"
+                variant="flat"
+                isLoading={isCancelLoading}
+                onPress={async () => {
+                  setIsCancelLoading(true);
+                  await onCancel(pack);
+                  setIsCancelLoading(false);
+                }}
+              >
+                {t("requestRefund")}
+              </Button>
+            )}
+            {pack?.withdrawFlag && (
+              <Button
+                radius="sm"
+                size="sm"
+                variant="flat"
+                onPress={() => onRevoke(pack?.id)}
+              >
+                {t("withdrawRequest")}
+              </Button>
+            )}
 
-              {pack?.withdrawFlag && (
-                <Button
-                  color="danger"
-                  radius="sm"
-                  size="sm"
-                  variant="flat"
-                  onPress={onRevokePackage}
-                >
-                  {t("withdrawRequest")}
-                </Button>
-              )}
-
-              {/* 状态：待付款 */}
-              {(pack?.statusCode == 203 || pack?.statusCode == 209) && (
-                <Button
-                  color="primary"
-                  radius="sm"
-                  size="sm"
-                  onPress={onPayPackageRedirect}
-                >
-                  {pack?.statusCode == 203 ? t("payButton") : t("payCancelFee")}
-                </Button>
-              )}
-              {/* 状态：确认签收 */}
-              {pack?.signFlag && (
-                <Button
-                  color="primary"
-                  radius="sm"
-                  size="sm"
-                  onPress={onReceiptPackage}
-                >
-                  receipt
-                </Button>
-              )}
-            </div>
+            {pack?.signFlag && (
+              <Button
+                color="primary"
+                radius="sm"
+                size="sm"
+                onPress={() => onReceipt(pack?.id)}
+              >
+                {t("receipt")}
+              </Button>
+            )}
           </div>
         </div>
 

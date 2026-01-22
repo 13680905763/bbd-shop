@@ -492,18 +492,6 @@
             "refundable": "可退",
             "unrefundable": "不可退",
             "remarkPlaceholder": "请输入退款原因",
-            "refundTable": {
-                "orderCode": "订单号",
-                "productTitle": "商品名称",
-                "picUrl": "商品图片",
-                "refundAmount": "退款金额",
-                "applyRemark": "申请原因",
-                "handleRemark": "驳回原因",
-                "status": "退款状态",
-                "createTime": "申请时间",
-                "updateTime": "审核时间",
-                "emptyContent": "暂无退款记录"
-            },
             "orderItem": {
                 "orderNumber": "订单号:",
                 "createTime": "创建时间:",
@@ -524,6 +512,22 @@
                 "title": "订单QC与包裹管理",
                 "description": "请前往仓库页面查看质检照片和提交包裹",
                 "button": "前往仓库"
+            },
+            "refundList": {
+                "title": "退款列表",
+                "tableColumn": {
+                    "orderCode": "订单号",
+                    "productTitle": "商品名称",
+                    "picUrl": "商品图片",
+                    "refundAmount": "退款金额",
+                    "propAndValue": "属性值",
+                    "applyRemark": "申请原因",
+                    "handleRemark": "驳回原因",
+                    "status": "退款状态",
+                    "createTime": "申请时间",
+                    "updateTime": "审核时间",
+                    "emptyContent": "暂无退款记录"
+                }
             }
         },
         "warehouse": {
@@ -552,6 +556,7 @@
             "receiptTitle": "确认收货",
             "receiptContent": "确认收到此商品？",
             "refundTitle": "申请退款",
+            "Receipt": "收货",
             "cancelModal": {
                 "title": "取消",
                 "cancelCard": {
@@ -614,38 +619,17 @@
         },
         "promotion": {
             "page": {
-                "process": [
-                    "分享您的联盟代码",
-                    "您邀请的朋友确认收到您的联盟代码",
-                    "收到您的联盟佣金"
-                ],
-                "invite": {
-                    "copyUrl": "复制此 URL 并使用它将用户重定向到您的联盟 lD 的主页"
-                },
-                "myAlliance": {
-                    "title": "我的联盟",
-                    "totalReward": "总奖励",
-                    "record": "记录",
-                    "withdraw": "领取",
-                    "inviteUsers": "邀请用户 >",
-                    "withdrawTimes": "取款",
-                    "earned": "赚取 >"
-                },
-                "myLevel": {
-                    "title": "我的等级",
-                    "experience": "我的经验：",
-                    "bonusRate": "奖金比例",
-                    "experienceRange": "经验"
-                },
-                "faq": {
-                    "title": "权益FAQ",
-                    "questions": [
-                        "什么是联盟会员计划？",
-                        "我的奖金是如何计算的？",
-                        "如何免费推广？"
-                    ],
-                    "defaultContent": "敬请期待."
-                }
+                "process1": "分享您的联盟代码",
+                "process2": "您邀请的朋友确认收到您的联盟代码",
+                "process3": "收到您的联盟佣金",
+                "processTip": "复制此 URL 并使用它将用户重定向到您的联盟 lD 的主页",
+                "title1": "我的联盟",
+                "totalReward": "总奖励",
+                "inviteUsers": "邀请用户",
+                "experience": "我的经验",
+                "title2": "我的等级",
+                "bonusRate": "奖金比例",
+                "experienceRange": "经验"
             },
             "invitedUser": {
                 "title": "被邀请用户",

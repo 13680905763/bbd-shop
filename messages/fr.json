@@ -552,6 +552,7 @@
             "receiptTitle": "Confirmer la réception",
             "receiptContent": "Confirmer la réception de cet article ?",
             "refundTitle": "Demander un remboursement",
+            "Receipt": "Réception",
             "cancelModal": {
                 "title": "Annuler",
                 "cancelCard": {
@@ -614,38 +615,17 @@
         },
         "promotion": {
             "page": {
-                "process": [
-                    "Partagez votre code de parrainage",
-                    "L'ami que vous avez invité confirme avoir reçu votre code de parrainage",
-                    "Recevez votre commission de parrainage"
-                ],
-                "invite": {
-                    "copyUrl": "Copiez cette URL et utilisez-la pour rediriger les utilisateurs vers la page d'accueil de votre ID de parrainage"
-                },
-                "myAlliance": {
-                    "title": "Mon Alliance",
-                    "totalReward": "Récompense totale",
-                    "record": "Historique",
-                    "withdraw": "Retirer",
-                    "inviteUsers": "Inviter des utilisateurs >",
-                    "withdrawTimes": "Retraits",
-                    "earned": "Gagné >"
-                },
-                "myLevel": {
-                    "title": "Mon Niveau",
-                    "experience": "Mon expérience :",
-                    "bonusRate": "Taux de bonus",
-                    "experienceRange": "Expérience"
-                },
-                "faq": {
-                    "title": "FAQ sur les avantages",
-                    "questions": [
-                        "Qu'est-ce que le programme d'affiliation ?",
-                        "Comment mon bonus est-il calculé ?",
-                        "Comment promouvoir gratuitement ?"
-                    ],
-                    "defaultContent": "Restez à l'écoute."
-                }
+                "process1": "Partagez votre code de parrainage",
+                "process2": "Votre ami invité confirme la réception de votre code",
+                "process3": "Recevez votre commission de parrainage",
+                "processTip": "Copiez cette URL et utilisez-la pour rediriger les utilisateurs vers votre page de parrainage",
+                "title1": "Mon Programme de Parrainage",
+                "totalReward": "Récompenses Totales",
+                "inviteUsers": "Utilisateurs Invités",
+                "experience": "Mon Expérience",
+                "title2": "Mon Niveau",
+                "bonusRate": "Taux de Bonus",
+                "experienceRange": "Plage d'Expérience"
             },
             "invitedUser": {
                 "title": "Utilisateurs Invités",

@@ -552,6 +552,7 @@
             "receiptTitle": "Confirm Receipt",
             "receiptContent": "Confirm receipt of this item?",
             "refundTitle": "Request Refund",
+            "Receipt": "Receipt",
             "cancelModal": {
                 "title": "Cancel",
                 "cancelCard": {
@@ -614,38 +615,17 @@
         },
         "promotion": {
             "page": {
-                "process": [
-                    "Share your referral code",
-                    "Your invited friends confirm they received your referral code",
-                    "Receive your referral commission"
-                ],
-                "invite": {
-                    "copyUrl": "Copy this URL and use it to redirect users to your referral ID homepage"
-                },
-                "myAlliance": {
-                    "title": "My Alliance",
-                    "totalReward": "Total Reward",
-                    "record": "Records",
-                    "withdraw": "Withdraw",
-                    "inviteUsers": "Invited Users >",
-                    "withdrawTimes": "Withdrawals",
-                    "earned": "Earned >"
-                },
-                "myLevel": {
-                    "title": "My Level",
-                    "experience": "My Experience:",
-                    "bonusRate": "Bonus Rate",
-                    "experienceRange": "Experience"
-                },
-                "faq": {
-                    "title": "Rights FAQ",
-                    "questions": [
-                        "What is the Referral Membership Program?",
-                        "How is my bonus calculated?",
-                        "How to promote for free?"
-                    ],
-                    "defaultContent": "Stay tuned."
-                }
+                "process1": "Share your referral code",
+                "process2": "Your invited friend confirms receiving your code",
+                "process3": "Receive your referral commission",
+                "processTip": "Copy this URL and use it to redirect users to your referral homepage",
+                "title1": "My Referral Program",
+                "totalReward": "Total Rewards",
+                "inviteUsers": "Invited Users",
+                "experience": "My Experience",
+                "title2": "My Level",
+                "bonusRate": "Bonus Rate",
+                "experienceRange": "Experience Range"
             },
             "invitedUser": {
                 "title": "Invited Users",
