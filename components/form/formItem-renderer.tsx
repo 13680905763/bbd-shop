@@ -166,7 +166,6 @@ export default function FormItemRenderer<T extends Record<string, any>>({
             return (
               <AreaSelector
                 key={name} // 用 key
-                errorMessage={errorMessage}
                 value={{
                   countryId: formData.countryId ?? "",
                   stateId: formData.stateId ?? "",

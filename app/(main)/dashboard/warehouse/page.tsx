@@ -50,7 +50,6 @@ export default function WarehousePage() {
 
   const handleSubmit = async () => {
     const key = await createPreview(selectedIds);
-
     router.push(`/submit/warehouse?key=${key}`);
   };
 

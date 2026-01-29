@@ -23,10 +23,9 @@ interface Props {
     city: string;
   };
   onChange: (val: Props["value"]) => void;
-  errorMessage?: string;
 }
 
-export default function AreaSelector({ value, onChange, errorMessage }: Props) {
+export default function AreaSelector({ value, onChange }: Props) {
   const t = useTranslations("Common.AreaSelector");
   const { data: countries = [] } = useCountries();
   const { data: states = [] } = useProvinces(value.countryId);
@@ -60,10 +59,9 @@ export default function AreaSelector({ value, onChange, errorMessage }: Props) {
   return (
     <div className="flex flex-col gap-4">
       <Autocomplete
-        errorMessage={errorMessage}
-        isInvalid={!!errorMessage}
         isRequired={true}
         label={t("country.label")}
+        errorMessage={t("country.errorMessage")}
         placeholder={t("country.placeholder")}
         selectedKey={String(value.countryId) || null}
         variant="bordered"
@@ -81,6 +79,7 @@ export default function AreaSelector({ value, onChange, errorMessage }: Props) {
       <Autocomplete
         isRequired={true}
         label={t("state.label")}
+        errorMessage={t("state.errorMessage")}
         placeholder={t("state.placeholder")}
         selectedKey={String(value.stateId) || null}
         variant="bordered"
@@ -99,6 +98,7 @@ export default function AreaSelector({ value, onChange, errorMessage }: Props) {
         <Autocomplete
           isRequired={true}
           label={t("city.label")}
+          errorMessage={t("city.errorMessage")}
           placeholder={t("city.placeholder")}
           selectedKey={String(value.city) || null}
           variant="bordered"

@@ -1,7 +1,9 @@
+import { useUserCoupon } from "@/hook/api";
 import { Avatar, Tab, Tabs } from "@heroui/react";
 import React from "react";
 
 export default function CouponTab() {
+  const { data: couponList } = useUserCoupon({ status: 1 });
   return (
     <Tabs
       aria-label="Options"

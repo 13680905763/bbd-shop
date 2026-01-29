@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 
 import BalanceTab from "./balance-tab";
 import ScoreTab from "./score-tab";
+import CouponTab from "./coupon-tab";
 
 interface TabConfig {
   key: string;
@@ -47,10 +48,10 @@ export default function WalletPage() {
           <ScoreTab />
         );
         break;
-      // case "coupon":
-      //   // component = <CouponTab />;
-      //   component = <div>coupon</div>;
-      //   break;
+      case "coupon":
+        component = <CouponTab />;
+        // component = <div>coupon</div>;
+        break;
     }
 
     return { key: tab.key, component };

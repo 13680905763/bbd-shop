@@ -38,6 +38,6 @@ export const waybillApi = {
   },
   /** 运单确认收货 */
   receipt(outboundPackingId: string): Promise<any> {
-    return request.get(`/waybill/sign?outboundPackingId=${outboundPackingId}`);
+    return request.put(`/waybill/sign?outboundPackingId=${outboundPackingId}`);
   },
 };

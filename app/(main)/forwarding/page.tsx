@@ -12,10 +12,12 @@ import ServiceDetailModal from "./service-detail-modal";
 import { useGlobalStore } from "@/store";
 import { FullscreenLoader } from "@/components/ui";
 import CopyText from "@/components/ui/copy-text";
+import { useUserInfo } from "@/hook/api";
 
 export default function Forwarding() {
   const t = useTranslations("forwarding");
   const { currency } = useGlobalStore();
+  const { data: user, error } = useUserInfo();
 
   const {
     servicesList,
@@ -79,13 +81,13 @@ export default function Forwarding() {
           <p className="font-bold mb-5">{t("warehouseAddress")}</p>
           <div className="relative w-full bg-[#f4f4f5] rounded-large p-4 text-sm font-mono text-default-600">
             <div className="flex flex-col gap-1">
-              <span>Bryant-4-Bryant</span>
+              <span>{`代发-${user?.nickName || ""}`}</span>
               <span>15916408071</span>
               <span>广东省惠州市惠城区水口荔枝城青创产业园9楼901</span>
             </div>
             <CopyText
               className="absolute top-3 right-3 text-default-400 hover:text-default-700 transition-colors p-1 rounded-md hover:bg-default-100"
-              text={`Bryant-4-Bryant\n15916408071\n广东省惠州市惠城区水口荔枝城青创产业园9楼901`}
+              text={`代发-${user?.nickName || ""}\n15916408071\n广东省惠州市惠城区水口荔枝城青创产业园9楼901`}
             >
               <IoCopyOutline size={18} />
             </CopyText>

@@ -26,15 +26,12 @@ export default function PackageProductItem({
         isBorder && "rounded-lg border border-gray-200 p-4",
       )}
     >
-      {/* 主行 */}
       <div
         className={clsx(
           "grid items-start gap-4",
-          // 列宽统一在这里定义
           "grid-cols-[90px_1fr_80px_100px_140px_80px]",
         )}
       >
-        {/* 图片 */}
         <Image
           alt="Product"
           className="rounded-md object-cover"
@@ -44,7 +41,6 @@ export default function PackageProductItem({
           width={90}
         />
 
-        {/* 商品信息 */}
         <div className="min-w-0">
           <button
             className={clsx(
