@@ -18,7 +18,7 @@ export function useBatchPay() {
 }
 export function usePreviewCancel() {
   return useMutation({
-    mutationFn: (waybillId: string) => waybillApi.previewCancel(waybillId),
+    mutationFn: (params: { id: string }) => waybillApi.previewCancel(params),
   });
 }
 export function useCancelWaybill() {
@@ -40,12 +40,20 @@ export function useWithdrawCancel() {
 }
 export function usePreviewChangeLine() {
   return useMutation({
-    mutationFn: (waybillId: string) => waybillApi.previewChangeLine(waybillId),
+    mutationFn: (params: { id: string; addressId?: string }) => waybillApi.previewChangeLine(params),
   });
 }
 export function useChangeLine() {
   return useMutation({
     mutationFn: (params: any) => waybillApi.changeLine(params),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["waybillList"] });
+    },
+  });
+}
+export function useChangeAddress() {
+  return useMutation({
+    mutationFn: (params: any) => waybillApi.changeAddress(params),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["waybillList"] });
     },

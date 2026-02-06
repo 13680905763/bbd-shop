@@ -1,12 +1,7 @@
 "use client";
 
 import { Statistic } from "antd";
-import dayjs from "dayjs";
-import duration from "dayjs/plugin/duration";
 import { useTranslations } from "next-intl";
-
-// 统一在模块作用域执行 extend
-dayjs.extend(duration);
 
 interface RefundCountdownProps {
   timestamp: number | string;

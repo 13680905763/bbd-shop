@@ -117,9 +117,42 @@
                 "minute": "分 ",
                 "second": "秒 ",
                 "expired": "已过期"
+            },
+            "coupon": {
+                "minSpend": "满{amount}可用",
+                "discount": "优惠",
+                "restriction": "限制",
+                "shippingExcludingCustoms": "运费（不含关税）",
+                "usage": "用途",
+                "internationalPackage": "国际包裹",
+                "countries": "地区",
+                "all": "全部国家",
+                "redeem": "兑换",
+                "type": "类型",
+                "validity": "有效期",
+                "days": "天",
+                "points": "积分",
+                "src": "来源"
             }
         },
         "block": {
+            "coupon": {
+                "title": "全场通用券",
+                "useNow": "立即使用",
+                "validUntil": "有效期至:",
+                "code": "券码:",
+                "available": "满{amount}可用",
+                "minSpend": "最低费用 > {amount}",
+                "discount": "折扣",
+                "restriction": "限制",
+                "shippingExcludingCustoms": "运费（不包括清关费）",
+                "usage": "运输用途",
+                "internationalPackage": "国际包裹",
+                "countries": "可用国家",
+                "all": "全部",
+                "type": "类型",
+                "src": "来源"
+            },
             "addressItem": {
                 "edit": "编辑",
                 "delete": "删除",
@@ -159,6 +192,9 @@
                 },
                 "estimation": {
                     "label": "运费估算"
+                },
+                "diy": {
+                    "label": "自定义订单"
                 },
                 "help": {
                     "label": "帮助中心"
@@ -418,6 +454,14 @@
                 "score": "积分",
                 "coupon": "优惠券"
             },
+            "coupon": {
+                "unused": "可用优惠券",
+                "used": "已使用优惠券",
+                "expired": "已过期优惠券",
+                "noAvailable": "暂无可用优惠券",
+                "noUsed": "暂无已使用优惠券",
+                "noExpired": "暂无已过期优惠券"
+            },
             "balance": {
                 "title": "余额",
                 "recharge": "充值",
@@ -520,7 +564,6 @@
                     "productTitle": "商品名称",
                     "picUrl": "商品图片",
                     "refundAmount": "退款金额",
-                    "propAndValue": "属性值",
                     "applyRemark": "申请原因",
                     "handleRemark": "驳回原因",
                     "status": "退款状态",
@@ -566,7 +609,9 @@
                     "submittingSubtitle": "请稍候",
                     "serviceFee": "服务费",
                     "packingFee": "包装费",
-                    "totalFee": "总费用"
+                    "totalFee": "总费用",
+                    "feeNotice": "由于库内作业已经进行，本次取消包裹需要缴纳 {amount}，具体费用如下：",
+                    "freeNotice": "本次取消包裹无需缴纳费用"
                 },
                 "changeRouteCard": {
                     "title": "更换路线",
@@ -574,6 +619,28 @@
                 }
             },
             "changeTitle": "更换路线",
+            "edit": "更多操作",
+            "editModal": {
+                "title": "修改包裹信息",
+                "changeRoute": "更换路线",
+                "changeAddress": "更换地址",
+                "routeDesc": "重新选择更合适的运输路线",
+                "addressDesc": "修改收货地址信息",
+                "selectAddress": "选择收货地址",
+                "default": "默认",
+                "noAddress": "暂无地址，请先在地址管理中添加",
+                "addAddress": "添加新地址",
+                "addressTitle": "选择收货地址",
+                "routeTitle": "选择运输路线",
+                "noRoute": "暂无可用路线",
+                "remarkTitle": "备注",
+                "remarkPlaceholder": "请输入备注（可选）",
+                "result": {
+                    "noChange": "修改成功，运费无变化",
+                    "payExtra": "修改成功，需补缴运费 {amount}",
+                    "refund": "修改成功，将退还运费 {amount} 至您的余额"
+                }
+            },
             "lineModal": {
                 "title": "物流跟踪",
                 "mainWaybillTitle": "主运单跟踪",
@@ -593,6 +660,7 @@
                 "totalFeeLabel": "总费用",
                 "pendingPaymentStatus": "待付款",
                 "payButton": "付款",
+                "edit": "更多操作",
                 "cancelButton": "取消",
                 "payCancelFee": "付款取消费用",
                 "requestRefund": "申请取消",
@@ -768,9 +836,34 @@
         "agreeDisclaimer": "我已阅读并同意BBDbuy的免责声明",
         "addToCart": "加入购物车",
         "buyNow": "立即购买",
-        "continueShopping": "继续购物",
-        "riskNotice": "风险提示",
-        "riskDescription": "您提交的商品可能存在一定的运输风险。为了您的资金安全，我们暂时无法提供在线订购服务。详情请咨询在线客服！"
+        "continueShopping": "返回首页",
+        "riskNotice": "提示",
+        "riskDescription": "十分抱歉,您所浏览的商品已售空或已下架，暂不支持购买。详情请咨询在线客服。"
+    },
+    "DIY": {
+        "title": "自定义订单",
+        "productDetails": "商品详情",
+        "productLink": "商品链接",
+        "productLinkPlaceholder": "请输入商品链接",
+        "productName": "商品名称",
+        "productNamePlaceholder": "请输入商品名称",
+        "specifications": "规格",
+        "addSpecification": "添加规格",
+        "specNamePlaceholder": "规格名 (如:颜色)",
+        "specValuePlaceholder": "规格值 (如:红色)",
+        "remark": "留言备注",
+        "remarkPlaceholder": "请输入留言备注",
+        "uploadImages": "上传图片",
+        "uploadImagesTip": "最多上传5张图片",
+        "cost": "费用",
+        "unitPrice": "单价",
+        "unitPricePlaceholder": "请输入单价",
+        "quantity": "数量",
+        "shippingFee": "运费",
+        "shippingFeePlaceholder": "请输入运费",
+        "promptText": "提示：请确保填写的信息准确无误，以便我们为您提供更好的服务。",
+        "submit": "提交",
+        "totalCost": "总费用"
     },
     "forwarding": {
         "warehouseAddress": "仓库地址",
@@ -843,15 +936,18 @@
         "AreaSelector": {
             "country": {
                 "label": "国家",
-                "placeholder": "选择国家"
+                "placeholder": "选择国家",
+                "errorMessage": "请选择国家"
             },
             "state": {
                 "label": "省份",
-                "placeholder": "选择省份"
+                "placeholder": "选择省份",
+                "errorMessage": "请选择省份"
             },
             "city": {
                 "label": "城市",
-                "placeholder": "选择城市"
+                "placeholder": "选择城市",
+                "errorMessage": "请选择城市"
             }
         }
     },

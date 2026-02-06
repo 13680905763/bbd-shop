@@ -1,6 +1,25 @@
 import { OrderListParams } from "@/types";
 import { request, requestWithOption } from "./request";
 
+export interface DiyOrderParams {
+    productLink: string;
+    productTitle: string;
+    productPic: string;
+    specifications: {
+        propId_valueId: string;
+        propName_valueName: string;
+    };
+    unitPrice: string;
+    postage: string;
+    quantity: number;
+    remark: string;
+    serviceList: {
+        serviceId: number;
+        quantity: number;
+        remark: string;
+    }[];
+}
+
 export const OrderApi = {
     /** 获取订单列表 */
     listOrder: (data: OrderListParams): Promise<any> => request.post("/orders/page", data),
@@ -28,5 +47,26 @@ export const OrderApi = {
     /** 订单退款撤销 */
     revokeOrder: (id: string): Promise<any> => {
         return request.put(`/order-refund/cancelApplyRefund/${id}`);
+    },
+    /** 创建DIY订单 */
+    createDiyOrder: (data: DiyOrderParams): Promise<any> => {
+        return request.post(
+            "/order-diy",
+            data,
+        );
+    },
+    /** 上传图片 */
+    uploadDiyImage: (file: File): Promise<string> => {
+        const formData = new FormData();
+        formData.append("file", file);
+        return request.post(
+            "/order-diy/uploadImg",
+            formData,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            }
+        );
     }
 }

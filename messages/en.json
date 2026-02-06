@@ -117,9 +117,42 @@
                 "minute": "m ",
                 "second": "s ",
                 "expired": "Expired"
+            },
+            "coupon": {
+                "minSpend": "Min Spend {amount}",
+                "discount": "OFF",
+                "restriction": "Limit",
+                "shippingExcludingCustoms": "Shipping fee (excl. Customs fee)",
+                "usage": "Usage",
+                "internationalPackage": "International Package",
+                "countries": "Region",
+                "all": "All Countries",
+                "redeem": "Redeem",
+                "validity": "Validity",
+                "days": "{count} Days",
+                "points": "Points",
+                "src": "Source",
+                "type": "Type"
             }
         },
         "block": {
+            "coupon": {
+                "title": "General Coupon",
+                "useNow": "Use Now",
+                "validUntil": "Valid Until:",
+                "code": "Code:",
+                "available": "Orders over {amount}",
+                "minSpend": "Min Spend > {amount}",
+                "discount": "Off",
+                "restriction": "Restriction",
+                "shippingExcludingCustoms": "Shipping (excl. customs)",
+                "usage": "Usage",
+                "internationalPackage": "Intl Package",
+                "countries": "Countries",
+                "all": "All",
+                "type": "Type",
+                "src": "Source"
+            },
             "addressItem": {
                 "edit": "Edit",
                 "delete": "Delete",
@@ -159,6 +192,9 @@
                 },
                 "estimation": {
                     "label": "Shipping Estimate"
+                },
+                "diy": {
+                    "label": "Customized Order"
                 },
                 "help": {
                     "label": "Help Center"
@@ -418,6 +454,14 @@
                 "score": "Points",
                 "coupon": "Coupons"
             },
+            "coupon": {
+                "unused": "Available Coupons",
+                "used": "Used Coupons",
+                "expired": "Expired Coupons",
+                "noAvailable": "No coupons available",
+                "noUsed": "No used coupons",
+                "noExpired": "No expired coupons"
+            },
             "balance": {
                 "title": "Balance",
                 "recharge": "Recharge",
@@ -492,29 +536,17 @@
             "refundable": "Refundable",
             "unrefundable": "Non-refundable",
             "remarkPlaceholder": "Please enter refund reason",
-            "refundTable": {
-                "orderCode": "Order Number",
-                "productTitle": "Product Name",
-                "picUrl": "Product Image",
-                "refundAmount": "Refund Amount",
-                "applyRemark": "Application Reason",
-                "handleRemark": "Rejection Reason",
-                "status": "Refund Status",
-                "createTime": "Application Time",
-                "updateTime": "Review Time",
-                "emptyContent": "No refund records"
-            },
             "orderItem": {
                 "orderNumber": "Order No:",
                 "createTime": "Created:",
                 "payment": "Pay",
                 "cancel": "Cancel",
                 "refund": "Refund",
-                "refundRemark": "Refund Note",
-                "valueAddedService": "Value Added Services",
+                "refundRemark": "Refund Remark",
+                "valueAddedService": "VAS",
                 "withdrawRequest": "Withdraw",
                 "serviceFee": "Service Fee",
-                "shippingFee": "Shipping Fee",
+                "shippingFee": "Shipping",
                 "productFee": "Product Fee",
                 "totalFee": "Total",
                 "discountFee": "Discount",
@@ -522,8 +554,23 @@
             },
             "promptCard": {
                 "title": "Order QC & Package Management",
-                "description": "Please go to warehouse page to view QC photos and submit packages",
+                "description": "Please go to the warehouse page to view QC photos and submit packages",
                 "button": "Go to Warehouse"
+            },
+            "refundList": {
+                "title": "Refund List",
+                "tableColumn": {
+                    "orderCode": "Order No",
+                    "productTitle": "Product Name",
+                    "picUrl": "Product Image",
+                    "refundAmount": "Refund Amount",
+                    "applyRemark": "Reason",
+                    "handleRemark": "Rejection Reason",
+                    "status": "Status",
+                    "createTime": "Apply Time",
+                    "updateTime": "Audit Time",
+                    "emptyContent": "No refund records"
+                }
             }
         },
         "warehouse": {
@@ -562,7 +609,9 @@
                     "submittingSubtitle": "Please wait",
                     "serviceFee": "Service Fee",
                     "packingFee": "Packing Fee",
-                    "totalFee": "Total Fee"
+                    "totalFee": "Total Fee",
+                    "feeNotice": "Due to ongoing warehouse operations, cancelling this package incurs a fee of {amount}. Details are as follows:",
+                    "freeNotice": "No fee is required for cancelling this package."
                 },
                 "changeRouteCard": {
                     "title": "Change Route",
@@ -570,6 +619,28 @@
                 }
             },
             "changeTitle": "Change Route",
+            "edit": "More Actions",
+            "editModal": {
+                "title": "Edit Package Info",
+                "changeRoute": "Change Route",
+                "changeAddress": "Change Address",
+                "routeDesc": "Select a better shipping route",
+                "addressDesc": "Modify shipping address information",
+                "selectAddress": "Select Shipping Address",
+                "default": "Default",
+                "noAddress": "No address found, please add one in Address Management",
+                "addAddress": "Add New Address",
+                "addressTitle": "Select Shipping Address",
+                "routeTitle": "Select Shipping Route",
+                "noRoute": "No available routes",
+                "remarkTitle": "Remark",
+                "remarkPlaceholder": "Enter remark (optional)",
+                "result": {
+                    "noChange": "Modified successfully, no change in shipping fee",
+                    "payExtra": "Modified successfully, need to pay extra {amount}",
+                    "refund": "Modified successfully, {amount} will be refunded to your balance"
+                }
+            },
             "lineModal": {
                 "title": "Shipping Tracking",
                 "mainWaybillTitle": "Main Waybill Tracking",
@@ -589,6 +660,7 @@
                 "totalFeeLabel": "Total Fee",
                 "pendingPaymentStatus": "Pending Payment",
                 "payButton": "Pay",
+                "edit": "More Actions",
                 "cancelButton": "Cancel",
                 "payCancelFee": "Payment Cancellation Fee",
                 "requestRefund": "Request Cancellation",
@@ -764,9 +836,34 @@
         "agreeDisclaimer": "I have read and agree to BBDbuy's disclaimer",
         "addToCart": "Add to Cart",
         "buyNow": "Buy Now",
-        "continueShopping": "Continue Shopping",
-        "riskNotice": "Risk Notice",
-        "riskDescription": "The product you submitted may have certain shipping risks. For your fund safety, we cannot provide online ordering services temporarily. For more information, please contact online customer service!"
+        "continueShopping": "Return to Home",
+        "riskNotice": "Warning",
+        "riskDescription": "Sorry! This product is either discontinued or sold out. It can't be purchased right now. Please contact live support for details."
+    },
+    "DIY": {
+        "title": "Custom Order",
+        "productDetails": "Product Details",
+        "productLink": "Product Link",
+        "productLinkPlaceholder": "Enter product link",
+        "productName": "Product Name",
+        "productNamePlaceholder": "Enter product name",
+        "specifications": "Specifications",
+        "addSpecification": "Add Specification",
+        "specNamePlaceholder": "Spec Name (e.g. Color)",
+        "specValuePlaceholder": "Spec Value (e.g. Red)",
+        "remark": "Remark",
+        "remarkPlaceholder": "Enter remark",
+        "uploadImages": "Upload Images",
+        "uploadImagesTip": "Max 5 images",
+        "cost": "Cost",
+        "unitPrice": "Unit Price",
+        "unitPricePlaceholder": "Enter unit price",
+        "quantity": "Quantity",
+        "shippingFee": "Shipping Fee",
+        "shippingFeePlaceholder": "Enter shipping fee",
+        "promptText": "Tip: Please ensure the information is accurate so we can serve you better.",
+        "submit": "Submit",
+        "totalCost": "Total Cost"
     },
     "forwarding": {
         "warehouseAddress": "Warehouse Address",
@@ -839,15 +936,18 @@
         "AreaSelector": {
             "country": {
                 "label": "Country",
-                "placeholder": "Select a country"
+                "placeholder": "Select a country",
+                "errorMessage": "Please select a country"
             },
             "state": {
                 "label": "State / Province",
-                "placeholder": "Select a state"
+                "placeholder": "Select a state",
+                "errorMessage": "Please select a state"
             },
             "city": {
                 "label": "City",
-                "placeholder": "Select a city"
+                "placeholder": "Select a city",
+                "errorMessage": "Please select a city"
             }
         }
     },

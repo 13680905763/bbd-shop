@@ -2,24 +2,16 @@
 
 import {
   Button,
-  getKeyValue,
-  Spinner,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
 } from "@heroui/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IoAddCircleOutline, IoWallet } from "react-icons/io5";
 
 import RechargeModal from "@/components/modal/recharge.modal";
 import { useGlobalStore } from "@/store";
-import PaginationBar from "@/components/common/pagination-bar";
 import { useWalletInfo, useWalletDetailList } from "@/hook/api";
-import { BlockSpinner, EmptyState, FullscreenLoader } from "@/components/ui";
+import { FullscreenLoader } from "@/components/ui";
 import { useTranslations } from "next-intl";
+import { CommonTable } from "@/components/common";
 
 
 export default function BalanceTab() {
@@ -38,12 +30,12 @@ export default function BalanceTab() {
   const {
     data: walletDetailList,
     isLoading: walletDetailListLoading,
+    isFetching,
     error: walletDetailListError,
   } = useWalletDetailList({
     current: page,
     size: pageSize,
   });
-  const total = walletDetailList?.total || 10;
 
 
   const tableColumns = [
@@ -104,75 +96,26 @@ export default function BalanceTab() {
 
       {/* 表格 */}
       <div className="font-bold my-4">{t("tableTitle")}</div>
-      <Table
-        className="relative"
-        // isHeaderSticky
-        bottomContent={
-          <>
-            {!walletDetailListLoading &&
-              <div className="">
-                <PaginationBar
-                  page={page}
-                  pageSize={pageSize}
-                  total={total}
-                  onPageChange={setPage}
-                  onPageSizeChange={setPageSize}
-                />
-              </div>
-            }
-          </>
-        }
-      // classNames={{
-      //   wrapper: "p-0 rounded-none border-1",
-      //   tr: "border-b-1 last:border-b-0 !shadow-none",
-      //   th: "text-default-500 !rounded-none",
-      // }}
-      // radius="none"
-      // shadow="none"
-      >
-        <TableHeader columns={tableColumns}>
-          {(column: any) => (
-            <TableColumn key={column.key}>{column.label}</TableColumn>
-          )}
-        </TableHeader>
-        <TableBody
-          emptyContent={<EmptyState className="!h-auto" />}
-          loadingContent={<BlockSpinner />}
-          isLoading={walletDetailListLoading}
-          items={walletDetailList?.records || []}
-        >
-          {(item: any) => (
-            <TableRow key={item?.id}>
-              {(columnKey) => {
-                const value = getKeyValue(item, columnKey);
-                const formatted =
-                  (columnKey === "amount" || columnKey === "currentBalance") &&
-                    value !== undefined
-                    ? Number(value) < 0
-                      ? `-${currency.symbol}${Math.abs(Number(value))}`
-                      : `${currency.symbol}${value}`
-                    : value;
-
-                return <TableCell>{formatted}</TableCell>;
-              }}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+      <CommonTable
+        columns={tableColumns}
+        data={walletDetailList}
+        isLoading={walletDetailListLoading || isFetching}
+        page={page}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+        renderCell={(item, columnKey) => {
+          const value = item[columnKey as keyof typeof item];
+          if (columnKey === "amount" || columnKey === "currentBalance") {
+             const numValue = Number(value);
+             return <span>{numValue < 0 ? `-${currency.symbol}${Math.abs(numValue)}` : `${currency.symbol}${numValue}`}</span>;
+          }
+          return <span>{value}</span>;
+        }}
+      />
 
       {/* 充值弹窗 */}
       <RechargeModal isOpen={isOpenRecharge} onOpenChange={setIsOpenRecharge} />
-
-      {/* 提现弹窗 */}
-      {/* <FormModal
-        fields={withdrawalFields}
-        formData={formData}
-        isOpen={isOpenWithdrawal}
-        title={texts.withdrawModalTitle}
-        onChange={setFormData}
-        onOpenChange={setIsOpenWithdrawal}
-        onSave={handleSave}
-      /> */}
     </div>
   );
 }

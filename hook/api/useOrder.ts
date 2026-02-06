@@ -51,3 +51,15 @@ export function useRevokeOrder() {
     },
   });
 }
+
+export function useCreateDiyOrder() {
+  return useMutation({
+    mutationFn: (data: any) => OrderApi.createDiyOrder(data),
+  });
+}
+
+export function useUploadDiyImage() {
+  return useMutation({
+    mutationFn: (file: File) => OrderApi.uploadDiyImage(file),
+  });
+}

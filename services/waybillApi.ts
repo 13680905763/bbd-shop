@@ -1,5 +1,5 @@
 import { PageResult } from "@/types/api";
-import { request } from "./request";
+import { request, requestWithOption } from "./request";
 
 export const waybillApi = {
   /** 获取运单分页列表 */
@@ -13,8 +13,8 @@ export const waybillApi = {
     return request.post("/waybill/pay/preview/init", data,);
   },
   /** 运单取消预览 */
-  previewCancel(waybillId: string): Promise<any> {
-    return request.put(`/waybill/cancel/preview/${waybillId}`);
+  previewCancel(params: { id: string }): Promise<any> {
+    return request.put(`/waybill/cancel/preview/${params.id}`);
   },
   /** 运单取消 */
   cancelWaybill(waybillId: string): Promise<any> {
@@ -25,8 +25,8 @@ export const waybillApi = {
     return request.put(`/waybill/cancel/withdraw/${waybillId}`);
   },
   /** 运单更换路线预览 */
-  previewChangeLine(waybillId: string): Promise<any> {
-    return request.get(`/waybill/change/line/fee?id=${waybillId}`);
+  previewChangeLine(params: { id: string; addressId?: string }): Promise<any> {
+    return requestWithOption({ url: `/waybill/change/line/fee`, method: 'GET', params }, { isSuccess: false });
   },
   /** 包裹物流查询 */
   trackDetail(params: any): Promise<any> {
@@ -35,6 +35,10 @@ export const waybillApi = {
   /** 运单更换路线提交 */
   changeLine(data: any): Promise<any> {
     return request.post(`/waybill/change/line`, data);
+  },
+  /** 运单更换地址提交 */
+  changeAddress(data: any): Promise<any> {
+    return request.post(`/waybill/change/address-line`, data);
   },
   /** 运单确认收货 */
   receipt(outboundPackingId: string): Promise<any> {

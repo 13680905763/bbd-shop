@@ -37,6 +37,10 @@ export default function Navbar() {
       href: "/estimation",
     },
     {
+      label: t("links.diy.label"),
+      href: "/diy",
+    },
+    {
       label: t("links.help.label"),
       href: "/help",
     },

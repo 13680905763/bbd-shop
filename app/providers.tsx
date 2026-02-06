@@ -15,6 +15,7 @@ import { queryClient } from "@/lib/react-query";
 import { useGlobalStore } from "@/store";
 import { ConfirmProvider } from "@/components/common/modal/confirm-provider";
 import { FullscreenLoader } from "@/components/ui";
+import { useCurrencyOptions } from "@/hook/api";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -30,7 +31,18 @@ declare module "@react-types/shared" {
     >;
   }
 }
+function ConfigSync() {
+  const { data } = useCurrencyOptions();
+  const { setCurrencies } = useGlobalStore();
 
+  useEffect(() => {
+    if (data) {
+      setCurrencies(data);
+    }
+  }, [data, setCurrencies]);
+
+  return null;
+}
 export function Providers({
   children,
   themeProps,
@@ -38,13 +50,12 @@ export function Providers({
   initialCurrency,
 }: ProvidersProps) {
   const router = useRouter();
-  const { fetchConfig, setLanguage, setCurrency } = useGlobalStore();
+  const { setLanguage, setCurrency } = useGlobalStore();
   const [ready, setReady] = React.useState(false);
 
   useEffect(() => {
     const init = async () => {
       console.log("初始化 store 服务端拿到", initialLocale, initialCurrency);
-      await fetchConfig(); // 等待异步执行完成
       await setLanguage(initialLocale);
       if (initialCurrency) await setCurrency(initialCurrency);
       console.log("初始化 store 语言货币完成");
@@ -59,6 +70,7 @@ export function Providers({
     // <SessionProvider>
     <GoogleOAuthProvider clientId="545953191162-n0elu4ilreo1hdlptkgublu7bjegpp0u.apps.googleusercontent.com">
       <QueryClientProvider client={queryClient}>
+         <ConfigSync />
         <HeroUIProvider navigate={router.push}>
           <ToastProvider
             placement="top-center"

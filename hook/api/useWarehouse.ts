@@ -12,14 +12,7 @@ export function useWarehousePackageList(params: WarehousePackageListParams) {
     refetchOnWindowFocus: false, //  禁止切回 Tab 时自动请求
   });
 }
-/** 提交包裹 附加服务 key */
-export function useWarehouseServicesList() {
-  return useQuery({
-    queryKey: ["warehouseServicesList"],
-    queryFn: () => warehouseApi.listServices(),
-    staleTime: 5 * 10 * 1000,
-  });
-}
+
 
 /** 创建结算预览 key */
 export function useCreateWaybillPreview() {

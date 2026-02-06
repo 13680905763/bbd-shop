@@ -1,38 +1,30 @@
 import {
   Button,
-  getKeyValue,
-  Spinner,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
 } from "@heroui/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IoTicketOutline, IoWallet } from "react-icons/io5";
 
 import { usePointsList, useUserInfo } from "@/hook/api";
 import { useTranslations } from "next-intl";
-import { BlockSpinner, EmptyState } from "@/components/ui";
-import PaginationBar from "@/components/common/pagination-bar";
+import { CommonTable, CommonTabs } from "@/components/common";
+import PointsRecordContent from "./points-change-content";
 
 export default function ScoreTab() {
   const t = useTranslations("dashboard.wallet.score");
-  const [isOpen, setIsOpen] = useState(false);
-  const { data: user, isLoading: userLoading, error } = useUserInfo();
+  const { data: user } = useUserInfo();
+  const [activeTab, setActiveTab] = useState("score");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
   const {
     data: scoreList,
     isLoading: scoreListLoading,
-    error: scoreListError,
+    isFetching
   } = usePointsList({
     current: page,
     size: pageSize,
   });
-  const total = scoreList?.total || 10;
+
   const tableColumns = [
     {
       key: "bizType",
@@ -51,7 +43,20 @@ export default function ScoreTab() {
       label: t("tableColumns.createTime"),
     },
   ];
-
+  const tabs = [
+    {
+      key: "score", title: t("details"), content: <CommonTable
+        columns={tableColumns}
+        data={scoreList}
+        isLoading={scoreListLoading || isFetching}
+        page={page}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+      />
+    },
+    { key: "coupon", title: '兑换优惠券', content: <PointsRecordContent /> },
+  ];
   return (
     <div>
       <div className="flex justify-between bg-[#ffeee1] rounded-lg p-8">
@@ -64,54 +69,15 @@ export default function ScoreTab() {
           <Button
             color="primary"
             size="md"
-            isDisabled
-          // onPress={() => setIsOpenRecharge(true)}
+            onPress={() => setActiveTab("coupon")}
           >
             <IoTicketOutline className="w-5 h-5 " />
             {t("exchangeCoupon")}
           </Button>
         </div>
       </div>
+      <CommonTabs tabs={tabs} onSelectionChange={(key: any) => setActiveTab(key)} selectedKey={activeTab} />
 
-      <div className="font-bold my-4">{t("details")}</div>
-      <Table
-        className="relative"
-        bottomContent={
-          <>
-            {!scoreListLoading &&
-              <div className="">
-                <PaginationBar
-                  page={page}
-                  pageSize={pageSize}
-                  total={total}
-                  onPageChange={setPage}
-                  onPageSizeChange={setPageSize}
-                />
-              </div>
-            }
-          </>
-        }
-      >
-        <TableHeader columns={tableColumns}>
-          {(column: any) => (
-            <TableColumn key={column.key}>{column.label}</TableColumn>
-          )}
-        </TableHeader>
-        <TableBody
-          emptyContent={<EmptyState className="!h-auto" />}
-          loadingContent={<BlockSpinner />}
-          isLoading={scoreListLoading}
-          items={scoreList?.records || []}
-        >
-          {(item: any) => (
-            <TableRow key={item?.id}>
-              {(columnKey) => (
-                <TableCell>{getKeyValue(item, columnKey)}</TableCell>
-              )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
     </div>
   );
 }

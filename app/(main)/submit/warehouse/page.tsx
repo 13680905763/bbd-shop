@@ -23,7 +23,6 @@ import { useAddressList } from "@/hook";
 import AddressItem from "@/components/block/address-item";
 import { Address, AddressModalState } from "@/types";
 import { routesApi } from "@/services/routesApi";
-import { queryClient } from "@/lib/react-query";
 
 export default function SubmitOrder() {
   const { currency } = useGlobalStore();

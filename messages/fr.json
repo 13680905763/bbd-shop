@@ -117,9 +117,42 @@
                 "minute": "m ",
                 "second": "s ",
                 "expired": "Expiré"
+            },
+            "coupon": {
+                "minSpend": "Dépense min. {amount}",
+                "discount": "DE RÉDUCTION",
+                "restriction": "Limite",
+                "shippingExcludingCustoms": "Frais de port (hors douane)",
+                "usage": "Usage",
+                "internationalPackage": "Colis international",
+                "countries": "Région",
+                "all": "Tous les pays",
+                "redeem": "Échanger",
+                "validity": "Validité",
+                "days": "{count} Jours",
+                "points": "Points",
+                "src": "Source",
+                "type": "Type"
             }
         },
         "block": {
+            "coupon": {
+                "title": "Coupon Général",
+                "useNow": "Utiliser",
+                "validUntil": "Valable Jusqu'au:",
+                "code": "Code:",
+                "available": "Commandes de plus de {amount}",
+                "minSpend": "Dépense Min > {amount}",
+                "discount": "De Réduction",
+                "restriction": "Restriction",
+                "shippingExcludingCustoms": "Livraison (hors douane)",
+                "usage": "Usage",
+                "internationalPackage": "Colis Intl",
+                "countries": "Pays",
+                "all": "Tous",
+                "type": "Type",
+                "src": "Source"
+            },
             "addressItem": {
                 "edit": "Éditer",
                 "delete": "Supprimer",
@@ -159,6 +192,9 @@
                 },
                 "estimation": {
                     "label": "Estimation de livraison"
+                },
+                "diy": {
+                    "label": "Commande Personnalisée"
                 },
                 "help": {
                     "label": "Centre d'Aide"
@@ -418,6 +454,14 @@
                 "score": "Points",
                 "coupon": "Coupons"
             },
+            "coupon": {
+                "unused": "Coupons Disponibles",
+                "used": "Coupons Utilisés",
+                "expired": "Coupons Expirés",
+                "noAvailable": "Aucun coupon disponible",
+                "noUsed": "Aucun coupon utilisé",
+                "noExpired": "Aucun coupon expiré"
+            },
             "balance": {
                 "title": "Solde",
                 "recharge": "Recharger",
@@ -492,18 +536,6 @@
             "refundable": "Remboursable",
             "unrefundable": "Non remboursable",
             "remarkPlaceholder": "Veuillez indiquer la raison du remboursement",
-            "refundTable": {
-                "orderCode": "Numéro de commande",
-                "productTitle": "Nom du produit",
-                "picUrl": "Image du produit",
-                "refundAmount": "Montant du remboursement",
-                "applyRemark": "Raison de la demande",
-                "handleRemark": "Motif du rejet",
-                "status": "Statut du remboursement",
-                "createTime": "Date de demande",
-                "updateTime": "Date de vérification",
-                "emptyContent": "Aucun enregistrement de remboursement"
-            },
             "orderItem": {
                 "orderNumber": "N° de commande :",
                 "createTime": "Créé le :",
@@ -524,6 +556,21 @@
                 "title": "QC des commandes & Gestion des colis",
                 "description": "Veuillez accéder à la page entrepôt pour voir les photos QC et soumettre les colis",
                 "button": "Aller à l'entrepôt"
+            },
+            "refundList": {
+                "title": "Liste des remboursements",
+                "tableColumn": {
+                    "orderCode": "Numéro de commande",
+                    "productTitle": "Nom du produit",
+                    "picUrl": "Image du produit",
+                    "refundAmount": "Montant du remboursement",
+                    "applyRemark": "Raison de la demande",
+                    "handleRemark": "Motif du rejet",
+                    "status": "Statut du remboursement",
+                    "createTime": "Date de demande",
+                    "updateTime": "Date de vérification",
+                    "emptyContent": "Aucun enregistrement de remboursement"
+                }
             }
         },
         "warehouse": {
@@ -562,7 +609,9 @@
                     "submittingSubtitle": "Veuillez patienter",
                     "serviceFee": "Frais de service",
                     "packingFee": "Frais d'emballage",
-                    "totalFee": "Frais totaux"
+                    "totalFee": "Frais totaux",
+                    "feeNotice": "En raison des opérations d'entrepôt en cours, l'annulation de ce colis entraîne des frais de {amount}. Les détails sont les suivants :",
+                    "freeNotice": "Aucun frais n'est requis pour annuler ce colis."
                 },
                 "changeRouteCard": {
                     "title": "Changer d'itinéraire",
@@ -570,6 +619,28 @@
                 }
             },
             "changeTitle": "Changer d'itinéraire",
+            "edit": "Plus d'actions",
+            "editModal": {
+                "title": "Modifier les infos du colis",
+                "changeRoute": "Changer d'itinéraire",
+                "changeAddress": "Changer d'adresse",
+                "routeDesc": "Choisir un meilleur itinéraire d'expédition",
+                "addressDesc": "Modifier les informations d'adresse de livraison",
+                "selectAddress": "Sélectionner l'adresse de livraison",
+                "default": "Défaut",
+                "noAddress": "Aucune adresse trouvée, veuillez en ajouter une dans la gestion des adresses",
+                "addAddress": "Ajouter une nouvelle adresse",
+                "addressTitle": "Sélectionner l'adresse de livraison",
+                "routeTitle": "Sélectionner l'itinéraire d'expédition",
+                "noRoute": "Aucun itinéraire disponible",
+                "remarkTitle": "Remarque",
+                "remarkPlaceholder": "Entrez une remarque (facultatif)",
+                "result": {
+                    "noChange": "Modifié avec succès, aucun changement dans les frais d'expédition",
+                    "payExtra": "Modifié avec succès, supplément de {amount} à payer",
+                    "refund": "Modifié avec succès, {amount} sera remboursé sur votre solde"
+                }
+            },
             "lineModal": {
                 "title": "Suivi de l'expédition",
                 "mainWaybillTitle": "Suivi de la lettre de voiture principale",
@@ -589,6 +660,7 @@
                 "totalFeeLabel": "Frais totaux",
                 "pendingPaymentStatus": "Paiement en attente",
                 "payButton": "Payer",
+                "edit": "Plus d'actions",
                 "cancelButton": "Annuler",
                 "payCancelFee": "Frais d'annulation de paiement",
                 "requestRefund": "Demander l'annulation",
@@ -764,9 +836,34 @@
         "agreeDisclaimer": "J'ai lu et accepté l'avertissement de BBDbuy",
         "addToCart": "Ajouter au Panier",
         "buyNow": "Acheter Maintenant",
-        "continueShopping": "Continuer les Achats",
-        "riskNotice": "Avis de Risque",
-        "riskDescription": "Le produit que vous avez soumis peut présenter certains risques d'expédition. Pour la sécurité de vos fonds, nous ne pouvons pas fournir temporairement de services de commande en ligne. Pour plus d'informations, veuillez contacter le service client en ligne !"
+        "continueShopping": "Retourner à l'Accueil",
+        "riskNotice": "Attention",
+        "riskDescription": "Désolé! Ce produit est soit discontinué, soit épuisé. Il n'est pas disponible à l'achat pour l'instant. Veuillez contacter le support en direct pour plus d'informations."
+    },
+    "DIY": {
+        "title": "Commande personnalisée",
+        "productDetails": "Détails du produit",
+        "productLink": "Lien du produit",
+        "productLinkPlaceholder": "Entrez le lien du produit",
+        "productName": "Nom du produit",
+        "productNamePlaceholder": "Entrez le nom du produit",
+        "specifications": "Spécifications",
+        "addSpecification": "Ajouter une spécification",
+        "specNamePlaceholder": "Nom (ex: Couleur)",
+        "specValuePlaceholder": "Valeur (ex: Rouge)",
+        "remark": "Remarque",
+        "remarkPlaceholder": "Entrez une remarque",
+        "uploadImages": "Télécharger des images",
+        "uploadImagesTip": "Max 5 images",
+        "cost": "Coût",
+        "unitPrice": "Prix unitaire",
+        "unitPricePlaceholder": "Entrez le prix unitaire",
+        "quantity": "Quantité",
+        "shippingFee": "Frais de port",
+        "shippingFeePlaceholder": "Entrez les frais de port",
+        "promptText": "Conseil : Veuillez vous assurer que les informations sont exactes afin que nous puissions mieux vous servir.",
+        "submit": "Soumettre",
+        "totalCost": "Coût total"
     },
     "forwarding": {
         "warehouseAddress": "Adresse de l'entrepôt",
@@ -839,15 +936,18 @@
         "AreaSelector": {
             "country": {
                 "label": "Pays",
-                "placeholder": "Sélectionnez un pays"
+                "placeholder": "Sélectionnez un pays",
+                "errorMessage": "Veuillez sélectionner un pays"
             },
             "state": {
                 "label": "Province / État",
-                "placeholder": "Sélectionnez une province"
+                "placeholder": "Sélectionnez une province",
+                "errorMessage": "Veuillez sélectionner une province"
             },
             "city": {
                 "label": "Ville",
-                "placeholder": "Sélectionnez une ville"
+                "placeholder": "Sélectionnez une ville",
+                "errorMessage": "Veuillez sélectionner une ville"
             }
         }
     },

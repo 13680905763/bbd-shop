@@ -652,7 +652,6 @@ export default function GoodsPage() {
       </div>
       <CommonModal
         confirmText={t("continueShopping")}
-        isDismissable={false}
         isKeyboardDismissDisabled={true}
         isOpen={isOpen1}
         showCancel={false}

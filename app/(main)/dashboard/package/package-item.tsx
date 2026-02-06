@@ -14,7 +14,7 @@ export default function PackageItem({
   isSelected, //是否选中
   onChange, //选中状态改变回调
   onPay, //支付
-  onChangeLine, //更换路线
+  onEdit, //编辑（修改路线/修改地址）
   onCancel, //取消
   onRevoke, //撤销
   onTrack, //跟踪
@@ -117,13 +117,11 @@ export default function PackageItem({
             <span>
               {t("sizeLabel")}: {pack?.length}*{pack?.width}*{pack?.height} cm
             </span>
-          </div>
-
-          <div className="flex flex-col justify-center p-2 text-gray-700 flex-[0_0_150px]">
             <span>
               {t("weightLabel")}: {pack?.weight} g
             </span>
           </div>
+
 
           <div className="space-y-2 flex-[0_0_200px]">
             <p>{pack?.shipping?.methodCode}</p>
@@ -158,14 +156,19 @@ export default function PackageItem({
               {pack?.totalFee}
             </span>
           </div>
+          <div className="flex flex-col justify-center p-2 text-gray-700 flex-[0_0_150px]">
+            <div className="text-[#f0700c] font-medium">{pack?.status}</div>
+
+          </div>
 
           <div className="space-y-2 p-2 flex-[0_0_150px]">
-            <div className="text-[#f0700c] font-medium">{pack?.status}</div>
             {(pack?.statusCode == 203 || pack?.statusCode == 209) && (
               <Button
                 color="primary"
                 radius="sm"
                 size="sm"
+                className=" w-full"
+
                 isLoading={isPayLoading}
                 onPress={async () => {
                   setIsPayLoading(true);
@@ -177,24 +180,10 @@ export default function PackageItem({
                 {pack?.statusCode == 203 ? t("payButton") : t("payCancelFee")}
               </Button>
             )}
-            {pack?.changeFlag && (
-              <Button
-                // color="primary"
-                className="button-default"
-                radius="sm"
-                size="sm"
-                isLoading={isLineLoading}
-                onPress={async () => {
-                  setIsLineLoading(true);
-                  await onChangeLine(pack);
-                  setIsLineLoading(false);
-                }}
-              >
-                {t("changeBtn")}
-              </Button>
-            )}
+            
             {pack?.cancelFlag && (
               <Button
+                className=" w-full"
                 radius="sm"
                 size="sm"
                 variant="flat"
@@ -218,7 +207,6 @@ export default function PackageItem({
                 {t("withdrawRequest")}
               </Button>
             )}
-
             {pack?.signFlag && (
               <Button
                 color="primary"
@@ -227,6 +215,16 @@ export default function PackageItem({
                 onPress={() => onReceipt(pack?.id)}
               >
                 {t("receipt")}
+              </Button>
+            )}
+            {(pack?.changeFlag || pack?.addressFlag) && (
+              <Button
+                className="button-default w-full"
+                radius="sm"
+                size="sm"
+                onPress={() => onEdit(pack)}
+              >
+                {t("edit")}
               </Button>
             )}
           </div>
