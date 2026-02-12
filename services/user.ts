@@ -71,7 +71,6 @@ export const logoutCustomer = (): Promise<void> => {
   );
 };
 
-
 /** 更新用户信息 */
 export const updateUserInfo = (data: any): Promise<UserInfo> => {
   return requestWithOption(
@@ -113,7 +112,6 @@ export const uploadAvatar = async (file: File) => {
     throw error + "上用户头像";
   }
 };
-
 
 /** 获取积分列表 */
 export const getPointsList = (): Promise<any> => {

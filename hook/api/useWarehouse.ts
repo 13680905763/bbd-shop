@@ -13,7 +13,6 @@ export function useWarehousePackageList(params: WarehousePackageListParams) {
   });
 }
 
-
 /** 创建结算预览 key */
 export function useCreateWaybillPreview() {
   return useMutation({
@@ -28,6 +27,7 @@ export function useWaybillFeeEstimate(data: any) {
       if (!data) {
         return {};
       }
+
       return warehouseApi.getWaybillFeeEstimate(data);
     },
   });

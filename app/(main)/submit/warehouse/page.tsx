@@ -9,7 +9,11 @@ import WarehouseServiceCard from "./werahouse-service-card";
 
 import { useGlobalStore } from "@/store";
 import RouteCard from "@/components/common/route-card";
-import { BlockSpinner, BusinessProgress, FullscreenLoader } from "@/components/ui";
+import {
+  BlockSpinner,
+  BusinessProgress,
+  FullscreenLoader,
+} from "@/components/ui";
 import AddressModal from "@/components/modal/address-modal";
 import {
   useCreateWaybill,
@@ -111,7 +115,8 @@ export default function SubmitOrder() {
           setRoutesList([]);
           setRoutesMessage(res);
         }
-      }).finally(() => {
+      })
+      .finally(() => {
         setIsRouteEstimating(false);
       });
   }, [selectedAddressId]);
@@ -222,9 +227,7 @@ export default function SubmitOrder() {
           <div className="relative">
             <div className="text-title">{t("deliveryRoute")}</div>
             <div className="flex flex-col gap-4">
-              {
-                isRouteEstimating && <BlockSpinner />
-              }
+              {isRouteEstimating && <BlockSpinner />}
               {routesList?.map((route) => (
                 <RouteCard
                   key={route.id}
@@ -317,14 +320,18 @@ export default function SubmitOrder() {
               feeEstimate?.outbound && (
                 <div className="mt-4 p-4  bg-gray-100 rounded-xl space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">{t("estimatedShipping")}</span>
+                    <span className="text-gray-500">
+                      {t("estimatedShipping")}
+                    </span>
                     <span className="font-medium">
                       {currency.symbol}
                       {feeEstimate?.outbound.estimateShippingFee}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">{t("estimatedService")}</span>
+                    <span className="text-gray-500">
+                      {t("estimatedService")}
+                    </span>
                     <span className="font-medium">
                       {currency.symbol}
                       {feeEstimate.outbound.serviceFee}

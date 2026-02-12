@@ -71,7 +71,6 @@ export const createPayOrder = (data: createPayOrderParams): Promise<any> => {
 export const getPayOrderStatus = (bizCode: string): Promise<number> =>
   request.get(`/customer/pay-order/status?bizCode=${bizCode}`);
 
-
 /** 获取增值服务列表 */
 export const getServicesList = (): Promise<any> => {
   return requestWithOption(
@@ -79,7 +78,6 @@ export const getServicesList = (): Promise<any> => {
     { showToast: false },
   );
 };
-
 
 /** 订单取消 */
 export const createCustomizeOrder = (data: any): Promise<any> => {

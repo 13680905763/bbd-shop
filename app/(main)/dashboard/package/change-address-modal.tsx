@@ -16,7 +16,11 @@ import { AddAddress } from "@/components/block";
 interface ChangeAddressModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (data: { customerAddressId: string, routeId?: string, remark?: string }) => Promise<any>;
+  onConfirm: (data: {
+    customerAddressId: string;
+    routeId?: string;
+    remark?: string;
+  }) => Promise<any>;
   currentAddressId?: string;
   waybillId: string;
 }
@@ -31,12 +35,17 @@ export default function ChangeAddressModal({
   const t = useTranslations("dashboard.package");
   const { currency } = useGlobalStore();
   const { data: addressList, isLoading: isAddressLoading } = useAddressList();
-  const [selectedAddressId, setSelectedAddressId] = useState<string>(currentAddressId || "");
+  const [selectedAddressId, setSelectedAddressId] = useState<string>(
+    currentAddressId || "",
+  );
   const [selectedRouteId, setSelectedRouteId] = useState<string>("");
   const [remark, setRemark] = useState("");
   const [routeList, setRouteList] = useState<any[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [resultMessage, setResultMessage] = useState<{ type: "success" | "warning" | "info", text: string } | null>(null);
+  const [resultMessage, setResultMessage] = useState<{
+    type: "success" | "warning" | "info";
+    text: string;
+  } | null>(null);
 
   // 地址编辑/新增弹窗状态
   const [addressModalState, setAddressModalState] = useState<{
@@ -45,7 +54,7 @@ export default function ChangeAddressModal({
     data?: Address;
   }>({
     isOpen: false,
-    type: "add"
+    type: "add",
   });
 
   // 当选择地址变化时，重新获取路线
@@ -67,7 +76,8 @@ export default function ChangeAddressModal({
     }
   }, [isOpen, currentAddressId]);
 
-  const { mutateAsync: previewChangeLine, isPending: isRouteLoading } = usePreviewChangeLine();
+  const { mutateAsync: previewChangeLine, isPending: isRouteLoading } =
+    usePreviewChangeLine();
 
   const fetchRoutes = async (addressId: string) => {
     setErrorMessage("");
@@ -89,7 +99,6 @@ export default function ChangeAddressModal({
       } else {
         setRouteList([]);
       }
-
     } catch (error) {
       console.error("Fetch routes failed", error);
       setRouteList([]);
@@ -97,20 +106,20 @@ export default function ChangeAddressModal({
     }
   };
 
-
   const handleConfirm = async () => {
     if (!selectedAddressId || !selectedRouteId) return;
 
     // 如果已经显示了结果，再次点击则关闭
     if (resultMessage) {
       onClose();
+
       return;
     }
 
     const res = await onConfirm({
       customerAddressId: selectedAddressId,
       routeId: selectedRouteId,
-      remark
+      remark,
     });
 
     // 处理返回结果
@@ -120,11 +129,20 @@ export default function ChangeAddressModal({
       const amount = `${currency.symbol}${difference || 0}`;
 
       if (result === 0) {
-        setResultMessage({ type: "info", text: t("editModal.result.noChange") });
+        setResultMessage({
+          type: "info",
+          text: t("editModal.result.noChange"),
+        });
       } else if (result === 1) {
-        setResultMessage({ type: "warning", text: t("editModal.result.payExtra", { amount }) });
+        setResultMessage({
+          type: "warning",
+          text: t("editModal.result.payExtra", { amount }),
+        });
       } else if (result === 2) {
-        setResultMessage({ type: "success", text: t("editModal.result.refund", { amount }) });
+        setResultMessage({
+          type: "success",
+          text: t("editModal.result.refund", { amount }),
+        });
       }
     } else {
       onClose();
@@ -133,39 +151,44 @@ export default function ChangeAddressModal({
 
   const handleAddressSelect = (address: Address) => {
     setSelectedAddressId(address.id);
-  }
+  };
 
   const handleEditAddress = (address: Address) => {
     setAddressModalState({
       isOpen: true,
       type: "edit",
-      data: address
+      data: address,
     });
   };
 
   const handleAddAddress = () => {
     setAddressModalState({
       isOpen: true,
-      type: "add"
+      type: "add",
     });
   };
 
   return (
     <>
       <CommonModal
-        isOpen={isOpen}
-        onOpenChange={onClose}
-        title={t("editModal.changeAddress")}
-        size="4xl"
-        onConfirm={handleConfirm}
         isDisabled={!selectedAddressId || !selectedRouteId}
+        isOpen={isOpen}
+        size="4xl"
+        title={t("editModal.changeAddress")}
+        onConfirm={handleConfirm}
+        onOpenChange={onClose}
       >
         <div className="flex flex-col gap-6 py-4">
           {resultMessage ? (
-            <div className={`p-4 rounded-lg text-center border ${resultMessage.type === "success" ? "bg-green-50 text-green-700 border-green-200" :
-              resultMessage.type === "warning" ? "bg-yellow-50 text-yellow-700 border-yellow-200" :
-                "bg-blue-50 text-blue-700 border-blue-200"
-              }`}>
+            <div
+              className={`p-4 rounded-lg text-center border ${
+                resultMessage.type === "success"
+                  ? "bg-green-50 text-green-700 border-green-200"
+                  : resultMessage.type === "warning"
+                    ? "bg-yellow-50 text-yellow-700 border-yellow-200"
+                    : "bg-blue-50 text-blue-700 border-blue-200"
+              }`}
+            >
               {resultMessage.text}
             </div>
           ) : (
@@ -180,16 +203,15 @@ export default function ChangeAddressModal({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[300px] overflow-y-auto p-1">
                     {addressList && addressList.length > 0 ? (
                       <>
-
                         {addressList.map((address: Address) => (
                           <AddressItem
                             key={address.id}
                             addressDetail={address}
                             selectable={true}
                             selected={selectedAddressId === address.id}
-                            onSelect={handleAddressSelect}
-                            onEdit={() => handleEditAddress(address)}
                             showDeleteButton={false}
+                            onEdit={() => handleEditAddress(address)}
+                            onSelect={handleAddressSelect}
                           />
                         ))}
                         <AddAddress type="address" onAdd={handleAddAddress} />
@@ -206,7 +228,9 @@ export default function ChangeAddressModal({
               {/* 路线选择 */}
               {selectedAddressId && (
                 <div>
-                  <div className="font-bold mb-2">{t("editModal.routeTitle")}</div>
+                  <div className="font-bold mb-2">
+                    {t("editModal.routeTitle")}
+                  </div>
                   {isRouteLoading ? (
                     <BlockSpinner />
                   ) : (
@@ -236,7 +260,9 @@ export default function ChangeAddressModal({
 
               {/* 备注 */}
               <div>
-                <div className="font-bold mb-2">{t("editModal.remarkTitle")}</div>
+                <div className="font-bold mb-2">
+                  {t("editModal.remarkTitle")}
+                </div>
                 <Textarea
                   placeholder={t("editModal.remarkPlaceholder")}
                   value={remark}
@@ -250,10 +276,12 @@ export default function ChangeAddressModal({
 
       {/* 地址编辑/新增弹窗 */}
       <AddressModal
-        isOpen={addressModalState.isOpen}
-        onOpenChange={(open) => setAddressModalState(prev => ({ ...prev, isOpen: open }))}
-        type={addressModalState.type}
         defaultData={addressModalState.data}
+        isOpen={addressModalState.isOpen}
+        type={addressModalState.type}
+        onOpenChange={(open) =>
+          setAddressModalState((prev) => ({ ...prev, isOpen: open }))
+        }
       />
     </>
   );

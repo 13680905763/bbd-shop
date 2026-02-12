@@ -1,14 +1,5 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-  Image,
-  Spinner,
-} from "@heroui/react";
-import { useEffect, useState } from "react";
+import { Image } from "@heroui/react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 
 import { useGlobalStore } from "@/store";
@@ -24,11 +15,9 @@ export default function RefundList() {
     current: page,
     size: pageSize,
   });
-  console.log('refundList', data, isFetching);
-  const renderCell = (
-    item: any,
-    columnKey: any,
-  ) => {
+
+  console.log("refundList", data, isFetching);
+  const renderCell = (item: any, columnKey: any) => {
     const value = item[columnKey];
 
     // 商品信息（图片 + 标题 + SKU）
@@ -45,9 +34,9 @@ export default function RefundList() {
                 wrapper: "w-full h-full",
                 img: "w-full h-full",
               }}
+              radius="none"
               referrerPolicy="no-referrer"
               src={imgSrc || "/placeholder.png"}
-              radius="none"
             />
           </div>
           <div className="flex flex-col gap-1 min-w-0">
@@ -105,14 +94,14 @@ export default function RefundList() {
 
   return (
     <>
-      <div className="font-bold my-4">{t('title')}</div>
+      <div className="font-bold my-4">{t("title")}</div>
       <CommonTable
         columns={columns}
         data={data}
-        renderCell={renderCell}
         isLoading={isFetching}
         page={page}
         pageSize={pageSize}
+        renderCell={renderCell}
         onPageChange={setPage}
         onPageSizeChange={setPageSize}
       />

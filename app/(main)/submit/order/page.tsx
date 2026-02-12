@@ -14,7 +14,11 @@ import { Image } from "antd";
 
 import OrderItem from "./order-item";
 
-import { BusinessProgress, FullscreenLoader, ProductItemTitle } from "@/components/ui";
+import {
+  BusinessProgress,
+  FullscreenLoader,
+  ProductItemTitle,
+} from "@/components/ui";
 import CommonModal from "@/components/modal/common-modal";
 import { useOrderPreview, useServices } from "@/hook";
 import {
@@ -137,11 +141,11 @@ export default function SubmitOrder() {
       prev.map((s) =>
         s.id === currentService.id
           ? {
-            ...s,
-            remark: currentService?.remark,
-            isCheck: true,
-            quantity: currentService?.quantity,
-          }
+              ...s,
+              remark: currentService?.remark,
+              isCheck: true,
+              quantity: currentService?.quantity,
+            }
           : s,
       ),
     );
@@ -194,7 +198,7 @@ export default function SubmitOrder() {
 
       setOrderData(res);
       onOpenChange();
-    } catch { }
+    } catch {}
   };
   const handleSubmitOrder = async () => {
     if (!isChecked) {

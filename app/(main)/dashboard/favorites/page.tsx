@@ -54,7 +54,7 @@ export default function FavoritesPage() {
 
   return (
     <div className="relative">
-      {(isFetching) && <BlockSpinner />}
+      {isFetching && <BlockSpinner />}
       <div className="my-5 flex items-center justify-between">
         <div>
           <span className="font-bold mr-5 text-xl">{t("title")}</span>

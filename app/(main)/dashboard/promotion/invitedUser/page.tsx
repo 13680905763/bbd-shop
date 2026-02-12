@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-
+import React, { useState } from "react";
 import { useTranslations } from "next-intl";
 
 import { useInvitedUsers } from "@/hook/api";
@@ -12,11 +11,7 @@ export default function InvitedUser() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const {
-    data,
-    isLoading,
-    isFetching,
-  } = useInvitedUsers({
+  const { data, isLoading, isFetching } = useInvitedUsers({
     current: page,
     size: pageSize,
   });
@@ -35,6 +30,7 @@ export default function InvitedUser() {
       label: t("tableColumns.createTime"),
     },
   ];
+
   // if (isLoading) return <FullscreenLoader />;
   return (
     <>

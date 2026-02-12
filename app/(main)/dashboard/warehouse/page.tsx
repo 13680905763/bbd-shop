@@ -1,5 +1,5 @@
 "use client";
-import { Button, Checkbox, Spinner, Tab, Tabs } from "@heroui/react";
+import { Button, Checkbox, Tab, Tabs } from "@heroui/react";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -50,6 +50,7 @@ export default function WarehousePage() {
 
   const handleSubmit = async () => {
     const key = await createPreview(selectedIds);
+
     router.push(`/submit/warehouse?key=${key}`);
   };
 
@@ -59,7 +60,7 @@ export default function WarehousePage() {
     return (
       <div className="relative">
         {/* 列表 */}
-        {(isFetching) && <BlockSpinner />}
+        {isFetching && <BlockSpinner />}
         <div className="space-y-3 ">
           {data.records.map((warehouse) => (
             <WarehouseItem

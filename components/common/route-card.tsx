@@ -60,8 +60,9 @@ export default function RouteCard({
 
   return (
     <Card
-      className={`p-4 border ${isSelected ? "border-primary border-2" : "border-gray-200"
-        } rounded-xl transition hover:shadow-md bg-white`}
+      className={`p-4 border ${
+        isSelected ? "border-primary border-2" : "border-gray-200"
+      } rounded-xl transition hover:shadow-md bg-white`}
       isBlurred={false}
       isDisabled={disable}
       isPressable={!disable}

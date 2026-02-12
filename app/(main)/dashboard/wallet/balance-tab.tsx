@@ -1,25 +1,18 @@
 "use client";
 
-import {
-  Button,
-} from "@heroui/react";
+import { Button } from "@heroui/react";
 import React, { useState } from "react";
 import { IoAddCircleOutline, IoWallet } from "react-icons/io5";
+import { useTranslations } from "next-intl";
 
 import RechargeModal from "@/components/modal/recharge.modal";
 import { useGlobalStore } from "@/store";
 import { useWalletInfo, useWalletDetailList } from "@/hook/api";
 import { FullscreenLoader } from "@/components/ui";
-import { useTranslations } from "next-intl";
 import { CommonTable } from "@/components/common";
 
-
 export default function BalanceTab() {
-  const {
-    data: wallet,
-    isLoading,
-    error,
-  } = useWalletInfo();
+  const { data: wallet, isLoading, error } = useWalletInfo();
   const t = useTranslations("dashboard.wallet.balance");
 
   const { currency } = useGlobalStore();
@@ -36,7 +29,6 @@ export default function BalanceTab() {
     current: page,
     size: pageSize,
   });
-
 
   const tableColumns = [
     {
@@ -59,8 +51,10 @@ export default function BalanceTab() {
       key: "createTime",
       label: t("tableColumns.createTime"),
     },
-  ]
+  ];
+
   if (isLoading) return <FullscreenLoader />;
+
   return (
     <div>
       {/* 钱包卡片区域 */}
@@ -86,7 +80,7 @@ export default function BalanceTab() {
             isDisabled
             className="button-default"
             size="md"
-          // onPress={() => setIsOpenWithdrawal(true)}
+            // onPress={() => setIsOpenWithdrawal(true)}
           >
             <IoWallet className="w-5 h-5" />
             {t("withdraw")}
@@ -102,16 +96,25 @@ export default function BalanceTab() {
         isLoading={walletDetailListLoading || isFetching}
         page={page}
         pageSize={pageSize}
-        onPageChange={setPage}
-        onPageSizeChange={setPageSize}
         renderCell={(item, columnKey) => {
           const value = item[columnKey as keyof typeof item];
+
           if (columnKey === "amount" || columnKey === "currentBalance") {
-             const numValue = Number(value);
-             return <span>{numValue < 0 ? `-${currency.symbol}${Math.abs(numValue)}` : `${currency.symbol}${numValue}`}</span>;
+            const numValue = Number(value);
+
+            return (
+              <span>
+                {numValue < 0
+                  ? `-${currency.symbol}${Math.abs(numValue)}`
+                  : `${currency.symbol}${numValue}`}
+              </span>
+            );
           }
+
           return <span>{value}</span>;
         }}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
       />
 
       {/* 充值弹窗 */}

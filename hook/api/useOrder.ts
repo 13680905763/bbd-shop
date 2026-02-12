@@ -1,8 +1,5 @@
-import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-} from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
+
 import { OrderApi } from "@/services/orderApi";
 import { queryClient } from "@/lib/react-query";
 
@@ -33,7 +30,7 @@ export function useCancelOrder() {
 export function useBatchPayOrder() {
   return useMutation({
     mutationFn: (data: any) => OrderApi.batchPayOrder(data),
-  })
+  });
 }
 export function useRefundOrder() {
   return useMutation({
@@ -41,7 +38,7 @@ export function useRefundOrder() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orderList"] });
     },
-  })
+  });
 }
 export function useRevokeOrder() {
   return useMutation({

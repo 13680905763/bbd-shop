@@ -18,25 +18,24 @@ export default function RefundCountdown({ timestamp }: RefundCountdownProps) {
   // console.log('剩余毫秒:', targetTime - Date.now());
   // console.log('剩余天数:', (targetTime - Date.now()) / (1000 * 60 * 60 * 24));
 
-
-  console.log('退款截止时间戳:', Number(timestamp));
-  console.log('转换为日期:', new Date(timestamp).toLocaleString('zh-CN'));
-  console.log('当前时间戳:', Date.now());
-  console.log('差值（毫秒）:', Number(timestamp) - Date.now());
-  console.log('差值（天）:', (Number(timestamp) - Date.now()) / (1000 * 60 * 60 * 24));
+  console.log("退款截止时间戳:", Number(timestamp));
+  console.log("转换为日期:", new Date(timestamp).toLocaleString("zh-CN"));
+  console.log("当前时间戳:", Date.now());
+  console.log("差值（毫秒）:", Number(timestamp) - Date.now());
+  console.log(
+    "差值（天）:",
+    (Number(timestamp) - Date.now()) / (1000 * 60 * 60 * 24),
+  );
   // 如果已经过期，显示过期状态
   if (Number(timestamp) <= Date.now()) {
-    return (
-      <span className="text-xs ml-1 text-red-500">
-        ({t("expired")})
-      </span>
-    );
+    return <span className="text-xs ml-1 text-red-500">({t("expired")})</span>;
   }
+
   return (
     <Statistic.Timer
-      type="countdown"
       format={format}
-      prefix={'('}
+      prefix={"("}
+      type="countdown"
       value={Number(timestamp)}
       valueStyle={{
         fontSize: "12px",

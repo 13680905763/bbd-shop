@@ -1,13 +1,12 @@
-import {
-  Button,
-} from "@heroui/react";
+import { Button } from "@heroui/react";
 import React, { useState } from "react";
 import { IoTicketOutline, IoWallet } from "react-icons/io5";
+import { useTranslations } from "next-intl";
+
+import PointsRecordContent from "./points-change-content";
 
 import { usePointsList, useUserInfo } from "@/hook/api";
-import { useTranslations } from "next-intl";
 import { CommonTable, CommonTabs } from "@/components/common";
-import PointsRecordContent from "./points-change-content";
 
 export default function ScoreTab() {
   const t = useTranslations("dashboard.wallet.score");
@@ -19,7 +18,7 @@ export default function ScoreTab() {
   const {
     data: scoreList,
     isLoading: scoreListLoading,
-    isFetching
+    isFetching,
   } = usePointsList({
     current: page,
     size: pageSize,
@@ -45,18 +44,23 @@ export default function ScoreTab() {
   ];
   const tabs = [
     {
-      key: "score", title: t("details"), content: <CommonTable
-        columns={tableColumns}
-        data={scoreList}
-        isLoading={scoreListLoading || isFetching}
-        page={page}
-        pageSize={pageSize}
-        onPageChange={setPage}
-        onPageSizeChange={setPageSize}
-      />
+      key: "score",
+      title: t("details"),
+      content: (
+        <CommonTable
+          columns={tableColumns}
+          data={scoreList}
+          isLoading={scoreListLoading || isFetching}
+          page={page}
+          pageSize={pageSize}
+          onPageChange={setPage}
+          onPageSizeChange={setPageSize}
+        />
+      ),
     },
-    { key: "coupon", title: '兑换优惠券', content: <PointsRecordContent /> },
+    { key: "coupon", title: "兑换优惠券", content: <PointsRecordContent /> },
   ];
+
   return (
     <div>
       <div className="flex justify-between bg-[#ffeee1] rounded-lg p-8">
@@ -76,8 +80,11 @@ export default function ScoreTab() {
           </Button>
         </div>
       </div>
-      <CommonTabs tabs={tabs} onSelectionChange={(key: any) => setActiveTab(key)} selectedKey={activeTab} />
-
+      <CommonTabs
+        selectedKey={activeTab}
+        tabs={tabs}
+        onSelectionChange={(key: any) => setActiveTab(key)}
+      />
     </div>
   );
 }

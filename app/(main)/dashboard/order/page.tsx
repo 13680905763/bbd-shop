@@ -10,7 +10,13 @@ import RefundList from "./refund-list";
 import RefundModal from "./refund-modal";
 
 import PaginationBar from "@/components/common/pagination-bar";
-import { useBatchPayOrder, useCancelOrder, useOrderList, useRefundOrder, useRevokeOrder } from "@/hook/api";
+import {
+  useBatchPayOrder,
+  useCancelOrder,
+  useOrderList,
+  useRefundOrder,
+  useRevokeOrder,
+} from "@/hook/api";
 import {
   BlockSpinner,
   BusinessProgress,
@@ -44,7 +50,7 @@ export default function OrderPage() {
     current: page,
     size: pageSize,
     customerPayStatusCode: tabKeyToStatusCode[activeTab],
-    statusCode: tabKeyToStatusCode[activeTab] === '201' ? '101' : '',
+    statusCode: tabKeyToStatusCode[activeTab] === "201" ? "101" : "",
   });
   const {
     selectedIds,
@@ -55,23 +61,26 @@ export default function OrderPage() {
     onToggleSelectAll,
   } = useSelection(data?.records || [], { idKey: "orderCode" });
 
-
   const {
     items,
     toggleSelection,
     updateQuantity, // 更新数量
     updateRemark, // 更新备注
     getSelectedItems, // 获取选中结果
-  } = useEnhancedSelection(modal?.type === "refund" ? modal?.order?.products || [] : []);
+  } = useEnhancedSelection(
+    modal?.type === "refund" ? modal?.order?.products || [] : [],
+  );
   const { confirm } = useConfirm();
   const { mutateAsync: cancelOrder } = useCancelOrder();
-  const { mutateAsync: batchPayOrder, isPending: isBatchPay } = useBatchPayOrder();
-  const { mutateAsync: refundOrder, } = useRefundOrder();
-  const { mutateAsync: revokeOrder, } = useRevokeOrder();
+  const { mutateAsync: batchPayOrder, isPending: isBatchPay } =
+    useBatchPayOrder();
+  const { mutateAsync: refundOrder } = useRefundOrder();
+  const { mutateAsync: revokeOrder } = useRevokeOrder();
   const handleBatchPay = async () => {
     const bizCode = await batchPayOrder({
       orderCodeSet: selectedIds,
     });
+
     router.push(`/payment/${bizCode}`);
   };
 
@@ -84,13 +93,13 @@ export default function OrderPage() {
         await cancelOrder(orderId);
         setModal(null);
       },
-    })
+    });
   };
   const handleRefund = (order: any) => {
     setModal({
       type: "refund",
       order: { ...order },
-    })
+    });
   };
   const handleRevoke = (refundId: string) => {
     confirm({
@@ -100,23 +109,22 @@ export default function OrderPage() {
         await revokeOrder(refundId);
         setModal(null);
       },
-    })
+    });
   };
   // 提交退款逻辑
   const handleRefundSubmit = async () => {
     if (modal?.type !== "refund") return;
     const param = {
       orderId: modal.order.id,
-      skuList: getSelectedItems().map((p: any) =>
-      ({
+      skuList: getSelectedItems().map((p: any) => ({
         sourceProductId: p?.sourceProductId,
         sourceSkuId: p?.sourceSkuId,
         quantity: p.quantity,
         remark: p.remark || "",
-      })
-      ),
-    }
-    console.log('params', param);
+      })),
+    };
+
+    console.log("params", param);
     await refundOrder(param);
     setModal(null);
   };
@@ -126,19 +134,20 @@ export default function OrderPage() {
 
     return (
       <div className="relative">
-        {(isFetching) && <BlockSpinner />}
+        {isFetching && <BlockSpinner />}
         <div className="space-y-3 relative">
           {data.records.map((order: any) => (
             <OrderItem
               key={order.id}
-              showCheckbox={activeTab === "waitPay"}
-              order={order}
-              onRevoke={handleRevoke}
               isSelected={isSelected}
+              order={order}
+              showCheckbox={activeTab === "waitPay"}
               onCancel={handleCancel}
-              onRefund={handleRefund}
               onChange={onSelect}
-            />))}
+              onRefund={handleRefund}
+              onRevoke={handleRevoke}
+            />
+          ))}
         </div>
         <div className="mt-10 sticky bottom-0 z-10 border-t bg-white p-4 border border-gray-200 rounded-lg">
           {activeTab === "waitPay" && (
@@ -170,7 +179,9 @@ export default function OrderPage() {
       </div>
     );
   };
+
   if (isLoading) return <FullscreenLoader />;
+
   return (
     <div className="flex w-full flex-col">
       <div className="mt-5">
@@ -233,13 +244,13 @@ export default function OrderPage() {
       </Tabs>
       {modal?.type === "refund" && (
         <RefundModal
+          isDisabled={getSelectedItems().length === 0}
           products={items}
           onCancel={() => setModal(null)}
           onRemarkChange={updateRemark}
           onSelect={toggleSelection}
           onSubmit={handleRefundSubmit}
           onUpdateQuantity={updateQuantity}
-          isDisabled={getSelectedItems().length === 0}
         />
       )}
     </div>

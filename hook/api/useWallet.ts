@@ -1,6 +1,6 @@
-import { WalletApi } from "@/services/walletApi";
 import { useQuery } from "@tanstack/react-query";
 
+import { WalletApi } from "@/services/walletApi";
 
 export const useWalletInfo = () => {
   return useQuery({

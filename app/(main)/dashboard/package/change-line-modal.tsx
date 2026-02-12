@@ -22,14 +22,17 @@ export default function ChangeLineModal({
   setSelectedRouteId,
 }: ChangeLineModalProps) {
   const t = useTranslations("dashboard.package");
-  console.log('currentWaybill', currentWaybill);
+
+  console.log("currentWaybill", currentWaybill);
 
   return (
     <CommonModal
       isOpen={isOpen}
       size={"4xl"}
       title={t("changeTitle")}
-      onConfirm={async () => await onConfirm(currentWaybill?.id, selectedRouteId)}
+      onConfirm={async () =>
+        await onConfirm(currentWaybill?.id, selectedRouteId)
+      }
       onOpenChange={onClose}
     >
       {/* 路线 */}
@@ -39,7 +42,9 @@ export default function ChangeLineModal({
             key={line.id}
             data={line}
             isSelected={line?.id == selectedRouteId}
-            onSelect={() => { setSelectedRouteId(line?.id || null) }}
+            onSelect={() => {
+              setSelectedRouteId(line?.id || null);
+            }}
           />
         ))}
       </div>

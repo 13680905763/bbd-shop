@@ -11,15 +11,15 @@ import {
 import { useTranslations } from "next-intl";
 import { FaPlus, FaTrash, FaCamera } from "react-icons/fa";
 import { IoCloseCircle } from "react-icons/io5";
+import { Image as AntImage } from "antd";
+import { useRouter } from "next/navigation";
 
 import { useGlobalStore } from "@/store";
-import { useServices, } from "@/hook";
+import { useServices } from "@/hook";
 import { useCreateDiyOrder, useUploadDiyImage } from "@/hook/api";
 import CommonModal from "@/components/modal/common-modal";
-import { Image as AntImage } from "antd";
 import Stepper from "@/components/stepper";
 import { safeMul } from "@/utils/number";
-import { useRouter } from "next/navigation";
 
 export default function DiyOrderPage() {
   const t = useTranslations("DIY");
@@ -30,8 +30,10 @@ export default function DiyOrderPage() {
 
   // Services
   const { data: services, isLoading: isServicesLoading } = useServices();
-  const { mutateAsync: createDiyOrder, isPending: submitting } = useCreateDiyOrder();
-  const { mutateAsync: uploadImage, isPending: uploading } = useUploadDiyImage();
+  const { mutateAsync: createDiyOrder, isPending: submitting } =
+    useCreateDiyOrder();
+  const { mutateAsync: uploadImage, isPending: uploading } =
+    useUploadDiyImage();
 
   const [localServices, setLocalServices] = useState<any[]>([]);
   const [isServiceDetailOpen, setIsServiceDetailOpen] = useState(false);
@@ -41,10 +43,13 @@ export default function DiyOrderPage() {
   // Form State
   const [productLink, setProductLink] = useState("");
   const [productName, setProductName] = useState("");
-  const [specifications, setSpecifications] = useState<{ name: string, value: string }[]>([{ name: "", value: "" }]);
+  const [specifications, setSpecifications] = useState<
+    { s1: string; s2: string; quantity: number }[]
+  >([{ s1: "", s2: "", quantity: 1 }]);
   const [remark, setRemark] = useState("");
-  const [images, setImages] = useState<string[]>([]);
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [imageList, setImageList] = useState<
+    { id: string; preview: string; url?: string; uploading: boolean }[]
+  >([]);
 
   // Cost State
   const [unitPrice, setUnitPrice] = useState("");
@@ -62,7 +67,7 @@ export default function DiyOrderPage() {
           isCheck: false,
           remark: "",
           quantity: 1,
-        }))
+        })),
       );
     }
   }, [services]);
@@ -74,6 +79,7 @@ export default function DiyOrderPage() {
 
   const openServiceDetail = (serviceId: string) => {
     const service = localServices.find((s) => s.id === serviceId);
+
     if (!service) return;
     setCurrentService(service);
     setIsServiceDetailOpen(true);
@@ -82,17 +88,18 @@ export default function DiyOrderPage() {
   const saveServiceDetail = () => {
     if (currentService.id == 1) {
       setIsServiceDetailOpen(false);
+
       return;
     }
     setLocalServices((prev) =>
       prev.map((s) =>
         s.id === currentService.id
           ? {
-            ...s,
-            remark: currentService?.remark,
-            isCheck: true,
-            quantity: currentService?.quantity,
-          }
+              ...s,
+              remark: currentService?.remark,
+              isCheck: true,
+              quantity: currentService?.quantity,
+            }
           : s,
       ),
     );
@@ -113,49 +120,65 @@ export default function DiyOrderPage() {
 
   // Handlers
   const handleAddSpec = () => {
-    setSpecifications([...specifications, { name: "", value: "" }]);
+    setSpecifications([...specifications, { s1: "", s2: "", quantity: 1 }]);
   };
 
   const handleRemoveSpec = (index: number) => {
     const newSpecs = [...specifications];
+
     newSpecs.splice(index, 1);
     setSpecifications(newSpecs);
   };
 
-  const handleSpecChange = (index: number, field: 'name' | 'value', val: string) => {
+  const handleSpecChange = (
+    index: number,
+    field: "s1" | "s2" | "quantity",
+    val: string | number,
+  ) => {
     const newSpecs = [...specifications];
+
+    // @ts-ignore
     newSpecs[index][field] = val;
     setSpecifications(newSpecs);
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
+
     if (files && files.length > 0) {
-      if (images.length + files.length > 5) {
+      if (imageList.length + files.length > 5) {
         addToast({ title: t("uploadImagesTip"), color: "warning" });
+
         return;
       }
 
-      const fileList = Array.from(files);
-      const newPreviewUrls = [...previewUrls];
+      const fileArray = Array.from(files);
+      const newItems = fileArray.map((file) => ({
+        id: Math.random().toString(36).substr(2, 9),
+        preview: URL.createObjectURL(file),
+        uploading: true,
+      }));
 
-      // 先添加预览图
-      fileList.forEach(file => {
-        newPreviewUrls.push(URL.createObjectURL(file));
+      setImageList((prev) => [...prev, ...newItems]);
+
+      // Process uploads concurrently
+      const uploadPromises = fileArray.map(async (file, index) => {
+        const item = newItems[index];
+
+        try {
+          const url = await uploadImage(file);
+
+          setImageList((prev) =>
+            prev.map((p) =>
+              p.id === item.id ? { ...p, url, uploading: false } : p,
+            ),
+          );
+        } catch (error) {
+          console.error("Upload failed", error);
+          addToast({ title: "Image upload failed", color: "danger" });
+          setImageList((prev) => prev.filter((p) => p.id !== item.id));
+        }
       });
-      setPreviewUrls(newPreviewUrls);
-
-      // 上传图片
-      try {
-        const uploadPromises = fileList.map(file => uploadImage(file));
-        const uploadedUrls = await Promise.all(uploadPromises);
-
-        setImages(prev => [...prev, ...uploadedUrls]);
-      } catch (error) {
-        console.error("Upload failed", error);
-        addToast({ title: "Image upload failed", color: "danger" });
-        // 如果上传失败，可能需要回滚预览图，这里暂不处理
-      }
     }
     // Reset input
     if (fileInputRef.current) {
@@ -164,80 +187,106 @@ export default function DiyOrderPage() {
   };
 
   const handleRemoveImage = (index: number) => {
-    const newImages = [...images];
-    const newPreviewUrls = [...previewUrls];
+    setImageList((prev) => {
+      const newArr = [...prev];
+      const item = newArr[index];
 
-    // 如果图片已经上传成功（images数组有对应索引），则移除
-    if (index < newImages.length) {
-      newImages.splice(index, 1);
-    }
+      if (item?.preview) {
+        URL.revokeObjectURL(item.preview);
+      }
+      newArr.splice(index, 1);
 
-    // Revoke URL to avoid memory leak
-    URL.revokeObjectURL(newPreviewUrls[index]);
-    newPreviewUrls.splice(index, 1);
-
-    setImages(newImages);
-    setPreviewUrls(newPreviewUrls);
+      return newArr;
+    });
   };
 
-  const totalCost = useMemo(() => {
+  const { productTotal, shipping, serviceFee, totalCost } = useMemo(() => {
+    const rate = currency.rate || 1;
     const price = parseFloat(unitPrice) || 0;
-    const qty = parseInt(quantity) || 0;
+    const qty = specifications.reduce(
+      (sum, spec) => sum + (Number(spec.quantity) || 0),
+      0,
+    );
     const ship = parseFloat(shippingFee) || 0;
 
     // Calculate service fees
-    const serviceFee = localServices
-      .filter(s => s.isCheck)
-      .reduce((sum, s) => sum + (s.price * s.quantity), 0);
+    const skuCount = specifications.length;
+    const sFee = localServices
+      .filter((s) => s.isCheck)
+      .reduce((sum, s) => sum + s.price * s.quantity * skuCount, 0);
 
-    return (price * qty + ship + serviceFee).toFixed(2);
-  }, [unitPrice, quantity, shippingFee, localServices]);
+    const pTotal = price * qty;
+    const totalRMB = pTotal + ship + sFee;
+
+    // Convert RMB to selected currency for display
+    // Product price and shipping fee are in RMB, so we convert them
+    // Service fee is already in the selected currency
+    const pTotalConverted = pTotal / rate;
+    const shipConverted = ship / rate;
+    const totalCostConverted = pTotalConverted + shipConverted + sFee;
+
+    return {
+      productTotal: pTotalConverted.toFixed(2),
+      shipping: shipConverted.toFixed(2),
+      serviceFee: sFee.toFixed(2),
+      totalCost: totalCostConverted.toFixed(2),
+    };
+  }, [unitPrice, specifications, shippingFee, localServices, currency.rate]);
 
   const handleSubmit = async () => {
     if (!productLink || !productName) {
       addToast({ title: "Please fill in required fields", color: "danger" }); // Simple validation
+
       return;
     }
 
-    if (uploading) {
-      addToast({ title: "Images are uploading, please wait...", color: "warning" });
+    if (imageList.some((img) => img.uploading)) {
+      addToast({
+        title: "Images are uploading, please wait...",
+        color: "warning",
+      });
+
       return;
     }
 
     try {
+      // ...
+      const validImages = imageList
+        .filter((img) => img.url && !img.uploading)
+        .map((img) => img.url!);
+      // Use the first uploaded image as the product picture, or a default/placeholder if none
+      const productPic = validImages.length ? validImages : [];
+      // Construct specifications list
+      const validSpecs = specifications.filter(
+        (s) =>
+          (s.s1?.trim() !== "" || s.s2?.trim() !== "") &&
+          Number(s.quantity) > 0,
+      );
+
+      // Calculate total quantity
+      const totalQuantity = validSpecs.reduce(
+        (sum, spec) => sum + (Number(spec.quantity) || 0),
+        0,
+      );
+      const skuCount = validSpecs.length;
+
       const checkedServices = localServices
         .filter((s) => s.isCheck)
         .map((s) => ({
           serviceId: s.id,
-          quantity: s.quantity,
+          quantity: s.quantity * skuCount,
           remark: s.remark,
         }));
-
-      // Use the first uploaded image as the product picture, or a default/placeholder if none
-      const productPic = images.length ? images : [];
-      // Construct specifications string
-      const validSpecs = specifications.filter(s => s.name.trim() !== "" && s.value.trim() !== "");
-      const propId_valueId = validSpecs
-        .map(s => `${s.name}:${s.value}`)
-        .join(';');
-
-      const propName_valueName = validSpecs
-        .map(s => `${s.name}:${s.value}`)
-        .join(';');
 
       const bizCode = await createDiyOrder({
         productLink,
         productTitle: productName,
         productPic,
-        specifications: {
-          propId_valueId,
-          propName_valueName
-        },
-        unitPrice: unitPrice || "0",
+        specifications: validSpecs,
+        productPrice: unitPrice || "0",
         postage: shippingFee || "0",
-        quantity: parseInt(quantity) || 1,
         remark,
-        serviceList: checkedServices
+        serviceList: checkedServices,
       });
 
       // Redirect to payment page
@@ -249,72 +298,99 @@ export default function DiyOrderPage() {
     }
   };
 
+  console.log(currency);
+
   return (
     <div className="container mx-auto p-4 flex flex-col gap-6 pb-32">
       <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
-        <h2 className="text-3xl font-extrabold mb-8 pb-4 border-b border-gray-100">{t("productDetails")}</h2>
+        <h2 className="text-3xl font-extrabold mb-8 pb-4 border-b border-gray-100">
+          {t("productDetails")}
+        </h2>
 
         <div className="flex flex-col gap-8">
           <div className="flex gap-4 items-center">
             <div className="w-36 text-lg font-semibold text-right shrink-0">
-              <span className="text-red-500 mr-1">*</span>{t("productLink")}
+              <span className="text-red-500 mr-1">*</span>
+              {t("productLink")}
             </div>
             <Input
+              className="flex-1"
+              classNames={{
+                inputWrapper:
+                  "bg-gray-100 data-[hover=true]:bg-gray-200 group-data-[focus=true]:bg-gray-100 border-none h-14",
+                input: "text-lg",
+              }}
               placeholder={t("productLinkPlaceholder")}
+              size="lg"
               value={productLink}
               onValueChange={setProductLink}
-              size="lg"
-              classNames={{
-                inputWrapper: "bg-gray-100 data-[hover=true]:bg-gray-200 group-data-[focus=true]:bg-gray-100 border-none h-14",
-                input: "text-lg"
-              }}
-              className="flex-1"
             />
           </div>
 
           <div className="flex gap-4 items-center">
             <div className="w-36 text-lg font-semibold text-right shrink-0">
-              <span className="text-red-500 mr-1">*</span>{t("productName")}
+              <span className="text-red-500 mr-1">*</span>
+              {t("productName")}
             </div>
             <Input
+              className="flex-1"
+              classNames={{
+                inputWrapper:
+                  "bg-gray-100 data-[hover=true]:bg-gray-200 group-data-[focus=true]:bg-gray-100 border-none h-14",
+                input: "text-lg",
+              }}
               placeholder={t("productNamePlaceholder")}
+              size="lg"
               value={productName}
               onValueChange={setProductName}
-              size="lg"
-              classNames={{
-                inputWrapper: "bg-gray-100 data-[hover=true]:bg-gray-200 group-data-[focus=true]:bg-gray-100 border-none h-14",
-                input: "text-lg"
-              }}
-              className="flex-1"
             />
           </div>
 
           <div className="flex gap-4 items-start">
-            <div className="w-36 text-lg font-semibold text-right shrink-0 mt-3">{t("specifications")}</div>
+            <div className="w-36 text-lg font-semibold text-right shrink-0 mt-3">
+              {t("specifications")}
+            </div>
             <div className="flex flex-col gap-4 w-full">
               {specifications.map((spec, index) => (
                 <div key={index} className="flex gap-3 items-center w-full">
                   <Input
-                    placeholder={t("specNamePlaceholder")}
-                    value={spec.name}
-                    onValueChange={(val) => handleSpecChange(index, 'name', val)}
-                    size="lg"
-                    classNames={{
-                      inputWrapper: "bg-gray-100 data-[hover=true]:bg-gray-200 group-data-[focus=true]:bg-gray-100 border-none h-14",
-                      input: "text-lg"
-                    }}
                     className="flex-1"
+                    classNames={{
+                      inputWrapper:
+                        "bg-gray-100 data-[hover=true]:bg-gray-200 group-data-[focus=true]:bg-gray-100 border-none h-14",
+                      input: "text-lg",
+                    }}
+                    placeholder={t("specNamePlaceholder")}
+                    size="lg"
+                    value={spec.s1}
+                    onValueChange={(val) => handleSpecChange(index, "s1", val)}
                   />
                   <Input
-                    placeholder={t("specValuePlaceholder")}
-                    value={spec.value}
-                    onValueChange={(val) => handleSpecChange(index, 'value', val)}
-                    size="lg"
-                    classNames={{
-                      inputWrapper: "bg-gray-100 data-[hover=true]:bg-gray-200 group-data-[focus=true]:bg-gray-100 border-none h-14",
-                      input: "text-lg"
-                    }}
                     className="flex-1"
+                    classNames={{
+                      inputWrapper:
+                        "bg-gray-100 data-[hover=true]:bg-gray-200 group-data-[focus=true]:bg-gray-100 border-none h-14",
+                      input: "text-lg",
+                    }}
+                    placeholder={t("specValuePlaceholder")}
+                    size="lg"
+                    value={spec.s2}
+                    onValueChange={(val) => handleSpecChange(index, "s2", val)}
+                  />
+                  <Input
+                    className="w-32 shrink-0"
+                    classNames={{
+                      inputWrapper:
+                        "bg-gray-100 data-[hover=true]:bg-gray-200 group-data-[focus=true]:bg-gray-100 border-none h-14",
+                      input: "text-lg",
+                    }}
+                    placeholder={t("specQuantityPlaceholder")}
+                    size="lg"
+                    type="number"
+                    value={spec.quantity?.toString()}
+                    onValueChange={(val) =>
+                      handleSpecChange(index, "quantity", val)
+                    }
                   />
                   {specifications.length > 1 && (
                     <Button
@@ -330,11 +406,11 @@ export default function DiyOrderPage() {
                 </div>
               ))}
               <Button
-                size="lg"
-                variant="flat"
-                color="primary"
-                startContent={<FaPlus />}
                 className="w-fit font-medium text-lg h-12 button-default"
+                color="primary"
+                size="lg"
+                startContent={<FaPlus />}
+                variant="flat"
                 onClick={handleAddSpec}
               >
                 {t("addSpecification")}
@@ -343,34 +419,48 @@ export default function DiyOrderPage() {
           </div>
 
           <div className="flex gap-4 items-start">
-            <div className="w-36 text-lg font-semibold text-right shrink-0 mt-3">{t("remark")}</div>
+            <div className="w-36 text-lg font-semibold text-right shrink-0 mt-3">
+              {t("remark")}
+            </div>
             <Textarea
+              className="flex-1"
+              classNames={{
+                inputWrapper:
+                  "bg-gray-100 data-[hover=true]:bg-gray-200 group-data-[focus=true]:bg-gray-100 border-none",
+                input: "text-lg",
+              }}
+              minRows={4}
               placeholder={t("remarkPlaceholder")}
               value={remark}
               onValueChange={setRemark}
-              minRows={4}
-              classNames={{
-                inputWrapper: "bg-gray-100 data-[hover=true]:bg-gray-200 group-data-[focus=true]:bg-gray-100 border-none",
-                input: "text-lg"
-              }}
-              className="flex-1"
             />
           </div>
 
           <div className="flex gap-4 items-start">
-            <div className="w-36 text-lg font-semibold text-right shrink-0 mt-3">{t("uploadImages")}</div>
+            <div className="w-36 text-lg font-semibold text-right shrink-0 mt-3">
+              {t("uploadImages")}
+            </div>
             <div className="flex flex-col gap-2 w-full">
               <div className="flex flex-wrap gap-4">
-                {previewUrls.map((url, index) => (
-                  <div key={index} className="relative w-32 h-32 border rounded-xl overflow-hidden group">
+                {imageList.map((item, index) => (
+                  <div
+                    key={item.id}
+                    className="relative w-32 h-32 border rounded-xl overflow-hidden group"
+                  >
                     <Image
-                      src={url}
                       alt={`preview-${index}`}
                       className="w-full h-full object-cover"
                       radius="none"
+                      src={item.preview}
                     />
+                    {item.uploading && (
+                      <div className="absolute inset-0 bg-black/30 flex items-center justify-center z-10">
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      </div>
+                    )}
                     <button
-                      className="absolute top-1 right-1 text-red-500 bg-white rounded-full p-1 shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute top-1 right-1 text-red-500 bg-white rounded-full p-1 shadow-md hover:bg-gray-100 transition-colors z-20 cursor-pointer"
+                      type="button"
                       onClick={() => handleRemoveImage(index)}
                     >
                       <IoCloseCircle size={24} />
@@ -378,42 +468,49 @@ export default function DiyOrderPage() {
                   </div>
                 ))}
 
-                {images.length < 5 && (
+                {imageList.length < 5 && (
                   <div
                     className="w-32 h-32 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-blue-50 transition-colors text-gray-400 hover:text-primary"
+                    role="button"
                     onClick={() => fileInputRef.current?.click()}
                   >
                     <FaCamera size={32} />
-                    <span className="text-sm mt-2 font-medium">{images.length}/5</span>
+                    <span className="text-sm mt-2 font-medium">
+                      {imageList.length}/5
+                    </span>
                   </div>
                 )}
               </div>
               <p className="text-sm text-gray-500">{t("uploadImagesTip")}</p>
               <input
-                type="file"
-                hidden
                 ref={fileInputRef}
-                accept="image/*"
+                hidden
                 multiple
+                accept="image/*"
+                type="file"
                 onChange={handleImageUpload}
               />
             </div>
           </div>
 
           <div className="flex gap-4 items-start">
-            <div className="w-36 text-lg font-semibold text-left shrink-0 mt-3">{tOrder("OrderItem.valueAddedService")}</div>
+            <div className="w-36 text-lg font-semibold text-left shrink-0 mt-3">
+              {tOrder("OrderItem.valueAddedService")}
+            </div>
             <div className="flex flex-col gap-2 w-full">
               <div className="p-4 bg-[#f8f8f8] rounded-xl flex justify-between items-center">
                 <div className="flex items-center gap-2 flex-wrap">
-                  {localServices.some(s => s.isCheck) ? (
-                    localServices.filter(s => s.isCheck).map((item: any) => (
-                      <span
-                        key={item.id}
-                        className="px-3 py-1 text-sm rounded-lg bg-white text-gray-700 border border-gray-200"
-                      >
-                        {item.serviceName} * {item.quantity}
-                      </span>
-                    ))
+                  {localServices.some((s) => s.isCheck) ? (
+                    localServices
+                      .filter((s) => s.isCheck)
+                      .map((item: any) => (
+                        <span
+                          key={item.id}
+                          className="px-3 py-1 text-sm rounded-lg bg-white text-gray-700 border border-gray-200"
+                        >
+                          {item.serviceName} * {item.quantity}
+                        </span>
+                      ))
                   ) : (
                     <span className="text-sm text-gray-400">
                       {tOrder("OrderItem.noService")}
@@ -436,64 +533,74 @@ export default function DiyOrderPage() {
 
       {/* Cost Section */}
       <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
-        <h2 className="text-3xl font-extrabold mb-8 pb-4 border-b border-gray-100">{t("cost")}</h2>
+        <h2 className="text-3xl font-extrabold mb-8 pb-4 border-b border-gray-100">
+          {t("cost")}
+        </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="flex gap-4 items-center">
-            <div className="w-24 text-lg font-semibold text-left shrink-0">{t("unitPrice")}</div>
+            <div className="w-24 text-lg font-semibold text-left shrink-0">
+              {t("unitPrice")}
+            </div>
             <Input
+              className="flex-1"
+              classNames={{
+                inputWrapper:
+                  "bg-gray-100 data-[hover=true]:bg-gray-200 group-data-[focus=true]:bg-gray-100 border-none h-14",
+                input: "text-2xl",
+                mainWrapper: "w-full",
+              }}
+              endContent={
+                <div className="pointer-events-none flex items-center text-gray-400 text-2xl whitespace-nowrap">
+                  ≈ {currency.symbol}{" "}
+                  {currency.rate
+                    ? (parseFloat(unitPrice || "0") / currency.rate).toFixed(2)
+                    : "0.00"}
+                </div>
+              }
               placeholder="0.00"
+              startContent={
+                <div className="pointer-events-none flex items-center">
+                  <span className="text-gray-500 text-lg font-medium">¥</span>
+                </div>
+              }
+              type="number"
               value={unitPrice}
               onValueChange={setUnitPrice}
-              type="number"
+            />
+          </div>
+
+          <div className="flex gap-4 items-center">
+            <div className="w-24 text-lg font-semibold text-left shrink-0">
+              {t("shippingFee")}
+            </div>
+            <Input
+              className="flex-1"
               classNames={{
-                inputWrapper: "bg-gray-100 data-[hover=true]:bg-gray-200 group-data-[focus=true]:bg-gray-100 border-none h-14",
-                input: "text-lg",
-                mainWrapper: "w-full"
+                inputWrapper:
+                  "bg-gray-100 data-[hover=true]:bg-gray-200 group-data-[focus=true]:bg-gray-100 border-none h-14",
+                input: "text-2xl",
+                mainWrapper: "w-full",
               }}
-              startContent={
-                <div className="pointer-events-none flex items-center">
-                  <span className="text-gray-500 text-lg font-medium">{currency.symbol}</span>
+              endContent={
+                <div className="pointer-events-none flex items-center text-gray-400 text-2xl  whitespace-nowrap">
+                  ≈ {currency.symbol}{" "}
+                  {currency.rate
+                    ? (parseFloat(shippingFee || "0") / currency.rate).toFixed(
+                        2,
+                      )
+                    : "0.00"}
                 </div>
               }
-              className="flex-1"
-            />
-          </div>
-
-          <div className="flex gap-4 items-center">
-            <div className="w-24 text-lg font-semibold text-left shrink-0">{t("quantity")}</div>
-            <Input
-              placeholder="1"
-              value={quantity}
-              onValueChange={setQuantity}
-              type="number"
-              classNames={{
-                inputWrapper: "bg-gray-100 data-[hover=true]:bg-gray-200 group-data-[focus=true]:bg-gray-100 border-none h-14",
-                input: "text-lg",
-                mainWrapper: "w-full"
-              }}
-              className="flex-1"
-            />
-          </div>
-
-          <div className="flex gap-4 items-center">
-            <div className="w-24 text-lg font-semibold text-left shrink-0">{t("shippingFee")}</div>
-            <Input
               placeholder="0.00"
+              startContent={
+                <div className="pointer-events-none flex items-center">
+                  <span className="text-gray-500 text-lg font-medium">¥</span>
+                </div>
+              }
+              type="number"
               value={shippingFee}
               onValueChange={setShippingFee}
-              type="number"
-              classNames={{
-                inputWrapper: "bg-gray-100 data-[hover=true]:bg-gray-200 group-data-[focus=true]:bg-gray-100 border-none h-14",
-                input: "text-lg",
-                mainWrapper: "w-full"
-              }}
-              startContent={
-                <div className="pointer-events-none flex items-center">
-                  <span className="text-gray-500 text-lg font-medium">{currency.symbol}</span>
-                </div>
-              }
-              className="flex-1"
             />
           </div>
         </div>
@@ -505,20 +612,36 @@ export default function DiyOrderPage() {
       {/* Sticky Footer */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-6  z-50">
         <div className="container mx-auto flex justify-end items-center gap-8">
-          <p>
-            <span className="font-medium text-2xl">
-              {t("totalCost")}：
-            </span>
-            <span className="font-bold text-3xl text-[#f0700c]">
-              {currency.symbol}
-              {totalCost}
-            </span>
-          </p>
+          <div className="flex flex-col items-end gap-1">
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <span>
+                {tOrder("OrderItem.productFee")} {currency.symbol}
+                {productTotal}
+              </span>
+              <span>+</span>
+              <span>
+                {t("shippingFee")} {currency.symbol}
+                {shipping}
+              </span>
+              <span>+</span>
+              <span>
+                {tOrder("OrderItem.serviceFee")} {currency.symbol}
+                {serviceFee}
+              </span>
+            </div>
+            <p>
+              <span className="font-medium text-2xl">{t("totalCost")}：</span>
+              <span className="font-bold text-3xl text-[#f0700c]">
+                {currency.symbol}
+                {totalCost}
+              </span>
+            </p>
+          </div>
           <Button
-            size="lg"
-            color="primary"
             className="w-[200px] "
+            color="primary"
             isLoading={submitting}
+            size="lg"
             onPress={handleSubmit}
           >
             {t("submit")}
@@ -635,7 +758,12 @@ export default function DiyOrderPage() {
                     >
                       <div className="grid grid-cols-4 gap-2">
                         {currentService.sample.map((url: string) => (
-                          <AntImage key={url} height={80} src={url} width={80} />
+                          <AntImage
+                            key={url}
+                            height={80}
+                            src={url}
+                            width={80}
+                          />
                         ))}
                       </div>
                     </AntImage.PreviewGroup>
@@ -647,7 +775,9 @@ export default function DiyOrderPage() {
             {/* Service Fee */}
             {currentService.id != 1 && (
               <div className="flex items-center justify-between border-t pt-3">
-                <span className="text-sm text-gray-700">{tOrder("OrderItem.serviceFee")}</span>
+                <span className="text-sm text-gray-700">
+                  {tOrder("OrderItem.serviceFee")}
+                </span>
                 <div className="flex gap-2">
                   <span className="text-lg font-semibold text-rose-600">
                     {currency.symbol}

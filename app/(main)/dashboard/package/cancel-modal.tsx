@@ -1,6 +1,4 @@
 import React from "react";
-import { Button } from "@heroui/react";
-import { IoCloseCircleOutline } from "react-icons/io5";
 import { useTranslations } from "next-intl";
 
 import CommonModal from "@/components/modal/common-modal";
@@ -30,44 +28,50 @@ export default function CancelModal({
     <CommonModal
       isOpen={isOpen}
       title={t("cancelModal.title")}
-      onOpenChange={onClose}
       onConfirm={() => onConfirm(currentWaybill?.id)}
+      onOpenChange={onClose}
     >
       <div className="flex flex-col gap-4 py-4">
         {totalFee > 0 ? (
-            <div className="bg-yellow-50 text-yellow-700 p-3 rounded-lg text-sm border border-yellow-200">
-                {t("cancelModal.cancelCard.feeNotice", { amount: `${currency.symbol}${totalFee}` })}
-            </div>
+          <div className="bg-yellow-50 text-yellow-700 p-3 rounded-lg text-sm border border-yellow-200">
+            {t("cancelModal.cancelCard.feeNotice", {
+              amount: `${currency.symbol}${totalFee}`,
+            })}
+          </div>
         ) : (
-            <div className="bg-green-50 text-green-700 p-3 rounded-lg text-sm border border-green-200">
-                {t("cancelModal.cancelCard.freeNotice")}
-            </div>
+          <div className="bg-green-50 text-green-700 p-3 rounded-lg text-sm border border-green-200">
+            {t("cancelModal.cancelCard.freeNotice")}
+          </div>
         )}
 
         {totalFee > 0 && (
-            <div className="w-full rounded-xl bg-gray-50 p-4 text-sm text-gray-700 space-y-3">
-              <div className="flex justify-between items-center border-b border-gray-200 pb-3">
-                <span className="text-gray-500">{t("cancelModal.cancelCard.serviceFee")}</span>
-                <span className="font-medium">
-                  {currency.symbol}
-                  {currentWaybill?.cancelPre?.serviceFee ?? 0}
-                </span>
-              </div>
-              <div className="flex justify-between items-center border-b border-gray-200 pb-3">
-                <span className="text-gray-500">{t("cancelModal.cancelCard.packingFee")}</span>
-                <span className="font-medium">
-                  {currency.symbol}
-                  {currentWaybill?.cancelPre?.packingFee ?? 0}
-                </span>
-              </div>
-              <div className="flex justify-between items-center pt-1 text-base font-bold text-red-600">
-                <span>{t("cancelModal.cancelCard.totalFee")}</span>
-                <span>
-                  {currency.symbol}
-                  {totalFee}
-                </span>
-              </div>
+          <div className="w-full rounded-xl bg-gray-50 p-4 text-sm text-gray-700 space-y-3">
+            <div className="flex justify-between items-center border-b border-gray-200 pb-3">
+              <span className="text-gray-500">
+                {t("cancelModal.cancelCard.serviceFee")}
+              </span>
+              <span className="font-medium">
+                {currency.symbol}
+                {currentWaybill?.cancelPre?.serviceFee ?? 0}
+              </span>
             </div>
+            <div className="flex justify-between items-center border-b border-gray-200 pb-3">
+              <span className="text-gray-500">
+                {t("cancelModal.cancelCard.packingFee")}
+              </span>
+              <span className="font-medium">
+                {currency.symbol}
+                {currentWaybill?.cancelPre?.packingFee ?? 0}
+              </span>
+            </div>
+            <div className="flex justify-between items-center pt-1 text-base font-bold text-red-600">
+              <span>{t("cancelModal.cancelCard.totalFee")}</span>
+              <span>
+                {currency.symbol}
+                {totalFee}
+              </span>
+            </div>
+          </div>
         )}
       </div>
     </CommonModal>

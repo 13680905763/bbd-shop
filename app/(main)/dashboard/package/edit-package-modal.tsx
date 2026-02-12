@@ -21,7 +21,9 @@ export default function EditPackageModal({
   onChangeAddress,
 }: EditPackageModalProps) {
   const t = useTranslations("dashboard.package");
-  const [loadingType, setLoadingType] = useState<"route" | "address" | null>(null);
+  const [loadingType, setLoadingType] = useState<"route" | "address" | null>(
+    null,
+  );
 
   const canChangeRoute = currentWaybill?.changeFlag;
   const canChangeAddress = currentWaybill?.addressFlag;
@@ -45,70 +47,86 @@ export default function EditPackageModal({
 
   return (
     <CommonModal
+      footer={<div />}
       isOpen={isOpen}
       title={t("editModal.title")}
       onOpenChange={onClose}
-      footer={<div />}
     >
       <div className="flex flex-col gap-4 py-4">
         <Card
-          isPressable={canChangeRoute}
-          isDisabled={!!loadingType || !canChangeRoute}
           className={`w-full border transition-all ${
-            loadingType || !canChangeRoute 
-              ? "opacity-70 bg-gray-50 border-gray-100" 
+            loadingType || !canChangeRoute
+              ? "opacity-70 bg-gray-50 border-gray-100"
               : "hover:bg-orange-50 border-transparent hover:border-[#f0700c] hover:border-opacity-30"
           }`}
+          isDisabled={!!loadingType || !canChangeRoute}
+          isPressable={canChangeRoute}
           onPress={() => handleAction("route")}
         >
           <CardBody className="flex flex-row items-center gap-4 p-4">
-            <div className={`p-3 rounded-full flex items-center justify-center w-12 h-12 ${
+            <div
+              className={`p-3 rounded-full flex items-center justify-center w-12 h-12 ${
                 !canChangeRoute ? "bg-gray-200" : "bg-orange-100"
-            }`}>
+              }`}
+            >
               {loadingType === "route" ? (
-                <Spinner size="sm" color="warning" />
+                <Spinner color="warning" size="sm" />
               ) : (
-                <IoSwapHorizontalOutline className={`h-6 w-6 ${
+                <IoSwapHorizontalOutline
+                  className={`h-6 w-6 ${
                     !canChangeRoute ? "text-gray-400" : "text-[#f0700c]"
-                }`} />
+                  }`}
+                />
               )}
             </div>
             <div className="flex flex-col flex-1 text-left">
-              <span className={`font-semibold ${!canChangeRoute ? "text-gray-400" : "text-gray-800"}`}>
+              <span
+                className={`font-semibold ${!canChangeRoute ? "text-gray-400" : "text-gray-800"}`}
+              >
                 {t("editModal.changeRoute")}
               </span>
-              <span className="text-xs text-gray-500">{t("editModal.routeDesc")}</span>
+              <span className="text-xs text-gray-500">
+                {t("editModal.routeDesc")}
+              </span>
             </div>
           </CardBody>
         </Card>
 
         <Card
-          isPressable={canChangeAddress}
-          isDisabled={!!loadingType || !canChangeAddress}
           className={`w-full border transition-all ${
             loadingType || !canChangeAddress
-              ? "opacity-70 bg-gray-50 border-gray-100" 
+              ? "opacity-70 bg-gray-50 border-gray-100"
               : "hover:bg-orange-50 border-transparent hover:border-[#f0700c] hover:border-opacity-30"
           }`}
+          isDisabled={!!loadingType || !canChangeAddress}
+          isPressable={canChangeAddress}
           onPress={() => handleAction("address")}
         >
           <CardBody className="flex flex-row items-center gap-4 p-4">
-            <div className={`p-3 rounded-full flex items-center justify-center w-12 h-12 ${
+            <div
+              className={`p-3 rounded-full flex items-center justify-center w-12 h-12 ${
                 !canChangeAddress ? "bg-gray-200" : "bg-orange-100"
-            }`}>
+              }`}
+            >
               {loadingType === "address" ? (
-                <Spinner size="sm" color="warning" />
+                <Spinner color="warning" size="sm" />
               ) : (
-                <IoLocationOutline className={`h-6 w-6 ${
+                <IoLocationOutline
+                  className={`h-6 w-6 ${
                     !canChangeAddress ? "text-gray-400" : "text-[#f0700c]"
-                }`} />
+                  }`}
+                />
               )}
             </div>
             <div className="flex flex-col flex-1 text-left">
-              <span className={`font-semibold ${!canChangeAddress ? "text-gray-400" : "text-gray-800"}`}>
+              <span
+                className={`font-semibold ${!canChangeAddress ? "text-gray-400" : "text-gray-800"}`}
+              >
                 {t("editModal.changeAddress")}
               </span>
-              <span className="text-xs text-gray-500">{t("editModal.addressDesc")}</span>
+              <span className="text-xs text-gray-500">
+                {t("editModal.addressDesc")}
+              </span>
             </div>
           </CardBody>
         </Card>

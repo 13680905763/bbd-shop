@@ -1,6 +1,6 @@
-import { PromotionApi } from "@/services/promotionApi";
 import { useQuery } from "@tanstack/react-query";
 
+import { PromotionApi } from "@/services/promotionApi";
 
 export const useInvitedUsers = (params: any) => {
   return useQuery({

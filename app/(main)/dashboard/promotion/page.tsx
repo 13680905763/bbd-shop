@@ -1,35 +1,27 @@
 "use client";
 import React from "react";
-import {
-  Accordion,
-  AccordionItem,
-  Image,
-} from "@heroui/react";
+import { Image } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { IoCopyOutline } from "react-icons/io5";
+import clsx from "clsx";
+import { useRouter } from "next/navigation";
 
 import { CopyText } from "@/components/ui";
 import { describeText, price } from "@/components/primitives";
 import { useGlobalStore } from "@/store";
 import { useBonusConfig, useUserExperience, useUserInfo } from "@/hook/api";
-import clsx from "clsx";
-import { useRouter } from "next/navigation";
 
 export default function PromotionPage() {
   const t: any = useTranslations("dashboard.promotion.page");
   const router = useRouter();
   const { currency } = useGlobalStore();
   const { data: user, isLoading, error } = useUserInfo();
-  const { data: experience, isLoading: isLoadingExperience } = useUserExperience();
-  const { data: bonusConfig, isLoading: isLoadingBonusConfig } = useBonusConfig();
+  const { data: experience, isLoading: isLoadingExperience } =
+    useUserExperience();
+  const { data: bonusConfig, isLoading: isLoadingBonusConfig } =
+    useBonusConfig();
 
-  const process = [
-    t("process1"),
-    t("process2"),
-    t("process3"),
-  ]
-
-
+  const process = [t("process1"), t("process2"), t("process3")];
 
   return (
     <div className="space-y-2">
@@ -58,7 +50,7 @@ export default function PromotionPage() {
             );
           })}
         </div>
-        <div >
+        <div>
           <CopyText
             className="w-full"
             text={`https://www.bbdbuy1.com/register?inviteCode=${user?.inviteCode || ""}`}
@@ -70,36 +62,41 @@ export default function PromotionPage() {
               <IoCopyOutline size={18} />
             </div>
           </CopyText>
-          <span className='text-[#acacac] text-xs'>
-            {t("processTip")}
-          </span>
+          <span className="text-[#acacac] text-xs">{t("processTip")}</span>
         </div>
       </div>
 
-      <div className='subtitle'>{t("title1")}</div>
+      <div className="subtitle">{t("title1")}</div>
       <div className="grid grid-cols-3 bg-[#ffeee1] rounded-lg p-5">
         <div className="col-span-1 text-center">
-          <div className='font-bold text-3xl text-[#f0700c]'>{currency.symbol}{user?.myBonus}</div>
-          <div>
-            {t("totalReward")}
+          <div className="font-bold text-3xl text-[#f0700c]">
+            {currency.symbol}
+            {user?.myBonus}
           </div>
+          <div>{t("totalReward")}</div>
         </div>
         <div className="col-span-2 grid grid-cols-2 bg-[#fff] p-4 rounded-lg">
           <div className="text-center">
             <div>{user?.inviteCount}</div>
-            <button className="hover:text-[#f0700c]" onClick={() => router.push("/dashboard/promotion/invitedUser")}>
+            <button
+              className="hover:text-[#f0700c]"
+              onClick={() => router.push("/dashboard/promotion/invitedUser")}
+            >
               {t("inviteUsers")}
             </button>
           </div>
           <div className="text-center">
             <div>{experience?.experience || 0}</div>
-            <button className="hover:text-[#f0700c]" onClick={() => router.push("/dashboard/promotion/experience")}>
+            <button
+              className="hover:text-[#f0700c]"
+              onClick={() => router.push("/dashboard/promotion/experience")}
+            >
               {t("experience")}
             </button>
           </div>
         </div>
       </div>
-      <div className='subtitle'>{t("title2")}</div>
+      <div className="subtitle">{t("title2")}</div>
       <div className="grid grid-cols-3 bg-[#f7f8f9] rounded-lg">
         {bonusConfig?.map((item: any, index: any) => (
           <div
@@ -118,14 +115,12 @@ export default function PromotionPage() {
                 {(Number(item.configValue) * 100).toFixed(2)}%
               </div>
               <div className={describeText()}>
-                {item.rangeMin} ~ {item.rangeMax}{" "}
-                {t("experienceRange")}
+                {item.rangeMin} ~ {item.rangeMax} {t("experienceRange")}
               </div>
             </div>
           </div>
         ))}
       </div>
-
 
       {/* <div className='subtitle'>{t("faq.title")}</div>
       <Accordion className="!border-1" variant="bordered">
@@ -139,6 +134,6 @@ export default function PromotionPage() {
           </AccordionItem>
         ))}
       </Accordion> */}
-    </div >
+    </div>
   );
 }

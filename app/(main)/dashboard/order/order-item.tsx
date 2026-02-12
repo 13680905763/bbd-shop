@@ -1,20 +1,17 @@
 "use client";
-import { Button, Checkbox, Image } from "@heroui/react";
+import { Button, Checkbox } from "@heroui/react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { useGlobalStore } from "@/store";
 import { RefundCountdown, SourceIcon } from "@/components/ui";
-import { useTranslations } from "next-intl";
 import ProductItem from "@/components/block/product-item";
 function ProductItemWrapper({ product, onRevoke }: any) {
   const t = useTranslations("dashboard.order.orderItem");
 
-
   return (
     <div className="flex flex-col gap-1 border-b p-2 px-4">
-      <ProductItem
-        product={product}
-      />
+      <ProductItem product={product} />
       {product?.withdrawRefundFlag && (
         <div className="mt-2 px-3 py-2 border border-orange-200 rounded-lg bg-white">
           <div className="flex items-center justify-between">
@@ -34,8 +31,8 @@ function ProductItemWrapper({ product, onRevoke }: any) {
               )}
             </div>
             <Button
-              size="sm"
               color="primary"
+              size="sm"
               onPress={() => onRevoke(product?.refundId)}
             >
               {t("withdrawRequest")}
@@ -51,7 +48,7 @@ function ProductItemWrapper({ product, onRevoke }: any) {
             </span>
             {product.orderServiceList.map((item: any) => (
               <span
-                key={item.serviceId}
+                key={item.id}
                 className="px-2 py-0.5 text-xs rounded-md bg-white text-gray-700 border border-gray-200"
               >
                 {item.serviceName}*{item.quantity}
@@ -77,7 +74,6 @@ export default function OrderItem({
   const { currency } = useGlobalStore();
   const router = useRouter();
 
-
   return (
     <div className="card-cart">
       <div className="p-4 flex items-center gap-1">
@@ -100,7 +96,7 @@ export default function OrderItem({
         <div className="flex flex-col flex-[4]">
           {order?.products.map((product: any, index: number) => (
             <ProductItemWrapper
-              key={product.sourceSkuId}
+              key={product.id}
               isLastProduct={index === order?.products.length - 1}
               product={product}
               onRevoke={onRevoke}

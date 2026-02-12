@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { Button, Checkbox, Image } from "@heroui/react";
 import { FiSearch } from "react-icons/fi";
 import { useTranslations } from "next-intl";
+
 import MediaPreviewGroup, {
   MediaItem,
 } from "@/components/common/media-preview";
@@ -28,8 +29,6 @@ export default function PackageItem({
   const [isPayLoading, setIsPayLoading] = useState(false);
   const [isLineLoading, setIsLineLoading] = useState(false);
   const [isTrackLoading, setIsTrackLoading] = useState(false);
-
-
 
   const isDragging = useRef(false);
   const startX = useRef(0);
@@ -78,7 +77,10 @@ export default function PackageItem({
     <div className="card-cart mb-4 p-2 bg-white rounded-lg shadow-sm">
       <div className="flex items-center  p-2 text-sm">
         {showCheckbox ? (
-          <Checkbox isSelected={isSelected(pack.packingPackageCode)} onChange={() => onChange(pack.packingPackageCode)} />
+          <Checkbox
+            isSelected={isSelected(pack.packingPackageCode)}
+            onChange={() => onChange(pack.packingPackageCode)}
+          />
         ) : null}
         {t("packageNumberLabel")}:
         <span className="font-semibold">{pack?.packingPackageCode}</span>
@@ -122,7 +124,6 @@ export default function PackageItem({
             </span>
           </div>
 
-
           <div className="space-y-2 flex-[0_0_200px]">
             <p>{pack?.shipping?.methodCode}</p>
             <p>{pack?.shipping?.templateName}</p>
@@ -130,17 +131,15 @@ export default function PackageItem({
             {pack?.shipping?.shippingCode && (
               <Button
                 className="button-default"
-                size="sm"
                 isLoading={isTrackLoading}
+                size="sm"
                 onPress={async () => {
                   setIsTrackLoading(true);
                   await onTrack(pack);
                   setIsTrackLoading(false);
                 }}
               >
-                <FiSearch
-                  size={14}
-                />
+                <FiSearch size={14} />
                 {pack.shipping.shippingCode}
               </Button>
             )}
@@ -158,36 +157,33 @@ export default function PackageItem({
           </div>
           <div className="flex flex-col justify-center p-2 text-gray-700 flex-[0_0_150px]">
             <div className="text-[#f0700c] font-medium">{pack?.status}</div>
-
           </div>
 
           <div className="space-y-2 p-2 flex-[0_0_150px]">
             {(pack?.statusCode == 203 || pack?.statusCode == 209) && (
               <Button
+                className=" w-full"
                 color="primary"
+                isLoading={isPayLoading}
                 radius="sm"
                 size="sm"
-                className=" w-full"
-
-                isLoading={isPayLoading}
                 onPress={async () => {
                   setIsPayLoading(true);
-                  await onPay([pack.packingPackageCode])
+                  await onPay([pack.packingPackageCode]);
                   setIsPayLoading(false);
-                }
-                }
+                }}
               >
                 {pack?.statusCode == 203 ? t("payButton") : t("payCancelFee")}
               </Button>
             )}
-            
+
             {pack?.cancelFlag && (
               <Button
                 className=" w-full"
+                isLoading={isCancelLoading}
                 radius="sm"
                 size="sm"
                 variant="flat"
-                isLoading={isCancelLoading}
                 onPress={async () => {
                   setIsCancelLoading(true);
                   await onCancel(pack);

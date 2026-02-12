@@ -1,72 +1,63 @@
+import { request } from "./request";
+
 import { OrderListParams } from "@/types";
-import { request, requestWithOption } from "./request";
 
 export interface DiyOrderParams {
-    productLink: string;
-    productTitle: string;
-    productPic: string;
-    specifications: {
-        propId_valueId: string;
-        propName_valueName: string;
-    };
-    unitPrice: string;
-    postage: string;
+  productLink: string;
+  productTitle: string;
+  productPic: string[];
+  specifications: {
+    s1: string;
+    s2: string;
+    quantity: number;
+  }[];
+  productPrice: string;
+  postage: string;
+  remark: string;
+  serviceList: {
+    serviceId: number;
     quantity: number;
     remark: string;
-    serviceList: {
-        serviceId: number;
-        quantity: number;
-        remark: string;
-    }[];
+  }[];
 }
 
 export const OrderApi = {
-    /** 获取订单列表 */
-    listOrder: (data: OrderListParams): Promise<any> => request.post("/orders/page", data),
-    listRefundOrder: (data: any): Promise<any> => {
-        return request.post("/order-refund/list", data);
-    },
-    /** 订单取消 */
-    cancelOrder: (orderId: string): Promise<any> => {
-        return request.put(`/orders/cancel?orderId=${orderId}`);
-    },
-    /** 批量支付订单 */
-    batchPayOrder: (data: any): Promise<any> => {
-        return request.post(
-            "/orders/pay/preview/init",
-            data,
-        );
-    },
-    /** 订单退款 */
-    refundOrder: (data: any): Promise<any> => {
-        return request.post(
-            "/order-refund/applyRefund",
-            data,
-        );
-    },
-    /** 订单退款撤销 */
-    revokeOrder: (id: string): Promise<any> => {
-        return request.put(`/order-refund/cancelApplyRefund/${id}`);
-    },
-    /** 创建DIY订单 */
-    createDiyOrder: (data: DiyOrderParams): Promise<any> => {
-        return request.post(
-            "/order-diy",
-            data,
-        );
-    },
-    /** 上传图片 */
-    uploadDiyImage: (file: File): Promise<string> => {
-        const formData = new FormData();
-        formData.append("file", file);
-        return request.post(
-            "/order-diy/uploadImg",
-            formData,
-            {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            }
-        );
-    }
-}
+  /** 获取订单列表 */
+  listOrder: (data: OrderListParams): Promise<any> =>
+    request.post("/orders/page", data),
+  listRefundOrder: (data: any): Promise<any> => {
+    return request.post("/order-refund/list", data);
+  },
+  /** 订单取消 */
+  cancelOrder: (orderId: string): Promise<any> => {
+    return request.put(`/orders/cancel?orderId=${orderId}`);
+  },
+  /** 批量支付订单 */
+  batchPayOrder: (data: any): Promise<any> => {
+    return request.post("/orders/pay/preview/init", data);
+  },
+  /** 订单退款 */
+  refundOrder: (data: any): Promise<any> => {
+    return request.post("/order-refund/applyRefund", data);
+  },
+  /** 订单退款撤销 */
+  revokeOrder: (id: string): Promise<any> => {
+    return request.put(`/order-refund/cancelApplyRefund/${id}`);
+  },
+  /** 创建DIY订单 */
+  createDiyOrder: (data: DiyOrderParams): Promise<any> => {
+    return request.post("/order-diy", data);
+  },
+  /** 上传图片 */
+  uploadDiyImage: (file: File): Promise<string> => {
+    const formData = new FormData();
+
+    formData.append("file", file);
+
+    return request.post("/order-diy/uploadImg", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
+};

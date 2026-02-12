@@ -70,7 +70,7 @@ export function Providers({
     // <SessionProvider>
     <GoogleOAuthProvider clientId="545953191162-n0elu4ilreo1hdlptkgublu7bjegpp0u.apps.googleusercontent.com">
       <QueryClientProvider client={queryClient}>
-         <ConfigSync />
+        <ConfigSync />
         <HeroUIProvider navigate={router.push}>
           <ToastProvider
             placement="top-center"

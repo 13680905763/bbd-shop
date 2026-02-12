@@ -1,8 +1,6 @@
 "use client";
 import {
   Button,
-  Checkbox,
-  Spinner,
   Tab,
   Tabs,
   Table,
@@ -122,7 +120,9 @@ export default function MessagePage() {
     },
     [t, handleViewDetail],
   );
+
   if (isLoading) return <FullscreenLoader />;
+
   return (
     <div className="flex w-full flex-col">
       <Tabs
@@ -165,7 +165,7 @@ export default function MessagePage() {
           // classNames={{
           //   table: "min-h-[60vh]",
           // }}
-          
+
           aria-label="Message table"
           bottomContent={
             <div className="flex items-center justify-between">
@@ -214,9 +214,12 @@ export default function MessagePage() {
               <TableColumn key={column.key}>{column.label}</TableColumn>
             )}
           </TableHeader>
-          <TableBody items={records} isLoading={isFetching}
-            emptyContent={<EmptyState className="!h-auto"/>}
-            loadingContent={<BlockSpinner />}>
+          <TableBody
+            emptyContent={<EmptyState className="!h-auto" />}
+            isLoading={isFetching}
+            items={records}
+            loadingContent={<BlockSpinner />}
+          >
             {(item: any) => (
               <TableRow key={item.id}>
                 {(columnKey: any) => (

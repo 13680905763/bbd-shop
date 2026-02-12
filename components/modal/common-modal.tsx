@@ -104,9 +104,9 @@ export default function CommonModal({
                 )}
                 <Button
                   color="primary"
+                  isDisabled={isDisabled}
                   isLoading={isLoading}
                   onPress={handleConfirm}
-                  isDisabled={isDisabled}
                 >
                   {confirmText ?? t("confirm")}
                 </Button>

@@ -3,11 +3,7 @@
 import { Autocomplete, AutocompleteItem, Avatar } from "@heroui/react";
 import { useTranslations } from "next-intl";
 
-import {
-  useCountries,
-  useProvinces,
-  useCities,
-} from "@/hook/api";
+import { useCountries, useProvinces, useCities } from "@/hook/api";
 
 interface Option {
   id: string | number; // 接口可能是 number，也可能是 string
@@ -59,9 +55,9 @@ export default function AreaSelector({ value, onChange }: Props) {
   return (
     <div className="flex flex-col gap-4">
       <Autocomplete
+        errorMessage={t("country.errorMessage")}
         isRequired={true}
         label={t("country.label")}
-        errorMessage={t("country.errorMessage")}
         placeholder={t("country.placeholder")}
         selectedKey={String(value.countryId) || null}
         variant="bordered"
@@ -77,9 +73,9 @@ export default function AreaSelector({ value, onChange }: Props) {
       </Autocomplete>
 
       <Autocomplete
+        errorMessage={t("state.errorMessage")}
         isRequired={true}
         label={t("state.label")}
-        errorMessage={t("state.errorMessage")}
         placeholder={t("state.placeholder")}
         selectedKey={String(value.stateId) || null}
         variant="bordered"
@@ -96,9 +92,9 @@ export default function AreaSelector({ value, onChange }: Props) {
 
       {cities.length > 0 ? (
         <Autocomplete
+          errorMessage={t("city.errorMessage")}
           isRequired={true}
           label={t("city.label")}
-          errorMessage={t("city.errorMessage")}
           placeholder={t("city.placeholder")}
           selectedKey={String(value.city) || null}
           variant="bordered"

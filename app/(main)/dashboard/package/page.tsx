@@ -1,10 +1,5 @@
 "use client";
-import {
-  Button,
-  Checkbox,
-  Tab,
-  Tabs,
-} from "@heroui/react";
+import { Button, Checkbox, Tab, Tabs } from "@heroui/react";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -17,11 +12,26 @@ import EditPackageModal from "./edit-package-modal";
 import ChangeAddressModal from "./change-address-modal";
 
 import PaginationBar from "@/components/common/pagination-bar";
-import { useBatchPay, useCancelWaybill, useChangeLine, usePreviewCancel, usePreviewChangeLine, useReceipt, useTrackDetail, useWaybillList, useWithdrawCancel, useChangeAddress } from "@/hook/api";
-
+import {
+  useBatchPay,
+  useCancelWaybill,
+  useChangeLine,
+  usePreviewCancel,
+  usePreviewChangeLine,
+  useReceipt,
+  useTrackDetail,
+  useWaybillList,
+  useWithdrawCancel,
+  useChangeAddress,
+} from "@/hook/api";
 import { useSelection } from "@/hook/common";
 import { useConfirm } from "@/components/common/modal/confirm-provider";
-import { BlockSpinner, BusinessProgress, EmptyState, FullscreenLoader } from "@/components/ui";
+import {
+  BlockSpinner,
+  BusinessProgress,
+  EmptyState,
+  FullscreenLoader,
+} from "@/components/ui";
 
 const tabKeyToStatusCode: Record<string, string> = {
   all: "",
@@ -30,7 +40,15 @@ const tabKeyToStatusCode: Record<string, string> = {
   receivded: "206",
 };
 
-type ModalType = "cancel" | "revoke" | "changeLine" | "line" | "receipt" | "edit" | "changeAddress" | null;
+type ModalType =
+  | "cancel"
+  | "revoke"
+  | "changeLine"
+  | "line"
+  | "receipt"
+  | "edit"
+  | "changeAddress"
+  | null;
 
 export default function PackagePage() {
   const t = useTranslations("dashboard.package");
@@ -44,12 +62,18 @@ export default function PackagePage() {
     statusCode: tabKeyToStatusCode[activeTab],
   });
   const { mutateAsync: batchPay, isPending: isBatchPaying } = useBatchPay();
-  const { mutateAsync: previewCancel, isPending: isUpdatingRoute } = usePreviewCancel();
-  const { mutateAsync: withdrawCancel, isPending: isWithdrawCancelling } = useWithdrawCancel();
-  const { mutateAsync: cancelWaybill, isPending: isCancelling } = useCancelWaybill();
-  const { mutateAsync: previewChangeLine, isPending: isPreviewChangingLine } = usePreviewChangeLine();
-  const { mutateAsync: changeLine, isPending: isChangingLine } = useChangeLine();
-  const { mutateAsync: changeAddress, isPending: isChangingAddress } = useChangeAddress();
+  const { mutateAsync: previewCancel, isPending: isUpdatingRoute } =
+    usePreviewCancel();
+  const { mutateAsync: withdrawCancel, isPending: isWithdrawCancelling } =
+    useWithdrawCancel();
+  const { mutateAsync: cancelWaybill, isPending: isCancelling } =
+    useCancelWaybill();
+  const { mutateAsync: previewChangeLine, isPending: isPreviewChangingLine } =
+    usePreviewChangeLine();
+  const { mutateAsync: changeLine, isPending: isChangingLine } =
+    useChangeLine();
+  const { mutateAsync: changeAddress, isPending: isChangingAddress } =
+    useChangeAddress();
   const { mutateAsync: trackDetail, isPending: isTracking } = useTrackDetail();
   const { mutateAsync: receipt, isPending: isReceipting } = useReceipt();
 
@@ -73,12 +97,14 @@ export default function PackagePage() {
   // 打开取消弹窗
   const onCancel = async (waybill: any) => {
     const res = await previewCancel({ id: waybill?.id });
+
     setCurrentWaybill({ ...waybill, cancelPre: res });
     setModalType("cancel");
   };
   const handleCancel = async (waybillId: string) => {
     try {
       const bizCode = await cancelWaybill(waybillId);
+
       if (bizCode) router.push("/payment/" + bizCode);
     } catch {
     } finally {
@@ -95,11 +121,17 @@ export default function PackagePage() {
   // 打开更换路线弹窗
   const onChangeLine = async (waybill: any) => {
     const res = await previewChangeLine({ id: waybill.id });
-    setSelectedRouteId(res.find((i: any) => i.id == waybill?.shipping?.templateId)?.id || null);
+
+    setSelectedRouteId(
+      res.find((i: any) => i.id == waybill?.shipping?.templateId)?.id || null,
+    );
     setCurrentWaybill({ ...waybill, changePre: res });
     setModalType("changeLine");
   };
-  const handleChangeLine = async (waybillId: string, routeId: string | null) => {
+  const handleChangeLine = async (
+    waybillId: string,
+    routeId: string | null,
+  ) => {
     await changeLine({
       id: waybillId,
       templateId: routeId,
@@ -112,13 +144,18 @@ export default function PackagePage() {
     setModalType("changeAddress");
   };
   // 提交修改地址
-  const handleChangeAddress = async (data: { customerAddressId: string, routeId?: string, remark?: string }) => {
+  const handleChangeAddress = async (data: {
+    customerAddressId: string;
+    routeId?: string;
+    remark?: string;
+  }) => {
     if (!currentWaybill) return;
+
     return await changeAddress({
       id: currentWaybill.id,
       customerAddressId: data.customerAddressId,
       templateId: data.routeId, // 假设后端接口接收 templateId 作为路线ID
-      remark: data.remark
+      remark: data.remark,
     });
   };
 
@@ -139,6 +176,7 @@ export default function PackagePage() {
       serverCode: pack?.shipping?.serverCode,
       shippingCode: pack?.shipping?.shippingCode,
     });
+
     setCurrentWaybill({ ...pack, trackDetail: res });
     setModalType("line");
   };
@@ -156,28 +194,30 @@ export default function PackagePage() {
   // 批量支付/单独支付
   const handleBatchPay = async (waybillIds: string[] = []) => {
     const bizCode = await batchPay({ packageSet: waybillIds });
+
     if (bizCode) router.push(`/payment/${bizCode}`);
   };
 
   const renderWaybillTabContent = () => {
     if (!data?.records?.length) return <EmptyState />;
+
     return (
       <div className="relative">
-        {(isFetching) && <BlockSpinner />}
+        {isFetching && <BlockSpinner />}
         <div className="space-y-3 relative">
           {data.records.map((waybill: any) => (
             <PackageItem
               key={waybill.packingPackageCode}
-              showCheckbox={activeTab === "pay"}
-              pack={waybill}
-              onCancel={onCancel}
               isSelected={isSelected}
+              pack={waybill}
+              showCheckbox={activeTab === "pay"}
+              onCancel={onCancel}
               onChange={onSelect}
               onEdit={onEdit} //编辑
               onPay={handleBatchPay} //支付
+              onReceipt={onReceipt} //收货
               onRevoke={onRevoke} //撤回取消包裹
               onTrack={onTrack} //物流详情
-              onReceipt={onReceipt} //收货
             />
           ))}
         </div>
@@ -211,7 +251,9 @@ export default function PackagePage() {
       </div>
     );
   };
+
   if (isLoading) return <FullscreenLoader />;
+
   return (
     <div className="flex w-full flex-col">
       <div className="mt-5">
@@ -229,6 +271,7 @@ export default function PackagePage() {
         variant="underlined"
         onSelectionChange={(key) => {
           const k = String(key) as keyof typeof tabKeyToStatusCode;
+
           setActiveTab(k);
           setPage(1);
           setPageSize(k === "submit" ? 100 : 10);
@@ -249,36 +292,36 @@ export default function PackagePage() {
       </Tabs>
       <CancelModal
         currentWaybill={currentWaybill}
+        isCancelling={isCancelling}
         isOpen={modalType === "cancel"}
         onClose={() => setModalType(null)}
         onConfirm={handleCancel}
-        isCancelling={isCancelling}
       />
       <EditPackageModal
-        isOpen={modalType === "edit"}
         currentWaybill={currentWaybill}
-        onClose={() => setModalType(null)}
-        onChangeRoute={onChangeLine}
+        isOpen={modalType === "edit"}
         onChangeAddress={onChangeAddress}
+        onChangeRoute={onChangeLine}
+        onClose={() => setModalType(null)}
       />
       <ChangeAddressModal
+        currentAddressId={currentWaybill?.shipping?.addressId}
         isOpen={modalType === "changeAddress"}
+        waybillId={currentWaybill?.id}
         onClose={() => setModalType(null)}
         onConfirm={handleChangeAddress}
-        currentAddressId={currentWaybill?.shipping?.addressId}
-        waybillId={currentWaybill?.id}
       />
       <ChangeLineModal
-        isOpen={modalType === "changeLine"}
         currentWaybill={currentWaybill}
-        onClose={() => setModalType(null)}
-        onConfirm={handleChangeLine}
+        isOpen={modalType === "changeLine"}
         selectedRouteId={selectedRouteId}
         setSelectedRouteId={setSelectedRouteId}
+        onClose={() => setModalType(null)}
+        onConfirm={handleChangeLine}
       />
       <LineDetailModal
-        isOpen={modalType === "line"}
         currentWaybill={currentWaybill}
+        isOpen={modalType === "line"}
         onClose={() => setModalType(null)}
       />
     </div>

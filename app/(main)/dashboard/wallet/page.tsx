@@ -2,9 +2,11 @@
 import React, { useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+
 import BalanceTab from "./balance-tab";
 import ScoreTab from "./score-tab";
 import CouponTab from "./coupon-tab";
+
 import { CommonTabs } from "@/components/common";
 export default function WalletPage() {
   const t = useTranslations("dashboard.wallet");
@@ -22,9 +24,14 @@ export default function WalletPage() {
     { key: "score", title: t("tab.score"), content: <ScoreTab /> },
     { key: "coupon", title: t("tab.coupon"), content: <CouponTab /> },
   ];
+
   return (
     <div className="flex w-full flex-col">
-      <CommonTabs tabs={tabs} onSelectionChange={(key) => changeTab(key)} defaultSelectedKey={currentTab} />
+      <CommonTabs
+        defaultSelectedKey={currentTab}
+        tabs={tabs}
+        onSelectionChange={(key) => changeTab(key)}
+      />
     </div>
   );
 }

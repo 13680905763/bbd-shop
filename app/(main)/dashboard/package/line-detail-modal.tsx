@@ -73,7 +73,7 @@ export default function LineDetailModal({
                     <p className="mt-1 text-xs text-gray-400">{item.time}</p>
                   </div>
                 </div>
-              )
+              ),
             )}
           </div>
         </div>
@@ -113,7 +113,7 @@ export default function LineDetailModal({
                         </p>
                       </div>
                     </div>
-                  )
+                  ),
                 )}
               </div>
             </div>

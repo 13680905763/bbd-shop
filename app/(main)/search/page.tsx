@@ -51,7 +51,7 @@ export default function SearchPage() {
 
         if (res.length < 20) setHasMore(false);
 
-        setList((prev) => [...prev, ...res]);
+        setList((prev) => [...prev, ...res.records]);
       } catch (err) {
         console.error("搜索失败:", err);
       } finally {

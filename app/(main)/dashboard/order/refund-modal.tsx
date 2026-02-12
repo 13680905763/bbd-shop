@@ -1,6 +1,5 @@
 import { Card, CardBody, Checkbox, Image, Textarea } from "@heroui/react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
 
 import CommonModal from "@/components/modal/common-modal";
 import { useGlobalStore } from "@/store";
@@ -49,8 +48,8 @@ export default function RefundModal({
                   <Image
                     alt={product.productTitle}
                     className="w-full h-full object-cover rounded-md"
-                    referrerPolicy="no-referrer"
                     height={70}
+                    referrerPolicy="no-referrer"
                     src={
                       product.skuPicUrl || product.picUrl || "/placeholder.png"
                     }
