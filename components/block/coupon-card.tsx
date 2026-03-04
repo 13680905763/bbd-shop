@@ -3,63 +3,73 @@ import { useTranslations } from "next-intl";
 import React from "react";
 import clsx from "clsx";
 
+import { useGlobalStore } from "@/store";
+
 export default function CouponCard({ coupon }: { coupon: any }) {
   const t = useTranslations("components.block.coupon");
+  const { currency } = useGlobalStore();
 
   const isAvailable = coupon.status === 1;
-  const themeColor = isAvailable ? "bg-[#f0700c]" : "bg-[#999999]";
+  // Use orange for available, gray for others
+  const bgClass = isAvailable ? "bg-[#f0700c]" : "bg-[#cccccc]";
 
   return (
-    <div className="w-full h-full rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white border border-gray-100 flex flex-col ">
-      <div
-        className={clsx(
-          "py-6 px-4 flex flex-col justify-center items-center text-white gap-6",
-          themeColor,
-        )}
-      >
-        {/* <div className="font-medium text-xl opacity-95 text-center">
-               {t("minSpend", { amount: coupon.thresholdAmount })}
-            </div> */}
-        <div className="border-2 border-dashed border-white/70  px-6 py-2 flex items-baseline justify-center w-full">
-          {coupon.couponType === 1 ? (
-            <>
-              <span className="text-2xl font-bold">
-                {coupon.thresholdAmount}-{coupon.couponDenomination}
-              </span>
-            </>
-          ) : (
-            <span className="text-2xl font-bold">
-              {coupon?.discount ? Number(coupon.discount * 100) : "0"}%
-            </span>
-          )}
+    <div
+      className={clsx(
+        "w-full rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col relative text-white",
+        bgClass,
+      )}
+    >
+      {/* Top: Title */}
+      <div className="p-4 pb-3 px-8">
+        <div
+          className="font-bold text-base line-clamp-1"
+          title={coupon.couponTitle}
+        >
+          {coupon.couponTitle}
         </div>
       </div>
 
-      <div className="p-5 flex flex-col gap-3 text-sm text-gray-600 bg-[#f9fafb] flex-1">
-        <div className="flex flex-col gap-2.5 flex-1">
-          <div className="flex items-start">
-            <span className="text-gray-800 w-[70px] flex-shrink-0 font-bold">
-              {t("type")}:
-            </span>
-            <span className="text-gray-700 flex-1 leading-snug scale-90 origin-left">
-              {coupon?.couponTypeMsg}
-            </span>
-          </div>
-          <div className="flex items-start">
-            <span className="text-gray-800 w-[70px] flex-shrink-0 font-bold">
-              {t("src")}:
-            </span>
-            <span className="text-gray-700 flex-1 leading-snug scale-90 origin-left">
-              {coupon.srcMsg}
-            </span>
-          </div>
-        </div>
+      {/* Dashed Separator */}
+      <div className="relative h-4 w-full">
+        <div className="absolute top-1/2 left-0 w-full border-t-2 border-dashed border-white/50" />
+        {/* Cutouts matching the page background */}
+        <div className="absolute top-0 -left-2 w-4 h-4 bg-[#f8f8f8] rounded-full" />
+        <div className="absolute top-0 -right-2 w-4 h-4 bg-[#f8f8f8] rounded-full" />
+      </div>
 
-        <div className="border-t border-dashed border-gray-200 mt-3 pt-3 text-gray-400 flex flex-col items-center text-xs gap-1">
-          <div className="font-medium">
-            {dayjs(coupon.createTime).format("YYYY/MM/DD")} -{" "}
-            {dayjs(coupon.expirationDate).format("YYYY/MM/DD")}
-          </div>
+      {/* Middle: Discount & Threshold */}
+      <div className="px-8 py-3 flex items-baseline gap-3">
+        <div className="font-bold text-4xl">
+          {coupon.couponType === 1 ? (
+            <>
+              <span className=" mr-0.5">{currency.symbol}</span>
+              {coupon.couponDenomination}
+            </>
+          ) : (
+            <>
+              {coupon?.couponDiscount
+                ? Number(coupon.couponDiscount * 100)
+                : "0"}
+              <span className=" ml-0.5">%</span>
+            </>
+          )}
+        </div>
+        <div className="text-sm opacity-90">
+          {t("minSpend", {
+            amount: Math.floor(Number(coupon.thresholdAmount)),
+          })}
+        </div>
+      </div>
+
+      {/* Bottom: Time & Description */}
+      <div className="px-8 pb-4 flex flex-col gap-1 text-sm opacity-80">
+        <div>
+          {dayjs(coupon.createTime).format("YYYY-MM-DD")} ~{" "}
+          {dayjs(coupon.expirationDate).format("YYYY-MM-DD")}
+        </div>
+        <div className="line-clamp-1" title={coupon.srcMsg}>
+          {coupon.srcMsg}
         </div>
       </div>
     </div>

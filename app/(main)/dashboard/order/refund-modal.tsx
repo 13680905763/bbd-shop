@@ -1,5 +1,6 @@
 import { Card, CardBody, Checkbox, Image, Textarea } from "@heroui/react";
 import { useTranslations } from "next-intl";
+import { useEffect } from "react";
 
 import CommonModal from "@/components/modal/common-modal";
 import { useGlobalStore } from "@/store";
@@ -15,6 +16,13 @@ export default function RefundModal({
 }: any) {
   const t = useTranslations("dashboard.order");
   const { currency } = useGlobalStore();
+
+  useEffect(() => {
+    products.forEach((product: any) => {
+      onSelect(product.id);
+      onUpdateQuantity(product.id, product.canRefundQty);
+    });
+  }, []);
 
   return (
     <CommonModal

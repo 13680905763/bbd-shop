@@ -3,7 +3,6 @@ import { request, requestWithOption } from "./request";
 import {
   createOrderByRechargeParams,
   createOrderPreviewKeyByProductParams,
-  createPayOrderParams,
   OrderPreviewByCart,
   OrderPreviewByProduct,
 } from "@/types";
@@ -55,18 +54,23 @@ export const updateOrderPreviewProduct = (
   data: any,
 ): Promise<OrderPreviewByCart> => request.post("/orders/preview", data);
 /** 付款 */
-export const createPayOrder = (data: createPayOrderParams): Promise<any> => {
-  return requestWithOption(
-    {
-      url: "/customer/pay-order/create",
-      method: "POST",
-      data,
-    },
-    {
-      showToast: true,
-    },
-  );
-};
+// export const createPayOrder = (data: {
+//   bizCode: string;
+//   paymentId: string | number;
+//   addressId: number | string;
+//   customerCouponId?: string;
+// }): Promise<any> => {
+//   return requestWithOption(
+//     {
+//       url: "/customer/pay-order/create",
+//       method: "POST",
+//       data,
+//     },
+//     {
+//       showToast: true,
+//     },
+//   );
+// };
 /** 获取支付状态 */
 export const getPayOrderStatus = (bizCode: string): Promise<number> =>
   request.get(`/customer/pay-order/status?bizCode=${bizCode}`);

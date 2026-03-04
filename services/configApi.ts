@@ -11,7 +11,7 @@ export const configApi = {
   },
   /** 获取积分兑换优惠券列表 */
   listCoupons(): Promise<any[]> {
-    return request.get("/coupon");
+    return request.get("/coupon?src=2");
   },
   /** 获取增值服务列表 */
   listWarehouseServices(): Promise<any[]> {
@@ -28,5 +28,9 @@ export const configApi = {
   /** 获取城市列表 */
   listCities: (stateId: string): Promise<any> => {
     return request.get("/cities/state?stateId=" + stateId);
+  },
+  /** 获取活跃用户奖金配置 */
+  listInviteBonus: (): Promise<any[]> => {
+    return request.get("/invite-bonus");
   },
 };

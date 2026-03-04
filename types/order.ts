@@ -88,6 +88,7 @@ export interface createPayOrderParams {
   bizCode: string;
   paymentId: string | number;
   addressId: number | string;
+  customerCouponId?: string;
 }
 export interface ServicesState {
   services: any;

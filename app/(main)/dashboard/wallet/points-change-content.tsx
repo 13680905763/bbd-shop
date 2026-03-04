@@ -1,7 +1,6 @@
 import React from "react";
 
-import CouponCard from "./coupon-card";
-
+import { CouponExchangeCard } from "@/components/block";
 import { BlockSpinner, EmptyState } from "@/components/ui";
 import { useCouponsConfig } from "@/hook/api";
 
@@ -10,16 +9,20 @@ export default function PointsRecordContent() {
 
   console.log("data", data);
 
-  if (isFetching) return <EmptyState />;
+  if (!data?.length && !isFetching) return <EmptyState />;
 
   return (
-    <>
+    <div className="relative">
       {isFetching && <BlockSpinner />}
       <div className="grid grid-cols-3 gap-6">
         {data?.map((coupon: any) => (
-          <CouponCard key={coupon.id} coupon={coupon} />
+          <CouponExchangeCard
+            key={coupon.id}
+            coupon={coupon}
+            onExchange={() => console.log("redeem coupon", coupon)}
+          />
         ))}
       </div>
-    </>
+    </div>
   );
 }

@@ -305,9 +305,8 @@ export default function PackagePage() {
         onClose={() => setModalType(null)}
       />
       <ChangeAddressModal
-        currentAddressId={currentWaybill?.shipping?.addressId}
+        currentWaybill={currentWaybill}
         isOpen={modalType === "changeAddress"}
-        waybillId={currentWaybill?.id}
         onClose={() => setModalType(null)}
         onConfirm={handleChangeAddress}
       />

@@ -130,7 +130,7 @@
                 "redeem": "兑换",
                 "type": "类型",
                 "validity": "有效期",
-                "days": "天",
+                "days": "{count}天",
                 "points": "积分",
                 "src": "来源"
             }
@@ -142,7 +142,7 @@
                 "validUntil": "有效期至:",
                 "code": "券码:",
                 "available": "满{amount}可用",
-                "minSpend": "最低费用 > {amount}",
+                "minSpend": "满{amount}可用",
                 "discount": "折扣",
                 "restriction": "限制",
                 "shippingExcludingCustoms": "运费（不包括清关费）",
@@ -335,6 +335,18 @@
             "recharge": {
                 "title": "充值",
                 "placeholder": "请输入充值金额"
+            },
+            "withdraw": {
+                "title": "提现",
+                "placeholder": "请输入提现金额",
+                "fee": "手续费 (1%)",
+                "receive": "实际到账",
+                "available": "可用余额",
+                "tip": "提现金额将先进入冻结余额，待管理员审核通过后，将自动原路返回您的付款账号",
+                "successTitle": "提现申请已提交",
+                "successMessage": "您的提现申请已成功提交。",
+                "failTitle": "提现失败",
+                "failMessage": "提现申请提交失败，请重试。"
             }
         },
         "form": {
@@ -464,17 +476,25 @@
             },
             "balance": {
                 "title": "余额",
+                "totalBalance": "总余额",
+                "frozenBalance": "冻结余额",
+                "availableBalance": "可用余额",
                 "recharge": "充值",
                 "withdraw": "提现",
                 "tableTitle": "交易记录",
                 "noData": "暂无交易记录",
                 "withdrawModalTitle": "提现",
+                "withdrawalHistory": "提现记录",
                 "tableColumns": {
-                    "bizReference": "业务参考号",
-                    "bizType": "业务类型",
+                    "bizReference": "单号",
+                    "bizType": "类型",
                     "amount": "金额",
-                    "currentBalance": "当前余额",
-                    "createTime": "交易时间"
+                    "currentBalance": "余额",
+                    "createTime": "时间",
+                    "currencyCode": "货币",
+                    "status": "状态",
+                    "fee": "手续费",
+                    "actualAmount": "实到"
                 }
             },
             "score": {
@@ -694,17 +714,39 @@
                 "title1": "我的联盟",
                 "totalReward": "总奖励",
                 "inviteUsers": "邀请用户",
+                "activeUsers": "活跃用户",
                 "experience": "我的经验",
                 "title2": "我的等级",
                 "bonusRate": "奖金比例",
-                "experienceRange": "经验"
+                "experienceRange": "经验",
+                "noData": "暂无数据",
+                "activeUserBonus": {
+                    "title": "活跃用户奖金",
+                    "tableColumns": {
+                        "activeUser": "活跃用户数",
+                        "remark": "奖金"
+                    }
+                }
             },
             "invitedUser": {
                 "title": "被邀请用户",
                 "tableColumns": {
                     "name": "被邀请人",
                     "email": "被邀请人邮箱",
-                    "createTime": "时间"
+                    "createTime": "时间",
+                    "status": "状态"
+                },
+                "status": {
+                    "0": "未激活",
+                    "1": "已激活"
+                }
+            },
+            "activeUserBonus": {
+                "title": "活跃用户奖金配置",
+                "tableColumns": {
+                    "activeUser": "活跃用户数",
+                    "bonus": "奖金金额",
+                    "remark": "备注"
                 }
             },
             "bonus": {
@@ -793,9 +835,14 @@
             "add": "添加"
         }
     },
-    "PayOrder": {
+    "payment": {
         "balance": "余额",
         "recharge": "充值",
+        "coupon": "优惠券",
+        "changeCoupon": "更换优惠券",
+        "selectCoupon": "选择优惠券",
+        "available": "张可用",
+        "confirm": "确认",
         "billingAddress": "账单地址",
         "addBillingAddress": "请添加账单地址",
         "loadFailed": "加载失败",

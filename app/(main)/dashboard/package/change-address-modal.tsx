@@ -21,23 +21,19 @@ interface ChangeAddressModalProps {
     routeId?: string;
     remark?: string;
   }) => Promise<any>;
-  currentAddressId?: string;
-  waybillId: string;
+  currentWaybill?: any;
 }
 
 export default function ChangeAddressModal({
   isOpen,
   onClose,
   onConfirm,
-  currentAddressId,
-  waybillId,
+  currentWaybill,
 }: ChangeAddressModalProps) {
   const t = useTranslations("dashboard.package");
   const { currency } = useGlobalStore();
   const { data: addressList, isLoading: isAddressLoading } = useAddressList();
-  const [selectedAddressId, setSelectedAddressId] = useState<string>(
-    currentAddressId || "",
-  );
+  const [selectedAddressId, setSelectedAddressId] = useState<string>("");
   const [selectedRouteId, setSelectedRouteId] = useState<string>("");
   const [remark, setRemark] = useState("");
   const [routeList, setRouteList] = useState<any[]>([]);
@@ -67,14 +63,14 @@ export default function ChangeAddressModal({
   // 监听弹窗打开状态，关闭时重置数据
   useEffect(() => {
     if (isOpen) {
-      setSelectedAddressId(currentAddressId || "");
+      setSelectedAddressId(currentWaybill?.address?.id || "");
       setSelectedRouteId("");
       setRemark("");
       setRouteList([]);
       setErrorMessage("");
       setResultMessage(null);
     }
-  }, [isOpen, currentAddressId]);
+  }, [isOpen, currentWaybill]);
 
   const { mutateAsync: previewChangeLine, isPending: isRouteLoading } =
     usePreviewChangeLine();
@@ -83,7 +79,10 @@ export default function ChangeAddressModal({
     setErrorMessage("");
     setRouteList([]);
     try {
-      const res = await previewChangeLine({ id: waybillId, addressId });
+      const res = await previewChangeLine({
+        id: currentWaybill?.id,
+        addressId,
+      });
 
       if (typeof res === "string") {
         setErrorMessage(res);
@@ -92,7 +91,7 @@ export default function ChangeAddressModal({
         setRouteList(res);
         // 如果有默认路线或推荐路线，可以自动选中
         if (res.length > 0) {
-          setSelectedRouteId(res[0].id);
+          // setSelectedRouteId(res[0].id);
         } else {
           setSelectedRouteId("");
         }

@@ -75,3 +75,12 @@ export const useCities = (stateId?: string) => {
     staleTime: 5 * 60 * 1000,
   });
 };
+
+// 获取活跃用户奖金配置
+export const useInviteBonus = () => {
+  return useQuery({
+    queryKey: ["inviteBonus"],
+    queryFn: () => configApi.listInviteBonus(),
+    staleTime: 10 * 60 * 1000,
+  });
+};

@@ -119,7 +119,7 @@
                 "expired": "Expiré"
             },
             "coupon": {
-                "minSpend": "Dépense min. {amount}",
+                "minSpend": "Plus de {amount} utiliser",
                 "discount": "DE RÉDUCTION",
                 "restriction": "Limite",
                 "shippingExcludingCustoms": "Frais de port (hors douane)",
@@ -141,8 +141,8 @@
                 "useNow": "Utiliser",
                 "validUntil": "Valable Jusqu'au:",
                 "code": "Code:",
-                "available": "Commandes de plus de {amount}",
-                "minSpend": "Dépense Min > {amount}",
+                "available": "Plus de {amount} utiliser",
+                "minSpend": "Plus de {amount} utiliser",
                 "discount": "De Réduction",
                 "restriction": "Restriction",
                 "shippingExcludingCustoms": "Livraison (hors douane)",
@@ -191,16 +191,16 @@
                     "label": "Expédition"
                 },
                 "estimation": {
-                    "label": "Estimation de livraison"
+                    "label": "Estimation"
                 },
                 "diy": {
-                    "label": "Commande Personnalisée"
+                    "label": "Sur Mesure"
                 },
                 "help": {
-                    "label": "Centre d'Aide"
+                    "label": "Aide"
                 },
                 "promotion": {
-                    "label": "Programme d'Affiliation"
+                    "label": "Affiliation"
                 }
             }
         },
@@ -335,6 +335,18 @@
             "recharge": {
                 "title": "Recharger",
                 "placeholder": "Veuillez saisir le montant"
+            },
+            "withdraw": {
+                "title": "Retrait",
+                "placeholder": "Veuillez saisir le montant",
+                "fee": "Frais (1%)",
+                "receive": "Vous recevrez",
+                "available": "Disponible",
+                "tip": "Après le retrait, le montant sera d'abord placé dans le solde gelé. Une fois approuvé par l'administrateur, il sera automatiquement retourné sur votre compte de paiement.",
+                "successTitle": "Demande de retrait soumise",
+                "successMessage": "Votre demande de retrait a été soumise avec succès.",
+                "failTitle": "Échec du retrait",
+                "failMessage": "Échec de la soumission de la demande de retrait. Veuillez réessayer."
             }
         },
         "form": {
@@ -464,17 +476,25 @@
             },
             "balance": {
                 "title": "Solde",
+                "totalBalance": "Solde total",
+                "frozenBalance": "Solde gelé",
+                "availableBalance": "Solde disponible",
                 "recharge": "Recharger",
                 "withdraw": "Retirer",
                 "tableTitle": "Historique des transactions",
-                "noData": "Aucune transaction",
+                "noData": "Aucune transaction pour le moment",
                 "withdrawModalTitle": "Retrait",
+                "withdrawalHistory": "Retraits",
                 "tableColumns": {
-                    "bizReference": "Référence transaction",
-                    "bizType": "Type d'opération",
+                    "bizReference": "Réf.",
+                    "bizType": "Type",
                     "amount": "Montant",
-                    "currentBalance": "Solde actuel",
-                    "createTime": "Date de transaction"
+                    "currentBalance": "Solde",
+                    "createTime": "Date",
+                    "currencyCode": "Devise",
+                    "status": "Statut",
+                    "fee": "Frais",
+                    "actualAmount": "Reçu"
                 }
             },
             "score": {
@@ -694,17 +714,32 @@
                 "title1": "Mon Programme de Parrainage",
                 "totalReward": "Récompenses Totales",
                 "inviteUsers": "Utilisateurs Invités",
+                "activeUsers": "Utilisateurs Actifs",
                 "experience": "Mon Expérience",
                 "title2": "Mon Niveau",
                 "bonusRate": "Taux de Bonus",
-                "experienceRange": "Plage d'Expérience"
+                "experienceRange": "Plage d'Expérience",
+                "noData": "Pas de données"
             },
             "invitedUser": {
                 "title": "Utilisateurs Invités",
                 "tableColumns": {
                     "name": "Invité",
                     "email": "Email de l'invité",
-                    "createTime": "Date d'invitation"
+                    "createTime": "Date d'invitation",
+                    "status": "Statut"
+                },
+                "status": {
+                    "0": "Inactif",
+                    "1": "Activé"
+                }
+            },
+            "activeUserBonus": {
+                "title": "Configuration des bonus utilisateur actif",
+                "tableColumns": {
+                    "activeUser": "Utilisateurs actifs",
+                    "bonus": "Montant du bonus",
+                    "remark": "Remarque"
                 }
             },
             "bonus": {
@@ -793,9 +828,14 @@
             "add": "Ajouter"
         }
     },
-    "PayOrder": {
+    "payment": {
         "balance": "Solde",
         "recharge": "Recharger",
+        "coupon": "Coupon",
+        "changeCoupon": "Changer de coupon",
+        "selectCoupon": "Sélectionner un coupon",
+        "available": "Disponible",
+        "confirm": "Confirmer",
         "billingAddress": "Adresse de Facturation",
         "addBillingAddress": "Veuillez ajouter une adresse de facturation",
         "loadFailed": "Échec du chargement",

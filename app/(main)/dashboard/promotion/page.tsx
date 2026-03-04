@@ -1,10 +1,12 @@
 "use client";
 import React from "react";
-import { Image } from "@heroui/react";
+import { Image, useDisclosure } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { IoCopyOutline } from "react-icons/io5";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
+
+import ActiveUserBonusModal from "./active-user-bonus-modal";
 
 import { CopyText } from "@/components/ui";
 import { describeText, price } from "@/components/primitives";
@@ -20,6 +22,7 @@ export default function PromotionPage() {
     useUserExperience();
   const { data: bonusConfig, isLoading: isLoadingBonusConfig } =
     useBonusConfig();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const process = [t("process1"), t("process2"), t("process3")];
 
@@ -68,14 +71,14 @@ export default function PromotionPage() {
 
       <div className="subtitle">{t("title1")}</div>
       <div className="grid grid-cols-3 bg-[#ffeee1] rounded-lg p-5">
-        <div className="col-span-1 text-center">
+        <div className="col-span-1 text-center flex flex-col items-center justify-center">
           <div className="font-bold text-3xl text-[#f0700c]">
             {currency.symbol}
             {user?.myBonus}
           </div>
           <div>{t("totalReward")}</div>
         </div>
-        <div className="col-span-2 grid grid-cols-2 bg-[#fff] p-4 rounded-lg">
+        <div className="col-span-2 grid grid-cols-3 bg-[#fff] p-4 rounded-lg">
           <div className="text-center">
             <div>{user?.inviteCount}</div>
             <button
@@ -83,6 +86,12 @@ export default function PromotionPage() {
               onClick={() => router.push("/dashboard/promotion/invitedUser")}
             >
               {t("inviteUsers")}
+            </button>
+          </div>
+          <div className="text-center">
+            <div>{user?.activeUsersCount || 0}</div>
+            <button className="hover:text-[#f0700c]" onClick={onOpen}>
+              {t("activeUsers")}
             </button>
           </div>
           <div className="text-center">
@@ -134,6 +143,7 @@ export default function PromotionPage() {
           </AccordionItem>
         ))}
       </Accordion> */}
+      <ActiveUserBonusModal isOpen={isOpen} onOpenChange={onOpenChange} />
     </div>
   );
 }

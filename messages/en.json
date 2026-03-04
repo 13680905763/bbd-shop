@@ -119,7 +119,7 @@
                 "expired": "Expired"
             },
             "coupon": {
-                "minSpend": "Min Spend {amount}",
+                "minSpend": "Over {amount} Use",
                 "discount": "OFF",
                 "restriction": "Limit",
                 "shippingExcludingCustoms": "Shipping fee (excl. Customs fee)",
@@ -141,8 +141,8 @@
                 "useNow": "Use Now",
                 "validUntil": "Valid Until:",
                 "code": "Code:",
-                "available": "Orders over {amount}",
-                "minSpend": "Min Spend > {amount}",
+                "available": "Over {amount} Use",
+                "minSpend": "Over {amount} Use",
                 "discount": "Off",
                 "restriction": "Restriction",
                 "shippingExcludingCustoms": "Shipping (excl. customs)",
@@ -335,6 +335,18 @@
             "recharge": {
                 "title": "Top Up",
                 "placeholder": "Please enter amount"
+            },
+            "withdraw": {
+                "title": "Withdraw",
+                "placeholder": "Please enter amount",
+                "fee": "Fee (1%)",
+                "receive": "You will receive",
+                "available": "Available",
+                "tip": "After withdrawal, the amount will first be placed in frozen balance. Once approved by the administrator, it will be automatically returned to your payment account.",
+                "successTitle": "Withdrawal Application Submitted",
+                "successMessage": "Your withdrawal request has been submitted successfully.",
+                "failTitle": "Withdrawal Failed",
+                "failMessage": "Failed to submit withdrawal application. Please try again."
             }
         },
         "form": {
@@ -464,17 +476,25 @@
             },
             "balance": {
                 "title": "Balance",
+                "totalBalance": "Total Balance",
+                "frozenBalance": "Frozen Balance",
+                "availableBalance": "Available Balance",
                 "recharge": "Recharge",
                 "withdraw": "Withdraw",
                 "tableTitle": "Transaction Records",
                 "noData": "No transaction records",
                 "withdrawModalTitle": "Withdrawal",
+                "withdrawalHistory": "Withdrawals",
                 "tableColumns": {
-                    "bizReference": "Business Reference No.",
-                    "bizType": "Business Type",
+                    "bizReference": "Ref No.",
+                    "bizType": "Type",
                     "amount": "Amount",
-                    "currentBalance": "Current Balance",
-                    "createTime": "Transaction Time"
+                    "currentBalance": "Balance",
+                    "createTime": "Time",
+                    "currencyCode": "Currency",
+                    "status": "Status",
+                    "fee": "Fee",
+                    "actualAmount": "Received"
                 }
             },
             "score": {
@@ -694,17 +714,32 @@
                 "title1": "My Referral Program",
                 "totalReward": "Total Rewards",
                 "inviteUsers": "Invited Users",
+                "activeUsers": "Active Users",
                 "experience": "My Experience",
                 "title2": "My Level",
                 "bonusRate": "Bonus Rate",
-                "experienceRange": "Experience Range"
+                "experienceRange": "Experience Range",
+                "noData": "No Data"
             },
             "invitedUser": {
                 "title": "Invited Users",
                 "tableColumns": {
                     "name": "Invitee",
                     "email": "Invitee Email",
-                    "createTime": "Invitation Time"
+                    "createTime": "Invitation Time",
+                    "status": "Status"
+                },
+                "status": {
+                    "0": "Inactive",
+                    "1": "Activated"
+                }
+            },
+            "activeUserBonus": {
+                "title": "Active User Bonus Config",
+                "tableColumns": {
+                    "activeUser": "Active Users",
+                    "bonus": "Bonus Amount",
+                    "remark": "Remark"
                 }
             },
             "bonus": {
@@ -793,9 +828,14 @@
             "add": "Add"
         }
     },
-    "PayOrder": {
+    "payment": {
         "balance": "Balance",
         "recharge": "Recharge",
+        "coupon": "Coupon",
+        "changeCoupon": "Change Coupon",
+        "selectCoupon": "Select Coupon",
+        "available": "Available",
+        "confirm": "Confirm",
         "billingAddress": "Billing Address",
         "addBillingAddress": "Please add billing address",
         "loadFailed": "Loading failed",
