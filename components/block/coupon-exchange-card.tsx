@@ -16,7 +16,34 @@ export default function CouponExchangeCard({
   const t = useTranslations("components.ui.coupon");
   const { currency } = useGlobalStore();
 
-  const bgClass = "bg-[#f0700c]";
+  const getBgClass = () => {
+    switch (coupon.usedFor) {
+      case 0:
+        return "bg-[#f0700c]"; // All - Orange (Default)
+      case 1:
+        return "bg-[#ef4444]"; // Waybill - Red
+      case 2:
+        return "bg-[#8b5cf6]"; // Order - Purple
+      default:
+        return "bg-[#f0700c]";
+    }
+  };
+
+  const bgClass = getBgClass();
+
+  // Define badge styles based on usedFor value
+  const getUsedForStyle = (usedFor: number) => {
+    switch (usedFor) {
+      case 0:
+        return "bg-white/20 text-white"; // All
+      case 1:
+        return "bg-white/20 text-white"; // Waybill
+      case 2:
+        return "bg-white/20 text-white"; // Order
+      default:
+        return "bg-white/20 text-white";
+    }
+  };
 
   return (
     <div
@@ -40,8 +67,8 @@ export default function CouponExchangeCard({
       </div>
 
       {/* Middle: Discount & Threshold */}
-      <div className="px-8 py-3 flex items-baseline gap-3">
-        <div className="font-bold text-4xl">
+      <div className="px-6 py-3 flex items-baseline gap-2">
+        <div className="font-bold text-3xl">
           {coupon.type === 1 ? (
             <>
               <span className="mr-0.5">{currency.symbol}</span>
@@ -56,8 +83,16 @@ export default function CouponExchangeCard({
         </div>
         <div className="text-sm opacity-90">
           {t("minSpend", {
-            amount: Math.floor(Number(coupon.thresholdAmount)),
+            amount: coupon.thresholdAmount,
           })}
+        </div>
+        <div
+          className={clsx(
+            "text-xs px-2 py-0.5 rounded-full font-medium ml-auto",
+            getUsedForStyle(coupon.usedFor),
+          )}
+        >
+          {coupon?.usedForMsg}
         </div>
       </div>
 
@@ -67,6 +102,7 @@ export default function CouponExchangeCard({
           <div>
             {t("validity")}: {t("days", { count: coupon.expirationDate })}
           </div>
+
         </div>
 
         <div className="flex justify-between items-center mt-1">

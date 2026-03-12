@@ -7,9 +7,9 @@ import {
   Textarea,
   useDisclosure,
 } from "@heroui/react";
+import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FaCamera } from "react-icons/fa";
-import { useTranslations } from "next-intl";
 import { Image } from "antd";
 
 import OrderItem from "./order-item";
@@ -19,6 +19,7 @@ import {
   FullscreenLoader,
   ProductItemTitle,
 } from "@/components/ui";
+import { ProductItem } from "@/components/block";
 import CommonModal from "@/components/modal/common-modal";
 import { useOrderPreview, useServices } from "@/hook";
 import {
@@ -44,7 +45,44 @@ export default function SubmitOrder() {
   const key = searchParam.get("key") as string;
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+  const t1 = useTranslations("dashboard.cart");
+
   const { data, isLoading } = useOrderPreview(type, key);
+
+  useEffect(() => {
+    if (data?.expirationList?.length > 0) {
+      confirm({
+        title: t1("itemExpired"),
+        content: (
+          <div className="w-full">
+            <div className="text-gray-500 mb-4">{t1("itemExpiredContent")}</div>
+            <div className="max-h-[50vh] overflow-y-auto space-y-4 pr-2">
+              {data.expirationList.map((item: any) => (
+                <OrderItem
+                  key={item.shopName}
+                  isExpired={true}
+                  openServiceModal={openServiceModal}
+                  order={item}
+                  texts={t.raw("OrderItem")}
+                />
+              ))}
+            </div>
+          </div>
+        ),
+        onConfirm: () => {
+          queryClient.invalidateQueries({
+            queryKey: ["cartList"],
+          });
+          router.back();
+        },
+        showCancel: false,
+        hideCloseButton: true,
+        size: "4xl",
+        confirmText: t1("back"),
+      });
+    }
+  }, [data, t1, confirm, router]);
+
   const {
     data: services,
     isLoading: isServicesLoading,
@@ -141,11 +179,11 @@ export default function SubmitOrder() {
       prev.map((s) =>
         s.id === currentService.id
           ? {
-              ...s,
-              remark: currentService?.remark,
-              isCheck: true,
-              quantity: currentService?.quantity,
-            }
+            ...s,
+            remark: currentService?.remark,
+            isCheck: true,
+            quantity: currentService?.quantity,
+          }
           : s,
       ),
     );
@@ -198,7 +236,7 @@ export default function SubmitOrder() {
 
       setOrderData(res);
       onOpenChange();
-    } catch {}
+    } catch { }
   };
   const handleSubmitOrder = async () => {
     if (!isChecked) {

@@ -16,32 +16,53 @@ export default function ActiveUserBonusModal({
   onOpenChange,
 }: ActiveUserBonusModalProps) {
   const t = useTranslations("dashboard.promotion.page.activeUserBonus");
-  const { currency } = useGlobalStore();
   const { data: inviteBonus, isLoading: isLoadingInviteBonus } =
     useInviteBonus();
+
+  const tables = [
+    {
+      title: t("title1"),
+      data: inviteBonus?.[1] || [],
+    },
+    {
+      title: t("title2"),
+      data: inviteBonus?.[2] || [],
+    },
+    {
+      title: t("title3"),
+      data: inviteBonus?.[3] || [],
+    },
+  ];
 
   return (
     <CommonModal
       footer={<></>}
       isOpen={isOpen}
-      size="xl"
+      size="5xl"
       title={t("title")}
       onOpenChange={onOpenChange}
     >
-      <CommonTable
-        columns={[
-          {
-            key: "activeUsersNum",
-            label: t("tableColumns.activeUser"),
-          },
-          {
-            key: "remark",
-            label: t("tableColumns.remark"),
-          },
-        ]}
-        data={{ records: inviteBonus || [] }}
-        isLoading={isLoadingInviteBonus}
-      />
+      <div className="space-y-6">
+        {tables.map((table, index) => (
+          <div key={index} className="space-y-2">
+            <h3 className="font-semibold text-gray-700">{table.title}</h3>
+            <CommonTable
+              columns={[
+                {
+                  key: "activeUsersNum",
+                  label: t("tableColumns.activeUsersNum"),
+                },
+                {
+                  key: "remark",
+                  label: t("tableColumns.remark"),
+                },
+              ]}
+              data={{ records: table.data }}
+              isLoading={isLoadingInviteBonus}
+            />
+          </div>
+        ))}
+      </div>
     </CommonModal>
   );
 }

@@ -15,6 +15,7 @@ interface ProductItemProps {
   onToggle?: () => void;
   onRemark?: (id: string, remark: string) => void;
   onUpdateQuantity?: (id: string, quantity: number) => void;
+  isDisabled?: boolean;
 }
 
 export default function ProductItem({
@@ -24,18 +25,24 @@ export default function ProductItem({
   onToggle,
   onRemark,
   onUpdateQuantity,
+  isDisabled = false,
 }: ProductItemProps) {
   const t = useTranslations("components.block.productItem");
   const { currency } = useGlobalStore();
   const router = useRouter();
 
   return (
-    <div className="grid grid-cols-12 items-center gap-4  ">
+    <div className={`grid grid-cols-12 items-center gap-4 ${isDisabled ? "opacity-50" : ""}`}>
       <div className="col-span-6 flex gap-4 items-start">
         {/* 选择框 + 图片 */}
         <div className="flex items-center shrink-0">
           {isOperated && (
-            <Checkbox isSelected={isSelected} size="sm" onChange={onToggle} />
+            <Checkbox
+              isDisabled={isDisabled}
+              isSelected={isSelected}
+              size="sm"
+              onChange={onToggle}
+            />
           )}
           <Image
             alt="Product"
@@ -52,6 +59,7 @@ export default function ProductItem({
           <button
             className="hover:text-[#f0700c] line-clamp-2 font-medium text-left w-full text-base"
             onClick={() =>
+              !isDisabled &&
               router.push(
                 `/goods/${product.source}/${product?.sourceProductId}`,
               )
@@ -87,30 +95,45 @@ export default function ProductItem({
           {isOperated && (
             <button
               className="text-blue-500 shrink-0"
+              disabled={isDisabled}
               onClick={() => onRemark!(product.id, product.remark)}
             >
-              <FaEdit className="w-5 h-5 text-[#f0700c]" />
+              <FaEdit
+                className={`w-5 h-5 ${isDisabled ? "text-gray-400" : "text-[#f0700c]"}`}
+              />
             </button>
           )}
         </div>
       </div>
 
-      <div className="col-span-2 text-center font-semibold">
-        {currency.symbol}
-        {product?.price}
-      </div>
+      {
+        product?.price &&
+        <div className="col-span-2 text-center font-semibold">
+          {currency.symbol}
+          {product?.price}
+        </div>
+      }
 
-      <div className="col-span-2 flex justify-center">
-        {isOperated ? (
-          <Stepper
-            min={1}
-            value={product.quantity}
-            onChange={(value) => onUpdateQuantity!(product.id, value)}
-          />
-        ) : (
-          <div className="font-semibold text-base">x{product.quantity}</div>
-        )}
-      </div>
+      {
+        product.quantity &&
+        <div className="col-span-2 flex justify-center">
+          {isOperated ? (
+            <div className={isDisabled ? "pointer-events-none" : ""}>
+              <Stepper
+                min={1}
+                value={product.quantity}
+                onChange={(value) => onUpdateQuantity!(product.id, value)}
+              />
+            </div>
+          ) : (
+            <div className="font-semibold text-base">
+              {
+                product.quantity ? `x${product.quantity}` : ""
+              }
+            </div>
+          )}
+        </div>
+      }
     </div>
   );
 }

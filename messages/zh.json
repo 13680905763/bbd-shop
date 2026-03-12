@@ -132,7 +132,8 @@
                 "validity": "有效期",
                 "days": "{count}天",
                 "points": "积分",
-                "src": "来源"
+                "src": "来源",
+                "usedFor": "用途"
             }
         },
         "block": {
@@ -151,7 +152,8 @@
                 "countries": "可用国家",
                 "all": "全部",
                 "type": "类型",
-                "src": "来源"
+                "src": "来源",
+                "usedFor": "用途"
             },
             "addressItem": {
                 "edit": "编辑",
@@ -472,7 +474,12 @@
                 "expired": "已过期优惠券",
                 "noAvailable": "暂无可用优惠券",
                 "noUsed": "暂无已使用优惠券",
-                "noExpired": "暂无已过期优惠券"
+                "noExpired": "暂无已过期优惠券",
+                "couponRedemption": {
+                    "title": "优惠券兑换",
+                    "inputPlaceholder": "输入优惠券代码",
+                    "redeem": "兑换"
+                }
             },
             "balance": {
                 "title": "余额",
@@ -499,13 +506,17 @@
             },
             "score": {
                 "title": "积分",
-                "exchangeCoupon": "积分兑换优惠券",
+                "exchangeCoupon": "兑换优惠券",
                 "details": "积分明细",
                 "tableColumns": {
                     "bizType": "来源",
                     "amount": "数量",
                     "availablePoints": "可用积分",
                     "createTime": "时间"
+                },
+                "exchangeConfirm": {
+                    "title": "确认兑换",
+                    "content": "确认兑换 {points} 积分的 {name} 吗？"
                 }
             }
         },
@@ -537,7 +548,10 @@
             "confirmDeleteTitle": "从购物车删除",
             "confirmDeleteContent": "确定要删除勾选的商品吗？",
             "remarkTitle": "备注",
-            "remarkPlaceholder": "请输入备注"
+            "remarkPlaceholder": "请输入备注",
+            "itemExpired": "该商品已失效",
+            "itemExpiredContent": "您的订单中包含失效商品，请返回购物车重新选择。",
+            "back": "重新选择"
         },
         "order": {
             "all": "全部",
@@ -721,9 +735,12 @@
                 "experienceRange": "经验",
                 "noData": "暂无数据",
                 "activeUserBonus": {
-                    "title": "活跃用户奖金",
+                    "title": "活跃用户奖金配置",
+                    "title1": "每名活跃用户的现金奖励",
+                    "title2": "BBDBuy 余额 + 包邮",
+                    "title3": "月度工资奖金（固定奖金）",
                     "tableColumns": {
-                        "activeUser": "活跃用户数",
+                        "activeUsersNum": "活跃用户数",
                         "remark": "奖金"
                     }
                 }

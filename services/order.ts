@@ -26,7 +26,7 @@ export const createOrderByCart = (data: any): Promise<string> =>
   request.post("/customer/cart/order/submit", data);
 
 /** 购物车结算订单预览 */
-export const getOrderPreviewCart = (key: string): Promise<OrderPreviewByCart> =>
+export const getOrderPreviewCart = (key: string): Promise<any> =>
   request.get("/customer/cart/order/preview/key?key=" + key);
 /** 更新购物车结算订单预览 */
 export const updateOrderPreviewCart = (

@@ -48,6 +48,10 @@ export default function CartPage() {
       return data?.flatMap((shop: any) => shop.cartList);
     }, [data]) ?? [];
 
+  const selectableList = useMemo(() => {
+    return flatList.filter((item: any) => item.status !== 3);
+  }, [flatList]);
+
   const {
     selectedIds,
     isSelected,
@@ -58,7 +62,7 @@ export default function CartPage() {
     hasSelected,
     isGroupAllSelected,
     onToggleGroup,
-  } = useSelection<any>(flatList, {
+  } = useSelection<any>(selectableList, {
     idKey: "id",
     groupKey: "shopId",
   });
@@ -81,12 +85,12 @@ export default function CartPage() {
     } catch {}
   };
 
-  const deleteCart = async () => {
+  const deleteCart = async (id?: string) => {
     await confirm({
       content: t("confirmDeleteContent"), // 弹窗正文
       title: t("confirmDeleteTitle"), // 弹窗标题
       onConfirm: async () => {
-        await deleteMutation({ idList: selectedIds });
+        await deleteMutation({ idList: id ? [id] : selectedIds });
       },
     });
   };
@@ -147,6 +151,7 @@ export default function CartPage() {
                   isSelected={isSelected}
                   toggle={onSelect}
                   toggleGroup={onToggleGroup} // 店铺onChange
+                  onDelete={deleteCart}
                   onQuantityChange={updateProductQuantity}
                   onRemark={updateProductRemark}
                 />
@@ -164,7 +169,7 @@ export default function CartPage() {
                   className="text-[#f0700c]"
                   isDisabled={!hasSelected}
                   variant="light"
-                  onPress={deleteCart}
+                  onPress={() => deleteCart()}
                 >
                   {t("delete")}
                   {selectedIds.length ? ` (${selectedIds.length})` : ""}

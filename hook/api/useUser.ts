@@ -18,11 +18,4 @@ export const useUserExperience = () => {
     refetchOnWindowFocus: true,
   });
 };
-export const useUserCoupon = (params: { status?: number }) => {
-  return useQuery({
-    queryKey: ["userCoupon", params],
-    queryFn: () => userApi.listCoupon(params),
-    staleTime: 10 * 1000, // 十秒保证积分数据足够新
-    refetchOnWindowFocus: true,
-  });
-};
+

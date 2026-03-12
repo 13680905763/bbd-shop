@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { WalletApi } from "@/services/walletApi";
+import { queryClient } from "@/lib/react-query";
 
 export const useWalletInfo = () => {
   return useQuery({
@@ -25,7 +26,7 @@ export function useApplyWithdrawal() {
       queryClient.invalidateQueries({ queryKey: ["walletDetailList"] });
       queryClient.invalidateQueries({ queryKey: ["withdrawalHistory"] });
     },
-    onError: (error: any) => {},
+    onError: (error: any) => { },
   });
 }
 export const useWalletDetailList = (params: any) => {
@@ -84,3 +85,38 @@ export function usePay() {
     }) => WalletApi.pay(data),
   });
 }
+export const useUserCoupon = (params: { status?: number }) => {
+  return useQuery({
+    queryKey: ["userCoupon", params],
+    queryFn: () => WalletApi.listCoupon(params),
+    staleTime: 10 * 1000, // 十秒保证积分数据足够新
+    refetchOnWindowFocus: true,
+  });
+};
+// 兑换优惠券
+export const usePointExchangeCoupon = () => {
+  return useMutation({
+    mutationFn: (couponId: string | number) =>
+      WalletApi.pointExchangeCoupon(couponId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["userCoupon"] });
+      queryClient.invalidateQueries({ queryKey: ["walletInfo"] });
+      queryClient.invalidateQueries({ queryKey: ["userInfo"] });
+      queryClient.invalidateQueries({ queryKey: ["pointsList"] });
+
+    },
+
+  });
+};
+// 兑换码兑换优惠券
+export const useCodeExchangeCoupon = () => {
+  return useMutation({
+    mutationFn: (redemptionCode: string) =>
+      WalletApi.codeExchangeCoupon(redemptionCode),
+    onSuccess: () => {
+      // 刷新用户优惠券列表
+      queryClient.invalidateQueries({ queryKey: ["userCoupon"] });
+      queryClient.invalidateQueries({ queryKey: ["walletInfo"] });
+    },
+  });
+};

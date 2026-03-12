@@ -2,7 +2,7 @@
 import React from "react";
 import { Image, useDisclosure } from "@heroui/react";
 import { useTranslations } from "next-intl";
-import { IoCopyOutline } from "react-icons/io5";
+import { IoCopyOutline, IoHelpCircleOutline } from "react-icons/io5";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 
@@ -90,8 +90,12 @@ export default function PromotionPage() {
           </div>
           <div className="text-center">
             <div>{user?.activeUsersCount || 0}</div>
-            <button className="hover:text-[#f0700c]" onClick={onOpen}>
+            <button
+              className="hover:text-[#f0700c] flex items-center gap-1 justify-center w-full"
+              onClick={onOpen}
+            >
               {t("activeUsers")}
+              <IoHelpCircleOutline className="text-gray-400 hover:text-[#f0700c] text-lg" />
             </button>
           </div>
           <div className="text-center">

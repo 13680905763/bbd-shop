@@ -132,7 +132,8 @@
                 "days": "{count} Days",
                 "points": "Points",
                 "src": "Source",
-                "type": "Type"
+                "type": "Type",
+                "usedFor": "Usage"
             }
         },
         "block": {
@@ -151,7 +152,8 @@
                 "countries": "Countries",
                 "all": "All",
                 "type": "Type",
-                "src": "Source"
+                "src": "Source",
+                "usedFor": "Usage"
             },
             "addressItem": {
                 "edit": "Edit",
@@ -472,7 +474,12 @@
                 "expired": "Expired Coupons",
                 "noAvailable": "No coupons available",
                 "noUsed": "No used coupons",
-                "noExpired": "No expired coupons"
+                "noExpired": "No expired coupons",
+                "couponRedemption": {
+                    "title": "Coupon Redemption",
+                    "inputPlaceholder": "Enter coupon code",
+                    "redeem": "Redeem"
+                }
             },
             "balance": {
                 "title": "Balance",
@@ -499,13 +506,17 @@
             },
             "score": {
                 "title": "Points",
-                "exchangeCoupon": "Exchange Points for Coupons",
+                "exchangeCoupon": "Redeem Coupons",
                 "details": "Points Details",
                 "tableColumns": {
                     "bizType": "Source",
                     "amount": "Quantity",
                     "availablePoints": "Available Points",
                     "createTime": "Time"
+                },
+                "exchangeConfirm": {
+                    "title": "Confirm Exchange",
+                    "content": "Confirm exchange of {points} points for {name}?"
                 }
             }
         },
@@ -537,7 +548,10 @@
             "confirmDeleteTitle": "Delete from Cart",
             "confirmDeleteContent": "Are you sure you want to delete this item?",
             "remarkTitle": "Remark",
-            "remarkPlaceholder": "Please enter a remark"
+            "remarkPlaceholder": "Please enter a remark",
+            "itemExpired": "Item expired",
+            "itemExpiredContent": "Your order contains expired items. Please return to the cart and re-select.",
+            "back": "Re-select"
         },
         "order": {
             "all": "All",
@@ -707,39 +721,49 @@
         },
         "promotion": {
             "page": {
-                "process1": "Share your referral code",
-                "process2": "Your invited friend confirms receiving your code",
-                "process3": "Receive your referral commission",
-                "processTip": "Copy this URL and use it to redirect users to your referral homepage",
-                "title1": "My Referral Program",
+                "process1": "Share your affiliate code",
+                "process2": "Your invited friend confirms receipt of your affiliate code",
+                "process3": "Receive your affiliate commission",
+                "processTip": "Copy this URL and use it to redirect users to the homepage with your affiliate ID",
+                "title1": "My Affiliate",
                 "totalReward": "Total Rewards",
-                "inviteUsers": "Invited Users",
+                "inviteUsers": "Users Invited",
                 "activeUsers": "Active Users",
                 "experience": "My Experience",
                 "title2": "My Level",
                 "bonusRate": "Bonus Rate",
                 "experienceRange": "Experience Range",
-                "noData": "No Data"
+                "noData": "No data available",
+                "activeUserBonus": {
+                    "title": "Active User Bonus Config",
+                    "title1": "Cash Bonus per Active User",
+                    "title2": "BBDBuy Balance + Free Shipping",
+                    "title3": "Monthly Salary Bonus (Fixed Bonus)",
+                    "tableColumns": {
+                        "activeUsersNum": "Active Users",
+                        "remark": "Bonus"
+                    }
+                }
             },
             "invitedUser": {
                 "title": "Invited Users",
                 "tableColumns": {
                     "name": "Invitee",
                     "email": "Invitee Email",
-                    "createTime": "Invitation Time",
+                    "createTime": "Time",
                     "status": "Status"
                 },
                 "status": {
                     "0": "Inactive",
-                    "1": "Activated"
+                    "1": "Active"
                 }
             },
             "activeUserBonus": {
-                "title": "Active User Bonus Config",
+                "title": "Active User Bonus Configuration",
                 "tableColumns": {
                     "activeUser": "Active Users",
                     "bonus": "Bonus Amount",
-                    "remark": "Remark"
+                    "remark": "Remarks"
                 }
             },
             "bonus": {

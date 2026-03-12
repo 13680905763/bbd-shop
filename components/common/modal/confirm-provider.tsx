@@ -28,6 +28,9 @@ export interface ConfirmOptions {
   onConfirm?: () => Promise<void> | void;
   onCancel?: () => void;
   isLoading?: boolean; // 外部控制 loading
+  showCancel?: boolean;
+  hideCloseButton?: boolean;
+  size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "full";
 }
 
 // 2. 定义 Context
@@ -105,9 +108,10 @@ export const ConfirmProvider = ({ children }: { children: ReactNode }) => {
       {children}
       {options && (
         <Modal
-          hideCloseButton={loading}
+          hideCloseButton={options.hideCloseButton || loading}
           isDismissable={false}
           isOpen={isOpen}
+          size={options.size || "md"}
           onOpenChange={(open) => !open && handleCancel()}
         >
           <ModalContent>
@@ -124,13 +128,15 @@ export const ConfirmProvider = ({ children }: { children: ReactNode }) => {
                   </div>
                 </ModalBody>
                 <ModalFooter>
-                  <Button
-                    isDisabled={loading || options.isLoading}
-                    variant="light"
-                    onPress={handleCancel}
-                  >
-                    {options.cancelText || t("cancel")}
-                  </Button>
+                  {(options.showCancel ?? true) && (
+                    <Button
+                      isDisabled={loading || options.isLoading}
+                      variant="light"
+                      onPress={handleCancel}
+                    >
+                      {options.cancelText || t("cancel")}
+                    </Button>
+                  )}
                   <Button
                     color={getButtonColor(options.type)}
                     isLoading={loading || options.isLoading}

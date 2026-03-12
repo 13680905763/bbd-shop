@@ -66,4 +66,30 @@ export const WalletApi = {
       },
     );
   },
+  /** 获取优惠券列表 */
+  listCoupon(params: { status?: number }): Promise<any> {
+    return request.get(`/customer-coupon`, {
+      params,
+    });
+  },
+  /** 兑换优惠券 */
+  pointExchangeCoupon: (couponId: number | string): Promise<any> => {
+    return requestWithOption(
+      {
+        url: "/customer-coupon/exchange?couponId=" + couponId,
+        method: "POST",
+      },
+      { showToast: true },
+    );
+  },
+  /** 兑换码兑换优惠券 */
+  codeExchangeCoupon: (redemptionCode: string): Promise<any> => {
+    return requestWithOption(
+      {
+        url: "/customer-coupon/redemptionCodeCoupons?redemptionCode=" + redemptionCode,
+        method: "POST",
+      },
+      { showToast: true },
+    );
+  },
 };

@@ -10,7 +10,7 @@ interface RefundCountdownProps {
 export default function RefundCountdown({ timestamp }: RefundCountdownProps) {
   const t = useTranslations("components.ui.refundCountdown");
 
-  const format = `D ${t("day")} H ${t("hour")} m ${t("minute")} s ${t("second")}`;
+  const format = `D ${t("day")} H ${t("hour")}`;
   // // 添加调试信息
   // console.log('原始时间戳:', timestamp);
   // console.log('目标时间:', new Date(targetTime).toLocaleString());

@@ -58,7 +58,7 @@ export default function ScoreTab() {
         />
       ),
     },
-    { key: "coupon", title: "兑换优惠券", content: <PointsRecordContent /> },
+    { key: "coupon", title: t("exchangeCoupon"), content: <PointsRecordContent /> },
   ];
 
   return (

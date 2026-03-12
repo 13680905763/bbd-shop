@@ -156,7 +156,7 @@ export default function OrderItem({
           ) : (
             <>
               {/* 状态文字 */}
-              <div className="text-[#f0700c] font-medium">{order?.status}</div>
+              <div className="text-[#f0700c] font-medium text-center">{order?.status}</div>
               {order?.canRefundFlag && (
                 <Button
                   radius="sm"

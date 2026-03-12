@@ -6,6 +6,7 @@ import CouponCard from "@/components/block/coupon-card";
 import { Coupon } from "@/types/wallet";
 import { CommonTabs } from "@/components/common";
 import { BlockSpinner, EmptyState } from "@/components/ui";
+import CouponRedemption from "./coupon-redemption";
 const tabKeyToStatusCode: Record<string, number> = {
   unused: 1, // 可用
   used: 2, // 已使用
@@ -40,9 +41,12 @@ export default function CouponTab() {
   ];
 
   return (
-    <CommonTabs
-      tabs={tabs}
-      onSelectionChange={(key: any) => setActiveTab(key)}
-    />
+    <>
+      <CouponRedemption />
+      <CommonTabs
+        tabs={tabs}
+        onSelectionChange={(key: any) => setActiveTab(key)}
+      />
+    </>
   );
 }

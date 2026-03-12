@@ -132,7 +132,8 @@
                 "days": "{count} Jours",
                 "points": "Points",
                 "src": "Source",
-                "type": "Type"
+                "type": "Type",
+                "usedFor": "Utilisation"
             }
         },
         "block": {
@@ -151,7 +152,8 @@
                 "countries": "Pays",
                 "all": "Tous",
                 "type": "Type",
-                "src": "Source"
+                "src": "Source",
+                "usedFor": "Utilisation"
             },
             "addressItem": {
                 "edit": "Éditer",
@@ -472,7 +474,12 @@
                 "expired": "Coupons Expirés",
                 "noAvailable": "Aucun coupon disponible",
                 "noUsed": "Aucun coupon utilisé",
-                "noExpired": "Aucun coupon expiré"
+                "noExpired": "Aucun coupon expiré",
+                "couponRedemption": {
+                    "title": "Coupon d'échange",
+                    "inputPlaceholder": "Entrez le code du coupon",
+                    "redeem": "Échanger"
+                }
             },
             "balance": {
                 "title": "Solde",
@@ -499,13 +506,17 @@
             },
             "score": {
                 "title": "Points",
-                "exchangeCoupon": "Échanger des points contre des coupons",
+                "exchangeCoupon": "Échanger des coupons",
                 "details": "Détails des points",
                 "tableColumns": {
                     "bizType": "Source",
                     "amount": "Quantité",
                     "availablePoints": "Points disponibles",
                     "createTime": "Date"
+                },
+                "exchangeConfirm": {
+                    "title": "Confirmer l'échange",
+                    "content": "Confirmer l'échange de {points} points contre {name} ?"
                 }
             }
         },
@@ -537,7 +548,10 @@
             "confirmDeleteTitle": "Supprimer du Panier",
             "confirmDeleteContent": "Êtes-vous sûr de vouloir supprimer cet article ?",
             "remarkTitle": "Remarque",
-            "remarkPlaceholder": "Veuillez entrer une remarque"
+            "remarkPlaceholder": "Veuillez entrer une remarque",
+            "itemExpired": "Article expiré",
+            "itemExpiredContent": "Votre commande contient des articles expirés. Veuillez retourner au panier pour les sélectionner à nouveau.",
+            "back": "Resélectionner"
         },
         "order": {
             "all": "Tout",
@@ -707,54 +721,64 @@
         },
         "promotion": {
             "page": {
-                "process1": "Partagez votre code de parrainage",
-                "process2": "Votre ami invité confirme la réception de votre code",
-                "process3": "Recevez votre commission de parrainage",
-                "processTip": "Copiez cette URL et utilisez-la pour rediriger les utilisateurs vers votre page de parrainage",
-                "title1": "Mon Programme de Parrainage",
-                "totalReward": "Récompenses Totales",
-                "inviteUsers": "Utilisateurs Invités",
-                "activeUsers": "Utilisateurs Actifs",
+                "process1": "Partagez votre code d'affiliation",
+                "process2": "Votre ami invité confirme la réception de votre code d'affiliation",
+                "process3": "Recevez votre commission d'affiliation",
+                "processTip": "Copiez cette URL et utilisez-la pour rediriger les utilisateurs vers la page d'accueil avec votre ID d'affiliation",
+                "title1": "Mon Affiliation",
+                "totalReward": "Récompenses totales",
+                "inviteUsers": "Utilisateurs invités",
+                "activeUsers": "Utilisateurs actifs",
                 "experience": "Mon Expérience",
                 "title2": "Mon Niveau",
-                "bonusRate": "Taux de Bonus",
-                "experienceRange": "Plage d'Expérience",
-                "noData": "Pas de données"
+                "bonusRate": "Taux de prime",
+                "experienceRange": "Plage d'expérience",
+                "noData": "Aucune donnée disponible",
+                "activeUserBonus": {
+                    "title": "Configuration du bonus utilisateur actif",
+                    "title1": "Prime en espèces par utilisateur actif",
+                    "title2": "Solde BBDBuy + Livraison gratuite",
+                    "title3": "Bonus de salaire mensuel (Prime fixe)",
+                    "tableColumns": {
+                        "activeUsersNum": "Utilisateurs actifs",
+                        "remark": "Prime"
+                    }
+                }
             },
             "invitedUser": {
-                "title": "Utilisateurs Invités",
+                "title": "Utilisateurs invités",
                 "tableColumns": {
                     "name": "Invité",
                     "email": "Email de l'invité",
-                    "createTime": "Date d'invitation",
+                    "createTime": "Date",
                     "status": "Statut"
                 },
                 "status": {
                     "0": "Inactif",
-                    "1": "Activé"
+                    "1": "Actif"
                 }
             },
             "activeUserBonus": {
-                "title": "Configuration des bonus utilisateur actif",
+                "title": "Configuration du bonus utilisateur actif",
                 "tableColumns": {
-                    "activeUser": "Utilisateurs actifs",
-                    "bonus": "Montant du bonus",
+                    "activeUser": "Nombre d'utilisateurs actifs",
+                    "bonus": "Montant de la prime",
                     "remark": "Remarque"
                 }
             },
             "bonus": {
-                "title": "Détails des bonus",
+                "title": "Détails des primes",
                 "tableColumns": {
                     "bizType": "Source",
                     "amount": "Montant",
-                    "currentBalance": "Bonus disponibles",
+                    "currentBalance": "Prime disponible",
                     "createTime": "Date"
                 }
             },
             "experience": {
                 "title": "Détails de l'expérience",
                 "tableColumns": {
-                    "email": "Email de la personne invitée",
+                    "email": "Email de l'invité",
                     "experience": "Points d'expérience",
                     "createTime": "Date"
                 }
