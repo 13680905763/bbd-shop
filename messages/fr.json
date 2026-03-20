@@ -18,6 +18,22 @@
                 }
             }
         },
+        "forgetPassword": {
+            "title": "Réinitialiser le mot de passe",
+            "desc": "Veuillez entrer l'adresse e-mail associée à votre compte",
+            "emailPlaceholder": "E-mail",
+            "emailError": "Veuillez entrer votre e-mail",
+            "emailInvalid": "Veuillez entrer une adresse e-mail valide",
+            "codePlaceholder": "Code de vérification",
+            "sendCode": "Envoyer le code",
+            "submit": "Réinitialiser",
+            "hasAccount": "Vous avez déjà un compte ?",
+            "login": "Se connecter",
+            "fillAll": "Veuillez remplir tous les champs obligatoires",
+            "newPassword": "Nouveau mot de passe",
+            "confirmPassword": "Confirmer le nouveau mot de passe",
+            "passwordMismatch": "Les deux nouveaux mots de passe saisis ne correspondent pas"
+        },
         "register": {
             "title": "Inscription",
             "confirmText": "S'inscrire",
@@ -344,7 +360,7 @@
                 "fee": "Frais (1%)",
                 "receive": "Vous recevrez",
                 "available": "Disponible",
-                "tip": "Après le retrait, le montant sera d'abord placé dans le solde gelé. Une fois approuvé par l'administrateur, il sera automatiquement retourné sur votre compte de paiement.",
+                "tip": "Le montant retiré sera d'abord placé dans le solde gelé. Une fois approuvé par l'administrateur, il sera automatiquement retourné sur votre compte de paiement. Le délai de traitement est de 1-3 jours.",
                 "successTitle": "Demande de retrait soumise",
                 "successMessage": "Votre demande de retrait a été soumise avec succès.",
                 "failTitle": "Échec du retrait",
@@ -356,11 +372,17 @@
         },
         "chatbox": {
             "loginFirst": "Veuillez vous connecter d'abord",
-            "onlineSupport": "Support en Ligne",
-            "inputPlaceholder": "Veuillez saisir un message...",
+            "onlineSupport": "Support en ligne",
+            "inputPlaceholder": "Entrez votre message...",
             "send": "Envoyer",
             "connectionLost": "Connexion perdue, veuillez réessayer plus tard",
-            "imageSendFail": "Échec de l'envoi de l'image"
+            "imageSendFail": "Échec de l'envoi de l'image",
+            "imageTooLarge": "La taille de l'image ne peut pas dépasser 5 Mo",
+            "selectOrder": "Sélectionner une commande",
+            "noOrdersFound": "Aucune commande trouvée",
+            "orderNo": "N° de commande : ",
+            "price": "Prix : ",
+            "close": "Fermer"
         }
     },
     "dashboard": {
@@ -501,7 +523,8 @@
                     "currencyCode": "Devise",
                     "status": "Statut",
                     "fee": "Frais",
-                    "actualAmount": "Reçu"
+                    "actualAmount": "Reçu",
+                    "remark": "Remarque"
                 }
             },
             "score": {
@@ -937,9 +960,9 @@
         "trackingNo": "Numéro de suivi :",
         "trackingNoPlaceholder": "Entrez votre numéro de suivi",
         "errorTrackingNo": "Veuillez saisir un numéro de suivi valide",
-        "packageName": "Nom du colis :",
-        "packageNamePlaceholder": "Entrez le nom de votre colis",
-        "errorPackageName": "Veuillez saisir un nom de colis valide",
+        "packageName": "Nom du produit :",
+        "packageNamePlaceholder": "Entrez le nom de votre produit",
+        "errorPackageName": "Veuillez saisir un nom de produit valide",
         "extraServices": "Services supplémentaires",
         "serviceInspection": "Inspection à l’ouverture pour articles interdits",
         "serviceConfirmation": "BBDbuy ne fournit pas de confirmation de produit par défaut. Si nécessaire, veuillez sélectionner le service 'Confirmation du produit'.",

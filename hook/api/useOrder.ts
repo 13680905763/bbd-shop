@@ -11,6 +11,14 @@ export function useOrderList(params: any) {
     refetchOnWindowFocus: false, // ⚠️ 禁止切回 Tab 时自动请求
   });
 }
+export function useChatOrderList(params: any) {
+  return useQuery({
+    queryKey: ["chatOrderList", params],
+    queryFn: () => OrderApi.listChatOrder(params),
+    placeholderData: keepPreviousData,
+    refetchOnWindowFocus: false, // ⚠️ 禁止切回 Tab 时自动请求
+  });
+}
 export function useRefundOrderList(params: any) {
   return useQuery({
     queryKey: ["refundOrderList", params],

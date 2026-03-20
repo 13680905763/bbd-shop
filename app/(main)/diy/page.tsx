@@ -95,11 +95,11 @@ export default function DiyOrderPage() {
       prev.map((s) =>
         s.id === currentService.id
           ? {
-              ...s,
-              remark: currentService?.remark,
-              isCheck: true,
-              quantity: currentService?.quantity,
-            }
+            ...s,
+            remark: currentService?.remark,
+            isCheck: true,
+            quantity: currentService?.quantity,
+          }
           : s,
       ),
     );
@@ -215,7 +215,7 @@ export default function DiyOrderPage() {
       .filter((s) => s.isCheck)
       .reduce((sum, s) => sum + s.price * s.quantity * skuCount, 0);
 
-    const pTotal = price * qty;
+    const pTotal = price;
     const totalRMB = pTotal + ship + sFee;
 
     // Convert RMB to selected currency for display
@@ -250,24 +250,17 @@ export default function DiyOrderPage() {
     }
 
     try {
-      // ...
       const validImages = imageList
         .filter((img) => img.url && !img.uploading)
         .map((img) => img.url!);
-      // Use the first uploaded image as the product picture, or a default/placeholder if none
       const productPic = validImages.length ? validImages : [];
-      // Construct specifications list
       const validSpecs = specifications.filter(
         (s) =>
           (s.s1?.trim() !== "" || s.s2?.trim() !== "") &&
           Number(s.quantity) > 0,
       );
 
-      // Calculate total quantity
-      const totalQuantity = validSpecs.reduce(
-        (sum, spec) => sum + (Number(spec.quantity) || 0),
-        0,
-      );
+
       const skuCount = validSpecs.length;
 
       const checkedServices = localServices
@@ -587,8 +580,8 @@ export default function DiyOrderPage() {
                   ≈ {currency.symbol}{" "}
                   {currency.rate
                     ? (parseFloat(shippingFee || "0") / currency.rate).toFixed(
-                        2,
-                      )
+                      2,
+                    )
                     : "0.00"}
                 </div>
               }

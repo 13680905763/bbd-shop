@@ -18,6 +18,22 @@
                 }
             }
         },
+        "forgetPassword": {
+            "title": "找回密码",
+            "desc": "请输入与您的帐户关联的电子邮件",
+            "emailPlaceholder": "Email",
+            "emailError": "请输入邮箱",
+            "emailInvalid": "请输入有效的邮箱地址",
+            "codePlaceholder": "验证码",
+            "sendCode": "发送验证码",
+            "submit": "密码重置",
+            "hasAccount": "已有账号？",
+            "login": "登录",
+            "fillAll": "请填写所有必填项",
+            "newPassword": "新密码",
+            "confirmPassword": "确认新密码",
+            "passwordMismatch": "两次输入的密码不一致"
+        },
         "register": {
             "title": "注册",
             "confirmText": "注册",
@@ -344,7 +360,7 @@
                 "fee": "手续费 (1%)",
                 "receive": "实际到账",
                 "available": "可用余额",
-                "tip": "提现金额将先进入冻结余额，待管理员审核通过后，将自动原路返回您的付款账号",
+                "tip": "提现金额将先进入冻结余额，待管理员审核通过后，将自动原路返回您的付款账号，预计时常1-3个工作日",
                 "successTitle": "提现申请已提交",
                 "successMessage": "您的提现申请已成功提交。",
                 "failTitle": "提现失败",
@@ -360,7 +376,13 @@
             "inputPlaceholder": "请输入消息...",
             "send": "发送",
             "connectionLost": "连接断开，请稍后重试",
-            "imageSendFail": "图片发送失败"
+            "imageSendFail": "图片发送失败",
+            "imageTooLarge": "图片大小不能超过 5MB",
+            "selectOrder": "选择订单",
+            "noOrdersFound": "暂无订单",
+            "orderNo": "订单号：",
+            "price": "价格：",
+            "close": "关闭"
         }
     },
     "dashboard": {
@@ -501,7 +523,8 @@
                     "currencyCode": "货币",
                     "status": "状态",
                     "fee": "手续费",
-                    "actualAmount": "实到"
+                    "actualAmount": "实到",
+                    "remark": "备注"
                 }
             },
             "score": {
@@ -937,9 +960,9 @@
         "trackingNo": "物流单号:",
         "trackingNoPlaceholder": "输入您的物流单号",
         "errorTrackingNo": "请输入有效的物流单号",
-        "packageName": "包裹名称:",
-        "packageNamePlaceholder": "输入您的包裹名称",
-        "errorPackageName": "请输入有效的包裹名称",
+        "packageName": "商品名称:",
+        "packageNamePlaceholder": "输入您的商品名称",
+        "errorPackageName": "请输入有效的商品名称",
         "extraServices": "额外服务",
         "serviceInspection": "开箱检查违禁物品",
         "serviceConfirmation": "BBDbuy代发默认不提供商品确认。如需确认，请选择'商品确认'服务。",

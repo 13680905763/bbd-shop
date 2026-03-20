@@ -136,3 +136,26 @@ export const updatePwd = (data: any): Promise<UserInfo> => {
     { showToast: true },
   );
 };
+
+/** 发送验证码 */
+export const sendVerificationCode = (email: string): Promise<any> => {
+  return requestWithOption(
+    {
+      url: "/customer/sendVerificationCode?email=" + email,
+      method: "POST",
+    },
+    { showToast: true },
+  );
+};
+
+/** 重置密码 */
+export const resetPassword = (data: any): Promise<any> => {
+  return requestWithOption(
+    {
+      url: "/customer/resetPassword?email=" + data?.email + "&verificationCode=" + data?.verificationCode,
+      method: "POST",
+      data,
+    },
+    { showToast: true },
+  );
+};

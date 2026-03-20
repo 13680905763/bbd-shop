@@ -18,6 +18,22 @@
                 }
             }
         },
+        "forgetPassword": {
+            "title": "Reset Password",
+            "desc": "Please enter the email address associated with your account",
+            "emailPlaceholder": "Email",
+            "emailError": "Please enter your email",
+            "emailInvalid": "Please enter a valid email address",
+            "codePlaceholder": "Verification Code",
+            "sendCode": "Send Code",
+            "submit": "Reset Password",
+            "hasAccount": "Already have an account?",
+            "login": "Login",
+            "fillAll": "Please fill in all required fields",
+            "newPassword": "New Password",
+            "confirmPassword": "Confirm New Password",
+            "passwordMismatch": "The two new passwords entered do not match"
+        },
         "register": {
             "title": "Register",
             "confirmText": "Sign Up",
@@ -344,7 +360,7 @@
                 "fee": "Fee (1%)",
                 "receive": "You will receive",
                 "available": "Available",
-                "tip": "After withdrawal, the amount will first be placed in frozen balance. Once approved by the administrator, it will be automatically returned to your payment account.",
+                "tip": "The amount withdrawn will first be placed in frozen balance. Once approved by the administrator, it will be automatically returned to your payment account. The processing time is usually 1-3 business days.",
                 "successTitle": "Withdrawal Application Submitted",
                 "successMessage": "Your withdrawal request has been submitted successfully.",
                 "failTitle": "Withdrawal Failed",
@@ -357,10 +373,16 @@
         "chatbox": {
             "loginFirst": "Please login first",
             "onlineSupport": "Online Support",
-            "inputPlaceholder": "Please enter message...",
+            "inputPlaceholder": "Enter your message...",
             "send": "Send",
             "connectionLost": "Connection lost, please try again later",
-            "imageSendFail": "Failed to send image"
+            "imageSendFail": "Failed to send image",
+            "imageTooLarge": "Image size cannot exceed 5MB",
+            "selectOrder": "Select Order",
+            "noOrdersFound": "No orders found",
+            "orderNo": "Order No: ",
+            "price": "Price: ",
+            "close": "Close"
         }
     },
     "dashboard": {
@@ -501,7 +523,8 @@
                     "currencyCode": "Currency",
                     "status": "Status",
                     "fee": "Fee",
-                    "actualAmount": "Received"
+                    "actualAmount": "Received",
+                    "remark": "Remark"
                 }
             },
             "score": {
@@ -937,9 +960,9 @@
         "trackingNo": "Tracking No:",
         "trackingNoPlaceholder": "Enter your tracking number",
         "errorTrackingNo": "Please enter a valid tracking number",
-        "packageName": "Package Name:",
-        "packageNamePlaceholder": "Enter your package name",
-        "errorPackageName": "Please enter a valid package name",
+        "packageName": "Product Name:",
+        "packageNamePlaceholder": "Enter your product name",
+        "errorPackageName": "Please enter a valid product name",
         "extraServices": "Additional Services",
         "serviceInspection": "Open-box inspection for prohibited items",
         "serviceConfirmation": "BBDbuy does not provide product confirmation by default. If needed, please select 'Product Confirmation' service.",

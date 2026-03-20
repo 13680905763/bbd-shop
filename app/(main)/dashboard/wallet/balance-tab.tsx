@@ -169,6 +169,7 @@ export default function BalanceTab() {
                 { key: "feeAmount", label: t("tableColumns.fee") },
                 { key: "payAmount", label: t("tableColumns.actualAmount") },
                 { key: "status", label: t("tableColumns.status") },
+                { key: "remark", label: t("tableColumns.remark") },
                 { key: "createTime", label: t("tableColumns.createTime") },
               ]}
               data={withdrawalList}

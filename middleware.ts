@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // 设置不需要登录的路径白名单
-const PUBLIC_PATHS = ["/", "/login", "/register", "/goods", "/help"];
+const PUBLIC_PATHS = ["/", "/login", "/register", "/forgetPsd", "/goods", "/help"];
 
 function isPublicPath(pathname: string) {
   return PUBLIC_PATHS.some(
@@ -19,7 +19,7 @@ export function middleware(request: NextRequest) {
 
   // 如果是公开页面，直接放行
   if (isPublicPath(pathname)) {
-    if (token && ["/login", "/register"].includes(pathname)) {
+    if (token && ["/login", "/register", "/forgetPsd"].includes(pathname)) {
       console.log("已经登录还来登录页");
 
       // 用户已登录，访问登录页等公开页，重定向回首页

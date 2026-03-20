@@ -45,7 +45,7 @@ export default function LoginPage() {
       await loginCustomer(data);
       queryClient.invalidateQueries({ queryKey: ["userInfo"] }); // 刷新
       router.push("/");
-    } catch {}
+    } catch { }
   };
 
   return (
@@ -61,9 +61,9 @@ export default function LoginPage() {
         onSubmit={handleSubmit}
       />
       <div className="flex justify-between my-2 text-[#f0700c]">
-        {/* <NextLink href="/forgetPsd">
+        <button onClick={() => router.push("/forgetPsd")}>
           <div>{t("forgetPassword")}</div>
-        </NextLink> */}
+        </button>
         <div />
         <button onClick={() => router.push("/register")}>
           {t("register")}
