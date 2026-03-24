@@ -46,6 +46,14 @@ export function useWarehouseServicesList() {
     staleTime: 5 * 10 * 1000,
   });
 }
+/** 运单附加服务*/
+export function useWarehouseServicesList1() {
+  return useQuery({
+    queryKey: ["warehouseServicesList1"],
+    queryFn: () => configApi.listWarehouseServices1(),
+    staleTime: 5 * 10 * 1000,
+  });
+}
 
 // 获取国家列表
 export const useCountries = () => {

@@ -22,19 +22,20 @@ interface CommonModalProps {
   confirmText?: string;
   cancelText?: string;
   size?:
-    | "xs"
-    | "sm"
-    | "md"
-    | "lg"
-    | "xl"
-    | "2xl"
-    | "3xl"
-    | "4xl"
-    | "5xl"
-    | "full";
+  | "xs"
+  | "sm"
+  | "md"
+  | "lg"
+  | "xl"
+  | "2xl"
+  | "3xl"
+  | "4xl"
+  | "5xl"
+  | "full";
   isDismissable?: boolean;
   isKeyboardDismissDisabled?: boolean;
   isDisabled?: boolean;
+  hideCloseButton?: boolean;
 }
 
 export default function CommonModal({
@@ -52,6 +53,7 @@ export default function CommonModal({
   isDismissable = false,
   isKeyboardDismissDisabled = false,
   isDisabled = false,
+  hideCloseButton = false,
 }: CommonModalProps) {
   const t = useTranslations("components.modal"); // Common 是语言包的 namespace
 
@@ -75,6 +77,7 @@ export default function CommonModal({
 
   return (
     <Modal
+      hideCloseButton={hideCloseButton}
       isDismissable={isDismissable}
       isKeyboardDismissDisabled={isKeyboardDismissDisabled}
       isOpen={isOpen}

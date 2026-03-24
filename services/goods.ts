@@ -28,6 +28,10 @@ export const getGoodsList = (data: any) => {
   return request.post("/product/search/image", data);
 };
 
+export const getGoodsListByKeyword = (data: { current: number; source: string; keyword: string; [key: string]: any }) => {
+  return request.post("/product/search/keyword", data);
+};
+
 export const getHistory = () => {
   return request.get("/customer-browsing-product/browsingProductList");
 };

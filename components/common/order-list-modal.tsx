@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Spinner } from "@heroui/react";
 import { useTranslations } from "next-intl";
 
-import { request } from "@/services/request";
 import PaginationBar from "./pagination-bar";
 import { useChatOrderList } from "@/hook/api";
 import { BlockSpinner, EmptyState } from "../ui";
+import { useGlobalStore } from "@/store";
 
 interface OrderListModalProps {
   isOpen: boolean;
@@ -15,6 +15,7 @@ interface OrderListModalProps {
 
 export default function OrderListModal({ isOpen, onClose, onSendOrder }: OrderListModalProps) {
   const t = useTranslations("components.chatbox");
+  const { currency } = useGlobalStore();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const { data, isLoading, isFetching } = useChatOrderList({
@@ -46,11 +47,11 @@ export default function OrderListModal({ isOpen, onClose, onSendOrder }: OrderLi
                   <div className="flex flex-col gap-2 mt-2">
                     {order.products?.map((product: any, idx: number) => (
                       <div key={idx} className="flex gap-3 items-center">
-                        <img src={product.picUrl} alt="product" className="w-16 h-16 object-cover rounded" />
+                        <img src={product.skuPicUrl || product.picUrl} alt="product" referrerPolicy="no-referrer" className="w-16 h-16 object-cover rounded" />
                         <div className="flex-1 text-sm">
                           <div className="line-clamp-2">{product.productTitle}</div>
                           <div className="text-gray-500 mt-1">
-                            {t("price")}{product.price} x {product.quantity}
+                            {t("price")}{currency.symbol}{product.price} x {product.purchaseQuantity}
                           </div>
                         </div>
                       </div>

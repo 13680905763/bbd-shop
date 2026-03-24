@@ -72,6 +72,11 @@ export default function PackageItem({
 
     frameId.current = requestAnimationFrame(momentum);
   };
+  console.log('ser', pack.serviceList?.filter((item: any) => {
+    console.log(item.serviceType != 2);
+
+    return item?.serviceType != 2
+  }));
 
   return (
     <div className="card-cart mb-4 p-2 bg-white rounded-lg shadow-sm">
@@ -148,12 +153,24 @@ export default function PackageItem({
           <div className="flex flex-col justify-center p-2 flex-[0_0_150px]">
             <span className="text-gray-500">
               {t("serviceFeeLabel")}: {currency.symbol}
-              {pack?.totalServiceFee || 0}
+              {pack?.serviceFee || 0}
             </span>
+            {!!pack?.insurance &&
+
+              <span className="text-gray-500">
+                {t("insuranceFeeLabel")}: {currency.symbol}
+                {pack?.insuranceFee || 0}
+              </span>
+            }
             <span className="font-semibold text-gray-800">
               {t("totalFeeLabel")}: {currency.symbol}
               {pack?.totalFee}
             </span>
+            {pack?.insurance && (
+              <div className="flex items-center gap-1 rounded bg-orange-50 px-2 py-1 text-xs text-orange-500 mt-2">
+                {t("insurancePurchased")}
+              </div>
+            )}
           </div>
           <div className="flex flex-col justify-center p-2 text-gray-700 flex-[0_0_150px]">
             <div className="text-[#f0700c] font-medium">{pack?.status}</div>
@@ -227,12 +244,13 @@ export default function PackageItem({
         </div>
 
         <div className="flex gap-2 justify-center flex-col py-2">
+
           {pack.serviceList.map((service: any) => (
             <div key={service.serviceId} className="mb-4 flex gap-2">
               <div className="text-gray-400 text-sm mb-2">
                 {service.serviceName}*{service.quantity}
               </div>
-              <MediaPreviewGroup fileList={service.fileList as MediaItem[]} />
+              <MediaPreviewGroup fileList={service?.fileList as MediaItem[]} />
             </div>
           ))}
         </div>

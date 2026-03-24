@@ -18,6 +18,7 @@ import AddressModal from "@/components/modal/address-modal";
 import {
   useCreateWaybill,
   useWarehouseServicesList,
+  useWarehouseServicesList1,
   useWaybillFeeEstimate,
   useWaybillPreview,
 } from "@/hook/api";
@@ -46,6 +47,7 @@ export default function SubmitOrder() {
   const [remark, setRemark] = useState("");
   const { data, isLoading } = useWaybillPreview(key);
   const { data: serviceList } = useWarehouseServicesList();
+  const { data: serviceList1 } = useWarehouseServicesList1();
   const { data: addressList } = useAddressList();
   const { mutateAsync: createWaybillAsync, isPending } = useCreateWaybill();
 
@@ -55,14 +57,20 @@ export default function SubmitOrder() {
     updateQuantity, // 更新数量
     getSelectedItems, // 获取选中结果
   } = useEnhancedSelection(serviceList);
+  const {
+    items: services1, // 渲染数据（包含 isSelected 和 quantity）
+    toggleSelection: toggleSelection1, // 切换选中状态
+    updateQuantity: updateQuantity1, // 更新数量
+    getSelectedItems: getSelectedItems1, // 获取选中结果
+  } = useEnhancedSelection(serviceList1);
 
   const getSelectedServices = useCallback(() => {
-    return getSelectedItems().map((item) => ({
+    return [...getSelectedItems(), ...getSelectedItems1()].map((item) => ({
       serviceId: item.id,
       quantity: item.quantity,
       remark: item.remark,
     }));
-  }, [getSelectedItems]);
+  }, [getSelectedItems, getSelectedItems1]);
 
   const estimatePayload = useMemo(() => {
     if (!selectedRouteId || !selectedAddressId || !data?.param) return null;
@@ -73,7 +81,7 @@ export default function SubmitOrder() {
       addressId: selectedAddressId,
       ...data.param,
     };
-  }, [selectedRouteId, selectedAddressId, getSelectedServices, services]);
+  }, [selectedRouteId, selectedAddressId, getSelectedServices, services, services1]);
 
   const { data: feeEstimate, isFetching: isEstimating } =
     useWaybillFeeEstimate(estimatePayload);
@@ -91,6 +99,7 @@ export default function SubmitOrder() {
   const [routesMessage, setRoutesMessage] = useState<string>(
     t("defaultMessage"),
   );
+console.log('serviceList1', serviceList1);
 
   useEffect(() => {
     const countryId = addressList?.find(
@@ -200,6 +209,22 @@ export default function SubmitOrder() {
                     service={service}
                     onSelect={toggleSelection}
                     onUpdateQuantity={updateQuantity}
+                  />
+                );
+              })}
+            </div>
+          </div>
+          <div>
+            <div className="text-title">{t("packagingMethod1")}</div>
+            <div className="grid grid-cols-1 gap-2">
+              {services1?.map((service: any) => {
+                return (
+                  <WarehouseServiceCard
+                    key={service.id}
+                    service={service}
+                    onSelect={toggleSelection1}
+                    onUpdateQuantity={updateQuantity1}
+                    type="introduction"
                   />
                 );
               })}
@@ -335,6 +360,15 @@ export default function SubmitOrder() {
                     <span className="font-medium">
                       {currency.symbol}
                       {feeEstimate.outbound.serviceFee}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">
+                      {t("insuranceFee")}
+                    </span>
+                    <span className="font-medium">
+                      {currency.symbol}
+                      {feeEstimate.outbound.insuranceFee}
                     </span>
                   </div>
                   <div className="pt-2 mt-2 border-t border-gray-200 flex justify-between items-center">

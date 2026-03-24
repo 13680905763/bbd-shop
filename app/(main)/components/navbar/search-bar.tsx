@@ -74,8 +74,14 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     const data: any = Object.fromEntries(new FormData(e.currentTarget));
 
     const res: any = await getGoodsId({ url: data.url });
+    console.log('res', res);
 
-    router.push(`/goods/${res.source}/${res.sourceProductId}`);
+
+    if (res.keyword) {
+      router.push(`/search?keyword=${encodeURIComponent(data.url)}`);
+    } else {
+      router.push(`/goods/${res.source}/${res.sourceProductId}`);
+    }
     setInputValue("");
   };
 

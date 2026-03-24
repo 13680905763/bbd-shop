@@ -59,7 +59,11 @@ export default function HomeSearchForm({ isLoading, setIsLoading }: any) {
 
     const res: any = await getGoodsId({ url: data.url });
 
-    router.push(`/goods/${res.source}/${res.sourceProductId}`);
+    if (res.keyword) {
+      router.push(`/search?keyword=${encodeURIComponent(data.url)}`);
+    } else {
+      router.push(`/goods/${res.source}/${res.sourceProductId}`);
+    }
   };
 
   return (

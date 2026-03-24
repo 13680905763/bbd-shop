@@ -11,7 +11,7 @@ import {
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { getGoodsList } from "@/services";
+import { getGoodsList, getGoodsListByKeyword } from "@/services";
 import { useGlobalStore } from "@/store";
 
 export default function SearchPage() {
@@ -24,41 +24,54 @@ export default function SearchPage() {
   const searchParams = useSearchParams();
   const taobaoId = searchParams.get("TAOBAO");
   const alibabaId = searchParams.get("1688");
+  const keyword = searchParams.get("keyword");
 
-  const [selectedTab, setSelectedTab] = useState<string>("TAOBAO");
+  const [selectedTab, setSelectedTab] = useState<string>(keyword ? "WEIDIAN" : "TAOBAO");
   const router = useRouter();
   const fetchData = useCallback(
     async (pageNum: number) => {
       const id = selectedTab === "TAOBAO" ? taobaoId : alibabaId;
       const source = selectedTab;
 
-      if (!id) return;
+      if (!id && !keyword) return;
 
       try {
         setLoading(true);
-        const res: any = await getGoodsList({
-          imageId: id,
-          source,
-          current: pageNum,
-          size: 20,
-        });
+        let res: any;
 
-        if (!res || res.length === 0) {
+        if (keyword) {
+          res = await getGoodsListByKeyword({
+            keyword,
+            source,
+            current: pageNum,
+            size: 20,
+          });
+        } else {
+          res = await getGoodsList({
+            imageId: id,
+            source,
+            current: pageNum,
+            size: 20,
+          });
+        }
+
+        const records = res?.records || res || [];
+
+        if (records.length === 0) {
           setHasMore(false);
-
           return;
         }
 
-        if (res.length < 20) setHasMore(false);
+        if (records.length < 20) setHasMore(false);
 
-        setList((prev) => [...prev, ...res.records]);
+        setList((prev) => [...prev, ...records]);
       } catch (err) {
         console.error("搜索失败:", err);
       } finally {
         setLoading(false);
       }
     },
-    [selectedTab, taobaoId, alibabaId],
+    [selectedTab, taobaoId, alibabaId, keyword],
   );
 
   // 当 URL 参数变化时，重置状态并加载第一页数据
@@ -68,8 +81,8 @@ export default function SearchPage() {
     setHasMore(true);
 
     // 只在有参数时触发
-    if (taobaoId || alibabaId) fetchData(1);
-  }, [taobaoId, alibabaId, selectedTab, fetchData]);
+    if (taobaoId || alibabaId || keyword) fetchData(1);
+  }, [taobaoId, alibabaId, keyword, selectedTab, fetchData]);
 
   // 分页滚动加载
   useEffect(() => {
@@ -94,6 +107,8 @@ export default function SearchPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [loading, hasMore]);
 
+  const tabs = keyword ? ["TAOBAO", "1688","WEIDIAN"] : ["TAOBAO", "1688"];
+
   return (
     <div className="w-full bg-[#f8f8f8] py-10">
       <div className="container mx-auto">
@@ -110,8 +125,8 @@ export default function SearchPage() {
           variant="underlined"
           onSelectionChange={(key) => setSelectedTab(key as string)}
         >
-          {["TAOBAO", "1688"].map((tabKey) => (
-            <Tab key={tabKey} title={<span>{tabKey.toLowerCase()}</span>}>
+          {tabs.map((tabKey) => (
+            <Tab key={tabKey} title={<span>{tabKey}</span>}>
               <div>
                 {loading && list.length === 0 ? (
                   <div className="flex justify-center items-center h-[50vh]">

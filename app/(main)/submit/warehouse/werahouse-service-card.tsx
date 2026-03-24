@@ -9,6 +9,7 @@ export default function WarehouseServiceCard({
   service,
   onSelect,
   onUpdateQuantity,
+  type = "default", // 新增 type 属性，默认为 "default"，可选 "introduction"
 }: any) {
   const { currency } = useGlobalStore();
 
@@ -40,46 +41,52 @@ export default function WarehouseServiceCard({
           <p className="text-sm font-medium text-gray-900 line-clamp-2 leading-snug">
             {service.serviceName}
           </p>
-          {/* 价格 + Stepper */}
-          <div className="mt-auto pt-2 flex items-center justify-between">
-            <span className="text-primary font-semibold whitespace-nowrap">
-              {currency.symbol}
-              {service.price}
-            </span>
-            {/* 数量 Stepper（右侧） */}
-            {service.stacked == 1 && (
-              <div
-                className="flex items-center bg-gray-100 rounded-lg overflow-hidden flex-shrink-0"
-                role="button"
-                onClick={(e) => e.stopPropagation()} // 避免点 + - 触发选中卡片
-              >
-                {/* 减号 */}
+          
+          {type === "introduction" ? (
+            <div className="  text-sm text-gray-500 line-clamp-4">
+              国际运费保险可为您的跨境包裹保驾护航。覆盖运输丢失、损毁等常见风险，一旦出险即可按约定获得赔偿，无需为高昂的国际运费担忧。花小钱，买安心。{service.introduction}
+            </div>
+          ) : (
+            <div className="mt-auto pt-2 flex items-center justify-between">
+              <span className="text-primary font-semibold whitespace-nowrap">
+                {currency.symbol}
+                {service.price}
+              </span>
+              {/* 数量 Stepper（右侧） */}
+              {service.stacked == 1 && (
                 <div
-                  className="w-7 h-7 flex items-center justify-center text-gray-600 hover:bg-gray-200 cursor-pointer"
+                  className="flex items-center bg-gray-100 rounded-lg overflow-hidden flex-shrink-0"
                   role="button"
-                  onClick={() =>
-                    onUpdateQuantity?.(service.id, service.quantity - 1)
-                  }
+                  onClick={(e) => e.stopPropagation()} // 避免点 + - 触发选中卡片
                 >
-                  -
+                  {/* 减号 */}
+                  <div
+                    className="w-7 h-7 flex items-center justify-center text-gray-600 hover:bg-gray-200 cursor-pointer"
+                    role="button"
+                    onClick={() =>
+                      onUpdateQuantity?.(service.id, service.quantity - 1)
+                    }
+                  >
+                    -
+                  </div>
+                  {/* 数量显示 */}
+                  <span className="px-2 min-w-[24px] text-center text-gray-900 text-sm">
+                    {service.quantity}
+                  </span>
+                  {/* 加号 */}
+                  <div
+                    className="w-7 h-7 flex items-center justify-center text-gray-600 hover:bg-gray-200 cursor-pointer"
+                    role="button"
+                    onClick={() =>
+                      onUpdateQuantity?.(service.id, service.quantity + 1)
+                    }
+                  >
+                    +
+                  </div>
                 </div>
-                {/* 数量显示 */}
-                <span className="px-2 min-w-[24px] text-center text-gray-900 text-sm">
-                  {service.quantity}
-                </span>
-                {/* 加号 */}
-                <div
-                  className="w-7 h-7 flex items-center justify-center text-gray-600 hover:bg-gray-200 cursor-pointer"
-                  role="button"
-                  onClick={() =>
-                    onUpdateQuantity?.(service.id, service.quantity + 1)
-                  }
-                >
-                  +
-                </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </button>

@@ -25,10 +25,12 @@ import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import dayjs from "dayjs";
 
+import { useGlobalStore } from "@/store";
 import { useChat } from "@/hook/chat/useChat";
 import OrderListModal from "./order-list-modal";
 
 export default function ChatBox() {
+  const { currency } = useGlobalStore();
   const t = useTranslations("components.chatbox");
 
   const [isOpen, setIsOpen] = useState(false);
@@ -271,16 +273,15 @@ export default function ChatBox() {
                                     {order.products?.map((product: any, idx: number) => (
                                       <div key={idx} className="flex gap-2 items-start">
                                         <Image
-                                          src={product.picUrl}
+                                          src={product.skuPicUrl || product.picUrl}
                                           alt="product"
-                                          className="w-12 h-12 object-cover rounded shrink-0"
+                                          referrerPolicy="no-referrer"
+                                          className="w-10 h-10 object-cover rounded flex-shrink-0"
                                         />
-                                        <div className="flex-1 min-w-0">
-                                          <div className="text-xs line-clamp-2 leading-tight">
-                                            {product.productTitle}
-                                          </div>
-                                          <div className="text-xs text-gray-500 mt-1">
-                                            {t("price")}{product.price} x {product.quantity}
+                                        <div className="flex-1 text-xs">
+                                          <div className="line-clamp-2">{product.productTitle}</div>
+                                          <div className="text-gray-500 mt-1">
+                                            {t("price")}{product.price} x {product.purchaseQuantity}
                                           </div>
                                         </div>
                                       </div>
@@ -393,7 +394,14 @@ export default function ChatBox() {
           isOpen={showOrderModal}
           onClose={() => setShowOrderModal(false)}
           onSendOrder={(order) => {
-            sendMessage(JSON.stringify(order), "ORDER");
+            const orderWithCurrency = {
+              ...order,
+              products: order.products?.map((p: any) => ({
+                ...p,
+                price: `${currency.symbol}${p.price}`
+              }))
+            };
+            sendMessage(JSON.stringify(orderWithCurrency), "ORDER");
             setShowOrderModal(false);
           }}
         />

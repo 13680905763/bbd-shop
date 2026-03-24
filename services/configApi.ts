@@ -17,6 +17,10 @@ export const configApi = {
   listWarehouseServices(): Promise<any[]> {
     return request.get("/services/query?serviceLevel=2");
   },
+  /** 获取保险增值服务列表 */
+  listWarehouseServices1(): Promise<any[]> {
+    return request.get("/services/query?serviceLevel=3");
+  },
   /** 获取国家列表 */
   listCountries: (): Promise<any> => {
     return request.get("/countries.json");
