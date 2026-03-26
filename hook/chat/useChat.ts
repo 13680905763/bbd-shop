@@ -9,7 +9,7 @@ export interface Message {
   id: number | string;
   sender: "user" | "bot";
   text?: string;
-  type?: "TEXT" | "IMAGE" | "ORDER";
+  type?: "TEXT" | "IMAGE" | "ORDER" | "WAYBILL";
   sending?: boolean;
   createTime?: number;
 }

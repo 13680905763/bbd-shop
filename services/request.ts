@@ -83,13 +83,8 @@ request.interceptors.response.use(
 
     if (status === 401) {
       if (showToast) {
-        addToast({ title: "未登录", timeout: 1000, color: "danger" });
+        addToast({ title: "Please login first", timeout: 1000, color: "danger" });
       }
-      localStorage.removeItem("user-storage");
-      localStorage.removeItem("wallet-storage");
-      localStorage.removeItem("services-storage");
-      localStorage.removeItem("billingAddress-storage");
-
       return null;
     }
 

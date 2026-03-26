@@ -11,6 +11,15 @@ export function useWaybillList(params: any) {
     refetchOnWindowFocus: false, // ⚠️ 禁止切回 Tab 时自动请求
   });
 }
+
+export function useChatWaybillList(params: any) {
+  return useQuery({
+    queryKey: ["chatWaybillList", params],
+    queryFn: () => waybillApi.myWaybills(params),
+    placeholderData: keepPreviousData,
+    refetchOnWindowFocus: false, // ⚠️ 禁止切回 Tab 时自动请求
+  });
+}
 export function useBatchPay() {
   return useMutation({
     mutationFn: (params: { packageSet: string[] }) =>

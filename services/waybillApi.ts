@@ -7,6 +7,10 @@ export const waybillApi = {
   listWaybill(params: any): Promise<PageResult<any>> {
     return request.post("/waybill/page", params);
   },
+  /** 获取我的运单（聊天用） */
+  myWaybills(params: any): Promise<any> {
+    return request.post("/waybill/myWaybills", params);
+  },
   /** 运单批量支付 */
   batchPay(data: any): Promise<any> {
     return request.post("/waybill/pay/preview/init", data);

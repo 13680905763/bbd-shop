@@ -26,7 +26,7 @@ export default function SearchPage() {
   const alibabaId = searchParams.get("1688");
   const keyword = searchParams.get("keyword");
 
-  const [selectedTab, setSelectedTab] = useState<string>(keyword ? "WEIDIAN" : "TAOBAO");
+  const [selectedTab, setSelectedTab] = useState<string>("TAOBAO");
   const router = useRouter();
   const fetchData = useCallback(
     async (pageNum: number) => {

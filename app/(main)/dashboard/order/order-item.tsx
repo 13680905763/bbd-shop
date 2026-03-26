@@ -157,6 +157,13 @@ export default function OrderItem({
             <>
               {/* 状态文字 */}
               <div className="text-[#f0700c] font-medium text-center">{order?.status}</div>
+              {
+                order?.remark && (
+                  <div className="text-sm text-gray-500  px-2 py-1 rounded">
+                    {order?.remark} 
+                  </div>
+                )
+              }
               {order?.canRefundFlag && (
                 <Button
                   radius="sm"

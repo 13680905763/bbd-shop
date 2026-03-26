@@ -28,6 +28,8 @@ import dayjs from "dayjs";
 import { useGlobalStore } from "@/store";
 import { useChat } from "@/hook/chat/useChat";
 import OrderListModal from "./order-list-modal";
+import WaybillListModal from "./waybill-list-modal";
+import { FaBoxOpen } from "react-icons/fa";
 
 export default function ChatBox() {
   const { currency } = useGlobalStore();
@@ -38,6 +40,7 @@ export default function ChatBox() {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false); // 控制是否展开/全屏
   const [showOrderModal, setShowOrderModal] = useState(false);
+  const [showWaybillModal, setShowWaybillModal] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -294,6 +297,41 @@ export default function ChatBox() {
                             }
                           })()}
                         </div>
+                      ) : msg.type === "WAYBILL" ? (
+                        <div className="rounded bg-blue-100 p-2 font-mono text-sm text-black w-full">
+                          {(() => {
+                            try {
+                              const waybill = JSON.parse(msg.text || "{}");
+                              return (
+                                <div className="flex flex-col gap-2">
+                                  <div className="font-semibold border-b border-blue-200 pb-1">
+                                    {t("waybillNo", { defaultMessage: "Waybill No: " })}{waybill.packingPackageCode}
+                                  </div>
+                                  <div className="flex flex-col gap-1 text-xs">
+                                    {waybill.shippingCode && (
+                                      <div>
+                                        <span className="text-gray-500">{t("trackingNo", { defaultMessage: "Tracking No: " })}</span>
+                                        {waybill.shippingCode}
+                                      </div>
+                                    )}
+                                    <div className="grid grid-cols-2 gap-1 mt-1">
+                                      <div>
+                                        <span className="text-gray-500">{t("weight", { defaultMessage: "Weight" })}: </span>
+                                        {waybill.weight}g
+                                      </div>
+                                      <div>
+                                        <span className="text-gray-500">{t("size", { defaultMessage: "Size" })}: </span>
+                                        {waybill.length}*{waybill.width}*{waybill.height}cm
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            } catch (e) {
+                              return <div>{msg.text}</div>;
+                            }
+                          })()}
+                        </div>
                       ) : (
                         msg.text
                       )}
@@ -367,6 +405,15 @@ export default function ChatBox() {
                   >
                     <FaShoppingBag />
                   </Button>
+                  <Button
+                    className="flex h-8 w-8 items-center justify-center"
+                    color="primary"
+                    radius="full"
+                    variant="light"
+                    onPress={() => setShowWaybillModal(true)}
+                  >
+                    <FaBoxOpen />
+                  </Button>
                 </div>
 
                 <Button
@@ -403,6 +450,16 @@ export default function ChatBox() {
             };
             sendMessage(JSON.stringify(orderWithCurrency), "ORDER");
             setShowOrderModal(false);
+          }}
+        />
+      )}
+      {showWaybillModal && (
+        <WaybillListModal
+          isOpen={showWaybillModal}
+          onClose={() => setShowWaybillModal(false)}
+          onSendWaybill={(waybill) => {
+            sendMessage(JSON.stringify(waybill), "WAYBILL");
+            setShowWaybillModal(false);
           }}
         />
       )}

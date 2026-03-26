@@ -24,6 +24,14 @@ export default function PromotionPage() {
     useBonusConfig();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+  const [origin, setOrigin] = React.useState("");
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      setOrigin(window.location.origin);
+    }
+  }, []);
+
   const process = [t("process1"), t("process2"), t("process3")];
 
   return (
@@ -56,11 +64,11 @@ export default function PromotionPage() {
         <div>
           <CopyText
             className="w-full"
-            text={`https://www.bbdbuy1.com/register?inviteCode=${user?.inviteCode || ""}`}
+            text={`${origin}/register?inviteCode=${user?.inviteCode || ""}`}
           >
             <div className="w-full py-2.5 px-4 bg-[#f4f4f5] rounded-xl text-[#11181C] flex items-center justify-between cursor-pointer hover:bg-[#e4e4e7] transition-colors">
               <span className="font-mono text-sm break-all">
-                {`https://www.bbdbuy1.com/register?inviteCode=${user?.inviteCode || ""}`}
+                {`${origin}/register?inviteCode=${user?.inviteCode || ""}`}
               </span>
               <IoCopyOutline size={18} />
             </div>
