@@ -28,7 +28,7 @@ export default function WaybillListModal({ isOpen, onClose, onSendWaybill }: Way
   return (
     <Modal isOpen={isOpen} onOpenChange={(open) => !open && onClose()} scrollBehavior="inside" size="2xl">
       <ModalContent>
-        <ModalHeader>{t("selectWaybill", { defaultMessage: "Select Waybill" })}</ModalHeader>
+        <ModalHeader>{t("selectWaybill")}</ModalHeader>
         <ModalBody className="max-h-[60vh] overflow-y-auto">
           {isFetching && <BlockSpinner />}
           {waybills.length === 0 ? (
@@ -40,12 +40,12 @@ export default function WaybillListModal({ isOpen, onClose, onSendWaybill }: Way
                   <div className="flex justify-between items-center border-b pb-2">
                     <div className="flex flex-col">
                       <span className="font-semibold text-sm">
-                        {t("waybillNo", { defaultMessage: "Waybill No: " })}
+                        {t("waybillNo")}
                         {waybill.packingPackageCode}
                       </span>
                       {waybill.shippingCode && (
                         <span className="text-xs text-gray-500">
-                          {t("trackingNo", { defaultMessage: "Tracking No: " })}
+                          {t("trackingNo")}
                           {waybill.shippingCode}
                         </span>
                       )}
@@ -55,8 +55,8 @@ export default function WaybillListModal({ isOpen, onClose, onSendWaybill }: Way
                     </Button>
                   </div>
                   <div className="grid grid-cols-2 gap-2 mt-2 text-sm text-gray-600">
-                    <div>{t("weight", { defaultMessage: "Weight" })}: {waybill.weight}g</div>
-                    <div>{t("size", { defaultMessage: "Size" })}: {waybill.length}*{waybill.width}*{waybill.height}cm</div>
+                    <div>{t("weight")}: {waybill.weight}g</div>
+                    <div>{t("size")}: {waybill.length}*{waybill.width}*{waybill.height}cm</div>
                   </div>
                 </div>
               ))}

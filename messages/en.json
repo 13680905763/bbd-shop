@@ -382,7 +382,12 @@
             "noOrdersFound": "No orders found",
             "orderNo": "Order No: ",
             "price": "Price: ",
-            "close": "Close"
+            "close": "Close",
+            "selectWaybill": "Select Package",
+            "waybillNo": "Package No: ",
+            "trackingNo": "Tracking No: ",
+            "weight": "Weight",
+            "size": "Size"
         }
     },
     "dashboard": {
@@ -557,7 +562,9 @@
             "modalTitle": "View Details",
             "readMessages": "Read",
             "unreadMessages": "Unread",
-            "noData": "No data"
+            "noData": "No data",
+            "noTitle": "No Title",
+            "noTime": "No Time"
         },
         "cart": {
             "empty": {
@@ -596,6 +603,7 @@
             "orderItem": {
                 "orderNumber": "Order No:",
                 "createTime": "Created:",
+                "consult": "Consult",
                 "payment": "Pay",
                 "cancel": "Cancel",
                 "refund": "Refund",

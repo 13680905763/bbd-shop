@@ -41,10 +41,10 @@ export default function WarehouseServiceCard({
           <p className="text-sm font-medium text-gray-900 line-clamp-2 leading-snug">
             {service.serviceName}
           </p>
-          
+
           {type === "introduction" ? (
             <div className="  text-sm text-gray-500 line-clamp-4">
-              国际运费保险可为您的跨境包裹保驾护航。覆盖运输丢失、损毁等常见风险，一旦出险即可按约定获得赔偿，无需为高昂的国际运费担忧。花小钱，买安心。{service.introduction}
+              {service.introduction}
             </div>
           ) : (
             <div className="mt-auto pt-2 flex items-center justify-between">

@@ -382,7 +382,12 @@
             "noOrdersFound": "暂无订单",
             "orderNo": "订单号：",
             "price": "价格：",
-            "close": "关闭"
+            "close": "关闭",
+            "selectWaybill": "选择包裹",
+            "waybillNo": "包裹号：",
+            "trackingNo": "物流单号：",
+            "weight": "重量",
+            "size": "尺寸"
         }
     },
     "dashboard": {
@@ -557,7 +562,9 @@
             "modalTitle": "查看详情",
             "readMessages": "已读",
             "unreadMessages": "未读",
-            "noData": "暂无数据"
+            "noData": "暂无数据",
+            "noTitle": "无标题",
+            "noTime": "暂无时间"
         },
         "cart": {
             "empty": {
@@ -596,6 +603,7 @@
             "orderItem": {
                 "orderNumber": "订单号:",
                 "createTime": "创建时间:",
+                "consult": "咨询",
                 "payment": "支付",
                 "cancel": "取消",
                 "refund": "退款",

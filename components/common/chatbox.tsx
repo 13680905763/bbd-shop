@@ -25,17 +25,17 @@ import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import dayjs from "dayjs";
 
-import { useGlobalStore } from "@/store";
+import { useGlobalStore, useChatStore } from "@/store";
 import { useChat } from "@/hook/chat/useChat";
 import OrderListModal from "./order-list-modal";
 import WaybillListModal from "./waybill-list-modal";
-import { FaBoxOpen } from "react-icons/fa";
+import { FaBoxOpen, FaCommentDots } from "react-icons/fa";
 
 export default function ChatBox() {
   const { currency } = useGlobalStore();
+  const { isOpen, setIsOpen, pendingOrder, setPendingOrder } = useChatStore();
   const t = useTranslations("components.chatbox");
 
-  const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false); // 控制是否展开/全屏
@@ -60,6 +60,29 @@ export default function ChatBox() {
     hasAgent,
     user,
   } = useChat(isOpen);
+
+  // Handle pending order from store
+  useEffect(() => {
+    if (isOpen && pendingOrder && user?.id && !firstLoading) {
+      // Delay to ensure websocket is ready and messages are loaded
+      const timer = setTimeout(() => {
+        const orderWithCurrency = {
+          ...pendingOrder,
+          products: pendingOrder.products?.map((p: any) => ({
+            ...p,
+            price: `${currency.symbol}${p.price}`
+          }))
+        };
+        
+        // Try to send, if it returns true (success), clear the pending order
+        const success = sendMessage(JSON.stringify(orderWithCurrency), "ORDER");
+        if (success) {
+          setPendingOrder(null);
+        }
+      }, 1000); // Increased delay to ensure connection is stable
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, pendingOrder, user?.id, sendMessage, setPendingOrder, currency.symbol, firstLoading]);
 
   // Handle scroll for history loading
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {

@@ -2,8 +2,9 @@
 import { Button, Checkbox } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { FaCommentDots, FaComments } from "react-icons/fa";
 
-import { useGlobalStore } from "@/store";
+import { useGlobalStore, useChatStore } from "@/store";
 import { RefundCountdown, SourceIcon } from "@/components/ui";
 import ProductItem from "@/components/block/product-item";
 function ProductItemWrapper({ product, onRevoke }: any) {
@@ -72,23 +73,39 @@ export default function OrderItem({
 }: any) {
   const t = useTranslations("dashboard.order.orderItem");
   const { currency } = useGlobalStore();
+  const { setIsOpen, setPendingOrder } = useChatStore();
   const router = useRouter();
 
   return (
     <div className="card-cart">
-      <div className="p-4 flex items-center gap-1">
-        {showCheckbox ? (
-          <Checkbox
-            isSelected={isSelected(order.orderCode)}
-            onChange={() => onChange(order.orderCode)}
-          />
-        ) : null}
-        <SourceIcon source={order?.source} />
-        <div className="text-sm font-extrabold">
-          {t("orderNumber")} {order?.orderCode}
+      <div className="p-4 flex items-center justify-between">
+        <div className="flex items-center gap-1">
+          {showCheckbox ? (
+            <Checkbox
+              isSelected={isSelected(order.orderCode)}
+              onChange={() => onChange(order.orderCode)}
+            />
+          ) : null}
+          <SourceIcon source={order?.source} />
+          <div className="text-sm font-extrabold">
+            {t("orderNumber")} {order?.orderCode}
+          </div>
+          <div className="text-[#acacac] text-sm">
+            {t("createTime")} {order?.createTime}
+          </div>
         </div>
-        <div className="text-[#acacac] text-sm">
-          {t("createTime")} {order?.createTime}
+        <div className="flex items-center">
+          <Button
+            variant="light"
+            color="primary"
+            onPress={() => {
+              setPendingOrder(order);
+              setIsOpen(true);
+            }}
+          >
+            <FaComments className="w-5 h-5" />
+            {t("consult")}
+          </Button>
         </div>
       </div>
 

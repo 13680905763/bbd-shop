@@ -196,8 +196,12 @@ export function useChat(isOpen: boolean) {
       const socket = socketRef.current;
 
       if (!socket || socket.readyState !== WebSocket.OPEN) {
-        addToast({ title: t("connectionLost"), color: "danger" });
-        return;
+        // Only show toast if it's a manual user action, not for auto-send pending items
+        // to avoid spamming the user when the connection is just initializing
+        if (type !== "ORDER" && type !== "WAYBILL") {
+          addToast({ title: t("connectionLost"), color: "danger" });
+        }
+        return false;
       }
 
       const payload: any = {
@@ -215,6 +219,7 @@ export function useChat(isOpen: boolean) {
         { id: `local-${Date.now()}`, sender: "user", text: msgText, type, createTime: Date.now() },
       ]);
       shouldScrollRef.current = true;
+      return true;
     },
     [t]
   );

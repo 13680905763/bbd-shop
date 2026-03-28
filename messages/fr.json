@@ -382,7 +382,12 @@
             "noOrdersFound": "Aucune commande trouvée",
             "orderNo": "N° de commande : ",
             "price": "Prix : ",
-            "close": "Fermer"
+            "close": "Fermer",
+            "selectWaybill": "Sélectionner le colis",
+            "waybillNo": "N° de colis : ",
+            "trackingNo": "N° de suivi : ",
+            "weight": "Poids",
+            "size": "Taille"
         }
     },
     "dashboard": {
@@ -557,7 +562,9 @@
             "modalTitle": "Voir les détails",
             "readMessages": "Lu",
             "unreadMessages": "Non lu",
-            "noData": "Aucune donnée"
+            "noData": "Aucune donnée",
+            "noTitle": "Pas de titre",
+            "noTime": "Pas de date"
         },
         "cart": {
             "empty": {
@@ -596,6 +603,7 @@
             "orderItem": {
                 "orderNumber": "N° de commande :",
                 "createTime": "Créé le :",
+                "consult": "Consulter",
                 "payment": "Payer",
                 "cancel": "Annuler",
                 "refund": "Remboursement",
