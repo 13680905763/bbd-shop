@@ -1,7 +1,6 @@
 import React from "react";
 import { useTranslations } from "next-intl";
 
-import { useGlobalStore } from "@/store";
 import { CommonTable } from "@/components/common";
 import CommonModal from "@/components/modal/common-modal";
 import { useInviteBonus } from "@/hook/api";
@@ -45,7 +44,12 @@ export default function ActiveUserBonusModal({
       <div className="space-y-6">
         {tables.map((table, index) => (
           <div key={index} className="space-y-2">
-            <h3 className="font-semibold text-gray-700">{table.title}</h3>
+            <h3 className="font-semibold text-gray-700">
+              {table.title}
+              {index !== 2 && (
+                <span className="text-sm text-[#f0700c]"> {t("titletip")}</span>
+              )}
+            </h3>
             <CommonTable
               columns={[
                 {

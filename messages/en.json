@@ -718,6 +718,7 @@
             "packageItem": {
                 "packageNumberLabel": "Package Number",
                 "shippingCode": "Tracking Number:",
+                "consult": "Consult",
                 "productImageAlt": "Product Image",
                 "sizeLabel": "Size",
                 "weightLabel": "Weight",
@@ -772,6 +773,7 @@
                     "title1": "Cash Bonus per Active User",
                     "title2": "BBDBuy Balance + Free Shipping",
                     "title3": "Monthly Salary Bonus (Fixed Bonus)",
+                    "titletip": "(reset every month)",
                     "tableColumns": {
                         "activeUsersNum": "Active Users",
                         "remark": "Bonus"
@@ -833,7 +835,7 @@
             "estimating": "Estimating Shipping Fee",
             "estimatedShipping": "Estimated Shipping Fee",
             "estimatedService": "Estimated Service Fee",
-            "insuranceFee":"Estimated Insurance Fee",
+            "insuranceFee": "Estimated Insurance Fee",
             "estimatedTotal": "Estimated Total",
             "estimatedTip": "Estimated Tip",
             "submit": "Submit Package",

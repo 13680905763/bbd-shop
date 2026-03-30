@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@heroui/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Image } from "@heroui/react";
 import { useTranslations } from "next-intl";
 
 import PaginationBar from "./pagination-bar";
@@ -17,7 +17,7 @@ export default function WaybillListModal({ isOpen, onClose, onSendWaybill }: Way
   const t = useTranslations("components.chatbox");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  
+
   const { data, isFetching } = useChatWaybillList({
     current: page,
     size: pageSize,
@@ -54,6 +54,19 @@ export default function WaybillListModal({ isOpen, onClose, onSendWaybill }: Way
                       {t("send")}
                     </Button>
                   </div>
+                  {waybill.pic && waybill.pic.length > 0 && (
+                    <div className="flex gap-2 mt-2 overflow-x-auto no-scrollbar flex-wrap">
+                      {waybill.pic.map((url: string, index: number) => (
+                        <Image
+                          key={index}
+                          src={url}
+                          referrerPolicy="no-referrer"
+                          alt="waybill pic"
+                          className="w-16 h-16 object-cover rounded flex-shrink-0"
+                        />
+                      ))}
+                    </div>
+                  )}
                   <div className="grid grid-cols-2 gap-2 mt-2 text-sm text-gray-600">
                     <div>{t("weight")}: {waybill.weight}g</div>
                     <div>{t("size")}: {waybill.length}*{waybill.width}*{waybill.height}cm</div>

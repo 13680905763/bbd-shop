@@ -70,6 +70,13 @@ export default function ProductItem({
           <div className="line-clamp-1 text-gray-500 text-sm">
             {product?.propAndValue?.propName_valueName}
           </div>
+          {!product?.withdrawRefundFlag && product?.abnormalInfo &&
+            <div className="my-2 flex items-center justify-between">
+              <div className="text-sm font-semibold text-red-500">
+                {product?.abnormalInfo}
+              </div>
+            </div>
+          }
         </div>
       </div>
 

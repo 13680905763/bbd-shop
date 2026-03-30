@@ -718,6 +718,7 @@
             "packageItem": {
                 "packageNumberLabel": "Numéro de colis",
                 "shippingCode": "Numéro de suivi :",
+                "consult": "Consulter",
                 "productImageAlt": "Image du produit",
                 "sizeLabel": "Taille",
                 "weightLabel": "Poids",
@@ -772,6 +773,7 @@
                     "title1": "Prime en espèces par utilisateur actif",
                     "title2": "Solde BBDBuy + Livraison gratuite",
                     "title3": "Bonus de salaire mensuel (Prime fixe)",
+                    "titletip": "(Réinitialisation mensuelle)",
                     "tableColumns": {
                         "activeUsersNum": "Utilisateurs actifs",
                         "remark": "Prime"
@@ -833,7 +835,7 @@
             "estimating": "Estimation des Frais d'Expédition",
             "estimatedShipping": "Frais d'Expédition Estimé",
             "estimatedService": "Frais de Service",
-            "insuranceFee":"Frais d'Assurance",
+            "insuranceFee": "Frais d'Assurance",
             "estimatedTotal": "Total Estimé",
             "estimatedTip": "Tip Estimé",
             "submit": "Soumettre le Colis",

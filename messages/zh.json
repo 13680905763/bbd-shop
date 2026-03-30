@@ -718,6 +718,7 @@
             "packageItem": {
                 "packageNumberLabel": "包裹编号",
                 "shippingCode": "追踪号码：",
+                "consult": "咨询",
                 "productImageAlt": "商品图片",
                 "sizeLabel": "尺寸",
                 "weightLabel": "重量",
@@ -772,6 +773,7 @@
                     "title1": "每名活跃用户的现金奖励",
                     "title2": "BBDBuy 余额 + 包邮",
                     "title3": "月度工资奖金（固定奖金）",
+                    "titletip": "(每月重置)",
                     "tableColumns": {
                         "activeUsersNum": "活跃用户数",
                         "remark": "奖金"
@@ -832,7 +834,7 @@
             "estimating": "费用估算中",
             "estimatedShipping": "预估运费",
             "estimatedService": "预估服务费",
-            "insuranceFee":"预估保险费",
+            "insuranceFee": "预估保险费",
             "estimatedTotal": "预估总计",
             "estimatedTip": "具体费用将在包裹完成打包之后展示",
             "defaultMessage": "请选择地址后查看运输路线",

@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 
 import { fetchChatHistory, uploadChatImage } from "@/services";
 import { useUserInfo } from "@/hook/api";
+import { queryClient } from "@/lib/react-query";
 
 export interface Message {
   id: number | string;
@@ -17,7 +18,7 @@ export interface Message {
 export function useChat(isOpen: boolean) {
   const t = useTranslations("components.chatbox");
   const { data: user } = useUserInfo();
-  
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [receiverId, setReceiverId] = useState<number | null>(null);
   const [hasAgent, setHasAgent] = useState(false);
@@ -165,12 +166,13 @@ export function useChat(isOpen: boolean) {
           setMessages((prev) => [...newMessages, ...prev]);
           setPage((prev) => prev + 1);
           setHasMoreHistory(currentPage < lastPage);
-          shouldScrollRef.current = false; 
+          shouldScrollRef.current = false;
         }
       } catch (err) {
         console.error("获取历史消息失败", err);
       } finally {
         setIsLoadingHistory(false);
+        queryClient.invalidateQueries({ queryKey: ["userInfo"] });
       }
     },
     [user?.id, page, hasMoreHistory, isLoadingHistory]

@@ -7,7 +7,8 @@ import { useTranslations } from "next-intl";
 import MediaPreviewGroup, {
   MediaItem,
 } from "@/components/common/media-preview";
-import { useGlobalStore } from "@/store";
+import { useGlobalStore, useChatStore } from "@/store";
+import { FaComments } from "react-icons/fa";
 
 export default function PackageItem({
   pack, //运单信息
@@ -25,6 +26,7 @@ export default function PackageItem({
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const { currency } = useGlobalStore();
+  const { setIsOpen, setPendingWaybill } = useChatStore();
   const [isCancelLoading, setIsCancelLoading] = useState(false);
   const [isPayLoading, setIsPayLoading] = useState(false);
   const [isLineLoading, setIsLineLoading] = useState(false);
@@ -80,15 +82,31 @@ export default function PackageItem({
 
   return (
     <div className="card-cart mb-4 p-2 bg-white rounded-lg shadow-sm">
-      <div className="flex items-center  p-2 text-sm">
-        {showCheckbox ? (
-          <Checkbox
-            isSelected={isSelected(pack.packingPackageCode)}
-            onChange={() => onChange(pack.packingPackageCode)}
-          />
-        ) : null}
-        {t("packageNumberLabel")}:
-        <span className="font-semibold">{pack?.packingPackageCode}</span>
+      <div className="flex items-center justify-between p-2 pt-0 text-sm">
+        <div className="flex items-center gap-1">
+          {showCheckbox ? (
+            <Checkbox
+              isSelected={isSelected(pack.packingPackageCode)}
+              onChange={() => onChange(pack.packingPackageCode)}
+            />
+          ) : null}
+          {t("packageNumberLabel")}:
+          <span className="font-semibold">{pack?.packingPackageCode}</span>
+        </div>
+        <div className="flex items-center">
+          <Button
+            variant="light"
+            color="primary"
+            onPress={() => {
+              const pic = pack?.packageItemList?.map((item: any) => item.orderProduct?.skuPicUrl || item.orderProduct?.picUrl).filter(Boolean);
+              setPendingWaybill({ ...pack, pic });
+              setIsOpen(true);
+            }}
+          >
+            <FaComments className="w-5 h-5 mr-1" />
+            {t("consult")}
+          </Button>
+        </div>
       </div>
 
       <div className="flex flex-col">

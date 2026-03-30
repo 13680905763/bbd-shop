@@ -10,6 +10,7 @@ import {
   Image,
   addToast,
   Avatar,
+  Badge,
 } from "@heroui/react";
 import {
   FaComments,
@@ -33,7 +34,7 @@ import { FaBoxOpen, FaCommentDots } from "react-icons/fa";
 
 export default function ChatBox() {
   const { currency } = useGlobalStore();
-  const { isOpen, setIsOpen, pendingOrder, setPendingOrder } = useChatStore();
+  const { isOpen, setIsOpen, pendingOrder, setPendingOrder, pendingWaybill, setPendingWaybill } = useChatStore();
   const t = useTranslations("components.chatbox");
 
   const [input, setInput] = useState("");
@@ -61,7 +62,7 @@ export default function ChatBox() {
     user,
   } = useChat(isOpen);
 
-  // Handle pending order from store
+  // Handle scroll for history loading
   useEffect(() => {
     if (isOpen && pendingOrder && user?.id && !firstLoading) {
       // Delay to ensure websocket is ready and messages are loaded
@@ -73,7 +74,7 @@ export default function ChatBox() {
             price: `${currency.symbol}${p.price}`
           }))
         };
-        
+
         // Try to send, if it returns true (success), clear the pending order
         const success = sendMessage(JSON.stringify(orderWithCurrency), "ORDER");
         if (success) {
@@ -83,6 +84,19 @@ export default function ChatBox() {
       return () => clearTimeout(timer);
     }
   }, [isOpen, pendingOrder, user?.id, sendMessage, setPendingOrder, currency.symbol, firstLoading]);
+
+  // Handle pending waybill from store
+  useEffect(() => {
+    if (isOpen && pendingWaybill && user?.id && !firstLoading) {
+      const timer = setTimeout(() => {
+        const success = sendMessage(JSON.stringify(pendingWaybill), "WAYBILL");
+        if (success) {
+          setPendingWaybill(null);
+        }
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, pendingWaybill, user?.id, sendMessage, setPendingWaybill, firstLoading]);
 
   // Handle scroll for history loading
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
@@ -175,26 +189,33 @@ export default function ChatBox() {
         onDragEnd={() => setTimeout(() => (isDraggingRef.current = false), 100)}
         onDragStart={() => (isDraggingRef.current = true)}
       >
-        <Button
-          isIconOnly
-          className="w-14 h-14 shadow-lg"
+        <Badge
+          content={user?.msgCount > 99 ? "99+" : user?.msgCount}
+          isInvisible={!user?.msgCount || user.msgCount === 0}
           color="primary"
-          radius="full"
-          onPress={() => {
-            if (isDraggingRef.current) return;
-            if (!user?.id) {
-              addToast({
-                title: t("loginFirst"),
-                timeout: 1000,
-                color: "danger",
-              });
-              return;
-            }
-            setIsOpen(true);
-          }}
+          shape="circle"
         >
-          <FaComments className="w-6 h-6" />
-        </Button>
+          <Button
+            isIconOnly
+            className="w-14 h-14 shadow-lg"
+            color="primary"
+            radius="full"
+            onPress={() => {
+              if (isDraggingRef.current) return;
+              if (!user?.id) {
+                addToast({
+                  title: t("loginFirst"),
+                  timeout: 1000,
+                  color: "danger",
+                });
+                return;
+              }
+              setIsOpen(true);
+            }}
+          >
+            <FaComments className="w-6 h-6" />
+          </Button>
+        </Badge>
       </motion.div>
 
       <Modal
@@ -335,6 +356,19 @@ export default function ChatBox() {
                                       <div>
                                         <span className="text-gray-500">{t("trackingNo", { defaultMessage: "Tracking No: " })}</span>
                                         {waybill.shippingCode}
+                                      </div>
+                                    )}
+                                    {waybill.pic && waybill.pic.length > 0 && (
+                                      <div className="flex gap-2 mt-1 overflow-x-auto no-scrollbar flex-wrap">
+                                        {waybill.pic.map((url: string, index: number) => (
+                                          <Image
+                                            key={index}
+                                            src={url}
+                                            referrerPolicy="no-referrer"
+                                            alt="waybill pic"
+                                            className="w-12 h-12 object-cover rounded flex-shrink-0"
+                                          />
+                                        ))}
                                       </div>
                                     )}
                                     <div className="grid grid-cols-2 gap-1 mt-1">
