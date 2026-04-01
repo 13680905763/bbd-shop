@@ -109,6 +109,7 @@ export default function ForgetPsdPage() {
           <Button
             color={countdown > 0 || !email || isSending ? "default" : "primary"}
             isDisabled={countdown > 0 || !email || isSending}
+            isLoading={isSending}
             onPress={handleSendCode}
             className="w-32"
           >

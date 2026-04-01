@@ -8,7 +8,7 @@ export default function HomeImageLinks() {
   const links = [
     {
       key: "link1",
-      href: "https://discord.gg/N34Q27Vts8",
+      href: "https://discord.gg/tERd3KZRMh",
       src: "/images/page/tab1.png",
     },
     {

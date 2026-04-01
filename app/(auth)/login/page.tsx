@@ -15,6 +15,7 @@ export default function LoginPage() {
   const router = useRouter();
   const t = useTranslations("auth.login");
   const { language } = useGlobalStore();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
@@ -51,7 +52,7 @@ export default function LoginPage() {
     // 其他域名（比如你说的另外两个域名）不需要验证码时，直接调用成功逻辑发起登录！
     const host = window.location.hostname;
     if (host !== "www.bbdbuyeu.com" && host !== "localhost" && host !== "127.0.0.1") {
-      handleCaptchaSuccess("");
+      await handleCaptchaSuccess("");
       return;
     }
 
@@ -63,39 +64,52 @@ export default function LoginPage() {
     // 设置验证码配置
     (window as any).AliyunCaptchaConfig = { region: "cn", prefix: "esa-ky973v1gyr" };
 
+    const initCaptcha = () => {
+      if ((window as any).initAliyunCaptcha) {
+        (window as any).initAliyunCaptcha({
+          SceneId: "1066dnhp",
+          mode: "popup",
+          element: "#captcha-element",
+          button: "#captcha-trigger-btn",
+          language: language === "zh" ? "cn" : language,
+          success: function (captchaVerifyParam: string) {
+            handleCaptchaSuccess(captchaVerifyParam);
+          },
+          fail: function (result: any) {
+            console.error("Captcha fail", result);
+          },
+          getInstance: function (instance: any) {
+            captchaInstanceRef.current = instance;
+          },
+          server: ['captcha-esa-open.aliyuncs.com', 'captcha-esa-open-b.aliyuncs.com'],
+          slideStyle: { width: 360, height: 40 },
+        });
+      }
+    };
+
     if (!document.getElementById("aliyun-captcha-script")) {
       const script = document.createElement("script");
       script.id = "aliyun-captcha-script";
       script.src = "https://o.alicdn.com/captcha-frontend/aliyunCaptcha/AliyunCaptcha.js";
       script.async = true;
-      script.onload = () => {
-        if ((window as any).initAliyunCaptcha) {
-          (window as any).initAliyunCaptcha({
-            SceneId: "1066dnhp",
-            mode: "popup",
-            element: "#captcha-element",
-            button: "#captcha-trigger-btn",
-            language: language === "zh" ? "cn" : language,
-            success: function (captchaVerifyParam: string) {
-              handleCaptchaSuccess(captchaVerifyParam);
-            },
-            fail: function (result: any) {
-              console.error("Captcha fail", result);
-            },
-            getInstance: function (instance: any) {
-              captchaInstanceRef.current = instance;
-            },
-            server: ['captcha-esa-open.aliyuncs.com', 'captcha-esa-open-b.aliyuncs.com'],
-            slideStyle: { width: 360, height: 40 },
-          });
-        }
-      };
+      script.onload = initCaptcha;
       document.body.appendChild(script);
+    } else {
+      if ((window as any).initAliyunCaptcha) {
+        initCaptcha();
+      } else {
+        const existingScript = document.getElementById("aliyun-captcha-script");
+        if (existingScript) {
+          existingScript.addEventListener("load", initCaptcha);
+        }
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCaptchaSuccess = async (captchaVerifyParam: string) => {
     if (!submitDataRef.current) return;
+    setIsLoading(true);
     try {
       // 临时将 captchaVerifyParam 合并入提交字段发送，您之后可以根据接口情况修改
       const payload: any = {
@@ -112,6 +126,8 @@ export default function LoginPage() {
       if (captchaInstanceRef.current) {
         captchaInstanceRef.current.refresh();
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -124,6 +140,7 @@ export default function LoginPage() {
         confirmText={t("confirmText")}
         fields={loginFormFields}
         formData={formData}
+        isLoading={isLoading}
         onChange={setFormData}
         onSubmit={handleSubmit}
       />

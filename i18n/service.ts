@@ -2,7 +2,7 @@
 
 import { cookies, headers } from "next/headers";
 
-import { languages } from "./config";
+import { defaultLocale, languages } from "./config";
 
 const COOKIE_LOCALE = "NEXT_LOCALE";
 const COOKIE_CURRENCY = "NEXT_CURRENCY";
@@ -11,16 +11,9 @@ export async function getUserLocale() {
   const cookieStore = await cookies();
   const locale = cookieStore.get(COOKIE_LOCALE)?.value;
 
-  console.log(" getUserLocale cookie", locale);
-
   if (locale && languages.some((l) => l.value === locale)) return locale;
-  const headerStore = await headers();
-  const acceptLanguage = headerStore.get("accept-language") || "";
-  const parsedLocale = acceptLanguage?.split(",")[0].split("-")[0] || "";
 
-  console.log(" getUserLocale 请求头", parsedLocale);
-
-  return languages.some((l) => l.value === parsedLocale) ? parsedLocale : "zh";
+  return defaultLocale;
 }
 export async function getUserCurrency() {
   const cookieStore = await cookies();

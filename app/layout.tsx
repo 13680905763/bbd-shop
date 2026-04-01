@@ -8,6 +8,7 @@ import { getLocale, getMessages } from "next-intl/server";
 import { Providers } from "./providers";
 
 import ChatBox from "@/components/common/chatbox";
+import ZoomGuard from "@/components/common/zoom-guard";
 import { siteConfig } from "@/config/site";
 import { getUserCurrency } from "@/i18n/service";
 
@@ -52,16 +53,18 @@ export default async function RootLayout({
           // fontSans.variable,
         )}
       >
-        <NextIntlClientProvider messages={messages}>
-          <Providers
-            initialCurrency={initialCurrency}
-            initialLocale={initialLocale}
-            themeProps={{ attribute: "class", defaultTheme: "light" }}
-          >
-            {children}
-            <ChatBox />
-          </Providers>
-        </NextIntlClientProvider>
+        <ZoomGuard>
+          <NextIntlClientProvider messages={messages}>
+            <Providers
+              initialCurrency={initialCurrency}
+              initialLocale={initialLocale}
+              themeProps={{ attribute: "class", defaultTheme: "light" }}
+            >
+              {children}
+              <ChatBox />
+            </Providers>
+          </NextIntlClientProvider>
+        </ZoomGuard>
       </body>
     </html>
   );
