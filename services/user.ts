@@ -1,60 +1,57 @@
 import { request, requestWithOption } from "./request";
+import { encryptField } from "@/utils/encrypt";
 
 import { LoginFormData, SignUpFormData, UserInfo } from "@/types";
 /** 注册 */
-export const signUpCustomer = (data: SignUpFormData): Promise<string> => {
+export const signUpCustomer = async (data: SignUpFormData): Promise<string> => {
+  const encryptedData = await encryptField(data);
+
   return requestWithOption<string>(
     {
       url: "/customer/sign-up",
       method: "POST",
-      data,
+      data: encryptedData,
     },
     { showToast: true }, // 成功/失败自动弹 toast
   );
 };
 
 /** 注册 / 邮箱验证 */
-export const activateEmail = (data: any): Promise<string> => {
+export const activateEmail = async (data: any): Promise<string> => {
+  const encryptedData = await encryptField(data);
   return requestWithOption<string>(
     {
       url: "/customer/active",
       method: "POST",
-      data,
+      data: encryptedData,
     },
     { showToast: true }, // 成功/失败都会弹 toast
   );
 };
 
 /** 登录 */
-export const loginCustomer = (data: LoginFormData): Promise<string> => {
+export const loginCustomer = async (data: LoginFormData): Promise<string> => {
+  const encryptedData = await encryptField(data);
+
   return requestWithOption<string>(
     {
       url: "/customer/login",
       method: "POST",
-      data,
+      data: encryptedData,
     },
     { showToast: true }, // 登录成功/失败都会弹 toast
   );
 };
 
-/** 谷歌登录 */
-export const loginWithGoogle = (idToken: string): Promise<string> => {
-  return requestWithOption<string>(
-    {
-      url: "/customer/google/login",
-      method: "POST",
-      data: { idToken },
-    },
-    { showToast: true }, // 登录成功/失败都会弹 toast
-  );
-};
+
 /** 谷歌登录新 */
-export const loginWithGoogleNew = (data: any): Promise<string> => {
+export const loginWithGoogleNew = async (data: any): Promise<string> => {
+  const encryptedData = await encryptField(data);
   return requestWithOption<string>(
     {
       url: "/customer/google/code",
       method: "POST",
-      data,
+      data: encryptedData,
     },
     { showToast: true }, // 登录成功/失败都会弹 toast
   );
@@ -130,18 +127,25 @@ export const getPromotionUserList = (): Promise<any> => {
 export const getPromotionBonusList = (): Promise<any> => {
   return request.get(`/customer-bonus-detail`);
 };
-export const updatePwd = (data: any): Promise<UserInfo> => {
+export const updatePwd = async (data: any): Promise<UserInfo> => {
+  const encryptedData = await encryptField(data, [
+    "oldPassword",
+    "newPassword",
+    "password",
+  ]);
+
   return requestWithOption(
-    { url: "/customer/password", method: "POST", data },
+    { url: "/customer/password", method: "POST", data: encryptedData },
     { showToast: true },
   );
 };
 
 /** 发送验证码 */
-export const sendVerificationCode = (email: string): Promise<any> => {
+export const sendVerificationCode = async (email: string): Promise<any> => {
+  const encryptedData = await encryptField({ email });
   return requestWithOption(
     {
-      url: "/customer/sendVerificationCode?email=" + email,
+      url: "/customer/sendVerificationCode?email=" + encryptedData.email,
       method: "POST",
     },
     { showToast: true },
@@ -149,12 +153,18 @@ export const sendVerificationCode = (email: string): Promise<any> => {
 };
 
 /** 重置密码 */
-export const resetPassword = (data: any): Promise<any> => {
+export const resetPassword = async (data: any): Promise<any> => {
+  const encryptedData = await encryptField(data);
+
   return requestWithOption(
     {
-      url: "/customer/resetPassword?email=" + data?.email + "&verificationCode=" + data?.verificationCode,
+      url:
+        "/customer/resetPassword?email=" +
+        data?.email +
+        "&verificationCode=" +
+        data?.verificationCode,
       method: "POST",
-      data,
+      data: encryptedData,
     },
     { showToast: true },
   );

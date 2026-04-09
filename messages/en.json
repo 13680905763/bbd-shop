@@ -905,7 +905,13 @@
         "fixedCost": "Fixed Cost",
         "handlingFee": "Handling Fee",
         "submitOrder": "Submit Order",
-        "tooltipTip": "Due to currency conversion, there may be a small difference of 0.01 or 0.02"
+        "tooltipTip": "Due to currency conversion, there may be a small difference of 0.01 or 0.02",
+        "paypalWarning": {
+            "title": "PayPal Payment Notice",
+            "content": "Due to uncontrollable circumstances in PayPal's policies, we have adjusted the relatively high transaction fees for PayPal based on these policy changes. We recommend using our Visa card and bank cards for payment. Additionally, any balance recharged via PayPal must be used immediately; retaining any unused balance is prohibited. If the balance cannot be used immediately, recharging via PayPal is not allowed.",
+            "confirm": "Confirm",
+            "cancel": "Cancel"
+        }
     },
     "Goods": {
         "favorite": "Favorite",

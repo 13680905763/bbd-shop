@@ -37,4 +37,8 @@ export const configApi = {
   listInviteBonus: (): Promise<any[]> => {
     return request.get("/invite-bonus");
   },
+  /** 获取公共密钥 */
+  getPublicKey: (): Promise<any> => {
+    return request.get("/customer/public-key");
+  },
 };

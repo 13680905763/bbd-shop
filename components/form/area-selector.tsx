@@ -90,24 +90,22 @@ export default function AreaSelector({ value, onChange }: Props) {
         {states.map(renderItem)}
       </Autocomplete>
 
-      {cities.length > 0 ? (
-        <Autocomplete
-          errorMessage={t("city.errorMessage")}
-          isRequired={true}
-          label={t("city.label")}
-          placeholder={t("city.placeholder")}
-          selectedKey={String(value.city) || null}
-          variant="bordered"
-          onSelectionChange={(code) =>
-            onChange({
-              ...value,
-              city: String(code),
-            })
-          }
-        >
-          {cities.map(renderItemCity)}
-        </Autocomplete>
-      ) : null}
+      <Autocomplete
+        errorMessage={t("city.errorMessage")}
+        isRequired={true}
+        label={t("city.label")}
+        placeholder={t("city.placeholder")}
+        selectedKey={String(value.city) || null}
+        variant="bordered"
+        onSelectionChange={(code) =>
+          onChange({
+            ...value,
+            city: String(code),
+          })
+        }
+      >
+        {cities.map(renderItemCity)}
+      </Autocomplete>
     </div>
   );
 }

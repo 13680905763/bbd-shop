@@ -1,6 +1,17 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
-import { Button, RadioGroup, Tooltip, addToast } from "@heroui/react";
+import {
+  Button,
+  RadioGroup,
+  Tooltip,
+  addToast,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+} from "@heroui/react";
 import { HiQuestionMarkCircle } from "react-icons/hi";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -31,7 +42,11 @@ export default function PaymentPage() {
   const [confirmedCouponId, setConfirmedCouponId] = useState<
     string | undefined
   >(undefined);
-
+  const {
+    isOpen: isPaypalWarningOpen,
+    onOpen: onPaypalWarningOpen,
+    onOpenChange: onPaypalWarningOpenChange,
+  } = useDisclosure();
   const { data: wallet } = useWalletInfo();
   const { data: billingAddress } = useBillingAddress();
 
@@ -79,6 +94,23 @@ export default function PaymentPage() {
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const handleConfirmPayOrder = async () => {
+    // Find if the selected payment method is PayPal
+    const isPaypal = paymentList.some(
+      (item: any) =>
+        item.methodName === "PAYPAL" &&
+        item.paymentList.some((p: any) => p.id === paymentId),
+    );
+
+    if (isPaypal) {
+      onPaypalWarningOpen();
+
+      return;
+    }
+
+    await handleCreatePayOrder();
   };
   const currentPayMethod = useMemo(
     () =>
@@ -202,11 +234,43 @@ export default function PaymentPage() {
           color="primary"
           isLoading={isPayFetching}
           size="lg"
-          onPress={handleCreatePayOrder}
+          onPress={handleConfirmPayOrder}
         >
           {t("submitOrder")}
         </Button>
       </div>
+
+      <Modal
+        isOpen={isPaypalWarningOpen}
+        onOpenChange={onPaypalWarningOpenChange}
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                {t("paypalWarning.title")}
+              </ModalHeader>
+              <ModalBody>
+                <p>{t("paypalWarning.content")}</p>
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="light" onPress={onClose}>
+                  {t("paypalWarning.cancel")}
+                </Button>
+                <Button
+                  color="primary"
+                  onPress={() => {
+                    onClose();
+                    handleCreatePayOrder();
+                  }}
+                >
+                  {t("paypalWarning.confirm")}
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }

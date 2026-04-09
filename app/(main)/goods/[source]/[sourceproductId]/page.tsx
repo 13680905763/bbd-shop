@@ -8,7 +8,7 @@ import {
   Skeleton,
   Textarea,
 } from "@heroui/react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { GrPowerReset } from "react-icons/gr";
 import { IoIosLink } from "react-icons/io";
 import { useTranslations } from "next-intl";
@@ -35,7 +35,7 @@ import { safeMul } from "@/utils/number";
 import { generateDynamicSkuPathDict } from "@/lib/sku-helper";
 import { useConfirm } from "@/components/common/modal/confirm-provider";
 import { SourceIcon } from "@/components/ui";
-import { useAddCartItem } from "@/hook/api";
+import { useAddCartItem, useUserInfo } from "@/hook/api";
 
 const getSelectedValues = (specs: any) => {
   const arr: any = [];
@@ -71,6 +71,8 @@ export default function GoodsPage() {
   const t = useTranslations("Goods");
   const params = useParams();
   const { currency } = useGlobalStore();
+
+  const { data: user } = useUserInfo();
   // sku滚动部分
   const containerRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState("78vh");
@@ -90,8 +92,15 @@ export default function GoodsPage() {
   const { mutateAsync: addCartItem, isPending: isAdding } = useAddCartItem();
   const { confirm } = useConfirm();
   const router = useRouter();
-
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const inviteCode = searchParams.get("inviteCode");
+    if (inviteCode && typeof window !== "undefined") {
+      localStorage.setItem("inviteCode", inviteCode);
+    }
+  }, [searchParams]);
   const validateSkuSelection = () => {
+
     if (issub) return false;
     if (!isChecked) {
       confirm({
@@ -116,6 +125,7 @@ export default function GoodsPage() {
   };
 
   const handleBuyNow = async () => {
+    if (!user) return router.push("/login");
     if (!validateSkuSelection()) return;
 
     setissub(true);
@@ -142,6 +152,7 @@ export default function GoodsPage() {
     }
   };
   const add = async () => {
+    if (!user) return router.push("/login");
     if (!validateSkuSelection()) return;
     const data = {
       source: params.source,
@@ -156,7 +167,7 @@ export default function GoodsPage() {
 
     try {
       await addCartItem(data);
-    } catch {}
+    } catch { }
   };
   // 切换选择状态
   const changeSelectedStatus = (index: any, indey: any) => {
@@ -393,7 +404,14 @@ export default function GoodsPage() {
                 </div>
                 <CopyText
                   text={
-                    typeof window !== "undefined" ? window.location.href : ""
+                    typeof window !== "undefined"
+                      ? `${window.location.href}${user?.inviteCode
+                        ? (window.location.href.includes("?") ? "&" : "?") +
+                        "inviteCode=" +
+                        user.inviteCode
+                        : ""
+                      }`
+                      : ""
                   }
                   toastMessage="Link Copied"
                 >

@@ -31,7 +31,7 @@ export default function AuthLayout({
         });
         queryClient.invalidateQueries({ queryKey: ["userInfo"] }); // 刷新
         router.push("/");
-      } catch {}
+      } catch { }
     },
     onError: (error) => console.error("Google Login Failed:", error),
   });
@@ -39,7 +39,7 @@ export default function AuthLayout({
   return (
     <main className="flex h-[100vh]">
       <div className="flex-1 bg-[url('/images/authbg.webp')] bg-center bg-no-repeat bg-cover ">
-        <button onClick={() => router.back()}>
+        <button onClick={() => router.push('/')}>
           <IoCaretBackCircleOutline className="m-20 w-14 h-14 cursor-pointer" />
         </button>
       </div>

@@ -397,7 +397,7 @@
             "message": "Messages",
             "cart": "Panier",
             "order": "Commandes",
-            "warehouse": "Magasin",
+            "warehouse": "Entrepôt",
             "package": "Colis",
             "favorites": "Favoris",
             "history": "Historique",
@@ -905,7 +905,13 @@
         "fixedCost": "Coût fixe",
         "handlingFee": "Frais de traitement",
         "submitOrder": "Soumettre la Commande",
-        "tooltipTip": "En raison de la conversion de devises, il peut y avoir une petite différence de 0.01 ou 0.02"
+        "tooltipTip": "En raison de la conversion de devises, il peut y avoir une petite différence de 0.01 ou 0.02",
+        "paypalWarning": {
+            "title": "Avis de paiement PayPal",
+            "content": "En raison de circonstances incontrôlables liées aux politiques de PayPal, nous avons ajusté les frais de transaction relativement élevés de PayPal en fonction de ces changements de politique. Nous vous recommandons d'utiliser notre carte Visa et nos cartes bancaires pour le paiement. De plus, tout solde rechargé via PayPal doit être utilisé immédiatement ; il est interdit de conserver tout solde inutilisé. Si le solde ne peut pas être utilisé immédiatement, le rechargement via PayPal n'est pas autorisé.",
+            "confirm": "Confirmer",
+            "cancel": "Annuler"
+        }
     },
     "Goods": {
         "favorite": "Sélectionner",

@@ -33,6 +33,9 @@ export default function RechargeModal({
     setErrorMessage("");
   };
 
+  // Normalize comma to dot for parsing
+  const normalizeAmount = (val: string) => val.replace(/,/g, ".");
+
   const handleConfirm = async () => {
     if (!amount) {
       setErrorMessage(t("placeholder"));
@@ -40,7 +43,7 @@ export default function RechargeModal({
       return;
     }
 
-    const num = parseFloat(amount);
+    const num = parseFloat(normalizeAmount(amount));
 
     if (isNaN(num) || num <= 0) {
       setErrorMessage(t("placeholder"));
@@ -50,7 +53,7 @@ export default function RechargeModal({
 
     if (!isNaN(num) && num > 0) {
       const bizCode: any = await createOrderByRecharge({
-        currencyAmount: Number(amount),
+        currencyAmount: num,
         currencyCode: currency.label,
       });
 
@@ -80,12 +83,15 @@ export default function RechargeModal({
           isInvalid={!!errorMessage}
           placeholder={t("placeholder")}
           size="lg"
-          type="number"
+          type="text"
+          inputMode="decimal"
           value={amount}
           variant="bordered"
           onChange={(e) => {
-            setAmount(e.target.value);
-            if (e.target.value) setErrorMessage("");
+            // Only allow digits, dots, and commas
+            const val = e.target.value.replace(/[^0-9.,]/g, "");
+            setAmount(val);
+            if (val) setErrorMessage("");
           }}
         />
         <div className="grid grid-cols-3 gap-3">
