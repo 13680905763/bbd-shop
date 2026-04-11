@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import BalanceTab from "./balance-tab";
 import ScoreTab from "./score-tab";
 import CouponTab from "./coupon-tab";
+import ConsumeTab from "./consume-tab";
 
 import { CommonTabs } from "@/components/common";
 export default function WalletPage() {
@@ -23,6 +24,7 @@ export default function WalletPage() {
     { key: "balance", title: t("tab.balance"), content: <BalanceTab /> },
     { key: "score", title: t("tab.score"), content: <ScoreTab /> },
     { key: "coupon", title: t("tab.coupon"), content: <CouponTab /> },
+    // { key: "consume", title: t("tab.consume"), content: <ConsumeTab /> },
   ];
 
   return (

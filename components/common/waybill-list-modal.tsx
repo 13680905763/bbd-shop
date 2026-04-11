@@ -1,11 +1,20 @@
 import React, { useState } from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Image } from "@heroui/react";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Image,
+} from "@heroui/react";
 import { useTranslations } from "next-intl";
 
-import PaginationBar from "./pagination-bar";
-import { useChatWaybillList } from "@/hook/api";
 import { BlockSpinner, EmptyState } from "../ui";
-import { useGlobalStore } from "@/store";
+
+import PaginationBar from "./pagination-bar";
+
+import { useChatWaybillList } from "@/hook/api";
 
 interface WaybillListModalProps {
   isOpen: boolean;
@@ -13,7 +22,11 @@ interface WaybillListModalProps {
   onSendWaybill: (waybill: any) => void;
 }
 
-export default function WaybillListModal({ isOpen, onClose, onSendWaybill }: WaybillListModalProps) {
+export default function WaybillListModal({
+  isOpen,
+  onClose,
+  onSendWaybill,
+}: WaybillListModalProps) {
   const t = useTranslations("components.chatbox");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -26,7 +39,12 @@ export default function WaybillListModal({ isOpen, onClose, onSendWaybill }: Way
   const waybills = data?.records || [];
 
   return (
-    <Modal isOpen={isOpen} onOpenChange={(open) => !open && onClose()} scrollBehavior="inside" size="2xl">
+    <Modal
+      isOpen={isOpen}
+      scrollBehavior="inside"
+      size="2xl"
+      onOpenChange={(open) => !open && onClose()}
+    >
       <ModalContent>
         <ModalHeader>{t("selectWaybill")}</ModalHeader>
         <ModalBody className="max-h-[60vh] overflow-y-auto">
@@ -36,7 +54,10 @@ export default function WaybillListModal({ isOpen, onClose, onSendWaybill }: Way
           ) : (
             <div className="flex flex-col gap-4">
               {waybills.map((waybill: any) => (
-                <div key={waybill.packingPackageCode} className="border rounded-lg p-4 flex flex-col gap-2 shadow-sm">
+                <div
+                  key={waybill.packingPackageCode}
+                  className="border rounded-lg p-4 flex flex-col gap-2 shadow-sm"
+                >
                   <div className="flex justify-between items-center border-b pb-2">
                     <div className="flex flex-col">
                       <span className="font-semibold text-sm">
@@ -50,7 +71,11 @@ export default function WaybillListModal({ isOpen, onClose, onSendWaybill }: Way
                         </span>
                       )}
                     </div>
-                    <Button size="sm" color="primary" onPress={() => onSendWaybill(waybill)}>
+                    <Button
+                      color="primary"
+                      size="sm"
+                      onPress={() => onSendWaybill(waybill)}
+                    >
                       {t("send")}
                     </Button>
                   </div>
@@ -59,17 +84,22 @@ export default function WaybillListModal({ isOpen, onClose, onSendWaybill }: Way
                       {waybill.pic.map((url: string, index: number) => (
                         <Image
                           key={index}
-                          src={url}
-                          referrerPolicy="no-referrer"
                           alt="waybill pic"
                           className="w-16 h-16 object-cover rounded flex-shrink-0"
+                          referrerPolicy="no-referrer"
+                          src={url}
                         />
                       ))}
                     </div>
                   )}
                   <div className="grid grid-cols-2 gap-2 mt-2 text-sm text-gray-600">
-                    <div>{t("weight")}: {waybill.weight}g</div>
-                    <div>{t("size")}: {waybill.length}*{waybill.width}*{waybill.height}cm</div>
+                    <div>
+                      {t("weight")}: {waybill.weight}g
+                    </div>
+                    <div>
+                      {t("size")}: {waybill.length}*{waybill.width}*
+                      {waybill.height}cm
+                    </div>
                   </div>
                 </div>
               ))}
@@ -82,7 +112,7 @@ export default function WaybillListModal({ isOpen, onClose, onSendWaybill }: Way
               <PaginationBar
                 page={page}
                 pageSize={pageSize}
-                total={data?.total as number || 0}
+                total={(data?.total as number) || 0}
                 onPageChange={setPage}
                 onPageSizeChange={setPageSize}
               />

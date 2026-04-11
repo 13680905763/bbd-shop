@@ -1,15 +1,26 @@
 import JSEncrypt from "jsencrypt";
+
 import { configApi } from "@/services/configApi";
 
 /**
  * 加密密码和账号
  * @param data 需要加密的数据对象
  * @param fields 需要加密的字段列表，默认为 ["password", "mobile", "email", "oldPassword", "newPassword"]
- * @returns 
+ * @returns
  */
 export const encryptField = async (
   data: any,
-  fields: string[] = ["password", "mobile", "email", "oldPassword", "newPassword", 'code', 'authorizationCode', 'activationCode', 'verificationCode'],
+  fields: string[] = [
+    "password",
+    "mobile",
+    "email",
+    "oldPassword",
+    "newPassword",
+    "code",
+    "authorizationCode",
+    "activationCode",
+    "verificationCode",
+  ],
 ) => {
   try {
     const publicKeyRes = await configApi.getPublicKey();

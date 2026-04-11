@@ -28,8 +28,31 @@ export const uploadChatImage = async (file: File) => {
 export async function fetchChatHistory(
   customerId: number | string,
   current: number,
+  bizCode?: string | null,
 ) {
-  return request(
-    `/service-chat/chatRecord?customerId=${customerId}&current=${current}`,
-  ); // 返回最近 20 条消息
+  let url = `/service-chat/chatRecord?customerId=${customerId}&current=${current}`;
+
+  if (bizCode) {
+    url += `&bizCode=${bizCode}`;
+  }
+
+  return request(url); // 返回最近 20 条消息
+}
+
+/**
+ * 获取聊天列表集
+ */
+export async function fetchCustomerChatContextList(customerId: string | number) {
+  return request(`/service-chat-list/${customerId}`, {
+    method: "GET",
+  });
+}
+
+/**
+ * 删除特定的聊天列表项
+ */
+export async function deleteCustomerChatContext(bizCode: string) {
+  return request(`/service-chat-list/${bizCode}`, {
+    method: "DELETE",
+  });
 }

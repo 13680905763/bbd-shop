@@ -2,7 +2,7 @@
 import { Button, Checkbox } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { FaCommentDots, FaComments } from "react-icons/fa";
+import { FaComments } from "react-icons/fa";
 
 import { useGlobalStore, useChatStore } from "@/store";
 import { RefundCountdown, SourceIcon } from "@/components/ui";
@@ -73,7 +73,8 @@ export default function OrderItem({
 }: any) {
   const t = useTranslations("dashboard.order.orderItem");
   const { currency } = useGlobalStore();
-  const { setIsOpen, setPendingOrder } = useChatStore();
+  const { setIsOpen, setPendingOrder, setChatMode, setActiveBizCode } =
+    useChatStore();
   const router = useRouter();
 
   return (
@@ -96,9 +97,11 @@ export default function OrderItem({
         </div>
         <div className="flex items-center">
           <Button
-            variant="light"
             color="primary"
+            variant="light"
             onPress={() => {
+              setChatMode("ORDER");
+              setActiveBizCode(order.orderCode);
               setPendingOrder(order);
               setIsOpen(true);
             }}
@@ -173,14 +176,14 @@ export default function OrderItem({
           ) : (
             <>
               {/* 状态文字 */}
-              <div className="text-[#f0700c] font-medium text-center">{order?.status}</div>
-              {
-                order?.remark && (
-                  <div className="text-sm text-gray-500  px-2 py-1 rounded">
-                    {order?.remark} 
-                  </div>
-                )
-              }
+              <div className="text-[#f0700c] font-medium text-center">
+                {order?.status}
+              </div>
+              {order?.remark && (
+                <div className="text-sm text-gray-500  px-2 py-1 rounded">
+                  {order?.remark}
+                </div>
+              )}
               {order?.canRefundFlag && (
                 <Button
                   radius="sm"

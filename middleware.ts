@@ -2,7 +2,16 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // 设置不需要登录的路径白名单
-const PUBLIC_PATHS = ["/", "/login", "/register", "/forgetPsd", "/goods", "/search", "/help"];
+const PUBLIC_PATHS = [
+  "/",
+  "/login",
+  "/register",
+  "/forgetPsd",
+  "/goods",
+  "/search",
+  "/help",
+  "/api",
+];
 
 function isPublicPath(pathname: string) {
   return PUBLIC_PATHS.some(

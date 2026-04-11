@@ -58,7 +58,11 @@ export default function ScoreTab() {
         />
       ),
     },
-    { key: "coupon", title: t("exchangeCoupon"), content: <PointsRecordContent /> },
+    {
+      key: "coupon",
+      title: t("exchangeCoupon"),
+      content: <PointsRecordContent />,
+    },
   ];
 
   return (

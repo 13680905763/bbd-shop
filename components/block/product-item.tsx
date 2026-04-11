@@ -32,7 +32,9 @@ export default function ProductItem({
   const router = useRouter();
 
   return (
-    <div className={`grid grid-cols-12 items-center gap-4 ${isDisabled ? "opacity-50" : ""}`}>
+    <div
+      className={`grid grid-cols-12 items-center gap-4 ${isDisabled ? "opacity-50" : ""}`}
+    >
       <div className="col-span-6 flex gap-4 items-start">
         {/* 选择框 + 图片 */}
         <div className="flex items-center shrink-0">
@@ -70,13 +72,13 @@ export default function ProductItem({
           <div className="line-clamp-1 text-gray-500 text-sm">
             {product?.propAndValue?.propName_valueName}
           </div>
-          {!product?.withdrawRefundFlag && product?.abnormalInfo &&
+          {!product?.withdrawRefundFlag && product?.abnormalInfo && (
             <div className="my-2 flex items-center justify-between">
               <div className="text-sm font-semibold text-red-500">
                 {product?.abnormalInfo}
               </div>
             </div>
-          }
+          )}
         </div>
       </div>
 
@@ -113,16 +115,14 @@ export default function ProductItem({
         </div>
       </div>
 
-      {
-        product?.price &&
+      {product?.price && (
         <div className="col-span-2 text-center font-semibold">
           {currency.symbol}
           {product?.price}
         </div>
-      }
+      )}
 
-      {
-        product.quantity &&
+      {product.quantity && (
         <div className="col-span-2 flex justify-center">
           {isOperated ? (
             <div className={isDisabled ? "pointer-events-none" : ""}>
@@ -134,13 +134,11 @@ export default function ProductItem({
             </div>
           ) : (
             <div className="font-semibold text-base">
-              {
-                product.quantity ? `x${product.quantity}` : ""
-              }
+              {product.quantity ? `x${product.quantity}` : ""}
             </div>
           )}
         </div>
-      }
+      )}
     </div>
   );
 }

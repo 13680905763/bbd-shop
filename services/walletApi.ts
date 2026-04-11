@@ -86,10 +86,20 @@ export const WalletApi = {
   codeExchangeCoupon: (redemptionCode: string): Promise<any> => {
     return requestWithOption(
       {
-        url: "/customer-coupon/redemptionCodeCoupons?redemptionCode=" + redemptionCode,
+        url:
+          "/customer-coupon/redemptionCodeCoupons?redemptionCode=" +
+          redemptionCode,
         method: "POST",
       },
       { showToast: true },
     );
+  },
+  /** 获取消费记录 */
+  consumePageQuery: (params: {
+    current: number;
+    size: number;
+    bizTypeCode?: string;
+  }): Promise<any> => {
+    return request.post("/customer/consumePageQuery", params);
   },
 };

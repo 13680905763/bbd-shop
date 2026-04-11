@@ -38,7 +38,15 @@ export default function FormModal({
   const t = useTranslations("components.modal");
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit(formData);
+    const dataToSend = { ...formData };
+
+    if (!dataToSend.stateId) {
+      delete dataToSend.stateId;
+    }
+    if (!dataToSend.state) {
+      delete dataToSend.state;
+    }
+    onSubmit(dataToSend);
   };
 
   return (

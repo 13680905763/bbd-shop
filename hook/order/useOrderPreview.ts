@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { getOrderPreviewCart, getOrderPreviewProduct } from "@/services";
-import { OrderPreviewByCart, OrderPreviewByProduct } from "@/types";
 
 export function useOrderPreview(type: "cart" | "product", key: string) {
   return useQuery<any>({

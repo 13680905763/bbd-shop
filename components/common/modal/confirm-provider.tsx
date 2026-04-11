@@ -30,7 +30,17 @@ export interface ConfirmOptions {
   isLoading?: boolean; // 外部控制 loading
   showCancel?: boolean;
   hideCloseButton?: boolean;
-  size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "full";
+  size?:
+    | "xs"
+    | "sm"
+    | "md"
+    | "lg"
+    | "xl"
+    | "2xl"
+    | "3xl"
+    | "4xl"
+    | "5xl"
+    | "full";
 }
 
 // 2. 定义 Context

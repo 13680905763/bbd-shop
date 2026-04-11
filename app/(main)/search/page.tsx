@@ -59,6 +59,7 @@ export default function SearchPage() {
 
         if (records.length === 0) {
           setHasMore(false);
+
           return;
         }
 
@@ -107,7 +108,7 @@ export default function SearchPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [loading, hasMore]);
 
-  const tabs = keyword ? ["TAOBAO", "1688","WEIDIAN"] : ["TAOBAO", "1688"];
+  const tabs = keyword ? ["TAOBAO", "1688", "WEIDIAN"] : ["TAOBAO", "1688"];
 
   return (
     <div className="w-full bg-[#f8f8f8] py-10">

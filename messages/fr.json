@@ -387,7 +387,14 @@
             "waybillNo": "N° de colis : ",
             "trackingNo": "N° de suivi : ",
             "weight": "Poids",
-            "size": "Taille"
+            "size": "Taille",
+            "consultationList": "Consultations",
+            "noConsultations": "Aucun enregistrement",
+            "order": "Commande",
+            "waybill": "Colis",
+            "backToGeneral": "Discussion Générale",
+            "deleteSuccess": "Supprimé avec succès",
+            "deleteFailed": "Échec de la suppression"
         }
     },
     "dashboard": {
@@ -493,7 +500,20 @@
             "tab": {
                 "balance": "Solde",
                 "score": "Points",
-                "coupon": "Coupons"
+                "coupon": "Coupons",
+                "consume": "Dépenses"
+            },
+            "consume": {
+                "all": "Tout",
+                "order": "Records de Commande",
+                "waybill": "Records de Colis",
+                "tableColumns": {
+                    "bizReference": "Réf.",
+                    "bizType": "Type",
+                    "payAmount": "Montant",
+                    "createTime": "Date",
+                    "method": "Méthode"
+                }
             },
             "coupon": {
                 "unused": "Coupons Disponibles",

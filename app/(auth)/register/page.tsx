@@ -32,6 +32,7 @@ export default function RegisterPage() {
   React.useEffect(() => {
     if (!searchParams.get("inviteCode") && typeof window !== "undefined") {
       const code = localStorage.getItem("inviteCode");
+
       if (code) {
         setHasCachedCode(true);
         setFormData((prev: any) => ({ ...prev, inviteCode: code }));
@@ -63,7 +64,8 @@ export default function RegisterPage() {
       size: "lg",
       placeholder: t("fields.inviteCode.placeholder"),
       startContent: <IoPeopleSharp />,
-      isDisabled: searchParams.get("inviteCode") || hasCachedCode ? true : false,
+      isDisabled:
+        searchParams.get("inviteCode") || hasCachedCode ? true : false,
     },
     {
       type: "checkbox",
@@ -83,7 +85,7 @@ export default function RegisterPage() {
         });
         queryClient.invalidateQueries({ queryKey: ["userInfo"] }); // 刷新
         router.push("/dashboard");
-      } catch { }
+      } catch {}
     }
   };
 
@@ -100,7 +102,7 @@ export default function RegisterPage() {
       await signUpCustomer(signData);
       setFormData({ email: data.email });
       setIsActive(true); // 进入验证码页
-    } catch { }
+    } catch {}
   };
 
   // 验证码页部分

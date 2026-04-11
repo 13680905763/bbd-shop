@@ -15,7 +15,7 @@ export default function CouponRedemption() {
     try {
       await exchangeCoupon(couponCode);
       setCouponCode("");
-    } catch (error) { }
+    } catch (error) {}
   };
 
   return (

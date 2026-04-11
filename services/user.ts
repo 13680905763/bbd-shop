@@ -1,6 +1,6 @@
 import { request, requestWithOption } from "./request";
-import { encryptField } from "@/utils/encrypt";
 
+import { encryptField } from "@/utils/encrypt";
 import { LoginFormData, SignUpFormData, UserInfo } from "@/types";
 /** 注册 */
 export const signUpCustomer = async (data: SignUpFormData): Promise<string> => {
@@ -19,6 +19,7 @@ export const signUpCustomer = async (data: SignUpFormData): Promise<string> => {
 /** 注册 / 邮箱验证 */
 export const activateEmail = async (data: any): Promise<string> => {
   const encryptedData = await encryptField(data);
+
   return requestWithOption<string>(
     {
       url: "/customer/active",
@@ -43,10 +44,10 @@ export const loginCustomer = async (data: LoginFormData): Promise<string> => {
   );
 };
 
-
 /** 谷歌登录新 */
 export const loginWithGoogleNew = async (data: any): Promise<string> => {
   const encryptedData = await encryptField(data);
+
   return requestWithOption<string>(
     {
       url: "/customer/google/code",
@@ -143,6 +144,7 @@ export const updatePwd = async (data: any): Promise<UserInfo> => {
 /** 发送验证码 */
 export const sendVerificationCode = async (email: string): Promise<any> => {
   const encryptedData = await encryptField({ email });
+
   return requestWithOption(
     {
       url: "/customer/sendVerificationCode?email=" + encryptedData.email,

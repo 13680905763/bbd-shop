@@ -46,9 +46,7 @@ export default function ZoomGuard({ children }: { children: React.ReactNode }) {
     let mql: MediaQueryList;
 
     const listen = () => {
-      mql = window.matchMedia(
-        `(resolution: ${window.devicePixelRatio}dppx)`
-      );
+      mql = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
       mql.addEventListener("change", onChange, { once: true });
     };
 

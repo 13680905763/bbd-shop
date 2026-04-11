@@ -43,7 +43,15 @@ export default function FormItemRenderer<T extends Record<string, any>>({
   onChange,
 }: DynamicFormProps<T>) {
   const handleChange = (name: string, value: any) => {
-    onChange({ ...formData, [name]: value });
+    const newData = { ...formData, [name]: value };
+
+    if (!newData.stateId) {
+      delete newData.stateId;
+    }
+    if (!newData.state) {
+      delete newData.state;
+    }
+    onChange(newData);
   };
   const [isVisible, setIsVisible] = useState(false);
 
@@ -169,9 +177,17 @@ export default function FormItemRenderer<T extends Record<string, any>>({
                 value={{
                   countryId: formData.countryId ?? "",
                   stateId: formData.stateId ?? "",
+                  state: formData.state ?? "",
                   city: formData.city ?? "",
                 }}
-                onChange={(val) => onChange({ ...formData, ...val })}
+                onChange={(val) => {
+                  const newData = { ...formData, ...val };
+
+                  // if (!newData.stateId) {
+                  //   delete newData.stateId;
+                  // }
+                  onChange(newData);
+                }}
               />
             );
           default:

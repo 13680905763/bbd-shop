@@ -95,11 +95,11 @@ export default function DiyOrderPage() {
       prev.map((s) =>
         s.id === currentService.id
           ? {
-            ...s,
-            remark: currentService?.remark,
-            isCheck: true,
-            quantity: currentService?.quantity,
-          }
+              ...s,
+              remark: currentService?.remark,
+              isCheck: true,
+              quantity: currentService?.quantity,
+            }
           : s,
       ),
     );
@@ -259,7 +259,6 @@ export default function DiyOrderPage() {
           (s.s1?.trim() !== "" || s.s2?.trim() !== "") &&
           Number(s.quantity) > 0,
       );
-
 
       const skuCount = validSpecs.length;
 
@@ -580,8 +579,8 @@ export default function DiyOrderPage() {
                   ≈ {currency.symbol}{" "}
                   {currency.rate
                     ? (parseFloat(shippingFee || "0") / currency.rate).toFixed(
-                      2,
-                    )
+                        2,
+                      )
                     : "0.00"}
                 </div>
               }

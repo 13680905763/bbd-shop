@@ -49,10 +49,10 @@ export default function OrderItem({
               isDisabled={isExpired}
               // isSelected={isSelected(product.id)}
               product={product}
-            // onDelete={onDeleteProduct}
-            // onUpdateQuantity={onQuantityChange}
-            // onRemark={onRemark}
-            // onToggle={() => toggle(product.id)}
+              // onDelete={onDeleteProduct}
+              // onUpdateQuantity={onQuantityChange}
+              // onRemark={onRemark}
+              // onToggle={() => toggle(product.id)}
             />
 
             {/* 增值服务 */}
@@ -99,8 +99,7 @@ export default function OrderItem({
       </div>
 
       {/* 底部合计 */}
-      {
-        !isExpired &&
+      {!isExpired && (
         <div className="p-4 text-right">
           <div>
             {texts.shippingFee}: {currency.symbol}
@@ -119,7 +118,7 @@ export default function OrderItem({
             {order?.totalFee}
           </div>
         </div>
-      }
+      )}
     </div>
   );
 }

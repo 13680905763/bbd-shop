@@ -2,7 +2,12 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { addToast } from "@heroui/react";
 import { useTranslations } from "next-intl";
 
-import { fetchChatHistory, uploadChatImage } from "@/services";
+import {
+  fetchChatHistory,
+  uploadChatImage,
+  fetchCustomerChatContextList,
+  deleteCustomerChatContext,
+} from "@/services";
 import { useUserInfo } from "@/hook/api";
 import { queryClient } from "@/lib/react-query";
 
@@ -11,17 +16,28 @@ export interface Message {
   sender: "user" | "bot";
   text?: string;
   type?: "TEXT" | "IMAGE" | "ORDER" | "WAYBILL";
+  bizCode?: string;
   sending?: boolean;
   createTime?: number;
 }
 
-export function useChat(isOpen: boolean) {
+export interface ChatContext {
+  id: string;
+  bizCode: string;
+  title: string;
+  type: number;
+}
+
+export function useChat(isOpen: boolean, bizCode?: string | null) {
   const t = useTranslations("components.chatbox");
   const { data: user } = useUserInfo();
 
   const [messages, setMessages] = useState<Message[]>([]);
-  const [receiverId, setReceiverId] = useState<number | null>(null);
   const [hasAgent, setHasAgent] = useState(false);
+
+  // Context List State
+  const [contextList, setContextList] = useState<ChatContext[]>([]);
+  const [loadingContexts, setLoadingContexts] = useState(false);
 
   // History loading state
   const [page, setPage] = useState(1);
@@ -34,6 +50,36 @@ export function useChat(isOpen: boolean) {
   const receiverIdRef = useRef<number | null>(null);
   const shouldScrollRef = useRef(false); // To signal UI to scroll
 
+  // --- Context List Management ---
+  const fetchContexts = useCallback(async () => {
+    if (!user?.id) return;
+    setLoadingContexts(true);
+    try {
+      const res: any = await fetchCustomerChatContextList(user.id);
+
+      setContextList(res || []);
+    } catch {
+      console.error("Failed to fetch context list");
+    } finally {
+      setLoadingContexts(false);
+    }
+  }, [user?.id]);
+
+  const deleteContext = useCallback(
+    async (ctxBizCode: string) => {
+      try {
+        await deleteCustomerChatContext(ctxBizCode);
+        setContextList((prev) =>
+          prev.filter((item) => item.bizCode !== ctxBizCode),
+        );
+        addToast({ title: t("deleteSuccess"), color: "success" });
+      } catch {
+        addToast({ title: t("deleteFailed"), color: "danger" });
+      }
+    },
+    [t],
+  );
+
   // --- WebSocket Connection ---
   useEffect(() => {
     if (!isOpen || !user?.id) {
@@ -41,6 +87,7 @@ export function useChat(isOpen: boolean) {
         socketRef.current.close();
         socketRef.current = null;
       }
+
       return;
     }
 
@@ -55,14 +102,24 @@ export function useChat(isOpen: boolean) {
       if (!allowReconnect) return;
 
       const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
+
       if (!apiBase) {
         console.error("❌ 缺少 NEXT_PUBLIC_API_BASE_URL");
+
         return;
       }
 
       const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-      const host = apiBase.replace(/^https?:\/\//, "");
-      const wsUrl = `${protocol}://${host}/ws`;
+      let wsUrl = "";
+
+      if (apiBase.startsWith("/")) {
+        // 如果是相对路径（说明正在用 Next.js 代理 HTTP），由于 WS 无法代理，直接连接后端域名
+        wsUrl = `${protocol}://dev.bbdbuy1.com${apiBase}/ws`;
+      } else {
+        const host = apiBase.replace(/^https?:\/\//, "");
+
+        wsUrl = `${protocol}://${host}/ws`;
+      }
 
       if (socket && socket.readyState === WebSocket.OPEN) return;
 
@@ -83,23 +140,32 @@ export function useChat(isOpen: boolean) {
 
           if (data.sender === "SERVER" && !receiverIdRef.current) {
             receiverIdRef.current = data.receiverId;
-            setReceiverId(data.receiverId);
             setHasAgent(true);
           }
 
-          setMessages((prev) => [
-            ...prev,
-            {
-              id: `ws-${Date.now()}-${Math.random()}`,
-              sender: data.sender === "CUSTOMER" ? "user" : "bot",
-              text: data.content,
-              createTime: data.createTime || Date.now(),
-              type: data.type || "TEXT",
-            },
-          ]);
+          setMessages((prev) => {
+            // Remove the temporary local echo message if it exists
+            const filtered = data.tempId
+              ? prev.filter((m) => m.id !== data.tempId)
+              : prev;
+
+            return [
+              ...filtered,
+              {
+                id: data.id || `ws-${Date.now()}-${Math.random()}`,
+                sender: data.sender === "CUSTOMER" ? "user" : "bot",
+                text: data.content,
+                createTime: data.createTime || Date.now(),
+                type: data.type || "TEXT",
+                bizCode: data.bizCode,
+              },
+            ];
+          });
           shouldScrollRef.current = true;
-        } catch (err) {
-          console.error("❌ 解析消息失败:", err, event.data);
+          // Refresh context list on new messages to ensure up-to-date consultations
+          fetchContexts();
+        } catch {
+          console.error("❌ 解析消息失败:", event.data);
         }
       };
 
@@ -127,7 +193,7 @@ export function useChat(isOpen: boolean) {
       socket?.close();
       socketRef.current = null;
     };
-  }, [user?.id, isOpen]);
+  }, [user?.id, isOpen, fetchContexts]);
 
   // --- Load History ---
   const loadHistory = useCallback(
@@ -139,7 +205,7 @@ export function useChat(isOpen: boolean) {
 
       try {
         const currentPage = initialLoad ? 1 : page;
-        const res: any = await fetchChatHistory(user.id, currentPage);
+        const res: any = await fetchChatHistory(user.id, currentPage, bizCode);
         const records: any = res.records || [];
         const lastPage: number = res.pages ?? 1;
 
@@ -152,15 +218,19 @@ export function useChat(isOpen: boolean) {
         }));
 
         if (initialLoad) {
-          setMessages(newMessages);
+          setMessages((prev) => {
+            const sendingMessages = prev.filter((m) => m.sending);
+
+            return [...newMessages, ...sendingMessages];
+          });
           setPage(2);
           setHasMoreHistory(1 < lastPage);
           shouldScrollRef.current = true;
 
           const hisM = records.find((item: any) => item.sender === "SERVER");
+
           if (hisM) {
             receiverIdRef.current = hisM.userId;
-            setReceiverId(hisM.userId);
           }
         } else {
           setMessages((prev) => [...newMessages, ...prev]);
@@ -175,7 +245,7 @@ export function useChat(isOpen: boolean) {
         queryClient.invalidateQueries({ queryKey: ["userInfo"] });
       }
     },
-    [user?.id, page, hasMoreHistory, isLoadingHistory]
+    [user?.id, page, hasMoreHistory, isLoadingHistory, bizCode],
   );
 
   // --- Initial Load Effect ---
@@ -183,47 +253,77 @@ export function useChat(isOpen: boolean) {
     if (isOpen && user?.id) {
       setFirstLoading(true);
       loadHistory(true).finally(() => setFirstLoading(false));
-    } else if (!isOpen) {
+      fetchContexts();
+    }
+  }, [isOpen, user?.id, bizCode, fetchContexts]);
+
+  useEffect(() => {
+    if (!isOpen) {
       setMessages([]);
       setPage(1);
       setHasMoreHistory(true);
-      setReceiverId(null);
       receiverIdRef.current = null;
     }
   }, [isOpen, user?.id]);
 
   // --- Send Message ---
   const sendMessage = useCallback(
-    (msgText: string, type: Message["type"] = "TEXT") => {
+    (msgText: string, type: Message["type"] = "TEXT", msgBizCode?: string) => {
       const socket = socketRef.current;
 
       if (!socket || socket.readyState !== WebSocket.OPEN) {
-        // Only show toast if it's a manual user action, not for auto-send pending items
-        // to avoid spamming the user when the connection is just initializing
         if (type !== "ORDER" && type !== "WAYBILL") {
           addToast({ title: t("connectionLost"), color: "danger" });
         }
+
         return false;
       }
+
+      const tempId = `temp-${type}-${Date.now()}`;
+
+      // Local Echo
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: tempId,
+          sender: "user",
+          text: msgText,
+          type,
+          sending: true,
+          createTime: Date.now(),
+        },
+      ]);
+      shouldScrollRef.current = true;
 
       const payload: any = {
         sender: "CUSTOMER",
         type,
         content: msgText,
-        sendTime: new Date().toISOString(),
+        tempId, // Pass tempId for correlation
       };
 
+      if (msgBizCode) payload.bizCode = msgBizCode;
       if (receiverIdRef.current) payload.receiverId = receiverIdRef.current;
       socket.send(JSON.stringify(payload));
 
-      setMessages((prev) => [
-        ...prev,
-        { id: `local-${Date.now()}`, sender: "user", text: msgText, type, createTime: Date.now() },
-      ]);
-      shouldScrollRef.current = true;
       return true;
     },
-    [t]
+    [t],
+  );
+
+  // --- Send Order/Waybill ---
+  const sendOrder = useCallback(
+    (content: string, bizCode: string) => {
+      return sendMessage(content, "ORDER", bizCode);
+    },
+    [sendMessage],
+  );
+
+  const sendWaybill = useCallback(
+    (content: string, bizCode: string) => {
+      return sendMessage(content, "WAYBILL", bizCode);
+    },
+    [sendMessage],
   );
 
   // --- Upload & Send Image ---
@@ -236,7 +336,14 @@ export function useChat(isOpen: boolean) {
 
       setMessages((prev) => [
         ...prev,
-        { id: tempId, sender: "user", type: "IMAGE", sending: true, text: tempUrl, createTime: Date.now() },
+        {
+          id: tempId,
+          sender: "user",
+          type: "IMAGE",
+          sending: true,
+          text: tempUrl,
+          createTime: Date.now(),
+        },
       ]);
       shouldScrollRef.current = true;
 
@@ -254,33 +361,38 @@ export function useChat(isOpen: boolean) {
               sendTime: new Date().toISOString(),
             };
 
-            if (receiverIdRef.current) payload.receiverId = receiverIdRef.current;
+            if (receiverIdRef.current)
+              payload.receiverId = receiverIdRef.current;
             socket.send(JSON.stringify(payload));
           }
 
           setMessages((prev) =>
             prev.map((msg) =>
-              msg.id === tempId ? { ...msg, sending: false, text: url } : msg
-            )
+              msg.id === tempId ? { ...msg, sending: false, text: url } : msg,
+            ),
           );
         }
-      } catch (err) {
+      } catch {
         setMessages((prev) =>
           prev.map((msg) =>
-            msg.id === tempId ? { ...msg, sending: false, text: t("imageSendFail") } : msg
-          )
+            msg.id === tempId
+              ? { ...msg, sending: false, text: t("imageSendFail") }
+              : msg,
+          ),
         );
       } finally {
         URL.revokeObjectURL(tempUrl);
       }
     },
-    [user?.id, t]
+    [user?.id, t],
   );
 
   return {
     messages,
     sendMessage,
     sendImage,
+    sendOrder,
+    sendWaybill,
     loadMoreHistory: () => loadHistory(false),
     isLoadingHistory,
     firstLoading,
@@ -288,5 +400,9 @@ export function useChat(isOpen: boolean) {
     shouldScrollRef,
     hasAgent,
     user,
+    contextList,
+    loadingContexts,
+    deleteContext,
+    refreshContexts: fetchContexts,
   };
 }

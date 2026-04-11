@@ -51,18 +51,28 @@ export default function LoginPage() {
     // 只有指定的域名（或者你本地 localhost 测试时）才弹验证码
     // 其他域名（比如你说的另外两个域名）不需要验证码时，直接调用成功逻辑发起登录！
     const host = window.location.hostname;
-    if (host !== "www.bbdbuyeu.com" && host !== "localhost" && host !== "127.0.0.1") {
+
+    if (
+      host !== "www.bbdbuyeu.com" &&
+      host !== "localhost" &&
+      host !== "127.0.0.1"
+    ) {
       await handleCaptchaSuccess("");
+
       return;
     }
 
     const btn = document.getElementById("captcha-trigger-btn");
+
     if (btn) btn.click();
   };
 
   React.useEffect(() => {
     // 设置验证码配置
-    (window as any).AliyunCaptchaConfig = { region: "cn", prefix: "esa-ky973v1gyr" };
+    (window as any).AliyunCaptchaConfig = {
+      region: "cn",
+      prefix: "esa-ky973v1gyr",
+    };
 
     const initCaptcha = () => {
       if ((window as any).initAliyunCaptcha) {
@@ -81,7 +91,10 @@ export default function LoginPage() {
           getInstance: function (instance: any) {
             captchaInstanceRef.current = instance;
           },
-          server: ['captcha-esa-open.aliyuncs.com', 'captcha-esa-open-b.aliyuncs.com'],
+          server: [
+            "captcha-esa-open.aliyuncs.com",
+            "captcha-esa-open-b.aliyuncs.com",
+          ],
           slideStyle: { width: 360, height: 40 },
         });
       }
@@ -89,8 +102,10 @@ export default function LoginPage() {
 
     if (!document.getElementById("aliyun-captcha-script")) {
       const script = document.createElement("script");
+
       script.id = "aliyun-captcha-script";
-      script.src = "https://o.alicdn.com/captcha-frontend/aliyunCaptcha/AliyunCaptcha.js";
+      script.src =
+        "https://o.alicdn.com/captcha-frontend/aliyunCaptcha/AliyunCaptcha.js";
       script.async = true;
       script.onload = initCaptcha;
       document.body.appendChild(script);
@@ -99,6 +114,7 @@ export default function LoginPage() {
         initCaptcha();
       } else {
         const existingScript = document.getElementById("aliyun-captcha-script");
+
         if (existingScript) {
           existingScript.addEventListener("load", initCaptcha);
         }
@@ -156,8 +172,8 @@ export default function LoginPage() {
       </div>
 
       {/* 阿里云盾必需的挂载节点及触发按钮 */}
-      <div id="captcha-element"></div>
-      <button id="captcha-trigger-btn" type="button" className="hidden">
+      <div id="captcha-element" />
+      <button className="hidden" id="captcha-trigger-btn" type="button">
         Trigger Captcha
       </button>
     </>

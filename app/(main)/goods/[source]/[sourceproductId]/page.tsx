@@ -93,14 +93,15 @@ export default function GoodsPage() {
   const { confirm } = useConfirm();
   const router = useRouter();
   const searchParams = useSearchParams();
+
   useEffect(() => {
     const inviteCode = searchParams.get("inviteCode");
+
     if (inviteCode && typeof window !== "undefined") {
       localStorage.setItem("inviteCode", inviteCode);
     }
   }, [searchParams]);
   const validateSkuSelection = () => {
-
     if (issub) return false;
     if (!isChecked) {
       confirm({
@@ -167,7 +168,7 @@ export default function GoodsPage() {
 
     try {
       await addCartItem(data);
-    } catch { }
+    } catch {}
   };
   // 切换选择状态
   const changeSelectedStatus = (index: any, indey: any) => {
@@ -405,12 +406,13 @@ export default function GoodsPage() {
                 <CopyText
                   text={
                     typeof window !== "undefined"
-                      ? `${window.location.href}${user?.inviteCode
-                        ? (window.location.href.includes("?") ? "&" : "?") +
-                        "inviteCode=" +
-                        user.inviteCode
-                        : ""
-                      }`
+                      ? `${window.location.href}${
+                          user?.inviteCode
+                            ? (window.location.href.includes("?") ? "&" : "?") +
+                              "inviteCode=" +
+                              user.inviteCode
+                            : ""
+                        }`
                       : ""
                   }
                   toastMessage="Link Copied"
@@ -669,8 +671,8 @@ export default function GoodsPage() {
         )}
       </div>
       <CommonModal
-        hideCloseButton={true}
         confirmText={t("continueShopping")}
+        hideCloseButton={true}
         isKeyboardDismissDisabled={true}
         isOpen={isOpen1}
         showCancel={false}

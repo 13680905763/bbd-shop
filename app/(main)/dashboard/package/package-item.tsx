@@ -3,12 +3,12 @@ import { useRef, useState } from "react";
 import { Button, Checkbox, Image } from "@heroui/react";
 import { FiSearch } from "react-icons/fi";
 import { useTranslations } from "next-intl";
+import { FaComments } from "react-icons/fa";
 
 import MediaPreviewGroup, {
   MediaItem,
 } from "@/components/common/media-preview";
 import { useGlobalStore, useChatStore } from "@/store";
-import { FaComments } from "react-icons/fa";
 
 export default function PackageItem({
   pack, //运单信息
@@ -26,7 +26,8 @@ export default function PackageItem({
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const { currency } = useGlobalStore();
-  const { setIsOpen, setPendingWaybill } = useChatStore();
+  const { setIsOpen, setPendingWaybill, setChatMode, setActiveBizCode } =
+    useChatStore();
   const [isCancelLoading, setIsCancelLoading] = useState(false);
   const [isPayLoading, setIsPayLoading] = useState(false);
   const [isLineLoading, setIsLineLoading] = useState(false);
@@ -74,11 +75,15 @@ export default function PackageItem({
 
     frameId.current = requestAnimationFrame(momentum);
   };
-  console.log('ser', pack.serviceList?.filter((item: any) => {
-    console.log(item.serviceType != 2);
 
-    return item?.serviceType != 2
-  }));
+  console.log(
+    "ser",
+    pack.serviceList?.filter((item: any) => {
+      console.log(item.serviceType != 2);
+
+      return item?.serviceType != 2;
+    }),
+  );
 
   return (
     <div className="card-cart mb-4 p-2 bg-white rounded-lg shadow-sm">
@@ -95,10 +100,18 @@ export default function PackageItem({
         </div>
         <div className="flex items-center">
           <Button
-            variant="light"
             color="primary"
+            variant="light"
             onPress={() => {
-              const pic = pack?.packageItemList?.map((item: any) => item.orderProduct?.skuPicUrl || item.orderProduct?.picUrl).filter(Boolean);
+              const pic = pack?.packageItemList
+                ?.map(
+                  (item: any) =>
+                    item.orderProduct?.skuPicUrl || item.orderProduct?.picUrl,
+                )
+                .filter(Boolean);
+
+              setChatMode("WAYBILL");
+              setActiveBizCode(pack.packingPackageCode);
               setPendingWaybill({ ...pack, pic });
               setIsOpen(true);
             }}
@@ -173,13 +186,12 @@ export default function PackageItem({
               {t("serviceFeeLabel")}: {currency.symbol}
               {pack?.serviceFee || 0}
             </span>
-            {!!pack?.insurance &&
-
+            {!!pack?.insurance && (
               <span className="text-gray-500">
                 {t("insuranceFeeLabel")}: {currency.symbol}
                 {pack?.insuranceFee || 0}
               </span>
-            }
+            )}
             <span className="font-semibold text-gray-800">
               {t("totalFeeLabel")}: {currency.symbol}
               {pack?.totalFee}
@@ -262,7 +274,6 @@ export default function PackageItem({
         </div>
 
         <div className="flex gap-2 justify-center flex-col py-2">
-
           {pack.serviceList.map((service: any) => (
             <div key={service.serviceId} className="mb-4 flex gap-2">
               <div className="text-gray-400 text-sm mb-2">

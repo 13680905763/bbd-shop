@@ -3,7 +3,6 @@ import { Button, Form, Input, addToast } from "@heroui/react";
 import React, { useState, useEffect } from "react";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
-
 import { useTranslations } from "next-intl";
 
 import { subtitle } from "@/components/primitives";
@@ -21,22 +20,27 @@ export default function ForgetPsdPage() {
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
+
     if (countdown > 0) {
       timer = setInterval(() => {
         setCountdown((prev) => prev - 1);
       }, 1000);
     }
+
     return () => clearInterval(timer);
   }, [countdown]);
 
   const handleSendCode = async () => {
     if (!email) {
       addToast({ title: t("emailError"), color: "danger" });
+
       return;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!emailRegex.test(email)) {
       addToast({ title: t("emailInvalid"), color: "danger" });
+
       return;
     }
 
@@ -56,10 +60,9 @@ export default function ForgetPsdPage() {
 
     if (!email || !code) {
       addToast({ title: t("fillAll"), color: "danger" });
+
       return;
     }
-
-
 
     setIsLoading(true);
     try {
@@ -74,16 +77,14 @@ export default function ForgetPsdPage() {
       setIsLoading(false);
     }
   };
+
   return (
     <>
       <div className={subtitle()}>
         <span className="text-3xl">{t("title")}</span>
       </div>
       <div className="mb-4">{t("desc")}</div>
-      <Form
-        className="w-full flex flex-col gap-4"
-        onSubmit={handleSubmit}
-      >
+      <Form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
         <Input
           isRequired
           errorMessage="Email"
@@ -98,20 +99,20 @@ export default function ForgetPsdPage() {
         <div className="flex gap-2 w-full">
           <Input
             isRequired
+            className="flex-1"
             labelPlacement="outside"
             name="code"
             placeholder={t("codePlaceholder")}
             type="text"
             value={code}
             onValueChange={setCode}
-            className="flex-1"
           />
           <Button
+            className="w-32"
             color={countdown > 0 || !email || isSending ? "default" : "primary"}
             isDisabled={countdown > 0 || !email || isSending}
             isLoading={isSending}
             onPress={handleSendCode}
-            className="w-32"
           >
             {countdown > 0 ? `${countdown}s` : t("sendCode")}
           </Button>
@@ -119,8 +120,8 @@ export default function ForgetPsdPage() {
         <Button
           className=" w-full "
           color="primary"
-          type="submit"
           isLoading={isLoading}
+          type="submit"
         >
           {t("submit")}
         </Button>

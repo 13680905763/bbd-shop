@@ -83,8 +83,13 @@ request.interceptors.response.use(
 
     if (status === 401) {
       if (showToast) {
-        addToast({ title: "Please login first", timeout: 1000, color: "danger" });
+        addToast({
+          title: "Please login first",
+          timeout: 1000,
+          color: "danger",
+        });
       }
+
       return null;
     }
 

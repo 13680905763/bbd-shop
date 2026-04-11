@@ -26,7 +26,7 @@ export function useApplyWithdrawal() {
       queryClient.invalidateQueries({ queryKey: ["walletDetailList"] });
       queryClient.invalidateQueries({ queryKey: ["withdrawalHistory"] });
     },
-    onError: (error: any) => { },
+    onError: (error: any) => {},
   });
 }
 export const useWalletDetailList = (params: any) => {
@@ -103,9 +103,7 @@ export const usePointExchangeCoupon = () => {
       queryClient.invalidateQueries({ queryKey: ["walletInfo"] });
       queryClient.invalidateQueries({ queryKey: ["userInfo"] });
       queryClient.invalidateQueries({ queryKey: ["pointsList"] });
-
     },
-
   });
 };
 // 兑换码兑换优惠券
@@ -118,5 +116,18 @@ export const useCodeExchangeCoupon = () => {
       queryClient.invalidateQueries({ queryKey: ["userCoupon"] });
       queryClient.invalidateQueries({ queryKey: ["walletInfo"] });
     },
+  });
+};
+export const useConsumeList = (params: {
+  current: number;
+  size: number;
+  bizTypeCode?: string;
+}) => {
+  return useQuery({
+    queryKey: ["consumeList", params],
+    queryFn: () => WalletApi.consumePageQuery(params),
+    staleTime: 3 * 1000,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
   });
 };

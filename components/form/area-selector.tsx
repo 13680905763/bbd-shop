@@ -15,10 +15,11 @@ interface Option {
 interface Props {
   value: {
     countryId: string;
-    stateId: string;
+    stateId?: string;
+    state?: string;
     city: string;
   };
-  onChange: (val: Props["value"]) => void;
+  onChange: (val: any) => void;
 }
 
 export default function AreaSelector({ value, onChange }: Props) {
@@ -61,48 +62,87 @@ export default function AreaSelector({ value, onChange }: Props) {
         placeholder={t("country.placeholder")}
         selectedKey={String(value.countryId) || null}
         variant="bordered"
-        onSelectionChange={(code) =>
-          onChange({
-            countryId: String(code),
-            stateId: "",
-            city: "",
-          })
-        }
+        onSelectionChange={(code) => {
+          if (code !== null) {
+            onChange({
+              countryId: String(code),
+              stateId: "",
+              city: "",
+            });
+          }
+        }}
       >
         {countries.map(renderItem)}
       </Autocomplete>
 
       <Autocomplete
+        allowsCustomValue
         errorMessage={t("state.errorMessage")}
-        isRequired={true}
+        inputValue={
+          states?.find((s: any) => String(s.id) === String(value.stateId))
+            ?.name ||
+          value.state ||
+          value.stateId ||
+          ""
+        }
+        isRequired={false}
         label={t("state.label")}
         placeholder={t("state.placeholder")}
-        selectedKey={String(value.stateId) || null}
+        selectedKey={value.stateId ? String(value.stateId) : null}
         variant="bordered"
+        onInputChange={(text) => {
+          const match = states?.find((item: any) => item.name === text);
+
+          if (match) {
+            onChange({
+              ...value,
+              stateId: String(match.id),
+              state: "",
+            });
+          } else {
+            onChange({
+              ...value,
+              stateId: "",
+              state: text,
+            });
+          }
+        }}
         onSelectionChange={(code) => {
-          return onChange({
-            ...value,
-            stateId: String(code),
-            city: states?.find((item: any) => item.id == code)?.name || "",
-          });
+          if (code !== null) {
+            onChange({
+              ...value,
+              stateId: String(code),
+              state: "",
+            });
+          }
         }}
       >
         {states.map(renderItem)}
       </Autocomplete>
 
       <Autocomplete
+        allowsCustomValue
         errorMessage={t("city.errorMessage")}
+        inputValue={value.city || ""}
         isRequired={true}
         label={t("city.label")}
         placeholder={t("city.placeholder")}
         selectedKey={String(value.city) || null}
         variant="bordered"
-        onSelectionChange={(code) =>
+        onInputChange={(text) => {
           onChange({
             ...value,
-            city: String(code),
-          })
-        }
+            city: text,
+          });
+        }}
+        onSelectionChange={(code) => {
+          if (code !== null) {
+            onChange({
+              ...value,
+              city: String(code),
+            });
+          }
+        }}
       >
         {cities.map(renderItemCity)}
       </Autocomplete>

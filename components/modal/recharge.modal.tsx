@@ -80,16 +80,17 @@ export default function RechargeModal({
             </div>
           }
           errorMessage={errorMessage}
+          inputMode="decimal"
           isInvalid={!!errorMessage}
           placeholder={t("placeholder")}
           size="lg"
           type="text"
-          inputMode="decimal"
           value={amount}
           variant="bordered"
           onChange={(e) => {
             // Only allow digits, dots, and commas
             const val = e.target.value.replace(/[^0-9.,]/g, "");
+
             setAmount(val);
             if (val) setErrorMessage("");
           }}

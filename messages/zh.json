@@ -387,7 +387,14 @@
             "waybillNo": "包裹号：",
             "trackingNo": "物流单号：",
             "weight": "重量",
-            "size": "尺寸"
+            "size": "尺寸",
+            "consultationList": "业务咨询",
+            "noConsultations": "暂无记录",
+            "order": "订单",
+            "waybill": "运单",
+            "backToGeneral": "通用聊天",
+            "deleteSuccess": "删除成功",
+            "deleteFailed": "删除失败"
         }
     },
     "dashboard": {
@@ -493,7 +500,20 @@
             "tab": {
                 "balance": "余额",
                 "score": "积分",
-                "coupon": "优惠券"
+                "coupon": "优惠券",
+                "consume": "消费记录"
+            },
+            "consume": {
+                "all": "全部",
+                "order": "订单记录",
+                "waybill": "运单记录",
+                "tableColumns": {
+                    "bizReference": "业务单号",
+                    "bizType": "类型",
+                    "payAmount": "支付金额",
+                    "createTime": "时间",
+                    "method": "方式"
+                }
             },
             "coupon": {
                 "unused": "可用优惠券",

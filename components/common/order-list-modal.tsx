@@ -1,10 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Spinner } from "@heroui/react";
+import React, { useState } from "react";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+} from "@heroui/react";
 import { useTranslations } from "next-intl";
 
-import PaginationBar from "./pagination-bar";
-import { useChatOrderList } from "@/hook/api";
 import { BlockSpinner, EmptyState } from "../ui";
+
+import PaginationBar from "./pagination-bar";
+
+import { useChatOrderList } from "@/hook/api";
 import { useGlobalStore } from "@/store";
 
 interface OrderListModalProps {
@@ -13,7 +22,11 @@ interface OrderListModalProps {
   onSendOrder: (order: any) => void;
 }
 
-export default function OrderListModal({ isOpen, onClose, onSendOrder }: OrderListModalProps) {
+export default function OrderListModal({
+  isOpen,
+  onClose,
+  onSendOrder,
+}: OrderListModalProps) {
   const t = useTranslations("components.chatbox");
   const { currency } = useGlobalStore();
   const [page, setPage] = useState(1);
@@ -25,9 +38,13 @@ export default function OrderListModal({ isOpen, onClose, onSendOrder }: OrderLi
 
   const orders = data?.records || [];
 
-
   return (
-    <Modal isOpen={isOpen} onOpenChange={(open) => !open && onClose()} scrollBehavior="inside" size="2xl">
+    <Modal
+      isOpen={isOpen}
+      scrollBehavior="inside"
+      size="2xl"
+      onOpenChange={(open) => !open && onClose()}
+    >
       <ModalContent>
         <ModalHeader>{t("selectOrder")}</ModalHeader>
         <ModalBody className="max-h-[60vh] overflow-y-auto">
@@ -37,21 +54,40 @@ export default function OrderListModal({ isOpen, onClose, onSendOrder }: OrderLi
           ) : (
             <div className="flex flex-col gap-4">
               {orders.map((order: any) => (
-                <div key={order.orderCode} className="border rounded-lg p-4 flex flex-col gap-2 shadow-sm">
+                <div
+                  key={order.orderCode}
+                  className="border rounded-lg p-4 flex flex-col gap-2 shadow-sm"
+                >
                   <div className="flex justify-between items-center border-b pb-2">
-                    <span className="font-semibold text-sm">{t("orderNo")}{order.orderCode}</span>
-                    <Button size="sm" color="primary" onPress={() => onSendOrder(order)}>
+                    <span className="font-semibold text-sm">
+                      {t("orderNo")}
+                      {order.orderCode}
+                    </span>
+                    <Button
+                      color="primary"
+                      size="sm"
+                      onPress={() => onSendOrder(order)}
+                    >
                       {t("send")}
                     </Button>
                   </div>
                   <div className="flex flex-col gap-2 mt-2">
                     {order.products?.map((product: any, idx: number) => (
                       <div key={idx} className="flex gap-3 items-center">
-                        <img src={product.skuPicUrl || product.picUrl} alt="product" referrerPolicy="no-referrer" className="w-16 h-16 object-cover rounded" />
+                        <img
+                          alt="product"
+                          className="w-16 h-16 object-cover rounded"
+                          referrerPolicy="no-referrer"
+                          src={product.skuPicUrl || product.picUrl}
+                        />
                         <div className="flex-1 text-sm">
-                          <div className="line-clamp-2">{product.productTitle}</div>
+                          <div className="line-clamp-2">
+                            {product.productTitle}
+                          </div>
                           <div className="text-gray-500 mt-1">
-                            {t("price")}{currency.symbol}{product.price} x {product.purchaseQuantity}
+                            {t("price")}
+                            {currency.symbol}
+                            {product.price} x {product.purchaseQuantity}
                           </div>
                         </div>
                       </div>
@@ -64,17 +100,15 @@ export default function OrderListModal({ isOpen, onClose, onSendOrder }: OrderLi
         </ModalBody>
         <ModalFooter className="flex flex-col items-stretch gap-4">
           <div className="flex justify-end w-full">
-            {
-              orders.length > 0 && (
-                <PaginationBar
-                  page={page}
-                  pageSize={pageSize}
-                  total={data?.total as number || 0}
-                  onPageChange={setPage}
-                  onPageSizeChange={setPageSize}
-                />
-              )
-            }
+            {orders.length > 0 && (
+              <PaginationBar
+                page={page}
+                pageSize={pageSize}
+                total={(data?.total as number) || 0}
+                onPageChange={setPage}
+                onPageSizeChange={setPageSize}
+              />
+            )}
           </div>
           <div className="flex justify-end w-full">
             <Button color="danger" variant="light" onPress={onClose}>

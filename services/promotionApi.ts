@@ -1,4 +1,3 @@
-// services/promotionApi.ts
 import { request } from "./request";
 
 export const PromotionApi = {
@@ -14,11 +13,4 @@ export const PromotionApi = {
   listBonus(params: any): Promise<any[]> {
     return request.post("/customer-bonus-detail", params);
   },
-
-  // /** 获取奖金配置 */
-  // getPromotionConfig(params: any): Promise<any> {
-  //     return request.get("/promotion-config", {
-  //         params,
-  //     });
-  // },
 };

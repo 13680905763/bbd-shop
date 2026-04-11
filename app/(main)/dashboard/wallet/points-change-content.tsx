@@ -1,10 +1,10 @@
 import React, { useCallback } from "react";
+import { useTranslations } from "next-intl";
 
 import { CouponExchangeCard } from "@/components/block";
 import { BlockSpinner, EmptyState } from "@/components/ui";
 import { useCouponsConfig, usePointExchangeCoupon } from "@/hook/api";
 import { useConfirm } from "@/components/common";
-import { useTranslations } from "next-intl";
 
 export default function PointsRecordContent() {
   const t = useTranslations("dashboard.wallet.score");
@@ -13,16 +13,24 @@ export default function PointsRecordContent() {
   const { mutateAsync: pointExchangeCoupon } = usePointExchangeCoupon();
 
   const { confirm } = useConfirm();
+
   console.log("data", data);
-  const handleExchange = useCallback((coupon: any) => {
-    confirm({
-      title: t("exchangeConfirm.title"),
-      content: t("exchangeConfirm.content", { points: coupon.exchangePoints, name: coupon.title }),
-      onConfirm: async () => {
-        await pointExchangeCoupon(coupon.id);
-      },
-    });
-  }, [confirm, t, pointExchangeCoupon]);
+  const handleExchange = useCallback(
+    (coupon: any) => {
+      confirm({
+        title: t("exchangeConfirm.title"),
+        content: t("exchangeConfirm.content", {
+          points: coupon.exchangePoints,
+          name: coupon.title,
+        }),
+        onConfirm: async () => {
+          await pointExchangeCoupon(coupon.id);
+        },
+      });
+    },
+    [confirm, t, pointExchangeCoupon],
+  );
+
   if (!data?.length && !isFetching) return <EmptyState />;
 
   return (

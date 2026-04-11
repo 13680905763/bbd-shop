@@ -74,8 +74,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     const data: any = Object.fromEntries(new FormData(e.currentTarget));
 
     const res: any = await getGoodsId({ url: data.url });
-    console.log('res', res);
 
+    console.log("res", res);
 
     if (res.keyword) {
       router.push(`/search?keyword=${encodeURIComponent(data.url)}`);

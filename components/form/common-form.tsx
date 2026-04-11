@@ -36,16 +36,26 @@ export default function CommonForm<T extends Record<string, any>>({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (loading) return;
+
+    const dataToSend = { ...formData };
+
+    if (!dataToSend.stateId) {
+      delete dataToSend.stateId;
+    }
+    if (!dataToSend.state) {
+      delete dataToSend.state;
+    }
+
     // 外部有 loading → 说明由外部管理
     if (externalLoading !== undefined) {
-      await onSubmit?.(formData);
+      await onSubmit?.(dataToSend);
 
       return;
     }
     // 否则使用内部兜底
     try {
       setInternalLoading(true);
-      await onSubmit?.(formData);
+      await onSubmit?.(dataToSend);
     } finally {
       setInternalLoading(false);
     }

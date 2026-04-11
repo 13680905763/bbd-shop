@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useTranslations } from "next-intl";
 
+import CouponRedemption from "./coupon-redemption";
+
 import { useUserCoupon } from "@/hook/api";
 import CouponCard from "@/components/block/coupon-card";
 import { Coupon } from "@/types/wallet";
 import { CommonTabs } from "@/components/common";
 import { BlockSpinner, EmptyState } from "@/components/ui";
-import CouponRedemption from "./coupon-redemption";
 const tabKeyToStatusCode: Record<string, number> = {
   unused: 1, // 可用
   used: 2, // 已使用

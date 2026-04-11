@@ -102,7 +102,6 @@ export default function CouponExchangeCard({
           <div>
             {t("validity")}: {t("days", { count: coupon.expirationDate })}
           </div>
-
         </div>
 
         <div className="flex justify-between items-center mt-1">

@@ -81,7 +81,13 @@ export default function SubmitOrder() {
       addressId: selectedAddressId,
       ...data.param,
     };
-  }, [selectedRouteId, selectedAddressId, getSelectedServices, services, services1]);
+  }, [
+    selectedRouteId,
+    selectedAddressId,
+    getSelectedServices,
+    services,
+    services1,
+  ]);
 
   const { data: feeEstimate, isFetching: isEstimating } =
     useWaybillFeeEstimate(estimatePayload);
@@ -99,7 +105,8 @@ export default function SubmitOrder() {
   const [routesMessage, setRoutesMessage] = useState<string>(
     t("defaultMessage"),
   );
-console.log('serviceList1', serviceList1);
+
+  console.log("serviceList1", serviceList1);
 
   useEffect(() => {
     const countryId = addressList?.find(
@@ -222,9 +229,9 @@ console.log('serviceList1', serviceList1);
                   <WarehouseServiceCard
                     key={service.id}
                     service={service}
+                    type="introduction"
                     onSelect={toggleSelection1}
                     onUpdateQuantity={updateQuantity1}
-                    type="introduction"
                   />
                 );
               })}
@@ -363,9 +370,7 @@ console.log('serviceList1', serviceList1);
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">
-                      {t("insuranceFee")}
-                    </span>
+                    <span className="text-gray-500">{t("insuranceFee")}</span>
                     <span className="font-medium">
                       {currency.symbol}
                       {feeEstimate.outbound.insuranceFee}

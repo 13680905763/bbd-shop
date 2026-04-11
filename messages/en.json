@@ -387,7 +387,14 @@
             "waybillNo": "Package No: ",
             "trackingNo": "Tracking No: ",
             "weight": "Weight",
-            "size": "Size"
+            "size": "Size",
+            "consultationList": "Business Consultations",
+            "noConsultations": "No records",
+            "order": "Order",
+            "waybill": "Waybill",
+            "backToGeneral": "General Chat",
+            "deleteSuccess": "Delete Success",
+            "deleteFailed": "Delete Failed"
         }
     },
     "dashboard": {
@@ -493,7 +500,20 @@
             "tab": {
                 "balance": "Balance",
                 "score": "Points",
-                "coupon": "Coupons"
+                "coupon": "Coupons",
+                "consume": "Spending"
+            },
+            "consume": {
+                "all": "All",
+                "order": "Order Records",
+                "waybill": "Package Records",
+                "tableColumns": {
+                    "bizReference": "Ref No.",
+                    "bizType": "Type",
+                    "payAmount": "Amount",
+                    "createTime": "Time",
+                    "method": "Method"
+                }
             },
             "coupon": {
                 "unused": "Available Coupons",
