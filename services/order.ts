@@ -53,24 +53,7 @@ export const getOrderPreviewProduct = (
 export const updateOrderPreviewProduct = (
   data: any,
 ): Promise<OrderPreviewByCart> => request.post("/orders/preview", data);
-/** 付款 */
-// export const createPayOrder = (data: {
-//   bizCode: string;
-//   paymentId: string | number;
-//   addressId: number | string;
-//   customerCouponId?: string;
-// }): Promise<any> => {
-//   return requestWithOption(
-//     {
-//       url: "/customer/pay-order/create",
-//       method: "POST",
-//       data,
-//     },
-//     {
-//       showToast: true,
-//     },
-//   );
-// };
+
 /** 获取支付状态 */
 export const getPayOrderStatus = (bizCode: string): Promise<number> =>
   request.get(`/customer/pay-order/status?bizCode=${bizCode}`);
@@ -83,7 +66,6 @@ export const getServicesList = (): Promise<any> => {
   );
 };
 
-/** 订单取消 */
 export const createCustomizeOrder = (data: any): Promise<any> => {
   return requestWithOption(
     { url: "/drop-shipping-order", method: "POST", data },

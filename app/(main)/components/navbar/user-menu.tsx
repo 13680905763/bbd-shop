@@ -11,22 +11,16 @@ import {
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
-import { logoutCustomer } from "@/services";
 import { useUserInfo } from "@/hook/api";
-import { queryClient } from "@/lib/react-query";
+import { useLogoutFlow } from "@/hook/business";
 
 export const UserMenu = () => {
   const t = useTranslations("components.navbar.dropdown");
   const router = useRouter();
 
   const { data: user, isLoading } = useUserInfo();
-  const logout = async () => {
-    await logoutCustomer();
-    queryClient.clear();
-    router.replace("/login");
-  };
-  // console.log('isLoading', isLoading);
-  // console.log('isFetched', isFetched);
+  const { logout, isLoggingOut } = useLogoutFlow();
+
 
   if (isLoading) return <Skeleton className="flex rounded-full w-12 h-12" />;
   if (!user && !isLoading) {
@@ -61,7 +55,11 @@ export const UserMenu = () => {
         >
           {t("orders")}
         </DropdownItem>
-        <DropdownItem key="logout" onPress={logout}>
+        <DropdownItem
+          key="logout"
+          isReadOnly={isLoggingOut}
+          onPress={() => logout()}
+        >
           {t("logout")}
         </DropdownItem>
       </DropdownMenu>

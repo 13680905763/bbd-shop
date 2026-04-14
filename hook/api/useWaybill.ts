@@ -2,6 +2,7 @@ import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 
 import { waybillApi } from "@/services/waybillApi";
 import { queryClient } from "@/lib/react-query";
+import { addToast } from "@heroui/react";
 
 export function useWaybillList(params: any) {
   return useQuery({
@@ -52,6 +53,12 @@ export function usePreviewChangeLine() {
   return useMutation({
     mutationFn: (params: { id: string; addressId?: string }) =>
       waybillApi.previewChangeLine(params),
+    onError: (error) => {
+      addToast({
+        title: error.message,
+        color: "danger",
+      });
+    },
   });
 }
 export function useChangeLine() {

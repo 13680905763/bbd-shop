@@ -7,12 +7,7 @@ import { useTranslations } from "next-intl";
 import CartItem from "./cart-item";
 import EditRemarkModal from "./edit-remark-modal";
 
-import {
-  useCartList,
-  useCreateOrderPreview,
-  useDeleteCart,
-  useUpdateCartItem,
-} from "@/hook/api";
+
 import {
   FullscreenLoader,
   BusinessProgress,
@@ -25,6 +20,12 @@ import { useConfirm } from "@/components/common/modal/confirm-provider";
 import { useSelection, useDebounceCallback } from "@/hook/common";
 import { CreateOrderPreviewKeyByCartParams, PreviewItem } from "@/types";
 import { calculateTotalPrice } from "@/lib/price";
+import {
+  useCartList,
+  useDeleteCart,
+  useSubmitCart,
+  useUpdateCartItem,
+} from "@/hook/business";
 
 export default function CartPage() {
   const t = useTranslations("dashboard.cart");
@@ -36,17 +37,11 @@ export default function CartPage() {
     remark: string;
   }>({ open: false, productId: "", remark: "" });
 
-  const { data, isLoading, isFetching } = useCartList();
-  const { mutateAsync: updateMutation, isPending: isUpdating } =
-    useUpdateCartItem();
-  const { mutateAsync: deleteMutation } = useDeleteCart();
-  const { mutateAsync: createOrderPreview, isPending: isSubmitting } =
-    useCreateOrderPreview();
-  // 扁平化购物车数据
-  const flatList =
-    useMemo(() => {
-      return data?.flatMap((shop: any) => shop.cartList);
-    }, [data]) ?? [];
+  const { data, flatList, isLoading, isFetching } = useCartList();
+  const { updateItem, isUpdating } = useUpdateCartItem();
+  const { deleteItem, isDeleting } = useDeleteCart();
+  const { submitCart, isSubmitting } = useSubmitCart();
+
 
   const selectableList = useMemo(() => {
     return flatList.filter((item: any) => item.status !== 3);
@@ -67,9 +62,8 @@ export default function CartPage() {
     groupKey: "shopId",
   });
   const { confirm } = useConfirm();
-  const router = useRouter();
 
-  const submitCart = async () => {
+  const handleCreateOrderPreview = async () => {
     try {
       const params: CreateOrderPreviewKeyByCartParams = {
         previewList: selectedIds.map((cartId) => ({
@@ -77,12 +71,10 @@ export default function CartPage() {
           serviceList: [],
         })) as PreviewItem[],
       };
-      const key = await createOrderPreview(params);
+      await submitCart(params);
 
-      if (key) {
-        router.push("/submit/order?type=cart&key=" + key);
-      }
-    } catch {}
+
+    } catch { }
   };
 
   const deleteCart = async (id?: string) => {
@@ -90,19 +82,17 @@ export default function CartPage() {
       content: t("confirmDeleteContent"), // 弹窗正文
       title: t("confirmDeleteTitle"), // 弹窗标题
       onConfirm: async () => {
-        await deleteMutation({ idList: id ? [id] : selectedIds });
+        await deleteItem({ idList: id ? [id] : selectedIds });
       },
     });
   };
 
   const updateProductQuantity = useDebounceCallback(
     async (productId: string, quantity: number) => {
-      await updateMutation([
-        {
-          id: productId,
-          quantity,
-        },
-      ]);
+      await updateItem({
+        id: productId,
+        quantity,
+      });
     },
     500,
   );
@@ -115,12 +105,10 @@ export default function CartPage() {
   );
   const submitProductRemark = async (newRemark: string) => {
     if (!remarkModalState.productId) return;
-    await updateMutation([
-      {
-        id: remarkModalState.productId,
-        remark: newRemark,
-      },
-    ]);
+    await updateItem({
+      id: remarkModalState.productId,
+      remark: newRemark,
+    });
   };
 
   const togglePrice = useMemo(
@@ -137,7 +125,7 @@ export default function CartPage() {
       </div>
       <div className="relative">
         {(isFetching || isUpdating) && <BlockSpinner />}
-        {flatList.length === 0 ? (
+        {data.length === 0 ? (
           <EmptyState desc={t("empty.desc")} title={t("empty.title")} />
         ) : (
           <>
@@ -191,7 +179,7 @@ export default function CartPage() {
                   isDisabled={!hasSelected}
                   isLoading={isSubmitting}
                   size="lg"
-                  onPress={submitCart}
+                  onPress={handleCreateOrderPreview}
                 >
                   {t("checkout")}
                   {selectedIds.length ? ` (${selectedIds.length})` : ""}

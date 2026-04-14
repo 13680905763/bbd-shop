@@ -10,17 +10,24 @@ import {
 } from "react-icons/io5";
 import { useTranslations } from "next-intl";
 
-import { activateEmail, signUpCustomer } from "@/services";
 import CommonForm from "@/components/form/common-form";
 import { FieldConfig } from "@/components/form/formItem-renderer";
-import { queryClient } from "@/lib/react-query";
+import { useSignUpFlow } from "@/hook/business";
 
 export default function RegisterPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations("auth.register");
 
-  const [isActive, setIsActive] = useState(false); // 是否进入验证码页
+  const {
+    isEmailVerified,
+    registeredEmail,
+    setIsEmailVerified,
+    signUp,
+    isSigningUp,
+    activateEmail,
+    isActivating,
+  } = useSignUpFlow();
   const [formData, setFormData] = useState<any>({
     email: "",
     password: "",
@@ -69,50 +76,50 @@ export default function RegisterPage() {
     },
     {
       type: "checkbox",
-      name: "isChecked",
+      name: "agreeToTerms",
       size: "sm",
       label: t("fields.isChecked.label"),
     },
   ];
 
-  // 验证码回调
-  const handleOtpChange = async (code: string) => {
-    if (code.length === 6 && formData.email) {
-      try {
-        await activateEmail({
-          email: formData.email,
-          activationCode: code,
-        });
-        queryClient.invalidateQueries({ queryKey: ["userInfo"] }); // 刷新
-        router.push("/dashboard");
-      } catch {}
+  const handleInviteCode = (code: string) => {
+    if (code.length === 6) {
+      activateEmail({
+        email: registeredEmail || formData.email,
+        activationCode: code,
+      });
     }
   };
-
-  // 注册表单提交
-  const handleSubmit = async (data: any) => {
-    const { isChecked, ...signData } = data;
-
-    if (!isChecked) {
-      addToast({ title: t("agreementRequired"), color: "danger" });
+  const handleSubmit = (formData: any) => {
+    if (!formData.agreeToTerms) {
+      addToast({
+        title: t("agreementRequired"),
+        color: "danger",
+      });
 
       return;
     }
-    try {
-      await signUpCustomer(signData);
-      setFormData({ email: data.email });
-      setIsActive(true); // 进入验证码页
-    } catch {}
+    const submitData: any = {
+      email: formData.email,
+      password: formData.password,
+    };
+
+    if (formData.inviteCode) {
+      submitData.inviteCode = formData.inviteCode;
+    }
+
+    signUp(submitData);
   };
 
+
   // 验证码页部分
-  if (isActive) {
+  if (isEmailVerified) {
     return (
       <div className="text-center">
         <div className="flex items-center justify-center mb-2 gap-2">
           <IoArrowBack
             className="cursor-pointer text-lg"
-            onClick={() => setIsActive(false)}
+            onClick={() => setIsEmailVerified(false)}
           />
           <p className="text-title-xl m-0">{t("otpTitle")}</p>
         </div>
@@ -122,8 +129,9 @@ export default function RegisterPage() {
         <InputOtp
           className="m-auto mb-4"
           length={6}
+          isDisabled={isActivating}
           size="lg"
-          onValueChange={handleOtpChange}
+          onValueChange={handleInviteCode}
         />
       </div>
     );
@@ -138,6 +146,7 @@ export default function RegisterPage() {
         confirmText={t("confirmText")}
         fields={registerFormFields}
         formData={formData}
+        isLoading={isSigningUp}
         onChange={setFormData}
         onSubmit={handleSubmit}
       />

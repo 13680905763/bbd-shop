@@ -21,18 +21,7 @@ export const configApi = {
   listWarehouseServices1(): Promise<any[]> {
     return request.get("/services/query?serviceLevel=3");
   },
-  /** 获取国家列表 */
-  listCountries: (): Promise<any> => {
-    return request.get("/countries.json");
-  },
-  /** 获取省份列表 */
-  listProvinces: (countryId: string): Promise<any> => {
-    return request.get("/state/country?countryId=" + countryId);
-  },
-  /** 获取城市列表 */
-  listCities: (stateId: string): Promise<any> => {
-    return request.get("/cities/state?stateId=" + stateId);
-  },
+
   /** 获取活跃用户奖金配置 */
   listInviteBonus: (): Promise<any[]> => {
     return request.get("/invite-bonus");

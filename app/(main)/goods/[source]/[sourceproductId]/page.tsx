@@ -35,7 +35,8 @@ import { safeMul } from "@/utils/number";
 import { generateDynamicSkuPathDict } from "@/lib/sku-helper";
 import { useConfirm } from "@/components/common/modal/confirm-provider";
 import { SourceIcon } from "@/components/ui";
-import { useAddCartItem, useUserInfo } from "@/hook/api";
+import { useUserInfo } from "@/hook/api";
+import { useAddCartItem } from "@/hook/business";
 
 const getSelectedValues = (specs: any) => {
   const arr: any = [];
@@ -168,7 +169,7 @@ export default function GoodsPage() {
 
     try {
       await addCartItem(data);
-    } catch {}
+    } catch { }
   };
   // 切换选择状态
   const changeSelectedStatus = (index: any, indey: any) => {
@@ -406,13 +407,12 @@ export default function GoodsPage() {
                 <CopyText
                   text={
                     typeof window !== "undefined"
-                      ? `${window.location.href}${
-                          user?.inviteCode
-                            ? (window.location.href.includes("?") ? "&" : "?") +
-                              "inviteCode=" +
-                              user.inviteCode
-                            : ""
-                        }`
+                      ? `${window.location.href}${user?.inviteCode
+                        ? (window.location.href.includes("?") ? "&" : "?") +
+                        "inviteCode=" +
+                        user.inviteCode
+                        : ""
+                      }`
                       : ""
                   }
                   toastMessage="Link Copied"

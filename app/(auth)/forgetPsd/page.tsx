@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { subtitle } from "@/components/primitives";
-import { sendVerificationCode, resetPassword } from "@/services/user";
+import { userApi } from "@/services/userApi";
 
 export default function ForgetPsdPage() {
   const t = useTranslations("auth.forgetPassword");
@@ -46,10 +46,15 @@ export default function ForgetPsdPage() {
 
     setIsSending(true);
     try {
-      await sendVerificationCode(email);
+      await userApi.sendVerificationCode(email);
+      addToast({ title: "Success", color: "success" });
       setCountdown(60);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      addToast({
+        title: error?.message || "Failed to send code",
+        color: "danger",
+      });
+      throw error;
     } finally {
       setIsSending(false);
     }
@@ -66,13 +71,20 @@ export default function ForgetPsdPage() {
 
     setIsLoading(true);
     try {
-      await resetPassword({
+      await userApi.resetPassword({
         email,
         verificationCode: code,
       });
+      addToast({
+        title: "Success",
+        color: "success",
+      });
       router.push("/login");
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      addToast({
+        title: error?.message || "Failed to send code",
+        color: "danger",
+      });
     } finally {
       setIsLoading(false);
     }

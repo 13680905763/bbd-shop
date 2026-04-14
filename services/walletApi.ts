@@ -1,7 +1,7 @@
 // services/walletApi.ts
 import type { WalletInfo } from "@/types";
 
-import { request, requestWithOption } from "./request";
+import { request } from "./request";
 
 export const WalletApi = {
   /** 获取钱包信息 */
@@ -54,18 +54,7 @@ export const WalletApi = {
     paymentId: string | number;
     addressId: number | string;
     customerCouponId?: string;
-  }): Promise<any> => {
-    return requestWithOption(
-      {
-        url: "/customer/pay-order/create",
-        method: "POST",
-        data: params,
-      },
-      {
-        showToast: true,
-      },
-    );
-  },
+  }): Promise<any> => request.post(`/customer/pay-order/create`, params),
   /** 获取优惠券列表 */
   listCoupon(params: { status?: number }): Promise<any> {
     return request.get(`/customer-coupon`, {
@@ -73,27 +62,13 @@ export const WalletApi = {
     });
   },
   /** 兑换优惠券 */
-  pointExchangeCoupon: (couponId: number | string): Promise<any> => {
-    return requestWithOption(
-      {
-        url: "/customer-coupon/exchange?couponId=" + couponId,
-        method: "POST",
-      },
-      { showToast: true },
-    );
-  },
+  pointExchangeCoupon: (couponId: number | string): Promise<any> =>
+    request.post(`/customer-coupon/exchange?couponId=${couponId}`),
   /** 兑换码兑换优惠券 */
-  codeExchangeCoupon: (redemptionCode: string): Promise<any> => {
-    return requestWithOption(
-      {
-        url:
-          "/customer-coupon/redemptionCodeCoupons?redemptionCode=" +
-          redemptionCode,
-        method: "POST",
-      },
-      { showToast: true },
-    );
-  },
+  codeExchangeCoupon: (redemptionCode: string): Promise<any> =>
+    request.post(
+      `/customer-coupon/redemptionCodeCoupons?redemptionCode=${redemptionCode}`,
+    ),
   /** 获取消费记录 */
   consumePageQuery: (params: {
     current: number;

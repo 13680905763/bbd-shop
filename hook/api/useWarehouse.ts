@@ -3,6 +3,7 @@ import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { warehouseApi } from "@/services/warehouseApi";
 import { WarehousePackageListParams } from "@/types/warehouse";
 import { queryClient } from "@/lib/react-query";
+import { addToast } from "@heroui/react";
 
 export function useWarehousePackageList(params: WarehousePackageListParams) {
   return useQuery({
@@ -55,5 +56,36 @@ export function useCreateWaybill() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["warehousePackageList"] });
     },
+    onError: (error) => {
+      addToast({
+        title: error.message,
+        color: "danger",
+      });
+    },
+  });
+}
+
+export function useLineByWaybill(data: any) {
+  return useQuery<any>({
+    queryKey: ["lineByWaybill", data],
+    queryFn: () => warehouseApi.listLineByWaybill(data),
+    retry: 0, // 不重试
+    enabled: !!data,
+  });
+}
+/** 运单附加服务*/
+export function useWarehouseServicesList() {
+  return useQuery({
+    queryKey: ["warehouseServicesList"],
+    queryFn: () => warehouseApi.getWarehouseServices(),
+    staleTime: 5 * 10 * 1000,
+  });
+}
+/** 保险服务*/
+export function useWarehouseServicesList1() {
+  return useQuery({
+    queryKey: ["warehouseServicesList1"],
+    queryFn: () => warehouseApi.getInsuranceServices(),
+    staleTime: 5 * 10 * 1000,
   });
 }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Textarea } from "@heroui/react";
 import { useTranslations } from "next-intl";
 
-import { useAddressList } from "@/hook";
+import { useAddressList } from "@/hook/business";
 import { Address } from "@/types";
 import { BlockSpinner } from "@/components/ui";
 import AddressItem from "@/components/block/address-item";
@@ -180,13 +180,12 @@ export default function ChangeAddressModal({
         <div className="flex flex-col gap-6 py-4">
           {resultMessage ? (
             <div
-              className={`p-4 rounded-lg text-center border ${
-                resultMessage.type === "success"
+              className={`p-4 rounded-lg text-center border ${resultMessage.type === "success"
                   ? "bg-green-50 text-green-700 border-green-200"
                   : resultMessage.type === "warning"
                     ? "bg-yellow-50 text-yellow-700 border-yellow-200"
                     : "bg-blue-50 text-blue-700 border-blue-200"
-              }`}
+                }`}
             >
               {resultMessage.text}
             </div>

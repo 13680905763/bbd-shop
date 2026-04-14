@@ -27,9 +27,9 @@ import {
   BusinessProgress,
   FullscreenLoader,
 } from "@/components/ui";
-import { useBillingAddress } from "@/hook";
 import { usePaymentMethodList, useWalletInfo, usePay } from "@/hook/api";
 import { useGlobalStore } from "@/store";
+import { useBillingAddress } from "@/hook/business";
 
 export default function PaymentPage() {
   const t = useTranslations("payment");
@@ -54,8 +54,7 @@ export default function PaymentPage() {
     bizCode: params.bizCode,
     customerCouponId: confirmedCouponId,
   });
-  const { mutateAsync: pay, isPending: isPayFetching } = usePay();
-
+  const { pay, isPayFetching } = usePay();
   const paymentList = useMemo(() => data?.paymentAndFeeList || [], [data]);
   const couponList = useMemo(() => data?.customerCouponList || [], [data]);
 
@@ -80,17 +79,14 @@ export default function PaymentPage() {
       return;
     }
     try {
-      const res = await pay({
+      await pay({
         bizCode: params.bizCode,
         paymentId,
         addressId: billingAddress?.id as string,
         customerCouponId: selectedCoupon?.id,
       });
 
-      if (typeof res === "string" && res.startsWith("http")) {
-        console.log("res", res);
-        window.location.href = res;
-      }
+
     } catch (err) {
       console.error(err);
     }

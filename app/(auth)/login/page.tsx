@@ -4,18 +4,17 @@ import { useRouter } from "next/navigation";
 import { IoLockClosed, IoPerson } from "react-icons/io5";
 import { useTranslations } from "next-intl";
 
-import { loginCustomer } from "@/services";
 import CommonForm from "@/components/form/common-form";
 import { FieldConfig } from "@/components/form/formItem-renderer";
 import { LoginFormData } from "@/types";
-import { queryClient } from "@/lib/react-query";
 import { useGlobalStore } from "@/store";
+import { useLoginFlow } from "@/hook/business";
 
 export default function LoginPage() {
   const router = useRouter();
   const t = useTranslations("auth.login");
   const { language } = useGlobalStore();
-  const [isLoading, setIsLoading] = useState(false);
+  const { loginAsync: handleSubmit, isLoggingIn } = useLoginFlow();
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
@@ -45,25 +44,18 @@ export default function LoginPage() {
     },
   ];
 
-  const handleSubmit = async (data: LoginFormData) => {
+  const onSubmitForm = async (data: any) => {
     submitDataRef.current = data;
 
     // 只有指定的域名（或者你本地 localhost 测试时）才弹验证码
     // 其他域名（比如你说的另外两个域名）不需要验证码时，直接调用成功逻辑发起登录！
     const host = window.location.hostname;
-
-    if (
-      host !== "www.bbdbuyeu.com" &&
-      host !== "localhost" &&
-      host !== "127.0.0.1"
-    ) {
-      await handleCaptchaSuccess("");
-
+    if (host !== "www.bbdbuyeu.com" && host !== "localhost" && host !== "127.0.0.1") {
+      handleCaptchaSuccess("");
       return;
     }
 
     const btn = document.getElementById("captcha-trigger-btn");
-
     if (btn) btn.click();
   };
 
@@ -125,7 +117,6 @@ export default function LoginPage() {
 
   const handleCaptchaSuccess = async (captchaVerifyParam: string) => {
     if (!submitDataRef.current) return;
-    setIsLoading(true);
     try {
       // 临时将 captchaVerifyParam 合并入提交字段发送，您之后可以根据接口情况修改
       const payload: any = {
@@ -133,17 +124,13 @@ export default function LoginPage() {
         // captchaVerifyParam,
       };
 
-      await loginCustomer(payload);
-      queryClient.invalidateQueries({ queryKey: ["userInfo"] }); // 刷新用户信息
-      router.push("/");
+      await handleSubmit(payload);
     } catch (e) {
       console.error("Login failed:", e);
       // 失败后刷新验证码实例
       if (captchaInstanceRef.current) {
         captchaInstanceRef.current.refresh();
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -156,9 +143,9 @@ export default function LoginPage() {
         confirmText={t("confirmText")}
         fields={loginFormFields}
         formData={formData}
-        isLoading={isLoading}
+        isLoading={isLoggingIn}
         onChange={setFormData}
-        onSubmit={handleSubmit}
+        onSubmit={onSubmitForm}
       />
 
       <div className="flex justify-between my-2 text-[#f0700c]">

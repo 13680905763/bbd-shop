@@ -2,18 +2,15 @@
 
 import { useCallback, useState } from "react";
 import React from "react";
-import { useMutation } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 
-import { deleteAddress } from "@/services/address";
-import { useAddressList } from "@/hook";
 import { FullscreenLoader } from "@/components/ui";
 import AddressModal from "@/components/modal/address-modal";
 import { useConfirm } from "@/components/common/modal/confirm-provider";
 import { Address, AddressModalState } from "@/types";
 import AddressItem from "@/components/block/address-item";
-import { queryClient } from "@/lib/react-query";
 import { AddAddress } from "@/components/block";
+import { useAddressList, useDeleteAddress } from "@/hook/business";
 
 export function AddressTab() {
   const t = useTranslations("dashboard.page.address");
@@ -21,14 +18,10 @@ export function AddressTab() {
     type: null,
   });
   const { data: addressList, isLoading } = useAddressList();
+  const { mutateAsync: deleteMutation } = useDeleteAddress();
   const { confirm } = useConfirm();
 
-  const deleteMutation = useMutation({
-    mutationFn: deleteAddress,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["addressList"] });
-    },
-  });
+
 
   const handleOpenChange = useCallback((open: boolean) => {
     if (!open) setModalState({ type: null });
@@ -45,7 +38,7 @@ export function AddressTab() {
     await confirm({
       content: t("deleteConfirm"),
       onConfirm: async () => {
-        await deleteMutation.mutateAsync({ id: address.id });
+        await deleteMutation({ id: address.id });
       },
     });
   }, []);

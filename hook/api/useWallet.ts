@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { WalletApi } from "@/services/walletApi";
 import { queryClient } from "@/lib/react-query";
+import { addToast } from "@heroui/react";
 
 export const useWalletInfo = () => {
   return useQuery({
@@ -26,7 +27,7 @@ export function useApplyWithdrawal() {
       queryClient.invalidateQueries({ queryKey: ["walletDetailList"] });
       queryClient.invalidateQueries({ queryKey: ["withdrawalHistory"] });
     },
-    onError: (error: any) => {},
+    onError: (error: any) => { },
   });
 }
 export const useWalletDetailList = (params: any) => {
@@ -76,14 +77,30 @@ export function usePaymentMethodList(params: {
 }
 // 支付
 export function usePay() {
-  return useMutation({
+  const payMutation = useMutation({
     mutationFn: (data: {
       bizCode: string;
       paymentId: string | number;
       addressId: number | string;
       customerCouponId?: string;
     }) => WalletApi.pay(data),
+    onSuccess: (res) => {
+      if (typeof res === "string" && res.startsWith("http")) {
+        window.location.href = res;
+      }
+    },
+    onError: (error) => {
+      addToast({
+        title: error?.message || "Payment failed, please try again",
+        color: "danger",
+      });
+    },
   });
+
+  return {
+    pay: payMutation.mutateAsync,
+    isPayFetching: payMutation.isPending,
+  };
 }
 export const useUserCoupon = (params: { status?: number }) => {
   return useQuery({
@@ -98,12 +115,22 @@ export const usePointExchangeCoupon = () => {
   return useMutation({
     mutationFn: (couponId: string | number) =>
       WalletApi.pointExchangeCoupon(couponId),
-    onSuccess: () => {
+    onSuccess: (res) => {
+      addToast({
+        title: res || "Coupon redemption successful",
+        color: "success",
+      });
       queryClient.invalidateQueries({ queryKey: ["userCoupon"] });
       queryClient.invalidateQueries({ queryKey: ["walletInfo"] });
       queryClient.invalidateQueries({ queryKey: ["userInfo"] });
       queryClient.invalidateQueries({ queryKey: ["pointsList"] });
     },
+    onError: (error) => {
+      addToast({
+        title: error?.message,
+        color: "danger",
+      });
+    }
   });
 };
 // 兑换码兑换优惠券
@@ -111,11 +138,21 @@ export const useCodeExchangeCoupon = () => {
   return useMutation({
     mutationFn: (redemptionCode: string) =>
       WalletApi.codeExchangeCoupon(redemptionCode),
-    onSuccess: () => {
+    onSuccess: (res) => {
+      addToast({
+        title: res || "Coupon redemption successful",
+        color: "success",
+      });
       // 刷新用户优惠券列表
       queryClient.invalidateQueries({ queryKey: ["userCoupon"] });
       queryClient.invalidateQueries({ queryKey: ["walletInfo"] });
     },
+    onError: (error) => {
+      addToast({
+        title: error?.message,
+        color: "danger",
+      });
+    }
   });
 };
 export const useConsumeList = (params: {

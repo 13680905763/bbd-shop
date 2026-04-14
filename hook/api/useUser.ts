@@ -1,6 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { addToast } from "@heroui/react";
 
 import { userApi } from "@/services/userApi";
+import { queryClient } from "@/lib/react-query";
+import { useRouter } from "next/navigation";
 
 export const useUserInfo = () => {
   return useQuery({
@@ -17,4 +20,55 @@ export const useUserExperience = () => {
     staleTime: 10 * 1000, // 十秒保证积分数据足够新
     refetchOnWindowFocus: true,
   });
+};
+/** 更新用户信息 */
+export const useUpdateUserInfo = () => {
+  const updateUserInfoMutation = useMutation({
+    mutationFn: (data: any) => userApi.updateUserInfo(data),
+    onSuccess: (res: any) => {
+      queryClient.invalidateQueries({ queryKey: ["userInfo"] });
+      addToast({
+        title: res || "Update user info success",
+        color: "success",
+      });
+    },
+    onError: (error: any) => {
+      addToast({
+        title: error?.message || "Update user info failed, please try again",
+        color: "danger",
+      });
+    },
+  });
+
+  return {
+    updateUserInfo: updateUserInfoMutation.mutate,
+    isUpdating: updateUserInfoMutation.isPending,
+  };
+};
+export const useChangePassword = () => {
+  const router = useRouter();
+  const changePasswordMutation = useMutation({
+    mutationFn: (data: any) => userApi.changePassword(data),
+    onSuccess: (res) => {
+      addToast({
+        title: res || "Change password success",
+        timeout: 1000,
+        color: "success",
+      });
+      queryClient.clear();
+      router.push("/login");
+    },
+    onError: (error: any) => {
+      addToast({
+        title: error?.message || "Change password failed, please try again",
+        timeout: 1000,
+        color: "danger",
+      });
+    },
+  });
+
+  return {
+    changePassword: changePasswordMutation.mutate,
+    isChanging: changePasswordMutation.isPending,
+  };
 };

@@ -4,13 +4,10 @@ import { useMemo, useState } from "react";
 import React from "react";
 import { useTranslations } from "next-intl";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
-import { useMutation } from "@tanstack/react-query";
 
 import BillingAddressModal from "./billing-address-modal";
 
-import { deleteAddress } from "@/services";
-import { queryClient } from "@/lib/react-query";
-import { useBillingAddress } from "@/hook";
+import { useBillingAddress, useDeleteAddress } from "@/hook/business";
 import { formatFullCity, formatFullAddress } from "@/utils/address";
 import { useConfirm } from "@/components/common/modal/confirm-provider";
 import { AddAddress } from "@/components/block";
@@ -20,8 +17,9 @@ type ModalType = "add" | "edit" | null;
 export function BillingAddress() {
   const t = useTranslations("dashboard.page.billingAddress");
   const { confirm } = useConfirm();
-  const { data: billingAddress, isLoading } = useBillingAddress();
+  const { data: billingAddress } = useBillingAddress();
   const [modalType, setModalType] = useState<ModalType>(null);
+  const { mutateAsync: deleteMutation } = useDeleteAddress();
 
   const fullCity = useMemo(
     () => formatFullCity(billingAddress),
@@ -32,12 +30,8 @@ export function BillingAddress() {
     [billingAddress],
   );
 
-  const deleteMutation = useMutation({
-    mutationFn: deleteAddress,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["billingAddress"] });
-    },
-  });
+  console.log('useBillingAddress', billingAddress);
+
 
   const handleDelete = async () => {
     if (!billingAddress) return;
@@ -45,14 +39,14 @@ export function BillingAddress() {
     await confirm({
       content: t("deleteConfirm"),
       onConfirm: async () => {
-        await deleteMutation.mutateAsync({ id: billingAddress.id });
+        await deleteMutation({ id: billingAddress.id });
       },
     });
   };
 
   return (
     <>
-      {billingAddress ? (
+      {Object.keys(billingAddress)?.length ? (
         <div className="p-4 border-2 border-dashed border-gray-300 min-h-[120px] flex items-center justify-center">
           <div className="w-full">
             <div className="flex items-center justify-between font-semibold">

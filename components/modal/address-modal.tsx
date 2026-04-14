@@ -1,13 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { FieldConfig } from "../form/formItem-renderer";
 
 import FormModal from "./form-modal";
 
-import { addAddress, updateAddress } from "@/services/address";
+import { useAddAddress, useUpdateAddress } from "@/hook/business";
 
 export interface AddressModalProps {
   isOpen: boolean;
@@ -36,7 +35,9 @@ export default function AddressModal({
   defaultData,
 }: AddressModalProps) {
   const t = useTranslations("components.modal.address");
-  const queryClient = useQueryClient();
+  const { mutateAsync: updateMutation, isPending: updatePending } = useUpdateAddress();
+  const { mutateAsync: addMutation, isPending: addPending } = useAddAddress();
+  const isSubmitting = addPending || updatePending;
 
   const addressFields: FieldConfig[] = [
     {
@@ -99,48 +100,14 @@ export default function AddressModal({
     } else if (type === "add") {
       setFormData(initAddress);
     }
-  }, [type, defaultData, isOpen]);
+  }, [type, defaultData, isOpen])
 
-  const normalizeFormData = (data: any) => {
-    const { createTime, updateTime, customerId, ...rest } = data;
-
-    return rest;
-  };
-  const addMutation = useMutation({
-    mutationFn: async (formData: any) => {
-      const normalizedData = normalizeFormData(formData);
-
-      return addAddress({
-        ...normalizedData,
-        addressType: 1,
-        defaultAddress: normalizedData.defaultAddress ? 1 : 0,
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["addressList"] });
-    },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: async (formData: any) => {
-      const normalized = normalizeFormData(formData);
-
-      return updateAddress({
-        ...normalized,
-        defaultAddress: normalized.defaultAddress ? 1 : 0,
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["addressList"] });
-    },
-  });
-  const isSubmitting = addMutation.isPending || updateMutation.isPending;
 
   const handleSubmit = async (currentFormData: any) => {
     if (type === "edit") {
-      await updateMutation.mutateAsync(currentFormData);
+      await updateMutation(currentFormData);
     } else {
-      await addMutation.mutateAsync(currentFormData);
+      await addMutation(currentFormData);
     }
     onOpenChange(false);
   };

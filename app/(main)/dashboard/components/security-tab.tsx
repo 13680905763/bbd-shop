@@ -2,19 +2,16 @@
 
 import { addToast, Button, Card } from "@heroui/react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
-import { useMutation } from "@tanstack/react-query";
 
 import FormModal from "@/components/modal/form-modal";
-import { updatePwd } from "@/services";
 import { FieldConfig } from "@/components/form/formItem-renderer";
-import { queryClient } from "@/lib/react-query";
+import { useChangePassword } from "@/hook/api";
 
 export function SecurityTab() {
   const t = useTranslations("dashboard.page.security");
-
+  const { changePassword, isChanging } = useChangePassword();
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState<any>({
     oldPassword: "",
@@ -22,11 +19,9 @@ export function SecurityTab() {
     confirmPassword: "",
   });
 
-  const router = useRouter();
-
   const securityFields: FieldConfig[] = [
     {
-      type: "input",
+      type: "password",
       name: "oldPassword",
       label: t("fields.oldPassword.label"),
       errorMessage: t("fields.oldPassword.errorMessage"),
@@ -34,7 +29,7 @@ export function SecurityTab() {
       required: true,
     },
     {
-      type: "input",
+      type: "password",
       name: "newPassword",
       label: t("fields.newPassword.label"),
       errorMessage: t("fields.newPassword.errorMessage"),
@@ -42,7 +37,7 @@ export function SecurityTab() {
       required: true,
     },
     {
-      type: "input",
+      type: "password",
       name: "confirmPassword",
       label: t("fields.confirmPassword.label"),
       errorMessage: t("fields.confirmPassword.errorMessage"),
@@ -51,18 +46,6 @@ export function SecurityTab() {
     },
   ];
 
-  // ✅ 使用 useMutation 封装请求
-  const mutation = useMutation({
-    mutationFn: (data: { oldPassword: string; newPassword: string }) =>
-      updatePwd(data),
-    onSuccess: () => {
-      queryClient.clear();
-      setIsOpen(false);
-      setTimeout(() => {
-        router.push("/login");
-      }, 2000);
-    },
-  });
   const handleSubmit = () => {
     // 校验两次密码一致性
     if (formData.newPassword !== formData.confirmPassword) {
@@ -75,7 +58,7 @@ export function SecurityTab() {
       return;
     }
     // 调用 mutation
-    mutation.mutateAsync({
+    changePassword({
       oldPassword: formData.oldPassword,
       newPassword: formData.newPassword,
     });
@@ -104,7 +87,7 @@ export function SecurityTab() {
       <FormModal
         fields={securityFields}
         formData={formData}
-        isLoading={mutation.isPending}
+        isLoading={isChanging}
         isOpen={isOpen}
         title={t("modalTitle")}
         onChange={setFormData}

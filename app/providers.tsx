@@ -80,7 +80,7 @@ export function Providers({
                 title: "!text-xl",
                 content: " justify-center",
               },
-              timeout: 100000,
+              timeout: 3000,
             }}
           />
           <ConfirmProvider>

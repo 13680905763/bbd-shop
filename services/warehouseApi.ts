@@ -6,7 +6,7 @@ import type {
   WarehousePackageListParams,
 } from "@/types/warehouse";
 
-import { request, requestWithOption } from "./request";
+import { request } from "./request";
 
 export const warehouseApi = {
   /** 获取包裹分页列表 */
@@ -32,10 +32,17 @@ export const warehouseApi = {
     return request.post(`/waybill/preview`, data);
   },
   /** 创建运单 */
-  createWaybill(data: any): Promise<any> {
-    return requestWithOption(
-      { url: "/waybill/submit", method: "POST", data },
-      { showToast: true },
-    );
-  },
+  createWaybill: (data: any): Promise<any> =>
+    request({ url: "/waybill/submit", method: "POST", data }),
+
+  /** 提交运单获取路线模板 */
+  listLineByWaybill: (data: any): Promise<any> =>
+    request.post("/shipping-line-template/query", data),
+
+  /** 获取运单增值服务列表 */
+  getWarehouseServices: (): Promise<any> =>
+    request.get("/services/query?serviceLevel=2"),
+  /** 获取保险服务列表 */
+  getInsuranceServices: (): Promise<any> =>
+    request.get("/services/query?serviceLevel=3"),
 };

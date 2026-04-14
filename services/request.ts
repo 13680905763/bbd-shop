@@ -1,34 +1,28 @@
 import axios, { AxiosResponse, AxiosRequestConfig, AxiosError } from "axios";
-import { addToast } from "@heroui/react";
 
 import { ApiResponse } from "@/types";
 import { useGlobalStore } from "@/store";
 
 export const request = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "/api",
-  timeout: 500000,
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  timeout: 300000,
   headers: {
     "Content-Type": "application/json",
   },
   withCredentials: true,
 });
-// console.log(
-//   "process.env.NEXT_PUBLIC_API_BASE_URL",
-//   process.env.NEXT_PUBLIC_API_BASE_URL,
-// );
 
 // 请求拦截器：注入 token、语言等
 request.interceptors.request.use(
   (config) => {
     const { language, currency } = useGlobalStore.getState();
 
-    // console.log("接口请求配置语言货币", language, currency);
-
     config.headers["X-Language"] = language;
     config.headers["X-Currency"] = currency.value;
-    // config.headers["X-Language"] = "en";
-    // config.headers["X-Currency"] = "USD";
     config.headers["X-Timezone"] = "Asia/Shanghai";
+    if (config.data instanceof FormData) {
+      delete config.headers["Content-Type"];
+    }
 
     return config;
   },
@@ -40,57 +34,19 @@ request.interceptors.response.use(
   (response: AxiosResponse<ApiResponse<any> & { config?: any }>) => {
     const res = response.data;
 
-    // console.log("res", res);
-
-    const showToast = (response.config as any)?.showToast ?? false; // 默认不显示提示
-    const isSuccess = (response.config as any)?.isSuccess ?? true; // 默认不显示提示
-
+    // 业务逻辑失败
     if (!res.success) {
-      console.log("接口报错");
-
-      if (showToast) {
-        addToast({
-          title: res.msg || "请求失败",
-          timeout: 1000,
-          color: "danger",
-        });
-      }
-      if (!isSuccess) {
-        console.log("接口666");
-
-        return res.msg;
-      }
-
       return Promise.reject(new Error(res.msg || "请求失败"));
     }
 
-    if (showToast && isSuccess) {
-      addToast({
-        title: res.msg || "请求成功",
-        timeout: 1000,
-        color: "success",
-      });
-    }
-
-    return res.data; // ✅ 直接返回 data
+    // 成功直接返回数据
+    return res.data;
   },
   (error: AxiosError<any>) => {
-    // 先获取 config，并扩展类型
-    const config = error.config as any;
-    const showToast = config?.showToast ?? false;
-
     const status = error.response?.status;
 
-    if (status === 401) {
-      if (showToast) {
-        addToast({
-          title: "Please login first",
-          timeout: 1000,
-          color: "danger",
-        });
-      }
-
-      return null;
+    if (status == 401) {
+      return Promise.reject(null);
     }
 
     return Promise.reject(error);

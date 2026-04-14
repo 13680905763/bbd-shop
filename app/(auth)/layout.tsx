@@ -6,8 +6,7 @@ import { useGoogleLogin } from "@react-oauth/google";
 import { useTranslations } from "next-intl";
 
 import { GoogleIcon, Logo } from "@/components/icons";
-import { loginWithGoogleNew } from "@/services";
-import { queryClient } from "@/lib/react-query";
+import { useGoogleLoginFlow } from "@/hook/business";
 
 export default function AuthLayout({
   children,
@@ -18,22 +17,17 @@ export default function AuthLayout({
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
-
+  const { login: googleLogin, isLoggingIn } = useGoogleLoginFlow();
   const handleGoogleLogin = useGoogleLogin({
     flow: "auth-code",
     scope: "email profile openid",
     ux_mode: "popup",
     onSuccess: async (codeResponse) => {
-      try {
-        await loginWithGoogleNew({
-          authorizationCode: codeResponse.code,
-          inviteCode: searchParams.get("inviteCode") || "",
-        });
-        queryClient.invalidateQueries({ queryKey: ["userInfo"] }); // 刷新
-        router.push("/");
-      } catch {}
+      await googleLogin({
+        authorizationCode: codeResponse.code,
+        inviteCode: searchParams.get("inviteCode") || "",
+      });
     },
-    onError: (error) => console.error("Google Login Failed:", error),
   });
 
   return (
@@ -59,6 +53,7 @@ export default function AuthLayout({
               <Divider className="my-4" />
               <Button
                 className="w-full bg-white border-1 border-default-200"
+                isLoading={isLoggingIn}
                 startContent={<GoogleIcon />}
                 variant="flat"
                 onPress={() => handleGoogleLogin()}

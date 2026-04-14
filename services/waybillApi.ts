@@ -1,4 +1,4 @@
-import { request, requestWithOption } from "./request";
+import { request } from "./request";
 
 import { PageResult } from "@/types/api";
 
@@ -29,10 +29,7 @@ export const waybillApi = {
   },
   /** 运单更换路线预览 */
   previewChangeLine(params: { id: string; addressId?: string }): Promise<any> {
-    return requestWithOption(
-      { url: `/waybill/change/line/fee`, method: "GET", params },
-      { isSuccess: false },
-    );
+    return request.get(`/waybill/change/line/fee`, { params });
   },
   /** 包裹物流查询 */
   trackDetail(params: any): Promise<any> {

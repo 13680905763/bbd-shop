@@ -24,7 +24,7 @@ import {
 } from "@/hook/api";
 import { AddAddress, PackageProductItem } from "@/components/block";
 import { useEnhancedSelection } from "@/hook/common";
-import { useAddressList } from "@/hook";
+import { useAddressList } from "@/hook/business";
 import AddressItem from "@/components/block/address-item";
 import { Address, AddressModalState } from "@/types";
 import { routesApi } from "@/services/routesApi";
@@ -106,11 +106,10 @@ export default function SubmitOrder() {
     t("defaultMessage"),
   );
 
-  console.log("serviceList1", serviceList1);
 
   useEffect(() => {
     const countryId = addressList?.find(
-      (item) => item.id == selectedAddressId,
+      (item: any) => item.id == selectedAddressId,
     )?.countryId;
 
     if (!countryId) return;

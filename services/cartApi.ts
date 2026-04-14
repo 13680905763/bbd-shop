@@ -1,45 +1,37 @@
-// services/cartApi.ts（简化版，使用 any）
-import { request, requestWithOption } from "./request";
+import { request } from "./request";
+
+export interface UpdateCartParams {
+  id: string;
+  quantity?: number;
+  remark?: string;
+}
+export interface DeleteCartParams {
+  idList: string[];
+}
+export interface CheckoutParams {
+  previewList: {
+    cartId: number;
+    serviceList: any[];
+  }[];
+}
 
 export const cartApi = {
-  /** 获取购物车列表（按店铺分组） */
-  getList(): Promise<any> {
-    return request.get("/customer/cart/shop");
-  },
+  /** 获取购物车详情快照 */
+  getDetail: (): Promise<any> => request.get("/customer/cart/shop"),
+
   /** 添加商品到购物车 */
-  addItem(data: any): Promise<any> {
-    return requestWithOption(
-      {
-        url: "/customer/cart/add",
-        method: "POST",
-        data,
-      },
-      {
-        showToast: true,
-      },
-    );
-  },
+  addItem: (data: any): Promise<any> =>
+    request.post("/customer/cart/add", data),
 
-  /** 从购物车删除商品 */
-  deleteItem(data: any): Promise<any> {
-    return request({
-      url: "/customer/cart/delete",
-      method: "POST",
-      data,
-    });
-  },
+  /** 批量删除购物车商品 */
+  removeItems: (data: DeleteCartParams): Promise<any> =>
+    request.post("/customer/cart/delete", data),
 
-  /** 更新购物车商品信息 */
-  updateItem(data: any): Promise<any> {
-    return request({
-      url: "/customer/cart/update",
-      method: "POST",
-      data,
-    });
-  },
+  /** 批量更新商品数量或备注 */
+  updateItems: (data: UpdateCartParams[]): Promise<any> =>
+    request.post("/customer/cart/update", data),
 
-  /** 创建购物车结算订单预览key */
-  createOrderPreview(data: any): Promise<string> {
-    return request.post("/customer/cart/order/init", data);
-  },
+  /** 提交并准备订单 */
+  prepareOrder: (data: CheckoutParams): Promise<string> =>
+    request.post("/customer/cart/order/init", data),
 };

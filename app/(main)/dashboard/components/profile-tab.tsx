@@ -3,17 +3,17 @@
 import { useEffect, useRef, useState } from "react";
 import { Avatar, Spinner } from "@heroui/react";
 import { useTranslations } from "next-intl";
-import { useMutation } from "@tanstack/react-query";
 
 import CommonForm from "@/components/form/common-form";
-import { updateUserInfo, uploadAvatar } from "@/services"; // 需要你实现 uploadAvatar API
+import { uploadAvatar } from "@/services"; // 需要你实现 uploadAvatar API
 import { FieldConfig } from "@/components/form/formItem-renderer";
 import { queryClient } from "@/lib/react-query";
-import { useUserInfo } from "@/hook/api";
+import { useUpdateUserInfo, useUserInfo } from "@/hook/api";
 
 export function ProfileTab() {
   const t = useTranslations("dashboard.page.profile");
-  const { data: user, isLoading, error } = useUserInfo();
+  const { data: user } = useUserInfo();
+  const { updateUserInfo, isUpdating } = useUpdateUserInfo();
   const profileFields: FieldConfig[] = [
     {
       type: "input",
@@ -50,12 +50,7 @@ export function ProfileTab() {
       mobile: user.mobile ?? "",
     });
   }, [user]);
-  const updateMutation = useMutation({
-    mutationFn: updateUserInfo,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["userInfo"] });
-    },
-  });
+
 
   const handleAvatarClick = () => {
     fileInputRef.current?.click();
@@ -110,9 +105,9 @@ export function ProfileTab() {
         <CommonForm
           fields={profileFields}
           formData={formData}
-          isLoading={updateMutation.isPending}
+          isLoading={isUpdating}
           onChange={setFormData}
-          onSubmit={updateMutation.mutateAsync}
+          onSubmit={updateUserInfo}
         />
       </div>
     </>
