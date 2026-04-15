@@ -32,15 +32,7 @@ declare module "@react-types/shared" {
   }
 }
 function ConfigSync() {
-  const { data } = useCurrencyOptions();
-  const { setCurrencies } = useGlobalStore();
-
-  useEffect(() => {
-    if (data) {
-      setCurrencies(data);
-    }
-  }, [data, setCurrencies]);
-
+  useCurrencyOptions();
   return null;
 }
 export function Providers({
