@@ -1,4 +1,4 @@
-import { request, requestWithOption } from "./request";
+import { request } from "./request";
 
 import {
   createOrderByRechargeParams,
@@ -34,21 +34,11 @@ export const updateOrderPreviewCart = (
 ): Promise<OrderPreviewByCart> =>
   request.post("/customer/cart/order/preview", data);
 
+
 /** 商品立即购买订单预览 */
 export const getOrderPreviewProduct = (
   key: string,
-  options?: { showToast?: boolean },
-): Promise<OrderPreviewByProduct> => {
-  return requestWithOption(
-    {
-      url: `/orders/preview/key?key=${key}`,
-      method: "GET",
-    },
-    {
-      showToast: options?.showToast ?? false, // 默认显示提示
-    },
-  );
-};
+): Promise<OrderPreviewByProduct> => request.get(`/orders/preview/key`, { params: { key } });
 /** 更新商品立即购买订单预览 */
 export const updateOrderPreviewProduct = (
   data: any,
@@ -59,19 +49,12 @@ export const getPayOrderStatus = (bizCode: string): Promise<number> =>
   request.get(`/customer/pay-order/status?bizCode=${bizCode}`);
 
 /** 获取增值服务列表 */
-export const getServicesList = (): Promise<any> => {
-  return requestWithOption(
-    { url: "/services/query?serviceLevel=1", method: "GET" },
-    { showToast: false },
-  );
-};
+export const getServicesList = (): Promise<any> => request.get("/services/query?serviceLevel=1");
 
-export const createCustomizeOrder = (data: any): Promise<any> => {
-  return requestWithOption(
-    { url: "/drop-shipping-order", method: "POST", data },
-    { showToast: true },
+export const createCustomizeOrder = (data: any): Promise<any> =>
+  request.post("/drop-shipping-order", data,
   );
-};
+;
 
 /** 撤销列表 */
 export const getRefundList = (data = {}): Promise<any> => {

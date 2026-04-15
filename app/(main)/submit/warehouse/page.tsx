@@ -17,6 +17,7 @@ import {
 import AddressModal from "@/components/modal/address-modal";
 import {
   useCreateWaybill,
+  useLineByWaybill,
   useWarehouseServicesList,
   useWarehouseServicesList1,
   useWaybillFeeEstimate,
@@ -27,7 +28,6 @@ import { useEnhancedSelection } from "@/hook/common";
 import { useAddressList } from "@/hook/business";
 import AddressItem from "@/components/block/address-item";
 import { Address, AddressModalState } from "@/types";
-import { routesApi } from "@/services/routesApi";
 
 export default function SubmitOrder() {
   const { currency } = useGlobalStore();
@@ -99,42 +99,42 @@ export default function SubmitOrder() {
   }, [estimatePayload]);
 
   const [isCheck, setIsCheck] = useState(false);
-  // 路由路线相关
-  const [isRouteEstimating, setIsRouteEstimating] = useState(false);
-  const [routesList, setRoutesList] = useState<any[]>([]);
-  const [routesMessage, setRoutesMessage] = useState<string>(
-    t("defaultMessage"),
-  );
 
+  // 选中地址国家id
+  const countryId = useMemo(() => {
+    return addressList?.find((item: any) => item.id == selectedAddressId)
+      ?.countryId;
+  }, [selectedAddressId, addressList]);
 
-  useEffect(() => {
-    const countryId = addressList?.find(
-      (item: any) => item.id == selectedAddressId,
-    )?.countryId;
-
-    if (!countryId) return;
-    setIsRouteEstimating(true);
-    routesApi
-      .byCategoryAndCountry({
+  const {
+    data: lineData,
+    isLoading: lineLoading,
+    isError: islineError,
+    error: lineError,
+  } = useLineByWaybill(
+    countryId && data?.packageItemList.map((item: any) => item?.categoryId).length
+      ? {
         categoryIds: data?.packageItemList.map((item: any) => item?.categoryId),
         countryId,
         weight: data?.outbound?.estimateTotalWeight,
         volume: data?.outbound?.estimateTotalVolume,
-      })
-      .then((res) => {
-        console.log("res", res, typeof res != "string", res?.length);
-        if (typeof res != "string" && res?.length) {
-          setRoutesList(res || []);
-        } else {
-          setSelectedRouteId("");
-          setRoutesList([]);
-          setRoutesMessage(res);
-        }
-      })
-      .finally(() => {
-        setIsRouteEstimating(false);
+      }
+      : null,
+  );
+
+  // 在组件里处理错误提示
+  useEffect(() => {
+    if (islineError && lineError) {
+      addToast({
+        title: lineError?.message || "Search line failed",
+        color: "danger",
       });
-  }, [selectedAddressId]);
+      console.log('lineError?.message', lineError?.message);
+      console.log('lineData', lineData?.length);
+
+      setSelectedRouteId(null);
+    }
+  }, [islineError, lineError]);
 
   const handleOpenChange = useCallback((open: boolean) => {
     if (!open) setModalState({ type: null });
@@ -258,8 +258,8 @@ export default function SubmitOrder() {
           <div className="relative">
             <div className="text-title">{t("deliveryRoute")}</div>
             <div className="flex flex-col gap-4">
-              {isRouteEstimating && <BlockSpinner />}
-              {routesList?.map((route) => (
+              {lineLoading && <BlockSpinner />}
+              {lineData?.map((route: any) => (
                 <RouteCard
                   key={route.id}
                   data={route}
@@ -267,9 +267,9 @@ export default function SubmitOrder() {
                   onSelect={(id) => setSelectedRouteId(String(id))}
                 />
               ))}
-              {routesList?.length < 1 && (
+              {!(lineData?.length > 0) && (
                 <div className="flex flex-col items-center justify-center h-[20vh] text-gray-500">
-                  <p className="text-lg mb-2">{routesMessage}</p>
+                  <p className="text-lg mb-2">{lineError?.message}</p>
                 </div>
               )}
             </div>

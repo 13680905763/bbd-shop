@@ -1,4 +1,4 @@
-// export * from "./useWarehouse";
+export * from "./useWarehouse";
 export * from "./useCart";
 // export * from "./useMessage";
 // export * from "./useOrder";

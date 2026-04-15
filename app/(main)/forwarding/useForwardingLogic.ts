@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { ServiceItem, ForwardingFormData } from "./types";
 
 import { getServicesList, createCustomizeOrder } from "@/services";
+import { addToast } from "@heroui/react";
 
 export function useForwardingLogic() {
   const router = useRouter();
@@ -68,7 +69,7 @@ export function useForwardingLogic() {
         }));
 
       const payload = {
-        ...formData,
+        // ...formData,
         serviceList: selectedServices,
         receiver: "Bryant-4-Bryant",
         receivePhone: "15916408071",
@@ -83,7 +84,11 @@ export function useForwardingLogic() {
       } else {
         router.push("/dashboard/order");
       }
-    } catch (err) {
+    } catch (err: any) {
+      addToast({
+        title: err?.message,
+        color: "danger",
+      })
       console.error("创建失败:", err);
       throw err;
     } finally {

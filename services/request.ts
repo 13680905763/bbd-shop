@@ -52,24 +52,3 @@ request.interceptors.response.use(
     return Promise.reject(error);
   },
 );
-
-// 封装一个带可选参数的请求方法
-export const requestWithOption = <T = any>(
-  config: AxiosRequestConfig,
-  options?: { showToast?: boolean; isSuccess?: boolean },
-) => {
-  // 设置默认值
-  const mergedOptions = {
-    showToast: options?.showToast ?? false,
-    isSuccess: options?.isSuccess ?? true, // 默认 true，可传 false
-  };
-
-  return request({
-    ...config,
-    showToast: mergedOptions.showToast,
-    isSuccess: mergedOptions.isSuccess,
-  } as AxiosRequestConfig & {
-    showToast?: boolean;
-    isSuccess?: boolean;
-  }) as Promise<T>;
-};

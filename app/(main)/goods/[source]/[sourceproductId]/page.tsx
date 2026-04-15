@@ -26,7 +26,6 @@ import { favoriteProduct, getGoodsInfo } from "@/services/goods";
 // import { addCart } from "@/services/cart";
 import {
   createOrderPreviewKeyByProduct,
-  getOrderPreviewProduct,
 } from "@/services";
 import CopyText from "@/components/ui/copy-text";
 import CommonModal from "@/components/modal/common-modal";
@@ -37,6 +36,7 @@ import { useConfirm } from "@/components/common/modal/confirm-provider";
 import { SourceIcon } from "@/components/ui";
 import { useUserInfo } from "@/hook/api";
 import { useAddCartItem } from "@/hook/business";
+import { OrderApi } from "@/services/orderApi";
 
 const getSelectedValues = (specs: any) => {
   const arr: any = [];
@@ -143,12 +143,12 @@ export default function GoodsPage() {
         quantity,
         remark,
       });
-      const res = await getOrderPreviewProduct(key, { showToast: true });
 
-      console.log(res);
 
       router.push("/submit/order?type=product&key=" + key);
-    } catch (err: any) {
+    } catch (error: any) {
+      console.log('error', error);
+
     } finally {
       setissub(false);
     }

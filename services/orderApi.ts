@@ -30,6 +30,13 @@ export const OrderApi = {
   listRefundOrder: (data: any): Promise<any> => {
     return request.post("/order-refund/list", data);
   },
+  /** 创建转运订单 */
+  forwardingOrder: (data: any): Promise<any> => {
+    return request.post("/drop-shipping-order", data);
+  },
+  /** 商品结算订单预览详情 */
+  previewByProduct: (key: string): Promise<any> =>
+    request.get(`/orders/preview/key`, { params: { key } }),
   /** 订单取消 */
   cancelOrder: (orderId: string): Promise<any> => {
     return request.put(`/orders/cancel?orderId=${orderId}`);

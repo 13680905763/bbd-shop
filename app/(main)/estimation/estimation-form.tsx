@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Autocomplete,
   AutocompleteItem,
@@ -9,12 +9,10 @@ import {
   Spacer,
   addToast,
 } from "@heroui/react";
-import { useMutation } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 
 import { useCategoryOptions } from "@/hook/api";
-import { routesApi } from "@/services/routesApi";
-import { useCountries } from "@/hook/business";
+import { useCountries, useLineEstimate } from "@/hook/business";
 
 export interface EstimationFormData {
   countryId: number;
@@ -36,6 +34,31 @@ export default function EstimationForm({
   const { data: countries = [] } = useCountries();
   const { data: categoryOptions = [] } = useCategoryOptions();
 
+
+  const [searchParams, setSearchParams] = useState<any>(null);
+  const {
+    data: lineEstimate = [],
+    isFetching: isSearching,
+    isError,
+    error,
+  } = useLineEstimate(searchParams);
+
+  const routes = Array.isArray(lineEstimate) ? lineEstimate : [];
+
+  useEffect(() => {
+    if (routes?.length) onSearchSuccess(routes)
+  }, [routes])
+  // 在组件里处理错误提示
+  useEffect(() => {
+    if (isError && error) {
+      addToast({
+        title: error?.message || "Search line failed",
+        color: "danger",
+      });
+      onSearchSuccess([], error?.message);
+    }
+  }, [isError, error]);
+
   const [formData, setFormData] = useState<EstimationFormData>({
     countryId: 0,
     categoryId: "",
@@ -48,18 +71,6 @@ export default function EstimationForm({
   const handleChange = (key: keyof EstimationFormData, value: any) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
-
-  const searchMutation = useMutation({
-    mutationFn: (data: EstimationFormData) =>
-      routesApi.byCategoryAndCountryAndVolumeAndWeight(data),
-    onSuccess: (res) => {
-      if (typeof res !== "string" && res?.length) {
-        onSearchSuccess(res);
-      } else {
-        onSearchSuccess([], typeof res === "string" ? res : "");
-      }
-    },
-  });
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,7 +95,8 @@ export default function EstimationForm({
       return;
     }
 
-    searchMutation.mutate(formData);
+    setSearchParams(formData);
+
   };
 
   return (
@@ -176,7 +188,7 @@ export default function EstimationForm({
         <Button
           className="min-w-48"
           color="primary"
-          isLoading={searchMutation.isPending}
+          isLoading={isSearching}
           size="lg"
           type="submit"
         >
